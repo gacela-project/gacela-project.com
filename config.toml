@@ -1,0 +1,19 @@
+base_url = "https://gacela-project.com"
+
+title = "Gacela Project"
+description = "Gacela Project"
+compile_sass = true
+generate_feed = false
+theme = "even"
+
+[markdown]
+highlight_code = true
+highlight_theme = "demain"
+
+[extra]
+author = "Chemaclass"
+even_title = ""
+even_menu = [
+    {url = "$BASE_URL", name = "Home"},
+    {url = "https://github.com/gacela-project/gacela", name = "Github"},
+]

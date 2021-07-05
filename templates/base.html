@@ -1,0 +1,12 @@
+{% extends "even/templates/index.html" %}
+
+{% block css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ get_url(path='custom.css', trailing_slash=false) }}">
+{% endblock css %}
+
+{% block footer %}
+<footer id="main-footer">
+    © 2021 Gacela Project, all rights reserved
+</footer>
+{% endblock footer %}
