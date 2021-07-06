@@ -12,8 +12,10 @@ highlight_theme = "demain"
 
 [extra]
 author = "Chemaclass"
-even_title = ""
+even_title = "Gacela"
 even_menu = [
-    {url = "$BASE_URL", name = "Home"},
-    {url = "https://github.com/gacela-project/gacela", name = "Github"},
+    {url = "$BASE_URL/facade", name = "Facade"},
+    {url = "$BASE_URL/factory", name = "Factory"},
+    {url = "$BASE_URL/dependency-provider", name = "Dependency Provider"},
+    {url = "$BASE_URL/config", name = "Config"},
 ]

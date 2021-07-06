@@ -12,9 +12,24 @@ $body-width: 800px;
   }
 }
 
+#header {
+  .logo {
+    font-family: sans-serif;
+  }
+  .menu {
+    font-family: sans-serif;
+  }
+}
+
+.container {
+  font-family: sans-serif;
+}
 
 #gacela-logo-head {
-  float: right;
+  text-align: center;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
 }
 
 #projects-using-gacela {
@@ -29,19 +44,14 @@ p, p + * {
 }
 
 #main-footer {
-  margin: 60px 20px;
+  margin: 60px 20px 0;
+}
+
+#gacela-project-header {
+  display: none;
 }
 
 @include max-screen() {
-  #gacela-project-header {
-    display: none;
-  }
-  #gacela-logo-head {
-    text-align: center;
-    margin-top: 16px;
-    float: none;
-  }
-
   #projects-using-gacela {
     * {
       text-align: center;
