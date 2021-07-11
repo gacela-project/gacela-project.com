@@ -4,14 +4,15 @@ template = "section.html"
 
 # Config
 
-## Reading the config.php key-values
+## Reading the key-values
 
-Use a Config Class to construct your business domain classes by injecting the data from the Config using the Factory
-when you do the creation of your domain classes. In order to achieve that, you need to create a gacela.json file in your
-application root with the following values:
+The `Config` class can get the key-values from your config files. You can define your config files in `gacela.json`.
+Why? This `Config` class is accesible from the `Factory`, so you can inject these config values to your business/domain
+classes.
 
-gacela.json file examples:
+In order to achieve that, you need to create a `gacela.json` file in your application root with the following values:
 
+- Config PHP files:
 ```json
 {
   "config": {
@@ -22,6 +23,7 @@ gacela.json file examples:
 }
 ```
 
+- Config ENV files:
 ```json
 {
   "config": {
@@ -32,6 +34,25 @@ gacela.json file examples:
 }
 ```
 
+- Multiple and different config files:
+```json
+{
+  "config": [
+    {
+      "type": "php",
+      "path": "config/*.php",
+      "path_local": "config/local.php"
+    },
+    {
+      "type": "env",
+      "path": "config/.env*",
+      "path_local": "config/.env.local.dist"
+    }
+  ]
+}
+```
+
+### Keys
 - config:
     - type: enum with possible values php or env.
     - path: this is the path of the folder which contains your application configuration. You can use ? or * in order to
@@ -39,21 +60,56 @@ gacela.json file examples:
     - path_local: this is the last file loaded, which means, it will override the previous configuration, so you can
       easily add it to your .gitignore and set your local config values in case you want to have something different for
       some cases.
+      
+### Default values
 
-This is tightly coupled with the infrastructure layer, because there is I/O involved. It's not bad itself, you just need
-to be aware of potential risks, though. Don't access data from your config files (files under the gacela.json path
-directory) directly in your domain services. In this way, you would couple your logic with infrastructure code, and not
-be able to unit test it.
+If you don't define any `gacela.json` file, Config will use the "Config PHP files" configuration.
 
-### An example
+
+### You can define your own ConfigReaders
+
+You can implement your custom config reader by using `ConfigReaderInterface`,
+and setting it to the config-singleton. For example:
 
 ```php
-<?php # config.php
+<?php
+/*
+ * This is an example of how can you create your own config reader.
+ * The key 'custom' in the ConfigReaders will parse the files found
+ * by the gacela.json config:
+ * {
+ *   "type": "custom",
+ *   "path": "config/*.custom"
+ * }
+ */
+Config::getInstance()->setConfigReaders([
+    'php' => new PhpConfigReader(),
+    'custom' => new CustomConfigReader(),
+]);
 
-use src\Calculator\Config;
+// After setting new config readers you have to initialize the config
+Config::getInstance()->init();
+```
+
+---
+
+## A complete example
+
+```json
+# gacela.json
+{
+  "config": {
+    "type": "php",
+    "path": "config/*.php"
+  }
+}
+```
+
+```php
+<?php # config/default.php
 
 return [
-    Config::MAX_ADDITIONS => 20,
+    'max-additions' => 20,
 ];
 ```
 
@@ -62,11 +118,9 @@ return [
 
 final class Config extends AbstractConfig
 {
-    public const MAX_ADDITIONS = 'MAX_ADDITIONS';
-
     public function getMaxAdditions(): int
     {
-        return $this->get(self::MAX_ADDITIONS, $default = 0);
+        return $this->get('max-additions', $default = 0);
     }
 }
 ```
