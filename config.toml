@@ -14,8 +14,7 @@ highlight_theme = "demain"
 author = "Chemaclass"
 even_title = "Gacela"
 even_menu = [
-    {url = "$BASE_URL/facade", name = "Facade"},
-    {url = "$BASE_URL/factory", name = "Factory"},
-    {url = "$BASE_URL/dependency-provider", name = "Dependency Provider"},
-    {url = "$BASE_URL/config", name = "Config"},
+    {url = "$BASE_URL/docs", name = "Documentation"},
+    {url = "https://github.com/gacela-project/gacela/issues/new", name = "Report Issues"},
+    {url = "https://github.com/gacela-project/gacela", name = "Github"},
 ]

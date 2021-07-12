@@ -28,18 +28,35 @@
         splitting the logic into different modules.
     </h2>
 
-    <p>
-        Splitting your project into different modules will help its design in
-        terms of maintainability and scalability. It will certainly encourage your modules to interact with each other in a unified way by
-        following these rules:
+    <div>
+        <p>
+            Splitting your project into different modules will help its design in
+            terms of maintainability and scalability. It will certainly encourage your modules to interact with each
+            other in a unified way by
+            following these rules:
+        </p>
         <ul>
             <li>Modules interact with each other <b>only</b> via their <i>Facade</i>.</li>
-            <li>The <a href="/facade">Facade</a> has access to the <i>Factory</i>.</li>
-            <li>The <a href="/factory">Factory</a> creates the module's objects.</li>
-            <li>The <a href="/config">Config</a> is accessible from the Factory.</li>
-            <li>The <a href="/dependency-provider">DependencyProvider</a> gets other <i>Facades</i>.</li>
+            <li>The <a href="/docs/facade">Facade</a> has access to the <i>Factory</i>.</li>
+            <li>The <a href="/docs/factory">Factory</a> creates the module's objects.</li>
+            <li>The <a href="/docs/config">Config</a> is accessible from the Factory.</li>
+            <li>The <a href="/docs/dependency-provider">DependencyProvider</a> gets other <i>Facades</i>.</li>
         </ul>
-    </p>
+    </div>
+
+    <div>
+        <h3>Installation</h3>
+        <p>
+            $ composer require gacela-project/gacela
+        </p>
+    </div>
+
+    <div>
+        <h3>Examples</h3>
+        <p>
+            You can see an example of a module using gacela in this <a href="https://github.com/gacela-project/gacela-example">repository</a>.
+        </p>
+    </div>
 
     <div id="projects-using-gacela">
         <h3>Projects using Gacela</h3>

@@ -1,5 +1,13 @@
 {% extends "index.html" %}
 
 {% block content %}
+    <a href="/docs">Back to the index</a>
     {{ section.content | safe }}
+    <hr>
+    <div>
+          <a href="/docs/facade">Facade</a>
+        | <a href="/docs/factory">Factory</a>
+        | <a href="/docs/config">Config</a>
+        | <a href="/docs/dependency-provider">DependencyProvider</a>
+    </div>
 {% endblock content %}
