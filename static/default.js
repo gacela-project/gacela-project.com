@@ -18,7 +18,7 @@ for (const element of elements) {
   ul.appendChild(li)
 }
 
-document.querySelector('.menu ul li:first-child').appendChild(ul)
+document.querySelector('.menu ul li:nth-child(2)').appendChild(ul)
 
 // Add Gacela logo icon in title
 let logo = document.querySelector('#header .logo')
