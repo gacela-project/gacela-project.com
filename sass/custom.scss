@@ -66,3 +66,26 @@ p, p + * {
     text-align: center;
   }
 }
+
+#header .menu ul li {
+  overflow: unset;
+  margin: 10px;
+}
+
+.dropdown {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  transition: all 0.5s ease;
+  left: -7.5em;
+  margin-top: 2em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+ul li:hover > ul,
+ul li:focus-within > ul,
+ul li ul:hover {
+  visibility: visible;
+  opacity: 1;
+}

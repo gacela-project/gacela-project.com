@@ -73,3 +73,8 @@
     </div>
 </div>
 {% endblock content %}
+
+{% block js_body %}
+<script type="text/javascript" src="{{ get_url(path="even.js", trailing_slash=false) }}" ></script>
+<script type="text/javascript" src="{{ get_url(path="default.js", trailing_slash=false) }}" ></script>
+{% endblock js_body %}
