@@ -12,7 +12,7 @@ highlight_theme = "demain"
 
 [extra]
 author = "Chemaclass"
-even_title = "Gacela"
+even_title = ""
 even_menu = [
     {url = "$BASE_URL/docs", name = "Documentation"},
     {url = "https://github.com/gacela-project/gacela/issues/new", name = "Report Issues"},
