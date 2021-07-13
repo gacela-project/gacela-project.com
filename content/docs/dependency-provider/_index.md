@@ -2,7 +2,7 @@
 template = "section.html"
 +++
 
-# DependencyProvider
+# Dependency Provider
 
 ## Defining the dependencies
 
