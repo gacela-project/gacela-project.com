@@ -15,6 +15,7 @@ author = "Chemaclass"
 even_title = ""
 even_menu = [
     {url = "$BASE_URL/docs", name = "Documentation"},
+    {url = "$BASE_URL/used_in", name = "Used In"},
     {url = "https://github.com/gacela-project/gacela/issues/new", name = "Report Issues"},
-    {url = "https://github.com/gacela-project/gacela", name = "Github"},
+    {url = "https://github.com/gacela-project/gacela", name = "GitHub"},
 ]
