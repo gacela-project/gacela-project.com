@@ -71,4 +71,11 @@ p, p + * {
   }
 }
 
+*:is(main, footer) a:hover {
+  color: darkred;
+  transition: color 0.25s;
+  -webkit-transition: color 0.25s;
+  text-decoration: underline;
+}
+
 @import "menu";
