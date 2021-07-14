@@ -16,4 +16,18 @@ Gacela is a class resolver, which basically consist on these classes:
 - [Basic concepts](/docs/basic-concepts): common characteristics of a module.
 - [Code Generator](/docs/code-generator): some commands out-of-the-box to generate some boilerplate code.
 
+---
 
+    
+Splitting your project into different modules will help its design in
+terms of maintainability and scalability. It will certainly encourage your modules to interact with each
+other in a unified way by
+following these rules:
+    
+<ul>
+    <li>Modules interact with each other <b>only</b> via their <i>Facade</i>.</li>
+    <li>The <a href="/docs/facade">Facade</a> has access to the <i>Factory</i>.</li>
+    <li>The <a href="/docs/factory">Factory</a> creates the module's objects.</li>
+    <li>The <a href="/docs/config">Config</a> is accessible from the Factory.</li>
+    <li>The <a href="/docs/dependency-provider">Dependency Provider</a> gets other <i>Facades</i>.</li>
+</ul>
