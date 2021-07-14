@@ -18,12 +18,11 @@ for (const element of elements) {
   ul.appendChild(li)
 }
 
-document.querySelector('.menu ul li:nth-child(2)').appendChild(ul)
+document.querySelector('.menu ul li:first-child').appendChild(ul)
 
 // Add Gacela logo icon in title
-let logo = document.querySelector('#header .logo')
-logo.innerHTML = '<div class="logo"><a href="\\">\n' +
-  '  <svg width="60" viewBox="0 -20 260 235" xmlns="http://www.w3.org/2000/svg">\n' +
+let htmlLogo = '<div class="logo"><a href="\\">\n' +
+  '  <svg width="50" viewBox="0 -20 260 235" xmlns="http://www.w3.org/2000/svg">\n' +
   '    <g fill="none" stroke="#000000" stroke-width="3" stroke-linejoin="round">\n' +
   '      <path d="M47,8.3l104.5,45.3l28.6,44.8l-15,30l-6.9-4.2l1.1-10.2l-21.1-53.2L47,8.3z"></path>\n' +
   '      <path d="M67.8,1.5L161,52.7l26,41.1l-6.9,4.6l-28.6-44.8l-36.4-15.8L67.8,1.5z"></path>\n' +
@@ -36,3 +35,6 @@ logo.innerHTML = '<div class="logo"><a href="\\">\n' +
   '    </g>\n' +
   '  </svg>\n' +
   '</a></div>'
+
+document.querySelector('#header .logo').innerHTML = htmlLogo
+document.querySelector('#mobile-navbar .mobile-header-logo').innerHTML = htmlLogo

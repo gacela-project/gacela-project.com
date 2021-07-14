@@ -1,0 +1,28 @@
+#header .menu ul li {
+  overflow: unset;
+  margin: 10px;
+}
+
+#header .menu ul li a:hover {
+  color: darkred;
+  transition: color 0.25s;
+  -webkit-transition: color 0.25s;
+}
+
+ul li:hover > ul,
+ul li:focus-within > ul,
+ul li ul:hover {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dropdown {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  transition: all 0.25s ease;
+  left: -7.6em;
+  margin-top: 2em;
+  overflow: hidden;
+  white-space: nowrap;
+}
