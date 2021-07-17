@@ -22,7 +22,7 @@ ul li ul:hover {
   position: absolute;
   transition: all 0.25s ease;
   left: -7.6em;
-  margin-top: 2em;
+  -webkit-margin-before: 1.8em;
   overflow: hidden;
   white-space: nowrap;
 }
