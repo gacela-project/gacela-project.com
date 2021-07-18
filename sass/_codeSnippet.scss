@@ -12,12 +12,12 @@
   }
 }
 
-#composer:hover .button {
+#composer:hover .code-snippet {
   display: inline-block;
   cursor: pointer;
 }
 
-.button {
+.code-snippet {
   display: none;
   position: absolute;
   right: 40px;
@@ -26,10 +26,10 @@
   background-color: #f9f9f9;
 }
 
-.button:hover {
+.code-snippet:hover {
   fill: #9c4033;
 }
 
-.button:active {
+.code-snippet:active {
   fill: darkred;
 }
