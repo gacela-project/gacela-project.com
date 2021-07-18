@@ -25,7 +25,6 @@
 }
 
 .button-copy-code-snippet {
-  display: none;
   position: absolute;
   right: 6px;
   fill: #c05b4d;
@@ -39,10 +38,10 @@
 
 .button-copy-code-snippet:active {
   fill: gray;
-  .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-  }
+}
+
+.tooltip-text {
+  visibility: hidden;
 }
 
 /* Tooltip container */
@@ -54,7 +53,6 @@
 
 /* Tooltip text */
 .tooltip .tooltip-text {
-  visibility: hidden;
   width: 80px;
   background-color: #555;
   color: #fff;
@@ -68,10 +66,6 @@
   bottom: 5%;
   left: -50%;
   margin-left: -60px;
-
-  /* Fade in tooltip */
-  opacity: 0;
-  transition: opacity 0.3s;
 }
 
 /* Tooltip arrow */
