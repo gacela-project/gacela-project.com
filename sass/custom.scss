@@ -78,14 +78,5 @@ p, p + * {
   text-decoration: underline;
 }
 
-#composer {
-  background-color: #f9f9f9;
-  padding: 1em;
-
-  code::before {
-    content: '$ ';
-    color: black;
-  }
-}
-
 @import "menu";
+@import "codeSnippet";

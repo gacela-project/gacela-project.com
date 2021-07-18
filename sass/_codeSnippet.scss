@@ -1,0 +1,35 @@
+#composer {
+  background-color: #f9f9f9;
+  padding: 1em;
+
+  code::before {
+    content: '$ ';
+    color: black;
+  }
+
+  code {
+    display: inline-block;
+  }
+}
+
+#composer:hover .button {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.button {
+  display: none;
+  position: absolute;
+  right: 40px;
+  fill: #c05b4d;
+  padding: 0 0.5em;
+  background-color: #f9f9f9;
+}
+
+.button:hover {
+  fill: #9c4033;
+}
+
+.button:active {
+  fill: darkred;
+}
