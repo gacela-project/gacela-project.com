@@ -23,26 +23,26 @@ Gacela is a class resolver, which basically consist on these classes:
 application-name
 ├── gacela.json
 ├── config // Default config behaviour. You can change it in `gacela.json`
-│   ├── local.php
-│   └── default.php
+│   ├── local.php
+│   └── default.php
 │
 ├── src
-│   ├── ExampleModuleWithoutPrefix
-│   │   ├── Domain
-│   │   │   └── YourLogicClass.php
-│   │   ├── Config.php
-│   │   ├── Facade.php
-│   │   └── Factory.php
-│   │
-│   └── ExampleModuleWithPrefix
-│       ├── Domain
-│       │   └── YourLogicClass.php
-│       ├── ExampleModuleWithPrefixConfig.php
-│       ├── ExampleModuleWithPrefixFacade.php
-│       └── ExampleModuleWithPrefixFactory.php
+│   ├── ExampleModuleWithoutPrefix
+│   │   ├── Domain
+│   │   │   └── YourLogicClass.php
+│   │   ├── Config.php
+│   │   ├── Facade.php
+│   │   └── Factory.php
+│   │
+│   └── ExampleModuleWithPrefix
+│       ├── Domain
+│       │   └── YourLogicClass.php
+│       ├── ExampleModuleWithPrefixConfig.php
+│       ├── ExampleModuleWithPrefixFacade.php
+│       └── ExampleModuleWithPrefixFactory.php
 │
 ├── tests
-│   └── ...
+│   └── ...
 └── vendor
     └── ...
 ```
