@@ -40,8 +40,8 @@ document.querySelector('#header .logo').innerHTML = htmlLogo
 document.querySelector('#mobile-navbar .mobile-header-logo').innerHTML = htmlLogo
 
 // Composer require
-const copyButton = document.querySelector('#composer .button');
-const codeEle = document.querySelector('#composer code')
+const copyButton = document.querySelector('#installation-composer .button-copy-code-snippet');
+const codeText = document.querySelector('#installation-composer code')
 
 copyButton.addEventListener('click', _ => {
   const selection = window.getSelection();
@@ -50,7 +50,7 @@ copyButton.addEventListener('click', _ => {
       ? null : selection.getRangeAt(0);
 
   const range = document.createRange();
-  range.selectNodeContents(codeEle);
+  range.selectNodeContents(codeText);
   selection.removeAllRanges();
   selection.addRange(range);
 
