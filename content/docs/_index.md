@@ -17,3 +17,32 @@ Gacela is a class resolver, which basically consist on these classes:
 - [Code Generator](/docs/code-generator): some commands out-of-the-box to generate some boilerplate code.
 
 
+## Basic Gacela structure
+
+```bash
+application-name
+├── gacela.json
+├── config // Default config behaviour. You can change it in `gacela.json`
+│   ├── local.php
+│   └── default.php
+│
+├── src
+│   ├── ExampleModuleWithoutPrefix
+│   │   ├── Domain
+│   │   │   └── YourLogicClass.php
+│   │   ├── Config.php
+│   │   ├── Facade.php
+│   │   └── Factory.php
+│   │
+│   └── ExampleModuleWithPrefix
+│       ├── Domain
+│       │   └── YourLogicClass.php
+│       ├── ExampleModuleWithPrefixConfig.php
+│       ├── ExampleModuleWithPrefixFacade.php
+│       └── ExampleModuleWithPrefixFactory.php
+│
+├── tests
+│   └── ...
+└── vendor
+    └── ...
+```
