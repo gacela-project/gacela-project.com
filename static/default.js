@@ -42,6 +42,7 @@ document.querySelector('#mobile-navbar .mobile-header-logo').innerHTML = htmlLog
 // Composer require
 const copyButton = document.querySelector('#installation-composer .button-copy-code-snippet');
 const codeText = document.querySelector('#installation-composer code')
+const tooltip = document.querySelector('#installation-composer .tooltip-text');
 
 copyButton.addEventListener('click', _ => {
   const selection = window.getSelection();
@@ -60,4 +61,9 @@ copyButton.addEventListener('click', _ => {
     selection.removeAllRanges();
     currentRange && selection.addRange(currentRange);
   }
+
+  tooltip.style.visibility = 'visible'
+  setTimeout(_ => {
+    tooltip.style.visibility = 'hidden'
+  }, 2000);
 });
