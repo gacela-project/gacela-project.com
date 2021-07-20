@@ -6,15 +6,4 @@
   This website uses zola.
 </p>
 
-
-## Instructions
-
-You must run the following command the first time in order to pull the theme
-```
-git submodule update --init --recursive
-```
-
-And, in order to serve locally the web
-```
-zola serve
-```
+Run `zola serve` to run it locally.

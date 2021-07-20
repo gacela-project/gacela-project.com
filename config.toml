@@ -3,8 +3,6 @@ base_url = "https://gacela-project.com"
 title = "Gacela Project"
 description = "Gacela Project"
 compile_sass = true
-generate_feed = false
-theme = "even"
 
 [markdown]
 highlight_code = true

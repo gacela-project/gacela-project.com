@@ -1,28 +1,158 @@
-#header .menu ul li {
-  overflow: unset;
-  margin: 10px;
+@import "site";
+
+.header {
+  width: 100%;
+  z-index: 9999;
+  margin-bottom: 100px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+  }
+
+  .logo {
+    display: block;
+    float: left;
+    font-size: 2em;
+    padding: 10px 20px;
+    text-decoration: none;
+  }
+
+  .menu {
+    clear: both;
+    max-height: 0;
+    transition: max-height .2s ease-out;
+
+    li {
+      margin: 12px;
+
+      a {
+        color: #34495e;
+        font-size: 18px;
+      }
+
+      a:hover {
+        color: darkred;
+      }
+    }
+
+    .dropdown {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      transition: all 0.25s ease;
+      margin-top: 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+
+  .menu-icon {
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+    padding: 28px 20px;
+    position: relative;
+    user-select: none;
+
+    .navicon {
+      background: #333;
+      display: block;
+      height: 2px;
+      position: relative;
+      transition: background .2s ease-out;
+      width: 18px;
+    }
+
+    .navicon:before,
+    .navicon:after {
+      background: #333;
+      content: '';
+      display: block;
+      height: 100%;
+      position: absolute;
+      transition: all .2s ease-out;
+      width: 100%;
+    }
+
+    .navicon:before {
+      top: 5px;
+    }
+
+    .navicon:after {
+      top: -5px;
+    }
+  }
+
+  .menu-btn {
+    display: none;
+  }
+
+  .menu-btn:checked ~ .menu {
+    max-height: 240px;
+  }
+
+  .menu-btn:checked ~ .menu-icon {
+    .navicon {
+      background: transparent;
+    }
+
+    .navicon:before {
+      transform: rotate(-45deg);
+    }
+
+    .navicon:after {
+      transform: rotate(45deg);
+    }
+  }
+
+  .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
+  .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
+    top: 0;
+  }
+
 }
 
-#header .menu ul li a:hover {
-  color: darkred;
-  transition: color 0.25s;
-  -webkit-transition: color 0.25s;
+/* 48em = 768px */
+
+@media (min-width: 48em) {
+  .header {
+    padding: 20px 0;
+
+    .menu {
+      clear: none;
+      float: right;
+      max-height: none;
+      margin-right: 25px;
+      padding: 15px 20px;
+
+      li {
+        float: left;
+      }
+
+      li a {
+        @include underline-from-center;
+      }
+      li:hover > ul,
+      li:focus-within > ul,
+      li ul:hover {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+
+
+    .menu-icon {
+      display: none;
+    }
+  }
 }
 
-ul li:hover > ul,
-ul li:focus-within > ul,
-ul li ul:hover {
-  visibility: visible;
-  opacity: 1;
-}
-
-.dropdown {
-  visibility: hidden;
-  opacity: 0;
-  position: absolute;
-  transition: all 0.25s ease;
-  left: -7.6em;
-  -webkit-margin-before: 1.8em;
-  overflow: hidden;
-  white-space: nowrap;
+@media (max-width: 48em) {
+  .header {
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
+    text-align: center;
+  }
 }

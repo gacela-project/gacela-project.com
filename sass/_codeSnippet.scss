@@ -8,6 +8,10 @@
       color: black;
     }
 
+    code::after {
+      content: "    ";
+    }
+
     code {
       display: inline-block;
     }
