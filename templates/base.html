@@ -1,13 +1,70 @@
-{% extends "index.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-{% block css %}
-{{ super() }}
-<link rel="stylesheet" href="{{ get_url(path='custom.css', trailing_slash=false) }}">
-{% endblock css %}
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-{% block footer %}
-<footer id="main-footer">
+  <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+
+  {% block css %}
+  <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
+  <link rel="stylesheet" href="{{ get_url(path='custom.css', trailing_slash=false) }}">
+  {% endblock css %}
+
+  {% block extra_head %}
+  {% endblock extra_head %}
+</head>
+
+<body>
+<div class="container">
+  <header class="header">
+    <a href="{{ config.base_url }}" class="logo">
+      <svg width="50" viewBox="0 -20 260 235" xmlns="http://www.w3.org/2000/svg">
+        <g fill="none" stroke="#000000" stroke-width="3" stroke-linejoin="round">
+          <path d="M47,8.3l104.5,45.3l28.6,44.8l-15,30l-6.9-4.2l1.1-10.2l-21.1-53.2L47,8.3z"></path>
+          <path d="M67.8,1.5L161,52.7l26,41.1l-6.9,4.6l-28.6-44.8l-36.4-15.8L67.8,1.5z"></path>
+          <path d="M77.6,169.4l76.3-69.1l5.4,13.7l-1.1,10.2l6.9,4.2L112.8,185L77.6,169.4z"></path>
+          <path d="M140,212.8l45.6-55.2l-20.5-29.2L112.8,185L140,212.8z"></path>
+          <path d="M165.1,128.4l-6.9-4.2l5.9-53.2l10.9,37.7L165.1,128.4z"></path>
+          <path d="M185.6,157.6l64.7,0.7l-85.2-29.9L185.6,157.6z"></path>
+          <path d="M187,93.8l20.7,23.1l49.2,26.5l-6.6,14.9l-85.2-29.9l15-30L187,93.8z"></path>
+          <path d="M189.2,69.1l-5.3,19.7l-3.6-5.7L189.2,69.1z"></path>
+        </g>
+      </svg>
+    </a>
+    <input class="menu-btn" type="checkbox" id="menu-btn" />
+    <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+    <ul class="menu">
+      {% for item in config.extra.even_menu %}
+      <li>
+        <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}">
+        {{ item.name }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </header>
+
+  <main>
+    <div class="content" id="mobile-panel">
+      {% block content %}
+      {% endblock content %}
+    </div>
+  </main>
+
+  {% block footer %}
+  <footer id="main-footer">
     Copyright © 2021 by <a href="http://chemaclass.es/" target="_blank">Chemaclass</a>.
     All rights reserved.
-</footer>
-{% endblock footer %}
+  </footer>
+  {% endblock footer %}
+</div>
+
+{% block js_body %}
+<script type="text/javascript" src="{{ get_url(path="default.js", trailing_slash=false) }}" ></script>
+{% endblock js_body %}
+</body>
+</html>

@@ -80,7 +80,7 @@
 {% endblock content %}
 
 {% block js_body %}
-<script type="text/javascript" src="{{ get_url(path="default.js", trailing_slash=false) }}" ></script>
+{{ super() }}
 <script>
     const copyButton = document.querySelector('#installation-composer .button-copy-code-snippet');
     const codeText = document.querySelector('#installation-composer code')
