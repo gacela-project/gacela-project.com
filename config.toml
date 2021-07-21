@@ -10,10 +10,36 @@ highlight_theme = "demain"
 
 [extra]
 author = "Chemaclass"
-even_title = ""
-even_menu = [
-    {url = "$BASE_URL/docs", name = "Documentation"},
-    {url = "$BASE_URL/used-in", name = "Used In"},
-    {url = "https://github.com/gacela-project/gacela/issues/new", name = "Report Issues"},
-    {url = "https://github.com/gacela-project/gacela", name = "GitHub"},
-]
+
+###
+[[extra.menu]]
+url = "$BASE_URL/docs"
+name = "Documentation"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/docs/facade"
+name = "Facade"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/docs/factory"
+name = "Factory"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/docs/config"
+name = "Config"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/docs/dependency-provider"
+name = "Dependency Provider"
+
+[[extra.menu]]
+url = "$BASE_URL/used-in"
+name = "Used In"
+
+[[extra.menu]]
+url = "https://github.com/gacela-project/gacela"
+name = "GitHub"
+
+[[extra.menu.submenu]]
+url = "https://github.com/gacela-project/gacela/issues/new"
+name = "Report Issues"

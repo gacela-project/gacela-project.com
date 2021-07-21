@@ -36,16 +36,25 @@
       </svg>
     </a>
     <input class="menu-btn" type="checkbox" id="menu-btn" />
-    <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
     <ul class="menu">
-      {% for item in config.extra.even_menu %}
+      {% for item in config.extra.menu %}
       <li>
-        <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}">
-        {{ item.name }}
-        </a>
+        <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}"> {{ item.name }}</a>
+        {% if item.submenu %}
+        <ul class="dropdown">
+          {% for submenu in item.submenu %}
+          <li>
+            <a href="{{ submenu.url | replace(from="$BASE_URL", to=config.base_url) }}">
+            {{ submenu.name }}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
       </li>
       {% endfor %}
     </ul>
+    <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
   </header>
 
   <main>
@@ -64,7 +73,6 @@
 </div>
 
 {% block js_body %}
-<script type="text/javascript" src="{{ get_url(path="default.js", trailing_slash=false) }}" ></script>
 {% endblock js_body %}
 </body>
 </html>
