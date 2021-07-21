@@ -1,9 +1,11 @@
 html {
   font-size: 16px;
   box-sizing: border-box;
+  font-family: sans-serif;
 }
 
 body {
+  margin: 0;
   line-height: 1.5;
   color: #34495e;
   background: #fefefe;
@@ -15,6 +17,10 @@ body {
   width: $body-width;
   margin: 0 auto;
   padding-bottom: 4rem;
+}
+
+main {
+  padding: 0 20px;
 }
 
 @include max-screen() {
@@ -57,8 +63,4 @@ pre > code {
   border: none;
   font-style: normal;
   font-size: 1rem;
-}
-
-iframe {
-  border: 0;
 }

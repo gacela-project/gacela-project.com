@@ -1,0 +1,31 @@
+*:is(main, footer) a:hover {
+  color: darkred;
+  transition: color 0.25s;
+  -webkit-transition: color 0.25s;
+  text-decoration: underline;
+}
+
+#gacela-project-header {
+  display: none;
+}
+
+code {
+  color: $code-colour;
+}
+
+ul {
+  padding-left: 1em;
+}
+
+#gacela-logo-head {
+  text-align: center;
+}
+
+p, p + * {
+  font-size: 18px;
+  line-height: 30px;
+}
+
+#main-footer {
+  margin: 60px 20px 0;
+}
