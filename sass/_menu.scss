@@ -1,9 +1,7 @@
 @import "site";
 
 .header {
-  width: 100%;
-  z-index: 9999;
-  margin-bottom: 100px;
+  display: flex;
 
   ul {
     margin: 0;
@@ -14,9 +12,7 @@
 
   .logo {
     display: block;
-    float: left;
-    font-size: 2em;
-    padding: 10px 20px;
+    padding: 20px;
     text-decoration: none;
   }
 
@@ -52,8 +48,7 @@
   .menu-icon {
     cursor: pointer;
     display: inline-block;
-    float: right;
-    padding: 28px 20px;
+    padding: 40px 30px;
     position: relative;
     user-select: none;
 
@@ -122,11 +117,8 @@
     padding: 20px 0;
 
     .menu {
-      clear: none;
-      float: right;
       max-height: none;
-      margin-right: 25px;
-      padding: 15px 20px;
+      padding: 20px ;
 
       li {
         float: left;
@@ -152,7 +144,12 @@
 
 @media (max-width: 48em) {
   .header {
+    justify-content: space-between;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
     text-align: center;
+
+    .menu {
+      margin-top: 3em;
+    }
   }
 }
