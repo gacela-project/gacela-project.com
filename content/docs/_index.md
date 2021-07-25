@@ -89,3 +89,24 @@ Usually, the infrastructure layer is where all non-relevant-to-your-domain-detai
 - Easy **testability**. When your business logic depend on abstractions (interfaces) you can easily create unit tests for all possible combinations of its behavior.
 - Your business logic became **easy to be replaced** and to be adapted to the new requirements.
 - **Loosely couple** with infrastructure code. When your logic depends on abstraction, you can postpone the details to the end and rather focus on the business requirements. 
+
+# Understanding Gacela better
+
+Gacela is a framework which is coupled in your application as the `application` layer.
+The fundamentals of this idea is, Gacela uses some design patterns in order to accomplish this idea. Those patters are `Facade` and `Factory`.
+
+## Facade
+
+The responsibility of the Facade is to provide a simplified interface in order to hide the domain implementation.
+
+In Gacela, the facade is the entry point of your module, it will just give you the method with the possible actions this module can do.
+
+You can read more about this topic [in the facade section](/docs/facade).
+
+## Factory
+
+The responsibility of the Factory is to orchestrate the different classes, and it's dependencies (through `dependency provider` or `config`).
+
+Basically, the factory class creates the classes of your logic and it's dependencies, when ready, they are provided to the facade. It's a layer between the user and your domain.
+
+You can read more about this topic [in the factory section](/docs/factory).

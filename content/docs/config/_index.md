@@ -60,10 +60,16 @@ In order to achieve that, you need to create a `gacela.json` file in your applic
     - path_local: this is the last file loaded, which means, it will override the previous configuration, so you can
       easily add it to your .gitignore and set your local config values in case you want to have something different for
       some cases.
-      
+
 ### Default values
 
 If you don't define any `gacela.json` file, Config will use the "Config PHP files" configuration.
+
+## YamlConfigReader
+
+There is actually a [YAML/YML config reader](https://github.com/gacela-project/gacela-yaml-config-reader) package out-of-the box in the Gacela repository.
+
+This package is not included by default in Gacela because it depends on specific dependencies.
 
 
 ### You can define your own ConfigReaders
