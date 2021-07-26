@@ -1,5 +1,5 @@
 +++
-template = "section.html"
+template = "page.html"
 +++
 
 # Basic concepts about modules

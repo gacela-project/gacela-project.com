@@ -13,24 +13,32 @@ author = "Chemaclass"
 
 ###
 [[extra.menu]]
+url = "$BASE_URL/about-gacela"
+name = "About Gacela"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/about-gacela/facade"
+name = "Facade"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/about-gacela/factory"
+name = "Factory"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/about-gacela/config"
+name = "Config"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/about-gacela/dependency-provider"
+name = "Dependency Provider"
+
+[[extra.menu]]
 url = "$BASE_URL/docs"
 name = "Documentation"
 
 [[extra.menu.submenu]]
-url = "$BASE_URL/docs/facade"
-name = "Facade"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/docs/factory"
-name = "Factory"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/docs/config"
-name = "Config"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/docs/dependency-provider"
-name = "Dependency Provider"
+url = "$BASE_URL/docs/modules"
+name = "Concept of Module"
 
 [[extra.menu]]
 url = "$BASE_URL/used-in"
