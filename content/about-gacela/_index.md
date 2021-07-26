@@ -42,16 +42,33 @@ application-name
     └── ...
 ```
 
-Gacela is coupled in your application as the `application` layer. It uses some design patterns (`facade` and `factory`) in order to accomplish this idea.
+Gacela is coupled in your application as the `application` layer. It uses some design patterns (`Facade` and `Factory`)
+to accomplish this idea.
 
 ## Facade
 
-The responsibility of the Facade is to provide a simplified interface in order to hide the domain implementation.
+The responsibility of the Facade is to provide a simplified interface to hide the domain implementation.
 
-In Gacela, the facade is the entry point of your module, it will just give you the method with the possible actions this module can do.
+In Gacela, the Facade is the entry point of your module. It will simply give you the methods with the possible actions
+this module can do.
 
 ## Factory
 
-The responsibility of the Factory is to orchestrate the different classes, and it's dependencies (through `dependency provider` or `config`).
+The Factory's responsibility is to orchestrate the different classes and it's dependencies 
+(through Dependency Provider or Config).
 
-Basically, the factory class creates the classes of your logic and it's dependencies, when ready, they are provided to the facade. It's a layer between the user and your domain.
+The Factory class creates the classes of your logic and its dependencies. 
+They are provided to the Facade. It's a layer between the user and your domain.
+
+## Dependency Provider
+
+The communication between different modules it's done via their Facades because they are the main entry point of a
+module. The main difference between Factories and Dependency Providers is that Factories are responsible for in-module
+dependencies, while Dependency Providers are responsible for module-to-module dependencies.
+
+## Config
+
+This concept is not a design pattern itself, but it's designed in a way that you can easily access all config values in
+your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business
+objects with specific configuration values clearly and straightforwardly.
+

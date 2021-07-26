@@ -4,20 +4,27 @@ template = "section.html"
 
 # Dependency Provider
 
+The communication between different modules it's done via their Facades because they are the main entry point of a
+module. The main difference between Factories and Dependency Providers is that Factories are responsible for in-module
+dependencies, while Dependency Providers are responsible for module-to-module dependencies.
+
 ## Defining the dependencies
 
-This is the place where you can define the dependencies that a particular module has with other modules. This is helpful
-to define the different services from the module's container. The container has access to the locator which is shared
-within all modules, and it can reuse the same instances from all facades.
-
 ```php
-<?php # src/Calculator/Factory.php
+<?php # src/Comment/CommentFactory.php
 
-final class Factory extends AbstractFactory
+use Gacela\Framework\AbstractFactory;
+
+/**
+ * @method CommentConfig getConfig()
+ */
+final class CommentFactory extends AbstractFactory
 {
-    public function createAdder(): AdderInterface
+    public function createSpamChecker(): SpamChecker
     {
-        return new Adder(
+        return new SpamChecker(
+            HttpClient::create(),
+            $this->getConfig()->getSpamCheckerEndpoint(),
             $this->getAnotherFacade()
         );
     }
@@ -32,9 +39,9 @@ final class Factory extends AbstractFactory
 ```
 
 ```php
-<?php # src/Calculator/DependencyProvider.php
+<?php # src/Comment/CommentDependencyProvider.php
 
-final class DependencyProvider extends AbstractDependencyProvider
+final class CommentDependencyProvider extends AbstractDependencyProvider
 {
     public const FACADE_ANOTHER_MODULE = 'FACADE_ANOTHER_MODULE';
 
