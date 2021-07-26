@@ -33,6 +33,14 @@ url = "$BASE_URL/docs/dependency-provider"
 name = "Dependency Provider"
 
 [[extra.menu]]
+url = "$BASE_URL/about-gacela"
+name = "About Gacela"
+
+[[extra.menu.submenu]]
+url = "$BASE_URL/about-gacela/modules"
+name = "Concept of Module"
+
+[[extra.menu]]
 url = "$BASE_URL/used-in"
 name = "Used In"
 
