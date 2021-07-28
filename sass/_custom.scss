@@ -1,5 +1,5 @@
 *:is(main, footer) a:hover {
-  color: darkred;
+  @include color(color, --accent-second-text-color, $theme-light-accent-second-text-color);
   transition: color 0.25s;
   -webkit-transition: color 0.25s;
   text-decoration: underline;
@@ -10,7 +10,7 @@
 }
 
 code {
-  color: $code-colour;
+  @include color(color, --first-text-color, $theme-light-first-text-color);
 }
 
 ul {

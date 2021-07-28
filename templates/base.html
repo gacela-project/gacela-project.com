@@ -22,7 +22,7 @@
   <header class="header">
     <a href="{{ config.base_url }}" class="logo">
       <svg width="50" viewBox="0 -20 260 235" xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke="#000000" stroke-width="3" stroke-linejoin="round">
+        <g fill="none" stroke="#123456" stroke-width="3" stroke-linejoin="round">
           <path d="M47,8.3l104.5,45.3l28.6,44.8l-15,30l-6.9-4.2l1.1-10.2l-21.1-53.2L47,8.3z"></path>
           <path d="M67.8,1.5L161,52.7l26,41.1l-6.9,4.6l-28.6-44.8l-36.4-15.8L67.8,1.5z"></path>
           <path d="M77.6,169.4l76.3-69.1l5.4,13.7l-1.1,10.2l6.9,4.2L112.8,185L77.6,169.4z"></path>
@@ -53,7 +53,17 @@
       </li>
       {% endfor %}
     </ul>
-    <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+    <div class="dark-theme">
+      <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+      <form class="theme-selector">
+        <button type="button" id="theme-light-button" class="theme-button" onclick="enableTheme('light')">
+          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path></svg>
+        </button>
+        <button type="button" id="theme-dark-button"  class="theme-button enabled" onclick="enableTheme('dark')">
+          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path></svg>
+        </button>
+      </form>
+    </div>
   </header>
 
   <main>
@@ -73,6 +83,7 @@
 </div>
 
 {% block js_body %}
+  <script type="text/javascript" src="{{ get_url(path="themes.js") | safe }}"></script>
 {% endblock js_body %}
 </body>
 </html>

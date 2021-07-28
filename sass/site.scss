@@ -1,8 +1,39 @@
-$main-colour: #c05b4d;
+@charset "utf-8";
+
+html {
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
 $body-width: 800px;
-$code-colour: #c7254e;
+$theme-light-first-text-color: #444;
+$theme-light-second-text-color: #888;
+$theme-light-accent-text-color: #c05b4d;
+$theme-light-accent-second-text-color: darkred;
+$theme-light-code-color: #f5f5f5;
+$theme-light-bg-color: #fafafa;
+$theme-dark-first-text-color: #b8b8b8;
+$theme-dark-second-text-color: #666;
+$theme-dark-accent-text-color: #37a;
+$theme-dark-accent-second-text-color: #4694c9;
+$theme-dark-code-color: #2f2f2f;
+$theme-dark-bg-color: #252525;
 $code-font-family: Consolas, Monaco, Menlo, Consolas, monospace !default;
-$decoration-font-family: sans-serif;
+
+@mixin color($property, $var, $fallback) {
+  #{$property}: $fallback;
+  #{$property}: var($var, $fallback);
+}
+
+.theme-dark {
+  --first-text-color: #{$theme-dark-first-text-color};
+  --second-text-color: #{$theme-dark-second-text-color};
+  --accent-text-color: #{$theme-dark-accent-text-color};
+  --accent-second-text-color: #{$theme-dark-accent-second-text-color};
+  --code-color: #{$theme-dark-code-color};
+  --bg-color: #{$theme-dark-bg-color};
+}
 
 @mixin min-screen($min-width: $body-width) {
    @media screen and (min-width: $min-width) {

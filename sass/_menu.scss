@@ -23,12 +23,12 @@
       margin: 12px;
 
       a {
-        color: #34495e;
+        @include color(color, --first-text-color, $theme-light-first-text-color);
         font-size: 18px;
       }
 
       a:hover {
-        color: darkred;
+        @include color(color, --accent-second-text-color, $theme-light-accent-second-text-color);
       }
     }
 
@@ -106,6 +106,28 @@
     top: 0;
   }
 
+  .theme-selector {
+    padding-top: 20px;
+    margin: 12px;
+
+    .theme-button {
+      display: none;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: gray;
+      cursor: pointer;
+      margin-right: 1rem;
+
+      &:not(:hover) {
+        border-bottom-color: transparent;
+      }
+
+      &.enabled {
+        display: inline;
+      }
+    }
+  }
 }
 
 /* 48em = 768px */
@@ -135,6 +157,10 @@
     .menu-icon {
       display: none;
     }
+
+    .dark-theme {
+      margin-left: auto
+    }
   }
 }
 
@@ -147,6 +173,10 @@
 
     .menu {
       margin-top: 3em;
+    }
+
+    .dark-theme {
+      display: flex;
     }
   }
 }

@@ -1,11 +1,11 @@
 #installation-composer {
   pre {
-    background-color: #f9f9f9;
+    @include color(background-color, --code-color, $theme-light-code-color);
     padding: 1em;
 
     code::before {
       content: '$ ';
-      color: black;
+      color: #656565;
     }
 
     code::after {
@@ -31,13 +31,13 @@
 .button-copy-code-snippet {
   position: absolute;
   right: 6px;
-  fill: #c05b4d;
+  @include color(fill, --accent-text-color, $theme-light-accent-text-color);
   padding: 0 0.5em;
-  background-color: #f9f9f9;
+  @include color(background-color, --code-color, $theme-light-code-color);
 }
 
 .button-copy-code-snippet:hover {
-  fill: #9c4033;
+  @include color(fill, --accent-second-text-color, $theme-light-accent-second-text-color);
 }
 
 .button-copy-code-snippet:active {

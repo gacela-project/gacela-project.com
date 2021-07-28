@@ -14,7 +14,7 @@
     bottom: 0;
     left: 51%;
     right: 51%;
-    background: $main-colour;
+    @include color(background, --accent-second-text-color, $theme-light-accent-second-text-color);
     transition-duration: 0.2s;
     transition-property: right, left;
     transition-timing-function: ease-out;
