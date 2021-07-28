@@ -6,7 +6,7 @@ template = "page.html"
 
 <div style="display: flex">
 
-![alt text](https://avatars.githubusercontent.com/u/5256287?s=160)
+![author Chemaclass](https://avatars.githubusercontent.com/u/5256287?s=160)
 <div style="padding: 22px">
 Chemaclass (Jose Maria Valera Reales)
 
@@ -19,7 +19,7 @@ Chemaclass (Jose Maria Valera Reales)
 
 <div style="display:flex">
 
-![alt text](https://avatars.githubusercontent.com/u/6381924?s=160)
+![author Jesus](https://avatars.githubusercontent.com/u/6381924?s=160)
 <div style="padding: 22px">
 Jesús Valera Reales
 

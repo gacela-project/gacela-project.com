@@ -1,16 +1,14 @@
-html {
-  font-size: 16px;
-  box-sizing: border-box;
-  font-family: sans-serif;
-}
-
 body {
   margin: 0;
+  font-size: 16px;
   line-height: 1.5;
-  color: #34495e;
-  background: #fefefe;
-  border-top: 3px solid $main-colour;
-  overflow-y: scroll;
+  text-rendering: optimizeLegibility;
+  font-family: sans-serif;
+  display: flex;
+  flex-flow: row wrap;
+  hyphens: auto;
+  @include color(background, --bg-color, $theme-light-bg-color);
+  @include color(color, --first-text-color, $theme-light-first-text-color);
 }
 
 .container {
@@ -35,7 +33,7 @@ main {
 }
 
 a {
-  color: $main-colour;
+  @include color(color, --accent-text-color, $theme-light-accent-text-color);
   text-decoration: none;
 }
 
