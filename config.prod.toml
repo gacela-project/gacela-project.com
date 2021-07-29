@@ -1,4 +1,3 @@
-# DO NOT FORGET TO UPDATE THE config.prod.toml FILE!
 base_url = "https://gacela-project.com"
 
 title = "Gacela Project"
@@ -11,8 +10,9 @@ highlight_theme = "base16-ocean-dark"
 
 [extra]
 author = "Chemaclass"
+gtag = "G-TN20QBCH33"
 
-## MENU
+# MENU
 [[extra.menu]]
 url = "$BASE_URL/about-gacela"
 name = "About Gacela"

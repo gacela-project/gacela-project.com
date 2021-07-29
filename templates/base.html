@@ -13,8 +13,17 @@
   <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
   {% endblock css %}
 
-  {% block extra_head %}
-  {% endblock extra_head %}
+  {% if config.extra.gtag %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ config.extra.gtag }}"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ config.extra.gtag }}');
+  </script>
+  {% endif %}
+
+  <script defer type="text/javascript" src="{{ get_url(path="themes.js") | safe }}"></script>
 </head>
 
 <body>
@@ -83,7 +92,6 @@
 </div>
 
 {% block js_body %}
-  <script type="text/javascript" src="{{ get_url(path="themes.js") | safe }}"></script>
 {% endblock js_body %}
 </body>
 </html>
