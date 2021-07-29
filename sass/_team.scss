@@ -1,0 +1,19 @@
+#team {
+  .author {
+    margin: 2em 0;
+    display: flex;
+
+    img {
+      width: 155px;
+      height: 155px;
+      border-radius: 50%;
+      border: 5px solid;
+      @include color(border-color, --accent-text-color, $theme-light-accent-text-color);
+      user-select: none;
+    }
+
+    .content {
+      padding-left: 22px;
+    }
+  }
+}

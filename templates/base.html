@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
-  <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
   <title>{% block title %}{{ config.title }}{% endblock title %}</title>
 
   {% block css %}
-  <link rel="stylesheet" href="{{ get_url(path="site.css", trailing_slash=false) }}">
+  <link rel="stylesheet" href="{{ get_url(path='site.css', trailing_slash=false) }}">
   {% endblock css %}
 
   {% if config.extra.gtag %}
@@ -23,7 +20,7 @@
   </script>
   {% endif %}
 
-  <script defer type="text/javascript" src="{{ get_url(path="themes.js") | safe }}"></script>
+  <script defer type="text/javascript" src="{{ get_url(path='themes.js') | safe }}"></script>
 </head>
 
 <body>
@@ -43,16 +40,16 @@
         </g>
       </svg>
     </a>
-    <input class="menu-btn" type="checkbox" id="menu-btn" />
+    <input class="menu-btn" type="checkbox" id="menu-btn"/>
     <ul class="menu">
       {% for item in config.extra.menu %}
       <li>
-        <a href="{{ item.url | replace(from="$BASE_URL", to=config.base_url) }}"> {{ item.name }}</a>
+        <a href="{{ item.url | replace(from='$BASE_URL', to=config.base_url) }}"> {{ item.name }}</a>
         {% if item.submenu %}
         <ul class="dropdown">
           {% for submenu in item.submenu %}
           <li>
-            <a href="{{ submenu.url | replace(from="$BASE_URL", to=config.base_url) }}">
+            <a href="{{ submenu.url | replace(from='$BASE_URL', to=config.base_url) }}">
             {{ submenu.name }}
             </a>
           </li>
@@ -66,10 +63,14 @@
       <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
       <form class="theme-selector">
         <button type="button" id="theme-light-button" class="theme-button" onclick="enableTheme('light')">
-          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#448aff" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path></svg>
+          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path fill="#448aff" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path>
+          </svg>
         </button>
-        <button type="button" id="theme-dark-button"  class="theme-button enabled" onclick="enableTheme('dark')">
-          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#123456" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path></svg>
+        <button type="button" id="theme-dark-button" class="theme-button enabled" onclick="enableTheme('dark')">
+          <svg width="20" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="adjust" class="svg-inline--fa fa-adjust fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path fill="#123456" d="M8 256c0 136.966 111.033 248 248 248s248-111.034 248-248S392.966 8 256 8 8 119.033 8 256zm248 184V72c101.705 0 184 82.311 184 184 0 101.705-82.311 184-184 184z"></path>
+          </svg>
         </button>
       </form>
     </div>

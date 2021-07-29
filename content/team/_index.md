@@ -4,26 +4,30 @@ template = "page.html"
 
 # Team
 
-<div style="margin: 2em 0; display: flex">
-    <img src="https://avatars.githubusercontent.com/u/5256287?s=160" style="border-radius: 50%;" alt="author Chemaclass" width="160" height="160">
-<div style="padding-left: 22px">
-<span>Chemaclass (Jose Maria Valera Reales)</span>
+<div id="team">
+  <div class="author">
+    <img src="https://avatars.githubusercontent.com/u/5256287?s=155" alt="author Chemaclass">
+    <div class="content">
+      <span><b>Chemaclass</b> (Jose Maria Valera Reales)</span>
+      <ul>
+        <li><a href="https://chemaclass.es/" target="_blank">Personal Webpage</a></li>
+        <li><a href="https://github.com/Chemaclass/" target="_blank">GitHub</a></li>
+        <li><a href="https://twitter.com/Chemaclass/" target="_blank">Twitter</a></li>
+        <li><a href="https://www.linkedin.com/in/jose-maria-valera-reales/" target="_blank">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
 
-- [Personal Webpage](https://chemaclass.es/)
-- [GitHub](https://github.com/Chemaclass)
-- [Twitter](https://twitter.com/Chemaclass)
-- [LinkedIn](https://www.linkedin.com/in/jose-maria-valera-reales/)
-</div>
-</div>
-
-<div style="margin: 2em 0; display: flex">
-    <img src="https://avatars.githubusercontent.com/u/6381924?s=160" style="border-radius: 50%;" alt="author Chemaclass" width="160" height="160">
-<div style="padding-left: 22px">
-<span>Jesús Valera Reales</span>
-
-- [Medium](https://jesusvalerareales.medium.com/)
-- [GitHub](https://github.com/JesusValera)
-- [Twitter](https://twitter.com/JesusValera96)
-- [LinkedIn](https://www.linkedin.com/in/jesusvalera/)
-</div>
+  <div class="author">
+    <img src="https://avatars.githubusercontent.com/u/6381924?s=155" alt="author Chemaclass">
+    <div class="content">
+      <span>Jesus Maria Valera Reales</span>
+      <ul>
+        <li><a href="https://jesusvalerareales.medium.com/" target="_blank">Medium</a></li>
+        <li><a href="https://github.com/JesusValera/" target="_blank">GitHub</a></li>
+        <li><a href="https://twitter.com/JesusValera96/" target="_blank">Twitter</a></li>
+        <li><a href="https://www.linkedin.com/in/jesusvalera/" target="_blank">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
 </div>
