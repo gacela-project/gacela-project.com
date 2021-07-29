@@ -25,9 +25,9 @@ use Gacela\Framework\AbstractFacade;
  */
 final class CommentFacade extends AbstractFacade
 {
-    public function getSpamScore(string $comment): void
+    public function getSpamScore(string $comment): int
     {
-        $this->getFactory()
+        return $this->getFactory()
             ->createSpamChecker()
             ->getSpamScore($comment);
     }
@@ -43,6 +43,7 @@ use App\Comment\CommentFacade;
 
 $facade = new CommentFacade();
 $score = $facade->getSpamScore('Lorem ipsum!');
+var_dump($score);
 ```
 
 The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
