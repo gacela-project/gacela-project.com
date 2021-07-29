@@ -1,7 +1,7 @@
 [build]
 base    = "."
 publish = "public"
-command = "zola build"
+command = "zola --config config.prod.toml build"
 
 [build.environment]
 ZOLA_VERSION = "0.13.0"

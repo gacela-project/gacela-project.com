@@ -28,7 +28,7 @@
       }
 
       a:hover {
-        @include color(color, --accent-second-text-color, $theme-light-accent-second-text-color);
+        @include color(color, --accent-text-color, $theme-light-accent-text-color);
       }
     }
 
@@ -51,7 +51,7 @@
     user-select: none;
 
     .navicon {
-      background: #333;
+      background: gray;
       display: block;
       height: 2px;
       position: relative;
@@ -61,7 +61,7 @@
 
     .navicon:before,
     .navicon:after {
-      background: #333;
+      background: gray;
       content: '';
       display: block;
       height: 100%;

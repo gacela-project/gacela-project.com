@@ -83,7 +83,6 @@ function returnThemeBasedOnTime() {
 function enableTheme(newTheme = 'light') {
     const root = document.documentElement;
     let otherTheme = (newTheme === 'light') ? 'dark' : 'light';
-    let currentTheme = root.classList.contains('theme-dark') ? 'dark' : 'light';
 
     root.classList.add('theme-' + newTheme);
     root.classList.remove('theme-' + otherTheme);
@@ -96,7 +95,7 @@ function enableTheme(newTheme = 'light') {
     button.classList.remove('enabled');
     button.setAttribute('aria-pressed', true);
 
-    gacelaLogoColor(currentTheme);
+    gacelaLogoColor(newTheme);
 
     saveToLocalStorage('preference-theme', newTheme);
 }
@@ -113,7 +112,7 @@ function gacelaLogoColor(currentTheme) {
     svgList.forEach((svg) => {
         let g = svg.querySelector('g');
         if (g) {
-            let svgColor = (currentTheme === 'light') ? '#37a' : '#123456';
+            let svgColor = (currentTheme === 'dark') ? '#448aff' : '#123456';
             g.setAttribute('stroke', svgColor);
         }
     });
