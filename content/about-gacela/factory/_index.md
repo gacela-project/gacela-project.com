@@ -1,4 +1,5 @@
 +++
+title = "Factory"
 template = "section.html"
 +++
 

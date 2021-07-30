@@ -1,4 +1,5 @@
 +++
+title = "Code Generator"
 template = "section.html"
 +++
 

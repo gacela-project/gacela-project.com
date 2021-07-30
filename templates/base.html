@@ -4,7 +4,18 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+
+  <title>
+    {% block title %}
+      {% if page.title %}
+        {{ page.title }}
+      {% elif section.title %}
+        {{ section.title }}
+      {% else %}
+        {{ config.title }}
+      {% endif %}
+    {% endblock title %} | Gacela
+  </title>
 
   {% block css %}
   <link rel="stylesheet" href="{{ get_url(path='site.css', trailing_slash=false) }}">

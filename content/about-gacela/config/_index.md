@@ -1,4 +1,5 @@
 +++
+title = "Config"
 template = "section.html"
 +++
 

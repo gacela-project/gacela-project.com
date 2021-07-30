@@ -1,4 +1,5 @@
 +++
+title = "About Gacela"
 template = "page.html"
 +++
 
