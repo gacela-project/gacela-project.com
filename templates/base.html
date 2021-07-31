@@ -31,7 +31,7 @@
   </script>
   {% endif %}
 
-  <script defer type="text/javascript" src="{{ get_url(path='themes.js') | safe }}"></script>
+  <script type="text/javascript" src="{{ get_url(path='initialize-theme.js') | safe }}"></script>
 </head>
 
 <body>
@@ -103,6 +103,7 @@
 </div>
 
 {% block js_body %}
+  <script type="text/javascript" src="{{ get_url(path='update-elements.js') | safe }}"></script>
 {% endblock js_body %}
 </body>
 </html>

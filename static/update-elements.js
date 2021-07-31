@@ -1,40 +1,9 @@
-(function initializeTheme() {
-    syncBetweenTabs();
-    listenToOSChanges();
+(function updateElements() {
     let newTheme = returnThemeBasedOnLocalStorage()
         || returnThemeBasedOnOS()
         || returnThemeBasedOnTime();
     enableTheme(newTheme);
 }());
-
-// Listen to preference changes. The event only fires in inactive tabs, so theme changes aren't applied twice.
-function syncBetweenTabs() {
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'preference-theme') {
-            if (e.newValue === 'light') {
-                enableTheme('light');
-            } else if (e.newValue === 'dark') {
-                enableTheme('dark');
-            }
-        }
-    })
-}
-
-// Add a listener in case OS-level preference changes.
-function listenToOSChanges() {
-    let mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
-
-    mediaQueryList.addListener((m) => {
-        const root = document.documentElement;
-        if (m.matches !== true) {
-            if (!root.classList.contains('theme-light')) {
-                enableTheme('light');
-            }
-        } else if (!root.classList.contains('theme-dark')) {
-            enableTheme('dark');
-        }
-    })
-}
 
 // If no preference was set, check what the OS pref is.
 function returnThemeBasedOnOS() {
@@ -89,11 +58,11 @@ function enableTheme(newTheme = 'light') {
 
     let button = document.getElementById('theme-' + otherTheme + '-button');
     button.classList.add('enabled');
-    button.setAttribute('aria-pressed', false);
+    button.setAttribute('aria-pressed', "false");
 
     button = document.getElementById('theme-' + newTheme + '-button');
     button.classList.remove('enabled');
-    button.setAttribute('aria-pressed', true);
+    button.setAttribute('aria-pressed', "true");
 
     gacelaLogoColor(newTheme);
 
