@@ -47,8 +47,8 @@ $code-font-family: Consolas, Monaco, Menlo, Consolas, monospace;
    }
 }
 
-@import "animations";
 @import "base";
+@import "animations";
 @import "custom";
 @import "menu";
 @import "snippet";

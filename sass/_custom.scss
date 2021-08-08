@@ -9,10 +9,6 @@
   display: none;
 }
 
-code {
-  @include color(color, --first-text-color, $theme-light-first-text-color);
-}
-
 ul {
   padding-left: 1em;
 }
