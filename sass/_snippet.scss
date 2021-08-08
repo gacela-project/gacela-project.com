@@ -14,6 +14,7 @@
 
     code {
       display: inline-block;
+      @include color(color, --first-text-color, $theme-light-first-text-color);
     }
   }
 
