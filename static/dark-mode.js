@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", _ => {
 });
 
 function gacelaLogoColor() {
-    let currentTheme = localStorage.theme === 'light' ? 'light' : 'dark';
+    let currentTheme = localStorage.theme !== 'dark' ? 'light' : 'dark';
 
     let svgList = document.querySelectorAll('svg');
     svgList.forEach((svg) => {
@@ -32,13 +32,13 @@ function updateTheme() {
         case 'dark':
             document.documentElement.classList.add('theme-dark');
             document.documentElement.setAttribute('color-theme', 'dark');
-            addCSS('dark');
+            addDynamicallyCssHighlightTheme('dark');
             break;
 
         default:
             document.documentElement.classList.remove('theme-dark');
             document.documentElement.setAttribute('color-theme', 'light');
-            addCSS('light');
+            addDynamicallyCssHighlightTheme('light');
             break;
     }
 
@@ -47,7 +47,7 @@ function updateTheme() {
 
 updateTheme();
 
-function addCSS(theme){
+function addDynamicallyCssHighlightTheme(theme){
     const head = document.querySelector('head');
 
     const oldTheme = document.querySelector('.highlight_theme') ?? null;
