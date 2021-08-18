@@ -2,3 +2,4 @@
 .vscode
 public/
 static/processed_images/
+static/syntax-theme-*.css

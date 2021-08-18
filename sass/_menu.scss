@@ -1,4 +1,4 @@
-html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[color-theme=system] #system-mode {
+html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[color-theme=system] #light-mode {
   display: block;
   background: none;
   border: none;
@@ -8,10 +8,10 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
 
 .header {
   display: flex;
+  align-items: center;
 
   .theme-selector {
-    padding-top: 20px;
-    margin: 12px;
+    margin: 10px;
   }
 
   #system-mode, #dark-mode, #light-mode {
@@ -30,8 +30,7 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   }
 
   .logo {
-    display: block;
-    padding: 20px;
+    margin: 20px;
     text-decoration: none;
   }
 
@@ -67,7 +66,7 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   .menu-icon {
     cursor: pointer;
     display: inline-block;
-    padding: 40px 30px;
+    margin: auto 20px;
     position: relative;
     user-select: none;
 
@@ -106,20 +105,6 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
 
   .menu-btn:checked ~ .menu {
     max-height: 240px;
-  }
-
-  .menu-btn:checked ~ .menu-icon {
-    .navicon {
-      background: transparent;
-    }
-
-    .navicon:before {
-      transform: rotate(-45deg);
-    }
-
-    .navicon:after {
-      transform: rotate(45deg);
-    }
   }
 
   .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
@@ -175,6 +160,7 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
 
     .dark-theme {
       display: flex;
+      align-items: center;
     }
   }
 }
