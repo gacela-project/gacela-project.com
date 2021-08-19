@@ -3,9 +3,7 @@ document.addEventListener("DOMContentLoaded", _ => {
 });
 
 function gacelaLogoColor() {
-    let currentTheme = localStorage.theme === 'light'
-    || (localStorage.theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches)
-        ? 'light' : 'dark';
+    let currentTheme = localStorage.theme !== 'dark' ? 'light' : 'dark';
 
     let svgList = document.querySelectorAll('svg');
     svgList.forEach((svg) => {
@@ -16,16 +14,6 @@ function gacelaLogoColor() {
         }
     });
 }
-
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    if (localStorage.theme === 'system') {
-        if (e.matches) {
-            document.documentElement.classList.add('theme-dark');
-        } else {
-            document.documentElement.classList.remove('theme-dark');
-        }
-    }
-});
 
 window.toDarkMode = function () {
     localStorage.theme = "dark";
@@ -39,35 +27,18 @@ window.toLightMode = function () {
     window.updateTheme();
 }
 
-window.toSystemMode = function () {
-    localStorage.theme = "system";
-    localStorage.setItem('preference-theme', "theme-system");
-    window.updateTheme();
-}
-
 function updateTheme() {
-    if (!('theme' in localStorage)) {
-        localStorage.theme = 'system';
-    }
-
     switch (localStorage.theme) {
-        case 'system':
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('theme-dark');
-            } else {
-                document.documentElement.classList.remove('theme-dark');
-            }
-            document.documentElement.setAttribute('color-theme', 'system');
-            break;
-
         case 'dark':
             document.documentElement.classList.add('theme-dark');
             document.documentElement.setAttribute('color-theme', 'dark');
+            addDynamicallyCssHighlightTheme('dark');
             break;
 
-        case 'light':
+        default:
             document.documentElement.classList.remove('theme-dark');
             document.documentElement.setAttribute('color-theme', 'light');
+            addDynamicallyCssHighlightTheme('light');
             break;
     }
 
@@ -75,3 +46,19 @@ function updateTheme() {
 }
 
 updateTheme();
+
+function addDynamicallyCssHighlightTheme(theme){
+    const head = document.querySelector('head');
+
+    const oldTheme = document.querySelector('.highlight_theme') ?? null;
+    if (oldTheme !== null) {
+        head.removeChild(oldTheme);
+    }
+
+    const style = document.createElement('link');
+    style.classList.add('highlight_theme');
+    style.href = `/syntax-theme-${theme}.css`;
+    style.type = 'text/css';
+    style.rel = 'stylesheet';
+    head.append(style);
+}
