@@ -38,7 +38,7 @@ final class CommentFacade extends AbstractFacade
 A Facade is a "ready to use" thing:
 
 ```php
-<?php declare(strict_types=1);
+<?php # index.php
 
 use App\Comment\CommentFacade;
 

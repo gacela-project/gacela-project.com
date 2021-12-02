@@ -42,6 +42,8 @@ final class CommentFactory extends AbstractFactory
 ```php
 <?php # src/Comment/CommentDependencyProvider.php
 
+use Gacela\Framework\AbstractDependencyProvider;
+
 final class CommentDependencyProvider extends AbstractDependencyProvider
 {
     public const FACADE_ANOTHER_MODULE = 'FACADE_ANOTHER_MODULE';
@@ -55,7 +57,7 @@ final class CommentDependencyProvider extends AbstractDependencyProvider
     {
         $container->set(
             self::FACADE_ANOTHER_MODULE,
-            function (Container $container): AnotherFacade {
+            function (Container $container) {
                 return $container->getLocator()->get(AnotherFacade::class);
             }
         );

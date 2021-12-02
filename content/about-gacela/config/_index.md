@@ -9,23 +9,117 @@ This concept is not a design pattern itself, but it's designed in a way that you
 your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business
 objects with specific configuration values clearly and straightforwardly.
 
-## Reading the key-values
+## A complete example
 
-The `Config` class can get the key-values from your config files. You can define your config files in `gacela.php`.
-Why? This `Config` class is accesible from the `Factory`, so you can inject these config values to your business/domain
-classes.
+It will use the "Config PHP files" by default. This is all files in `'config/*.php'`.
 
-In order to achieve that, you need to create a `gacela.php` file in your application root:
-
-### ConfigGacela -> config() 
-
-#### Config PHP files
+First, this is the config file with the config key-values:
 ```php
-<?php declare(strict_types=1);
+<?php # config/default.php
+
+return [
+    'AKISMET-KEY' => 'your-private-key',
+];
+```
+
+Then using the Config class you can access those config values by their keys:
+```php
+<?php # src/Comment/CommentConfig.php
+
+use Gacela\Framework\AbstractConfig;
+
+final class CommentConfig extends AbstractConfig
+{
+    public function getSpamCheckerEndpoint(): string 
+    {
+        return sprintf(
+            'https://%s.rest.akismet.com/1.1/comment-check', 
+            $this->get('AKISMET-KEY')
+        );
+    }
+} 
+```
+
+You can access the Config methods from the Factory, to create your domain logic stuff:
+```php
+<?php # src/Comment/CommentFactory.php
+
+use Gacela\Framework\AbstractFactory;
+
+/**
+ * @method CommentConfig getConfig()
+ */
+final class CommentFactory extends AbstractFactory
+{
+    public function createSpamChecker(): SpamChecker
+    {
+        return new SpamChecker(
+            HttpClient::create(),
+            $this->getConfig()->getSpamCheckerEndpoint()
+        );
+    }    
+}
+```
+
+Which will be used finally by the module's Facade:
+
+```php
+<?php # src/Comment/CommentFacade.php
+
+namespace App\Comment;
+
+use Gacela\Framework\AbstractFacade;
+
+/**
+ * @method CommentFactory getFactory()
+ */
+final class CommentFacade extends AbstractFacade
+{
+    public function getSpamScore(string $comment): int
+    {
+        return $this->getFactory()
+            ->createSpamChecker()
+            ->getSpamScore($comment);
+    }
+}
+```
+
+-------
+
+## Configuring the Config
+
+### config() 
+
+#### Easy Bootstrapping
+
+You can define the config while bootstrapping your app without the need of an extra file: 
+
+```php
+<?php # index.php
+$projectRootDir = getcwd();
+require $projectRootDir . '/vendor/autoload.php';
+
+Gacela::bootstrap($projectRootDir, [
+    'config' => [
+        'type' => 'php',
+        'path' => 'config/*.php',
+        'path_local' => 'config/local.php',
+    ],
+]);
+```
+
+#### Using gacela.php 
+
+In the root of the project, you could also create a file called `gacela.php`, in which you can define the config
+key-values such as the following.  
+
+##### Config PHP files
+```php
+<?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function (array $globalServices): AbstractConfigGacela {
-    return new class($globalServices) extends AbstractConfigGacela {
+return static function () {
+    return new class() extends AbstractConfigGacela {
         public function config(): array
         {
             return [
@@ -38,13 +132,13 @@ return static function (array $globalServices): AbstractConfigGacela {
 };
 ```
 
-#### Config ENV files
+##### Config ENV files
 ```php
-<?php declare(strict_types=1);
+<?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function (array $globalServices): AbstractConfigGacela {
-    return new class($globalServices) extends AbstractConfigGacela {
+return static function () {
+    return new class() extends AbstractConfigGacela {
         public function config(): array
         {
             return [
@@ -59,11 +153,11 @@ return static function (array $globalServices): AbstractConfigGacela {
 
 #### Multiple and different config files
 ```php
-<?php declare(strict_types=1);
+<?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function (array $globalServices): AbstractConfigGacela {
-    return new class($globalServices) extends AbstractConfigGacela {
+return static function () {
+    return new class() extends AbstractConfigGacela {
         public function config(): array
         {
             return [
@@ -93,22 +187,63 @@ return static function (array $globalServices): AbstractConfigGacela {
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
 
-### ConfigGacela -> mappingInterfaces()
+### mappingInterfaces()
 
-You can define a map between an interface and the concrete class that you want to create/use when that interface is found
-during the process of auto-wiring of the dependencies of the Factory via its constructor.
+You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
+found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
+
+#### Simple mapping
+
+Override the `mappingInterfaces()` method to return an array with the `interface => concreteClass|callable` that you
+want to resolve. For example:
 
 ```php
-<?php declare(strict_types=1);
+<?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function (array $globalServices): AbstractConfigGacela {
+return static function () {
+    return new class() extends AbstractConfigGacela {
+        public function mappingInterfaces(): array
+        {
+            return [
+                OneInterface::class => ConcreteClass1::class
+            ];
+        }
+    };
+};
+```
+
+In the example above, whenever `OneInterface::class` is found then `ConcreteClass1::class` will be resolved.
+
+#### Using GlobalServices or while Mapping Interfaces
+
+First, we pass a key-value array in the second parameter of the `Gacela::bootstrap()` function. In this example 'useConcrete2':
+
+```php
+<?php # index.php
+Gacela::bootstrap(
+    applicationRootDir: __DIR__,
+    globalServices: ['useConcrete2' => true]
+);
+```
+
+This way we can access the value of that key `'useConcrete2'` in the `gacela.php` with the function `getGlobalService()`.
+For example:
+
+> **Important**: Notice that if you want to use the global services while bootstrapping Gacela, you have to pass them
+to the new anon-class that you are returning. 
+
+```php
+<?php # gacela.php
+use Gacela\Framework\AbstractConfigGacela;
+
+return static function (array $globalServices) {
     return new class($globalServices) extends AbstractConfigGacela {
         public function mappingInterfaces(): array
         {
             $interfaces = [OneInterface::class => ConcreteClass1::class];
 
-            if ('yes!' === $this->getGlobalService('isWorking?')) {
+            if ($this->getGlobalService('useConcrete2')) {
                 $interfaces[OneInterface::class] = ConcreteClass2::class;
             }
 
@@ -118,20 +253,9 @@ return static function (array $globalServices): AbstractConfigGacela {
 };
 ```
 
-As one step forward, you can let know Gacela the global services that you want to have access in your `gacela.php` config file
-by passing them in the entry point of your app: 
-```php
-<?php declare(strict_types=1);
-
-Gacela::bootstrap(
-    applicationRootDir: __DIR__,
-    globalServices: ['isWorking?' => 'yes!']
-);
-```
-
 In the example above, whenever `OneInterface::class` is found then `ConcreteClass2::class` will be resolved.
 
-### Default values
+## Default values
 
 If you don't define any `gacela.php` file, the Config will use the "Config PHP files" configuration.
 
@@ -153,55 +277,3 @@ Config::getInstance()->setConfigReaders([
 
 There is actually a [YAML/YML config reader](https://github.com/gacela-project/gacela-yaml-config-reader) package
 out-of-the box in the Gacela repository. This package is not included by default in Gacela because it has its own specific dependencies.
-
----
-
-## A complete example
-
-Non gacela.php needed. It will use the "Config PHP files" by default.
-
-```php
-<?php # config/default.php
-
-return [
-    'AKISMET-KEY' => 'your-private-key',
-];
-```
-
-```php
-<?php # src/Comment/CommentConfig.php
-
-use Gacela\Framework\AbstractConfig;
-
-final class CommentConfig extends AbstractConfig
-{
-    public function getSpamCheckerEndpoint(): string 
-    {
-        return sprintf(
-            'https://%s.rest.akismet.com/1.1/comment-check', 
-            $this->get('AKISMET-KEY')
-        );
-    }
-} 
-```
-
-```php
-<?php # src/Comment/CommentFactory.php
-
-use Gacela\Framework\AbstractFactory;
-
-/**
- * @method CommentConfig getConfig()
- */
-final class CommentFactory extends AbstractFactory
-{
-    public function createSpamChecker(): SpamChecker
-    {
-        return new SpamChecker(
-            HttpClient::create(),
-            $this->getConfig()->getSpamCheckerEndpoint()
-        );
-    }    
-}
-```
-
