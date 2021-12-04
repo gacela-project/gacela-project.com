@@ -34,6 +34,10 @@
 </head>
 
 <body>
+<div id="cookies-notice" style="display: none;">
+  <p class="cookie-text">Gacela uses cookies to analyse the use of this website</p>
+  <button class="cookie-btn" onclick="acceptCookieConsent();">Accept</button>
+</div>
 <div class="container">
   <header class="header">
     <a href="{{ config.base_url }}" class="logo">
@@ -103,5 +107,6 @@
 
 {% block js_body %}
 {% endblock js_body %}
+<script type="text/javascript" src="{{ get_url(path='cookies.js') | safe }}"></script>
 </body>
 </html>
