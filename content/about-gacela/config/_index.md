@@ -118,17 +118,15 @@ key-values such as the following.
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function () {
-    return new class() extends AbstractConfigGacela {
-        public function config(): array
-        {
-            return [
-                'type' => 'php',
-                'path' => 'config/*.php',
-                'path_local' => 'config/local.php',
-            ];
-        }
-    };
+return static fn () => new class() extends AbstractConfigGacela {
+    public function config(): array
+    {
+        return [
+            'type' => 'php',
+            'path' => 'config/*.php',
+            'path_local' => 'config/local.php',
+        ];
+    }
 };
 ```
 
@@ -137,17 +135,15 @@ return static function () {
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function () {
-    return new class() extends AbstractConfigGacela {
-        public function config(): array
-        {
-            return [
-                'type' => 'env',
-                'path' => 'config/.env*',
-                'path_local' => 'config/.env.local.dist',
-            ];
-        }
-    };
+return static fn () => new class() extends AbstractConfigGacela {
+    public function config(): array
+    {
+        return [
+            'type' => 'env',
+            'path' => 'config/.env*',
+            'path_local' => 'config/.env.local.dist',
+        ];
+    }
 };
 ```
 
@@ -156,26 +152,24 @@ return static function () {
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function () {
-    return new class() extends AbstractConfigGacela {
-        public function config(): array
-        {
-            return [
-                [
-                    'type' => 'env',
-                    'path' => 'config/.env*',
-                ],
-                [
-                    'type' => 'php',
-                    'path' => 'config/*.php',
-                ],
-                [
-                    'type' => 'custom',
-                    'path' => 'config/*.custom',
-                ],
-            ];
-        }
-    };
+return static fn () => new class() extends AbstractConfigGacela {
+    public function config(): array
+    {
+        return [
+            [
+                'type' => 'env',
+                'path' => 'config/.env*',
+            ],
+            [
+                'type' => 'php',
+                'path' => 'config/*.php',
+            ],
+            [
+                'type' => 'custom',
+                'path' => 'config/*.custom',
+            ],
+        ];
+    }
 };
 ```
 
@@ -201,15 +195,13 @@ want to resolve. For example:
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function () {
-    return new class() extends AbstractConfigGacela {
-        public function mappingInterfaces(): array
-        {
-            return [
-                OneInterface::class => ConcreteClass1::class
-            ];
-        }
-    };
+return static fn () => new class() extends AbstractConfigGacela {
+    public function mappingInterfaces(): array
+    {
+        return [
+            OneInterface::class => ConcreteClass1::class
+        ];
+    }
 };
 ```
 
@@ -237,19 +229,17 @@ to the new anon-class that you are returning.
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return static function (array $globalServices) {
-    return new class($globalServices) extends AbstractConfigGacela {
-        public function mappingInterfaces(): array
-        {
-            $interfaces = [OneInterface::class => ConcreteClass1::class];
+return static fn () => new class() extends AbstractConfigGacela {
+    public function mappingInterfaces(array $globalInterfaces): array
+    {
+        $interfaces = [OneInterface::class => ConcreteClass1::class];
 
-            if ($this->getGlobalService('useConcrete2')) {
-                $interfaces[OneInterface::class] = ConcreteClass2::class;
-            }
-
-            return $interfaces;
+        if (isset($globalInterfaces['useConcrete2'])) {
+            $interfaces[OneInterface::class] = ConcreteClass2::class;
         }
-    };
+
+        return $interfaces;
+    }
 };
 ```
 
