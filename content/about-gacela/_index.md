@@ -17,7 +17,7 @@ Gacela is a class resolver, which basically consist on these classes:
 
 ```bash
 application-name
-├── gacela.json
+├── gacela.php
 ├── config // Default config behaviour. You can change it in `gacela.php`
 │   ├── local.php
 │   └── default.php
