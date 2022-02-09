@@ -84,6 +84,8 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
+<br>
+
 -------
 
 ## Configuring the Config
@@ -130,23 +132,6 @@ return static fn () => new class() extends AbstractConfigGacela {
 };
 ```
 
-##### Config ENV files
-```php
-<?php # gacela.php
-use Gacela\Framework\AbstractConfigGacela;
-
-return static fn () => new class() extends AbstractConfigGacela {
-    public function config(): array
-    {
-        return [
-            'type' => 'env',
-            'path' => 'config/.env*',
-            'path_local' => 'config/.env.local.dist',
-        ];
-    }
-};
-```
-
 #### Multiple and different config files
 ```php
 <?php # gacela.php
@@ -174,10 +159,10 @@ return static fn () => new class() extends AbstractConfigGacela {
 ```
 
 #### Config Keys
-- type: enum with possible values php or env.
-- path: this is the path of the folder which contains your application configuration. You can use ? or * in order to
-  match 1 or multiple characters. Check glob() function for more info.
-- path_local: this is the last file loaded, which means, it will override the previous configuration, so you can
+- `type`: enum with possible values php or env.
+- `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
+  match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
+- `path_local`: this is the last file loaded, which means, it will override the previous configuration, so you can
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
 
@@ -196,7 +181,7 @@ want to resolve. For example:
 use Gacela\Framework\AbstractConfigGacela;
 
 return static fn () => new class() extends AbstractConfigGacela {
-    public function mappingInterfaces(): array
+    public function mappingInterfaces(array $globalServices): array
     {
         return [
             OneInterface::class => ConcreteClass1::class
@@ -213,10 +198,7 @@ First, we pass a key-value array in the second parameter of the `Gacela::bootstr
 
 ```php
 <?php # index.php
-Gacela::bootstrap(
-    applicationRootDir: __DIR__,
-    globalServices: ['useConcrete2' => true]
-);
+Gacela::bootstrap(__DIR__, ['useConcrete2' => true]);
 ```
 
 This way we can access the value of that key `'useConcrete2'` in the `gacela.php` with the function `getGlobalService()`.
@@ -230,11 +212,11 @@ to the new anon-class that you are returning.
 use Gacela\Framework\AbstractConfigGacela;
 
 return static fn () => new class() extends AbstractConfigGacela {
-    public function mappingInterfaces(array $globalInterfaces): array
+    public function mappingInterfaces(array $globalServices): array
     {
         $interfaces = [OneInterface::class => ConcreteClass1::class];
 
-        if (isset($globalInterfaces['useConcrete2'])) {
+        if (isset($globalServices['useConcrete2'])) {
             $interfaces[OneInterface::class] = ConcreteClass2::class;
         }
 
@@ -257,11 +239,16 @@ and setting it to the config-singleton. For example:
 ```php
 <?php declare(strict_types=1);
 
-Config::getInstance()->setConfigReaders([
+Gacela::bootstrap($kernel->getProjectDir(), ['config-readers' => [
     'php' => new PhpConfigReader(),
     'custom' => new CustomConfigReader(),
-]);
+]]);
 ```
+
+### EnvConfigReader
+
+There is actually a [Env config reader](https://github.com/gacela-project/gacela-env-config-reader) package
+out-of-the box in the Gacela repository. This package is not included by default in Gacela because it has its own specific dependencies.
 
 ### YamlConfigReader
 

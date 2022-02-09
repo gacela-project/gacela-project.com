@@ -52,7 +52,3 @@ name = "Used In"
 [[extra.menu]]
 url = "https://github.com/gacela-project/gacela"
 name = "GitHub"
-
-[[extra.menu.submenu]]
-url = "https://github.com/gacela-project/gacela/issues/new"
-name = "Report Issues"
