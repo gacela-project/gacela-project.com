@@ -1,47 +1,80 @@
 +++
-title = "Documentation"
+title = "About Gacela"
 template = "page.html"
 +++
 
-# Decoupled business logic
+# About Gacela
 
-Don't couple your business domain logic with any infrastructure code.
+Gacela is a class resolver, which basically consist on these classes:
 
-**Infrastructure code is everything that has nothing to do directly with the logic of your business**. What is NOT business logic?
+- [Facade](/docs/facade): it is the entry point of your module.
+- [Factory](/docs/factory): it creates the module's services.
+- [Config](/docs/config): it can get the key-values from your config files.
+- [Dependency Provider](/docs/dependency-provider): it gets other Facades.
+- [Code Generator](/docs/code-generator): some commands out-of-the-box to generate some boilerplate code.
 
-- the framework that you are using
-- the connection to the database
-- the I/O system
+## Basic Gacela structure
 
-All of these are irrelevant details that should not be attached to your business logic.
+```bash
+application-name
+├── gacela.php
+├── config // Default config behaviour. You can change it in `gacela.php`
+│   ├── local.php
+│   └── default.php
+│
+├── src
+│   ├── ExampleModuleWithoutPrefix
+│   │   ├── Domain
+│   │   │   └── YourLogicClass.php
+│   │   ├── Config.php
+│   │   ├── Facade.php
+│   │   └── Factory.php
+│   │
+│   └── ExampleModuleWithPrefix
+│       ├── Domain
+│       │   └── YourLogicClass.php
+│       ├── ExampleModuleWithPrefixConfig.php
+│       ├── ExampleModuleWithPrefixFacade.php
+│       └── ExampleModuleWithPrefixFactory.php
+│
+├── tests
+│   └── ...
+└── vendor
+    └── ...
+```
 
-In order to accomplish this goal, we should depend on abstractions instead of concretions.
+Gacela is coupled to your application as the `application`/`infrastructure` layer. Depending on how do you use it. 
+It uses the `Facade` and `Factory` patterns to accomplish this idea.
 
-## A complete application consists of three major layers
+## Facade
 
-- Domain
-- Application
-- Infrastructure
+The responsibility of the Facade is to provide a simplified interface to hide the domain implementation.
+It will simply give you the methods with the possible actions this module can do.
 
-### The Domain layer
+> In Gacela, the Facade is the entry point of your module. 
 
-The domain layer contains the domain entities and stand-alone domain services.
-Any domain concepts (this includes domain services, but also repositories) that depend on external resources, are defined by **interfaces**.
+## Factory
 
-### The Application layer
+The Factory's responsibility is to orchestrate the different classes and it's dependencies 
+(through Dependency Provider or Config).
 
-The application layer contains the implementation of the application services.
-These services shouldn't have "business logic" in them, even though they orchestrate the steps required to fulfill the commands imposed by the client.
-The main difference between the domain and the application services is that domain services hold domain logic whereas application services don’t.
+The Factory class creates the classes of your logic and its dependencies. 
+They are provided to the Facade. It's a layer between the user and your domain.
 
-### The Infrastructure layer
+> It resolves the intra-dependencies of your module's classes.
 
-The infrastructure layer **contains the implementation of the interfaces from the domain layer**.
-These implementations may introduce new non-domain dependencies that have to be provided to the application.
-Usually, the infrastructure layer is where all non-relevant-to-your-domain-details are placed.
+## Dependency Provider
 
-## Benefits
+The communication between different modules it's done via their Facades because they are the entry point of a module.
+The main difference between Factories and Dependency Providers is that Factories are responsible for in-module
+dependencies, while Dependency Providers are responsible for module-to-module dependencies.
 
-- Easy **testability**. When your business logic depend on abstractions (interfaces) you can easily create unit tests for all possible combinations of its behavior.
-- Your business logic became **easy to be replaced** and to be adapted to the new requirements.
-- **Loosely couple** with infrastructure code. When your logic depends on abstraction, you can postpone the details to the end and rather focus on the business requirements. 
+> It resolves the extra-dependencies of your module.
+
+## Config
+
+This concept is not a design pattern itself, but it's designed in a way that you can easily access all config values in
+your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business
+objects with specific configuration values clearly and straightforwardly.
+
+> It has access to the key-values from your config files.
