@@ -27,7 +27,6 @@ $code-font-family: Consolas, Monaco, Menlo, Consolas, monospace;
 }
 
 @mixin shadow($property, $shadow, $var, $fallback) {
-  #{$property}: $shadow $fallback;
   #{$property}: $shadow var($var, $fallback);
 }
 

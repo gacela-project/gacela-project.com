@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <a href="/docs">Back to the index</a>
-    {{ section.content | safe }}
-    <hr>
-    <div>
-          <a href="/docs/facade">Facade</a>
-        | <a href="/docs/factory">Factory</a>
-        | <a href="/docs/config">Config</a>
-        | <a href="/docs/dependency-provider">Dependency Provider</a>
-        | <a href="/docs/code-generator">Code Generator</a>
+    <p><a href="/docs">↩ Back to the index</a></p>
+    <div style="text-align: center">
+        <a href="/docs/facade">Facade</a>
+        ● <a href="/docs/factory">Factory</a>
+        ● <a href="/docs/config">Config</a>
+        ● <a href="/docs/dependency-provider">Dependency&nbsp;Provider</a>
+        ● <a href="/docs/code-generator">Code&nbsp;Generator</a>
+        ● <a href="/docs/why-decoupling">Decoupling</a>
+        ● <a href="/docs/modules">Modules</a>
     </div>
+    {{ section.content | safe }}
 {% endblock content %}

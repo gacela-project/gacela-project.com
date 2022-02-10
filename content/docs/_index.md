@@ -3,22 +3,34 @@ title = "About Gacela"
 template = "page.html"
 +++
 
+
+<a href="/">↩ Back to the home</a>
+<br/>
+<div style="text-align: center">
+    <a href="/docs/facade">Facade</a>
+    ● <a href="/docs/factory">Factory</a>
+    ● <a href="/docs/config">Config</a>
+    ● <a href="/docs/dependency-provider">Dependency Provider</a>
+    ● <a href="/docs/code-generator">Code Generator</a>
+    ● <a href="/docs/why-decoupling">Decoupling</a>
+    ● <a href="/docs/modules">Modules</a>
+</div>
+
 # About Gacela
 
 Gacela is a class resolver, which basically consist on these classes:
 
-- [Facade](/docs/facade): it is the entry point of your module.
-- [Factory](/docs/factory): it creates the module's services.
-- [Config](/docs/config): it can get the key-values from your config files.
-- [Dependency Provider](/docs/dependency-provider): it gets other Facades.
-- [Code Generator](/docs/code-generator): some commands out-of-the-box to generate some boilerplate code.
+`> Facade: it is the entry point of your module.`<br/>
+`> Factory: it creates the module's services.`<br/>
+`> Config: it can get the key-values from your config files.`<br/>
+`> Dependency Provider: it gets other Facades.`<br/>
 
 ## Basic Gacela structure
 
 ```bash
 application-name
 ├── gacela.php
-├── config // Default config behaviour. You can change it in `gacela.php`
+├── config ## Default config behaviour. Changeable in `gacela.php`
 │   ├── local.php
 │   └── default.php
 │
@@ -26,16 +38,18 @@ application-name
 │   ├── ExampleModuleWithoutPrefix
 │   │   ├── Domain
 │   │   │   └── YourLogicClass.php
-│   │   ├── Config.php
 │   │   ├── Facade.php
 │   │   └── Factory.php
+│   │   ├── Config.php
+│   │   └── DependencyProvider.php
 │   │
 │   └── ExampleModuleWithPrefix
 │       ├── Domain
 │       │   └── YourLogicClass.php
-│       ├── ExampleModuleWithPrefixConfig.php
 │       ├── ExampleModuleWithPrefixFacade.php
 │       └── ExampleModuleWithPrefixFactory.php
+│       ├── ExampleModuleWithPrefixConfig.php
+│       └── ExampleModuleWithPrefixDependencyProvider.php
 │
 ├── tests
 │   └── ...

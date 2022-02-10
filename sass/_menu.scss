@@ -12,6 +12,7 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   @include shadow(box-shadow, 0 2px 3px, --code-color, $theme-light-code-color);
   display: flex;
   align-items: center;
+  margin-bottom: 2rem;
 
   #system-mode, #dark-mode, #light-mode {
     display: none;
