@@ -22,7 +22,7 @@ template = "page.html"
   <div class="author">
     <img src="https://avatars.githubusercontent.com/u/6381924?s=155" alt="author Chemaclass">
     <div class="content">
-      <span>Jesus Maria Valera Reales</span>
+      <span>Jesus Valera Reales</span>
       <ul>
         <li><a href="https://jesusvalerareales.medium.com/" target="_blank">Medium</a></li>
         <li><a href="https://github.com/JesusValera/" target="_blank">GitHub</a></li>
