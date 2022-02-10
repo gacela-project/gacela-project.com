@@ -4,10 +4,12 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   border: none;
   cursor: pointer;
   color: inherit;
-  padding: 20px;
+  padding: 15px;
 }
 
 .header {
+  padding: 0.5em 2em;
+  @include shadow(box-shadow, 0 2px 3px, --code-color, $theme-light-code-color);
   display: flex;
   align-items: center;
 
@@ -20,44 +22,29 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   }
 
   .logo {
-    padding: 20px;
+    padding: 10px;
     text-decoration: none;
   }
 
   .menu {
     clear: both;
-    max-height: 0;
     transition: max-height .2s ease-out;
-
-    span {
-      margin: 12px;
-
-      a {
-        @include color(color, --first-text-color, $theme-light-first-text-color);
-        font-size: 18px;
-      }
-
-      a:hover {
-        @include color(color, --accent-text-color, $theme-light-accent-text-color);
-      }
-    }
-  }
-}
-
-.header {
-  padding: 1.5em 0;
-
-  .menu {
     min-width: fit-content;
-    max-height: none;
-    padding: 20px;
+    margin: 15px;
 
     span {
+      margin: 4px 12px;
       float: left;
     }
 
     span a {
+      @include color(color, --first-text-color, $theme-light-first-text-color);
+      font-size: 18px;
       @include underline-from-center;
+    }
+
+    span a:hover {
+      @include color(color, --accent-text-color, $theme-light-accent-text-color);
     }
 
     .menu:hover > span,
