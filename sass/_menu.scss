@@ -4,15 +4,15 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   border: none;
   cursor: pointer;
   color: inherit;
+  padding: 15px;
 }
 
 .header {
+  padding: 0.5em 2em;
+  @include shadow(box-shadow, 0 2px 3px, --code-color, $theme-light-code-color);
   display: flex;
   align-items: center;
-
-  .theme-selector {
-    margin: 10px;
-  }
+  margin-bottom: 2rem;
 
   #system-mode, #dark-mode, #light-mode {
     display: none;
@@ -22,145 +22,54 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
     }
   }
 
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    overflow: hidden;
-  }
-
   .logo {
-    margin: 20px;
+    padding: 10px;
     text-decoration: none;
   }
 
   .menu {
     clear: both;
-    max-height: 0;
     transition: max-height .2s ease-out;
+    min-width: fit-content;
+    margin: 15px;
 
-    li {
-      margin: 12px;
-
-      a {
-        @include color(color, --first-text-color, $theme-light-first-text-color);
-        font-size: 18px;
-      }
-
-      a:hover {
-        @include color(color, --accent-text-color, $theme-light-accent-text-color);
-      }
+    span {
+      margin: 4px 12px;
+      float: left;
     }
 
-    .dropdown {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      transition: all 0.25s ease;
-      margin-top: 0;
-      overflow: hidden;
-      white-space: nowrap;
+    span a {
+      @include color(color, --first-text-color, $theme-light-first-text-color);
+      font-size: 18px;
+      @include underline-from-center;
+    }
+
+    span a:hover {
+      @include color(color, --accent-text-color, $theme-light-accent-text-color);
+    }
+
+    .menu:hover > span,
+    .menu:focus-within > span,
+    .menu span:hover {
+      visibility: visible;
+      opacity: 1;
     }
   }
 
   .menu-icon {
-    cursor: pointer;
-    display: inline-block;
-    margin: auto 20px;
-    position: relative;
-    user-select: none;
-
-    .navicon {
-      background: gray;
-      display: block;
-      height: 2px;
-      position: relative;
-      transition: background .2s ease-out;
-      width: 18px;
-    }
-
-    .navicon:before,
-    .navicon:after {
-      background: gray;
-      content: '';
-      display: block;
-      height: 100%;
-      position: absolute;
-      transition: all .2s ease-out;
-      width: 100%;
-    }
-
-    .navicon:before {
-      top: 5px;
-    }
-
-    .navicon:after {
-      top: -5px;
-    }
-  }
-
-  .menu-btn {
     display: none;
   }
 
-  .menu-btn:checked ~ .menu {
-    max-height: 240px;
-  }
-
-  .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
-  .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
-    top: 0;
+  .dark-theme {
+    margin-left: auto
   }
 }
 
-/* 48em = 768px */
-@media (min-width: 48em) {
-  .header {
-    padding: 1.5em 0;
-
-    .menu {
-      max-height: none;
-      padding: 20px ;
-
-      li {
-        float: left;
-      }
-
-      li a {
-        @include underline-from-center;
-      }
-      li:hover > ul,
-      li:focus-within > ul,
-      li ul:hover {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-
-    .menu-icon {
-      display: none;
-    }
-
-    .dark-theme {
-      margin-left: auto
-    }
-  }
-}
-
-@media (max-width: 48em) {
-  .header {
-    justify-content: space-between;
-    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, .1);
+@media (max-width: 640px) {
+  .menu {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     text-align: center;
-    margin-bottom: 3em;
-
-    .menu {
-      margin-top: 3em;
-    }
-
-    .dark-theme {
-      display: flex;
-      align-items: center;
-    }
   }
 }

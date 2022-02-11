@@ -18,32 +18,8 @@ gtag = "G-TN20QBCH33"
 
 # MENU
 [[extra.menu]]
-url = "$BASE_URL/about-gacela"
-name = "About Gacela"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/about-gacela/facade"
-name = "Facade"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/about-gacela/factory"
-name = "Factory"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/about-gacela/config"
-name = "Config"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/about-gacela/dependency-provider"
-name = "Dependency Provider"
-
-[[extra.menu]]
 url = "$BASE_URL/docs"
 name = "Documentation"
-
-[[extra.menu.submenu]]
-url = "$BASE_URL/docs/modules"
-name = "Concept of Module"
 
 [[extra.menu]]
 url = "$BASE_URL/used-in"
@@ -52,7 +28,3 @@ name = "Used In"
 [[extra.menu]]
 url = "https://github.com/gacela-project/gacela"
 name = "GitHub"
-
-[[extra.menu.submenu]]
-url = "https://github.com/gacela-project/gacela/issues/new"
-name = "Report Issues"

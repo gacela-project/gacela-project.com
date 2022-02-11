@@ -1,6 +1,6 @@
 +++
 title = "Modules"
-template = "page.html"
+template = "section.html"
 +++
 
 # Basic concepts about modules

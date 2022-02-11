@@ -26,6 +26,10 @@ $code-font-family: Consolas, Monaco, Menlo, Consolas, monospace;
   #{$property}: var($var, $fallback);
 }
 
+@mixin shadow($property, $shadow, $var, $fallback) {
+  #{$property}: $shadow var($var, $fallback);
+}
+
 .theme-dark {
   --first-text-color: #{$theme-dark-first-text-color};
   --second-text-color: #{$theme-dark-second-text-color};
