@@ -1,4 +1,10 @@
-html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[color-theme=system] #light-mode {
+// Hide the "dark mode" & the "light mode" buttons
+#dark-mode, #light-mode {
+  display: none;
+}
+
+// And unhide the "dark" or the "light" button depending on the color-theme parameter
+html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode {
   display: block;
   background: none;
   border: none;
@@ -14,20 +20,12 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
   align-items: center;
   margin-bottom: 2rem;
 
-  #system-mode, #dark-mode, #light-mode {
-    display: none;
-
-    &:hover svg path {
-      @include color(fill, --accent-second-text-color, $theme-light-accent-second-text-color);
-    }
-  }
-
   .logo {
     padding: 10px;
     text-decoration: none;
   }
 
-  .menu {
+  .menu-links {
     clear: both;
     transition: max-height .2s ease-out;
     min-width: fit-content;
@@ -36,42 +34,35 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
     span {
       margin: 4px 12px;
       float: left;
-    }
 
-    span a {
-      @include color(color, --first-text-color, $theme-light-first-text-color);
-      font-size: 18px;
-      @include underline-from-center;
-    }
+      a {
+        @include color(color, --first-text-color, $theme-light-first-text-color);
+        font-size: 18px;
+        @include underline-from-center;
+      }
 
-    span a:hover {
-      @include color(color, --accent-text-color, $theme-light-accent-text-color);
-    }
-
-    .menu:hover > span,
-    .menu:focus-within > span,
-    .menu span:hover {
-      visibility: visible;
-      opacity: 1;
+      a:hover {
+        @include color(color, --accent-text-color, $theme-light-accent-text-color);
+      }
     }
   }
 
   .menu-icons {
     display: flex;
-    margin-left: auto
-  }
+    margin-left: auto;
 
-  .github-logo {
-    padding: 15px;
+    #github-logo {
+      padding: 15px;
+    }
 
-    &:hover svg path {
+    & *:hover svg path {
       @include color(fill, --accent-second-text-color, $theme-light-accent-second-text-color);
     }
   }
 }
 
 @media (max-width: 640px) {
-  .menu {
+  .menu-links {
     display: flex;
     flex: 1;
     flex-direction: column;
