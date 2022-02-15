@@ -4,15 +4,20 @@ document.addEventListener("DOMContentLoaded", _ => {
 
 function gacelaLogoColor() {
     let currentTheme = localStorage.theme !== 'dark' ? 'light' : 'dark';
+    let svgColor = (currentTheme === 'dark') ? '#448aff' : '#123456';
 
     let svgList = document.querySelectorAll('svg');
     svgList.forEach((svg) => {
         let g = svg.querySelector('g');
         if (g) {
-            let svgColor = (currentTheme === 'dark') ? '#448aff' : '#123456';
             g.setAttribute('stroke', svgColor);
         }
     });
+
+    let gitHubLogo = document.getElementById('fill-github');
+    if (gitHubLogo !== null) {
+        gitHubLogo.setAttribute('fill', svgColor);
+    }
 }
 
 window.toDarkMode = function () {

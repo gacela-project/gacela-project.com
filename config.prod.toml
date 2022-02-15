@@ -24,7 +24,3 @@ name = "Documentation"
 [[extra.menu]]
 url = "$BASE_URL/used-in"
 name = "Used In"
-
-[[extra.menu]]
-url = "https://github.com/gacela-project/gacela"
-name = "GitHub"

@@ -56,12 +56,17 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode, html[col
     }
   }
 
-  .menu-icon {
-    display: none;
+  .menu-icons {
+    display: flex;
+    margin-left: auto
   }
 
-  .dark-theme {
-    margin-left: auto
+  .github-logo {
+    padding: 15px;
+
+    &:hover svg path {
+      @include color(fill, --accent-second-text-color, $theme-light-accent-second-text-color);
+    }
   }
 }
 
