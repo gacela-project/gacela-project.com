@@ -1,6 +1,6 @@
 +++
 title = "Code Generator"
-template = "section.html"
+template = "page-dual.html"
 +++
 
 # Code Generator

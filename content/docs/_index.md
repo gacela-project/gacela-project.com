@@ -1,20 +1,7 @@
 +++
 title = "About Gacela"
-template = "page.html"
+template = "page-dual.html"
 +++
-
-
-<a href="/">↩ Back to the home</a>
-<br/>
-<div style="text-align: center">
-    <a href="/docs/facade">Facade</a>
-    ● <a href="/docs/factory">Factory</a>
-    ● <a href="/docs/config">Config</a>
-    ● <a href="/docs/dependency-provider">Dependency Provider</a>
-    ● <a href="/docs/code-generator">Code Generator</a>
-    ● <a href="/docs/why-decoupling">Decoupling</a>
-    ● <a href="/docs/modules">Modules</a>
-</div>
 
 # About Gacela
 

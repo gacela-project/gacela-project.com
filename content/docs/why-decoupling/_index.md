@@ -1,6 +1,6 @@
 +++
 title = "Documentation"
-template = "section.html"
+template = "page-dual.html"
 +++
 
 # Decoupled business logic

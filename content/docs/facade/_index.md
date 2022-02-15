@@ -1,6 +1,6 @@
 +++
 title = "Facade"
-template = "section.html"
+template = "page-dual.html"
 +++
 
 # Facade

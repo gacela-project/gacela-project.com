@@ -1,6 +1,6 @@
 +++
 title = "Factory"
-template = "section.html"
+template = "page-dual.html"
 +++
 
 # Factory

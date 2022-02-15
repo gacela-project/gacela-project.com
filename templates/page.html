@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {{ section.content | safe }}
-{% endblock %}
+<div class="layout-container">
+  <div class="one-column-layout">
+    <main class="one-column-layout__content">
+      {{ section.content | safe }}
+    </main>
+  </div>
+</div>
+{% endblock content %}

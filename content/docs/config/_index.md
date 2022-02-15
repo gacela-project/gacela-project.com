@@ -1,6 +1,6 @@
 +++
 title = "Config"
-template = "section.html"
+template = "page-dual.html"
 +++
 
 # Config
