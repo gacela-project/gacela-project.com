@@ -1,9 +1,7 @@
 +++
 title = "Config"
-template = "page-dual.html"
+weight = 4
 +++
-
-# Config
 
 This concept is not a design pattern itself, but it's designed in a way that you can easily access all config values in
 your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business

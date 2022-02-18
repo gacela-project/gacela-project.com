@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+
+<div class="layout-container">
+  <div class="two-column-layout">
+    <aside class="two-column-layout__sidebar">
+      {% include "navigation/site-navigation.html" %}
+    </aside>
+    <main class="two-column-layout__content">
+      {% block content %} {% endblock %}
+
+      {% include "footer.html" %}
+    </main>
+  </div>
+</div>
+{% endblock body %}

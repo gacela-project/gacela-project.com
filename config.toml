@@ -15,12 +15,3 @@ highlight_themes_css = [
 
 [extra]
 author = "Chemaclass"
-
-## MENU
-[[extra.menu]]
-url = "$BASE_URL/docs"
-name = "Documentation"
-
-[[extra.menu]]
-url = "$BASE_URL/used-in"
-name = "Used In"

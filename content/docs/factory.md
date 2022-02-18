@@ -1,9 +1,7 @@
 +++
 title = "Factory"
-template = "page-dual.html"
+weight = 3
 +++
-
-# Factory
 
 The Factory's responsibility is to orchestrate the different classes, and it's dependencies
 (through Dependency Provider or Config).

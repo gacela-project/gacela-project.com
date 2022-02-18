@@ -1,13 +1,11 @@
 +++
-title = "Documentation"
-template = "page-dual.html"
+title = "Why decoupling?"
+template = "page-one-column.html"
 +++
 
-# Decoupled business logic
-
-Don't couple your business domain logic with any infrastructure code.
-
-**Infrastructure code is everything that has nothing to do directly with the logic of your business**. What is NOT business logic?
+There are a lot of reasons why you shouldn't couple your business/domain logic with any infrastructure code. 
+**Infrastructure code is everything that has nothing to do directly with the logic of your business**. What is NOT
+business logic?
 
 - the framework that you are using
 - the connection to the database

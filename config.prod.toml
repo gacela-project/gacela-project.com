@@ -15,12 +15,3 @@ highlight_themes_css = [
 [extra]
 author = "Chemaclass"
 gtag = "G-TN20QBCH33"
-
-# MENU
-[[extra.menu]]
-url = "$BASE_URL/docs"
-name = "Documentation"
-
-[[extra.menu]]
-url = "$BASE_URL/used-in"
-name = "Used In"

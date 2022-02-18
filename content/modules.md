@@ -1,6 +1,6 @@
 +++
 title = "Modules"
-template = "page-dual.html"
+weight = 6
 +++
 
 # Basic concepts about modules
