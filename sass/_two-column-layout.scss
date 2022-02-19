@@ -1,7 +1,11 @@
 .layout-container {
-  max-width: 1200px;
+  width: 100%;
   margin: -20px auto 20px auto;
   padding-top: 9px;
+
+  @include desktop {
+    max-width: 1200px;
+  }
 }
 
 .two-column-layout {
