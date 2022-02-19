@@ -17,7 +17,7 @@
   }
 
   .two-column-layout__content {
-    padding: 0 2em 0 2em;
+    padding: 0 1em;
   }
 
   @include desktop {
@@ -45,6 +45,7 @@
       max-width: 790px;
       margin-left: 250px;
       margin-top: 0;
+      padding: 0 2em;
     }
   }
 }

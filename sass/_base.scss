@@ -31,10 +31,6 @@ a {
   &:hover { outline-width: 0; }
 }
 
-//* + * {
-//  margin-top: 1.5em;
-//}
-
 li, kbd, div, input, option, select, a, textarea, body, span, dd, code, label, [column] {
   margin: 0;
 }
@@ -71,14 +67,9 @@ body {
 }
 
 .container {
-  //width: $body-width;
   width: 1200px;
   margin: 0 auto;
   padding-bottom: 2rem;
-}
-
-main {
-  padding: 0 20px;
 }
 
 @include max-screen() {
