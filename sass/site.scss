@@ -13,7 +13,6 @@
 @import 'search';
 @import 'page-toc';
 @import "animations";
-@import "custom";
 @import "menu";
 @import "snippet";
 @import "team";
@@ -23,16 +22,24 @@ html {
   font-kerning: normal;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  height: 100%;
+  margin: 0;
 }
 
 body {
+  min-height: 100%;
   padding-top: $header-height;
 }
 
-footer {
-  margin-top: 5em;
+footer#main-footer {
   text-align: center;
-  font-size: 14px;
+  padding-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .zola-anchor {
@@ -42,4 +49,28 @@ footer {
 
 .flex-container {
   display: flex;
+}
+
+*:is(main, footer) a:hover {
+  @include color(color, --accent-second-text-color, $theme-light-accent-second-text-color);
+  transition: color 0.25s;
+  -webkit-transition: color 0.25s;
+  text-decoration: underline;
+}
+
+#gacela-project-header {
+  display: none;
+}
+
+ul {
+  padding-left: 1em;
+}
+
+#gacela-logo-head {
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+  line-height: 30px;
 }

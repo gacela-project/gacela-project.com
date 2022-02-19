@@ -111,7 +111,7 @@ by passing them in the entry point of your app:
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
 
 Gacela::bootstrap(
-    applicationRootDir: __DIR__,
+    appRootDir: __DIR__,
     globalServices: ['symfony/kernel' => $kernel]
 );
 ```
