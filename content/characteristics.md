@@ -1,14 +1,13 @@
 +++
-title = "About modules"
-weight = 9
+title = "Characteristics of a module"
+template = "page-one-column.html"
 +++
 
-First, what are the characteristics of a module?
-
-1. It encapsulates code to implement a particular functionality.
-2. It has an interface that lets clients access its functionality.
-3. It is easily pluggable with another module that expects its interface.
-4. It is usually packaged in a single unit so that it can be easily deployed.
+[//]: # ()
+[//]: # (1. It encapsulates code to implement a particular functionality.)
+[//]: # (2. It has an interface that lets clients access its functionality.)
+[//]: # (3. It is easily pluggable with another module that expects its interface.)
+[//]: # (4. It is usually packaged in a single unit so that it can be easily deployed.)
 
 ## 1) Encapsulates a particular functionality
 

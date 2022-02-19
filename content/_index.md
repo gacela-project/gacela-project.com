@@ -2,7 +2,9 @@
 title = "Home"
 +++
 
-## Gacela is a PHP class resolver that helps you improve the design of your application by splitting the logic into different modules.
+## Gacela is a PHP class resolver 
+
+It helps you improve the design of your application by splitting the logic into different modules.
 
 Splitting your project into different modules will help its design in
 terms of maintainability and scalability. It will certainly encourage your modules to interact with each
@@ -13,7 +15,7 @@ following these rules:
 - The [Facade](/docs/facade) has access to the _Factory_.
 - The [Factory](/docs/factory) creates the module's objects.
 - The [Config](/docs/config) is accessible from the _Factory_.
-- The [Dependency Provider](/docs/dependency) gets other _Facades_.
+- The [DependencyProvider](/docs/dependency-provider) gets other _Facades_.
 
 ### Installation
 

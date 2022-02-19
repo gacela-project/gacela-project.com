@@ -101,7 +101,6 @@ require $projectRootDir . '/vendor/autoload.php';
 
 Gacela::bootstrap($projectRootDir, [
     'config' => [
-        'type' => 'php',
         'path' => 'config/*.php',
         'path_local' => 'config/local.php',
     ],
@@ -122,7 +121,6 @@ return static fn () => new class() extends AbstractConfigGacela {
     public function config(): array
     {
         return [
-            'type' => 'php',
             'path' => 'config/*.php',
             'path_local' => 'config/local.php',
         ];
@@ -139,25 +137,15 @@ return static fn () => new class() extends AbstractConfigGacela {
     public function config(): array
     {
         return [
-            [
-                'type' => 'env',
-                'path' => 'config/.env*',
-            ],
-            [
-                'type' => 'php',
-                'path' => 'config/*.php',
-            ],
-            [
-                'type' => 'custom',
-                'path' => 'config/*.custom',
-            ],
+            ['path' => 'config/.env*'],
+            ['path' => 'config/*.php'],
+            ['path' => 'config/*.custom'],
         ];
     }
 };
 ```
 
 #### Config Keys
-- `type`: enum with possible values php or env.
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
 - `path_local`: this is the last file loaded, which means, it will override the previous configuration, so you can
@@ -237,10 +225,12 @@ and setting it to the config-singleton. For example:
 ```php
 <?php declare(strict_types=1);
 
-Gacela::bootstrap($kernel->getProjectDir(), ['config-readers' => [
-    'php' => new PhpConfigReader(),
-    'custom' => new CustomConfigReader(),
-]]);
+Gacela::bootstrap($kernel->getProjectDir(), [
+    'config-readers' => [
+        'php' => new PhpConfigReader(),
+        'custom' => new CustomConfigReader(),
+    ],
+]);
 ```
 
 ### EnvConfigReader
