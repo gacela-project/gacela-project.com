@@ -5,11 +5,10 @@ template = "page-one-column.html"
 
 Gacela is a class resolver, which basically consist on these classes:
 
-
-- **Facade**: it is the entry point of your module.
-- **Factory**: it creates the module's services.
-- **Config**: it can get the key-values from your config files.
-- **DependencyProvider**: it gets other Facades.
+- [**Facade**](/docs/facade): it is the entry point of your module.
+- [**Factory**](/docs/factory): it creates the module's services.
+- [**Config**](/docs/config): it can get the key-values from your config files.
+- [**DependencyProvider**](/docs/dependency-provider): it gets other Facades.
 
 ## Basic Gacela structure
 
