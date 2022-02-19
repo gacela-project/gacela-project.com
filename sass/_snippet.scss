@@ -15,12 +15,13 @@
     code {
       display: inline-block;
       @include color(color, --first-text-color, $theme-light-first-text-color);
+      vertical-align: middle;
     }
   }
 
   .button-copy-code-snippet {
     float: right;
-    margin-top: -46px;
+    margin-top: -40px;
   }
 }
 

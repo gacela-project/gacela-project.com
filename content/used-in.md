@@ -1,9 +1,7 @@
 +++
 title = "Used In"
-template = "page.html"
+template = "page-one-column.html"
 +++
-
-# Projects using Gacela
 
 ## Phel Lang
 

@@ -1,9 +1,9 @@
 +++
 title = "License"
-template = "page.html"
+template = "page-one-column.html"
 +++
 
-# MIT License
+MIT License
 
 Copyright (c) 2021-2022, Jose Maria Valera Reales and Jesus Valera Reales.
 

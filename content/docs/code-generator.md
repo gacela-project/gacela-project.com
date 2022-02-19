@@ -1,9 +1,7 @@
 +++
-title = "Code Generator"
-template = "section.html"
+title = "Code generator"
+weight = 10
 +++
-
-# Code Generator
 
 Gacela Framework provides you some commands out-of-the-box to generate a `facade`, `factory`, `config`,
 `dependency provider` or a full `module` with a single command.

@@ -1,9 +1,7 @@
 +++
 title = "Team"
-template = "page.html"
+template = "page-one-column.html"
 +++
-
-# Team
 
 <div id="team">
   <div class="author">

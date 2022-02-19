@@ -1,9 +1,7 @@
 +++
 title = "Facade"
-template = "section.html"
+weight = 2
 +++
-
-# Facade
 
 The responsibility of the Facade is to provide a simplified interface to hide the domain implementation.
 

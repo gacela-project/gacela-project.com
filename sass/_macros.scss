@@ -1,0 +1,35 @@
+@mixin color($property, $var, $fallback) {
+  #{$property}: $fallback;
+  #{$property}: var($var, $fallback);
+}
+
+@mixin shadow($property, $shadow, $var, $fallback) {
+  #{$property}: $shadow var($var, $fallback);
+}
+
+.theme-dark {
+  --first-text-color: #{$theme-dark-first-text-color};
+  --second-text-color: #{$theme-dark-second-text-color};
+  --accent-text-color: #{$theme-dark-accent-text-color};
+  --accent-second-text-color: #{$theme-dark-accent-second-text-color};
+  --code-color: #{$theme-dark-code-color};
+  --bg-color: #{$theme-dark-bg-color};
+}
+
+@mixin min-screen($min-width: $body-width) {
+  @media screen and (min-width: $min-width) {
+    @content;
+  }
+}
+
+@mixin max-screen($max-width: $body-width) {
+  @media screen and (max-width: $max-width) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 1040px) {
+    @content;
+  }
+}

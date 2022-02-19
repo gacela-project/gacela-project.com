@@ -1,9 +1,7 @@
 +++
-title = "Dependency Provider"
-template = "section.html"
+title = "DependencyProvider"
+weight = 5
 +++
-
-# Dependency Provider
 
 The communication between different modules it's done via their Facades because they are the main entry point of a
 module. The main difference between Factories and Dependency Providers is that Factories are responsible for in-module

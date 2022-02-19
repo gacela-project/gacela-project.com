@@ -1,60 +1,76 @@
 @charset "utf-8";
 
-html {
-  font-kerning: normal;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
-}
-
-$body-width: 800px;
-$theme-light-first-text-color: #444;
-$theme-light-second-text-color: #888;
-$theme-light-accent-text-color: #b71c1c;
-$theme-light-accent-second-text-color: #7f0000;
-$theme-light-code-color: #efefef;
-$theme-light-bg-color: #f6f6f6;
-$theme-dark-first-text-color: #b8b8b8;
-$theme-dark-second-text-color: #666;
-$theme-dark-accent-text-color: #0086c3;
-$theme-dark-accent-second-text-color: #29b6f6;
-$theme-dark-code-color: #2f2f2f;
-$theme-dark-bg-color: #292929;
-$code-font-family: Consolas, Monaco, Menlo, Consolas, monospace;
-
-@mixin color($property, $var, $fallback) {
-  #{$property}: $fallback;
-  #{$property}: var($var, $fallback);
-}
-
-@mixin shadow($property, $shadow, $var, $fallback) {
-  #{$property}: $shadow var($var, $fallback);
-}
-
-.theme-dark {
-  --first-text-color: #{$theme-dark-first-text-color};
-  --second-text-color: #{$theme-dark-second-text-color};
-  --accent-text-color: #{$theme-dark-accent-text-color};
-  --accent-second-text-color: #{$theme-dark-accent-second-text-color};
-  --code-color: #{$theme-dark-code-color};
-  --bg-color: #{$theme-dark-bg-color};
-}
-
-@mixin min-screen($min-width: $body-width) {
-   @media screen and (min-width: $min-width) {
-     @content;
-   }
-}
-
-@mixin max-screen($max-width: $body-width) {
-   @media screen and (max-width: $max-width) {
-     @content;
-   }
-}
-
-@import "base";
+@import 'settings';
+@import 'macros';
+@import 'base';
+@import 'headings';
+@import 'lists';
+@import 'code';
+@import 'one-column-layout';
+@import 'two-column-layout';
+@import 'site-navigation';
+@import 'header';
+@import 'search';
+@import 'page-toc';
 @import "animations";
-@import "custom";
 @import "menu";
 @import "snippet";
 @import "team";
 @import "cookies";
+
+html {
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100%;
+  padding-top: $header-height;
+}
+
+footer#main-footer {
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.zola-anchor {
+  font-style: italic;
+  padding-left: 0.2em;
+}
+
+.flex-container {
+  display: flex;
+}
+
+*:is(main, footer) a:hover {
+  @include color(color, --accent-second-text-color, $theme-light-accent-second-text-color);
+  transition: color 0.25s;
+  -webkit-transition: color 0.25s;
+  text-decoration: underline;
+}
+
+#gacela-project-header {
+  display: none;
+}
+
+ul {
+  padding-left: 1em;
+}
+
+#gacela-logo-head {
+  text-align: center;
+}
+
+p {
+  font-size: 18px;
+  line-height: 30px;
+}
