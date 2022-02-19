@@ -21,7 +21,7 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode {
   }
 
   & *:hover svg path {
-    @include color(fill, --accent-second-text-color, $theme-light-accent-second-text-color);
+    @include color(fill, --dark-accent-second-text-color, $theme-dark-accent-second-text-color);
   }
 }
 

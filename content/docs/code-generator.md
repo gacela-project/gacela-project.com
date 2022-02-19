@@ -1,5 +1,5 @@
 +++
-title = "Code Generator"
+title = "Code generator"
 weight = 10
 +++
 
