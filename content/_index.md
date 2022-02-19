@@ -2,9 +2,9 @@
 title = "Home"
 +++
 
-## Your Facade class autoloader
+## Build a modular PHP application with Gacela
 
-Gacela helps you improve the design of your application by splitting the logic into different modules.
+#### Gacela helps you to split the logic of your app into different modules
 
 Splitting your project into different modules will help its design in
 terms of maintainability and scalability. It will certainly encourage your modules to interact with each

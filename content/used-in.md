@@ -17,18 +17,13 @@ It is a dialect of Lisp inspired by Clojure and Janet.
 
 ### Features
 
-- Built on PHP ecosystem
-- Good error reporting
-- Different Datastructures (Arrays, Tables, and Tuples)
-- Macros
-- Recursive functions
-- Powerful but simple Syntax
-- REPL
+- Built on PHP's ecosystem
+- Persistent Datastructures (Lists, Vectors, Maps and Sets)
+- Good error reporting, Macros, REPL, and more
 
 ### Why Phel?
 
-- A LISP-inspired
-- Functional Programming language
+- A LISP-inspired (Functional Programming language)
 - It runs on cheap hosting providers
 - Easy to write and debug
 
