@@ -3,7 +3,8 @@ title = "Facade"
 weight = 2
 +++
 
-The responsibility of the Facade is to provide a simplified interface to hide the domain implementation.
+The responsibility of the [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is to provide a simplified interface to
+hide the domain implementation.
 
 In Gacela, the Facade is the entry point of your module. It will simply give you the methods with the possible actions
 this module can do.
@@ -11,6 +12,8 @@ this module can do.
 ## Entering your module
 
 The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
+
+Full code snippet: [gacela-example/comment-spam-score/facade](https://github.com/gacela-project/gacela-example/blob/master/comment-spam-score/src/Comment/CommentFacade.php)
 
 ```php
 <?php # src/Comment/CommentFacade.php
@@ -33,16 +36,22 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-A Facade is a "ready to use" thing:
+## A Facade is a "ready to use" thing
 
+The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
+
+Full code snippet: [gacela-example/comment-spam-score/entry-point](https://github.com/gacela-project/gacela-example/blob/master/comment-spam-score/app.php)
 ```php
-<?php # index.php
+<?php
+require __DIR__ . '/vendor/autoload.php';
 
 use App\Comment\CommentFacade;
+use Gacela\Framework\Gacela;
+
+Gacela::bootstrap(__DIR__);
 
 $facade = new CommentFacade();
 $score = $facade->getSpamScore('Lorem ipsum!');
-var_dump($score);
-```
 
-The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
+echo sprintf('Spam Score: %d', $score) . PHP_EOL;
+```

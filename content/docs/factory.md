@@ -3,15 +3,17 @@ title = "Factory"
 weight = 3
 +++
 
-The Factory's responsibility is to orchestrate the different classes, and it's dependencies
-(through Dependency Provider or Config).
+The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to
+orchestrate the creation of different classes, and it's dependencies (through DependencyProvider or Config).
 
-The Factory class creates the classes of your logic and its dependencies.
-They are provided to the Facade. It's a layer between the user and your domain.
+- The Factory creates the classes of your module and its dependencies.
+- The Factory is accessible to the Facade (with `getFactory()`).
 
 ## Creating your objects
 
 The Factory is the place where you create your domain services and objects. It is accessible only by the Facade.
+
+Full code snippet: [gacela-example/comment-spam-score/factory](https://github.com/gacela-project/gacela-example/blob/master/comment-spam-score/src/Comment/CommentFactory.php)
 
 ```php
 <?php # src/Comment/CommentFactory.php
@@ -53,38 +55,26 @@ final class SpamChecker
 
     public function getSpamScore(string $comment): int
     {
-         // your business logic
-        $response = $this->client->request(
-            'POST', 
-            $this->endPoint, 
-            [
-                'body' => [
-                   'comment_content' => $comment
-                ]
-            ]
-        );
-        
-        $content = $response->getContent();
-        
-        return ('true' === $content) ? 1 : 0;
+        // your business logic
+        return $x;
     }
 }
 ```
 
 ## Autowiring dependencies into the Factory
 
-Gacela can resolve automagically the dependencies for the Factory. If the dependency is a concrete class it will create
+Gacela can resolve automatically the dependencies for the Factory. If the dependency is a concrete class it will create
 a new instance of it - recursively with their inner dependencies as well. But, if the dependency is an interface, then
 the way to tell Gacela which instance do you want to create you need to create a map between the interface and the
 concrete class or object that you want to use.
 
-This map will be created in the `gacela.php` config file. For example
+This map will be created in the `gacela.php` config file. For example:
 ```php
 <?php # gacela.php
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return static fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela {
     public function mappingInterfaces(array $globalServices): array
     {
         return [
@@ -101,14 +91,16 @@ The major difference between these two are
   auto-wiring for its dependencies recursively if needed).
 - the `InterfaceToCallable` won't create a new instance, but instead it will use the instance that you might want to.
 
-### Injecting global services to Gacela config
+Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/master/gacela.php#L28)
+
+## Injecting global services to Gacela config
 
 You can let know Gacela the global services that you want to have access in your `gacela.php` config file
 by passing them in the entry point of your app:
 ```php
 <?php # public/index.php
 # A real example for a Symfony application
-$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
+$kernel = new Kernel($_SERVER['APP_ENV']);
 
 Gacela::bootstrap(
     appRootDir: __DIR__,
@@ -123,14 +115,14 @@ can map the EntityManagerInterface to the one that the `symfony.kernel.container
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return static fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela {
     public function mappingInterfaces(array $globalServices): array
     {
         /** @var Kernel $kernel */
         $kernel = $globalServices['symfony/kernel'];
 
         return [
-            EntityManagerInterface::class => static fn() => $kernel
+            EntityManagerInterface::class => fn() => $kernel
                 ->getContainer()
                 ->get('doctrine.orm.entity_manager'),
         ];

@@ -4,61 +4,90 @@ weight = 5
 +++
 
 The communication between different modules it's done via their Facades because they are the main entry point of a
-module. The main difference between Factories and Dependency Providers is that Factories are responsible for in-module
+module. 
+
+### Factory vs DependencyProvider
+
+The main difference between Factories and Dependency Providers is that Factories are responsible for in-module
 dependencies, while Dependency Providers are responsible for module-to-module dependencies.
 
-## Defining the dependencies
+### Setting a provided dependency
 
 ```php
-<?php # src/Comment/CommentFactory.php
+<?php # src/Sales/SalesDependencyProvider.php
 
-use Gacela\Framework\AbstractFactory;
+use Gacela\Framework\AbstractDependencyProvider;
 
-/**
- * @method CommentConfig getConfig()
- */
-final class CommentFactory extends AbstractFactory
+final class SalesDependencyProvider extends AbstractDependencyProvider
 {
-    public function createSpamChecker(): SpamChecker
+    public const FACADE_COMMENT = 'FACADE_COMMENT';
+
+    public function provideModuleDependencies(Container $container): void
     {
-        return new SpamChecker(
-            HttpClient::create(),
-            $this->getConfig()->getSpamCheckerEndpoint(),
-            $this->getAnotherFacade()
-        );
+        $this->addCommentFacade($container);
     }
 
-    private function getAnotherFacade(): AnotherFacade
+    private function addCommentFacade(Container $container): void
     {
-        return $this->getProvidedDependency(
-            DependencyProvider::FACADE_ANOTHER_MODULE
+        $container->set(
+            self::FACADE_COMMENT,
+            function (Container $container) {
+                return $container->getLocator()->get(CommentFacade::class);
+            }
         );
     }
 }
 ```
 
+### Factory using a provided dependency
+
 ```php
-<?php # src/Comment/CommentDependencyProvider.php
+<?php # src/Sales/SalesFactory.php
 
-use Gacela\Framework\AbstractDependencyProvider;
+use Gacela\Framework\AbstractFactory;
 
-final class CommentDependencyProvider extends AbstractDependencyProvider
+/**
+ * @method SalesConfig getConfig()
+ */
+final class SalesFactory extends AbstractFactory
 {
-    public const FACADE_ANOTHER_MODULE = 'FACADE_ANOTHER_MODULE';
-
-    public function provideModuleDependencies(Container $container): void
+    public function createOrderCommentSaver(): FooService
     {
-        $this->addFacadeAnother($container);
+        return new OrderCommentSaver(
+            $this->getCommentFacade()
+        );
     }
 
-    private function addFacadeAnother(Container $container): void
+    private function getOtherFacade(): OtherFacade
     {
-        $container->set(
-            self::FACADE_ANOTHER_MODULE,
-            function (Container $container) {
-                return $container->getLocator()->get(AnotherFacade::class);
-            }
+        return $this->getProvidedDependency(
+            DependencyProvider::FACADE_COMMENT
         );
+    }
+}
+```
+
+### The Facade uses the Factory
+
+In the end, the Factory will be used by the module's Facade:
+
+```php
+<?php # src/Sales/SalesFacade.php
+
+namespace App\Sales;
+
+use Gacela\Framework\AbstractFacade;
+
+/**
+ * @method SalesFactory getFactory()
+ */
+final class SalesFacade extends AbstractFacade
+{
+    public function saveComment(Comment $comment): int
+    {
+        return $this->getFactory()
+            ->createOrderCommentSaver()
+            ->save($comment);
     }
 }
 ```
