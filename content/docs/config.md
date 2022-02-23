@@ -1,6 +1,6 @@
 +++
 title = "Config"
-weight = 4
+weight = 5
 +++
 
 This concept is not a design pattern itself, but it's designed in a way that you can easily access all config values in

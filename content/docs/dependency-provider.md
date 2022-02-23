@@ -1,6 +1,6 @@
 +++
 title = "DependencyProvider"
-weight = 5
+weight = 6
 +++
 
 The communication between different modules it's done via their Facades because they are the main entry point of a

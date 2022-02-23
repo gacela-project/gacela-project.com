@@ -1,17 +1,34 @@
 +++
 title = "gacela.php"
-weight = 6
+weight = 2
 +++
 
-## Configuring the Config
+## Using the `gacela.php` config file
 
-### config()
+You can define the config while bootstrapping Gacela without the need of a `gacela.php` in the root of your project,
+however, if this file exists, it will override the configuration from the `Gacela::bootstrap()`.<br/>
+It is not mandatory but recommended having a `gacela.php` file in order to decouple and centralize the Gacela configuration.
 
-#### Using gacela.php
+```php
+<?php # gacela.php
+use Gacela\Framework\AbstractConfigGacela;
 
-In the root of the project, create a file called `gacela.php`, in which you can define the config key-values such as the following.
+return fn () => new class() extends AbstractConfigGacela {
+    public function config(): array {
+        return [];
+    }
 
-##### Config PHP files
+    public function mappingInterfaces(array $globalServices): array {
+        return [];
+    }
+};
+```
+
+## config()
+
+Similarly to the `Gacela::bootstrap()`, you can define the `config()` in your `gacela.php` file as follows:
+
+### Config PHP files
 ```php
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
@@ -27,7 +44,7 @@ return fn () => new class() extends AbstractConfigGacela {
 };
 ```
 
-#### Multiple and different config files
+### Multiple and different config files
 ```php
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
@@ -44,23 +61,6 @@ return fn () => new class() extends AbstractConfigGacela {
 };
 ```
 
-#### Easy Bootstrapping
-
-You can define the config while bootstrapping your app without the need of `gacela.php`:
-
-```php
-<?php # index.php
-$projectRootDir = getcwd();
-require $projectRootDir . '/vendor/autoload.php';
-
-Gacela::bootstrap($projectRootDir, [
-    'config' => [
-        'path' => 'config/*.php',
-        'path_local' => 'config/local.php',
-    ],
-]);
-```
-
 #### Config Keys
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
@@ -68,7 +68,7 @@ Gacela::bootstrap($projectRootDir, [
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
 
-### mappingInterfaces()
+## mappingInterfaces()
 
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
@@ -100,7 +100,7 @@ First, we pass a key-value array in the second parameter of the `Gacela::bootstr
 
 ```php
 <?php # index.php
-Gacela::bootstrap(__DIR__, ['useConcrete2' => true]);
+Gacela::bootstrap($appRootDir, ['useConcrete2' => true]);
 ```
 
 This way we can access the value of that key `'useConcrete2'` in the `gacela.php` with the function `getGlobalService()`.
@@ -128,34 +128,3 @@ return fn () => new class() extends AbstractConfigGacela {
 ```
 
 In the example above, whenever `OneInterface::class` is found then `ConcreteClass2::class` will be resolved.
-
-## Default values
-
-If you don't define any `gacela.php` file, the Config will use the "Config PHP files" configuration.
-
-## You can define your own ConfigReaders
-
-You can implement your custom config reader by using `ConfigReaderInterface`,
-and setting it to the config-singleton. For example:
-
-```php
-<?php declare(strict_types=1);
-
-Gacela::bootstrap($kernel->getProjectDir(), [
-    'config-readers' => [
-        'php' => new PhpConfigReader(),
-        'custom' => new CustomConfigReader(),
-    ],
-]);
-```
-
-### EnvConfigReader
-
-There is actually a [Env config reader](https://github.com/gacela-project/gacela-env-config-reader) package
-out-of-the box in the Gacela repository. This package is not included by default in Gacela because it has its own specific dependencies.
-
-### YamlConfigReader
-
-There is actually a [YAML/YML config reader](https://github.com/gacela-project/gacela-yaml-config-reader) package
-out-of-the box in the Gacela repository. This package is not included by default in Gacela because it has its own specific dependencies.
-

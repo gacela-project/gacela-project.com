@@ -1,6 +1,6 @@
 +++
 title = "Factory"
-weight = 3
+weight = 4
 +++
 
 The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to

@@ -1,6 +1,6 @@
 +++
 title = "Facade"
-weight = 2
+weight = 3
 +++
 
 The responsibility of the [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is to provide a simplified interface to
