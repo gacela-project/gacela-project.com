@@ -9,6 +9,7 @@
 
   .site-header__container {
     display: flex;
+    height: $header-height;
     align-items: center;
     padding: .2em 2em;
 
@@ -141,6 +142,7 @@
 [id]::before {
   content: '';
   display: block;
+  padding-top: 4px;
   height:      $header-height;
   margin-top: -$header-height;
   visibility: hidden;
