@@ -5,8 +5,8 @@ weight = 1
 
 ## Initializing Gacela
 
-Gacela should be bootstrapped using the `Gacela::bootstrap` helper.<br/>
-The first parameter is the application root directory and is mandatory, the second one is an array with the configuration.
+Gacela should be bootstrapped using the `Gacela::bootstrap` function.<br>
+The first parameter is the application root directory and is mandatory, the second one is an array with optional configuration.
 
 ```php
 <?php # index.php
@@ -35,7 +35,7 @@ Gacela::bootstrap($appRootDir, [
 
 ### Default config
 
-If you don't define any `gacela.php` file, the Config will use the following configuration.
+If you don't define any `gacela.php` file, this will be the default configuration.
 
 ```php
 <?php # index.php
@@ -58,10 +58,9 @@ out-of-the box in the Gacela repository. This package is not included by default
 There is actually a [YAML/YML config reader](https://github.com/gacela-project/gacela-yaml-config-reader) package
 out-of-the box in the Gacela repository. This package is not included by default in Gacela because it has its own specific dependencies.
 
-### You can define your own ConfigReaders
+### Custom ConfigReaders
 
-You can implement your custom config reader by using `ConfigReaderInterface`,
-and setting it to the config-singleton. For example:
+You can implement your custom config reader by using `ConfigReaderInterface`.
 
 ```php
 <?php # index.php
@@ -77,16 +76,16 @@ Gacela::bootstrap($appRootDir, [
 ## mapping-interfaces
 
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
-found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
+found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor.
 
-In the example above, whenever `OneInterface::class` is found then `ConcreteClass1::class` will be resolved.
+In the example below, whenever `OneInterface::class` is found then `OneConcrete::class` will be resolved.
 
 ```php
 <?php # index.php
 
 Gacela::bootstrap($appRootDir, [
     'mapping-interfaces' => [
-        OneInterface::class => ConcreteClass1::class,
+        OneInterface::class => OneConcrete::class,
     ],
 ]);
 ```
@@ -103,11 +102,11 @@ Gacela::bootstrap($appRootDir, [
     ],
     'config-readers' =>  [
         PhpConfigReader::class,
-        SimpleEnvConfigReader::class,
+        EnvConfigReader::class,
     ],
     'mapping-interfaces' =>  [
-        OneInterface::class => ConcreteClass1::class,
-        TwoInterface::class => ConcreteClass2::class,
+        OneInterface::class => OneConcrete::class,
+        TwoInterface::class => TwoConcrete::class,
     ],
 ]);
 ```

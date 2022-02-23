@@ -36,7 +36,7 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-## A Facade is a "ready to use" thing
+## A ready to use thing
 
 The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
 

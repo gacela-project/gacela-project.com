@@ -74,7 +74,8 @@ This map will be created in the `gacela.php` config file. For example:
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela
+{
     public function mappingInterfaces(array $globalServices): array
     {
         return [
@@ -115,7 +116,8 @@ can map the EntityManagerInterface to the one that the `symfony.kernel.container
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela
+{
     public function mappingInterfaces(array $globalServices): array
     {
         /** @var Kernel $kernel */

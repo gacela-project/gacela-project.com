@@ -13,12 +13,15 @@ It is not mandatory but recommended having a `gacela.php` file in order to decou
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
-    public function config(): array {
+return fn () => new class() extends AbstractConfigGacela 
+{
+    public function config(): array 
+    {
         return [];
     }
 
-    public function mappingInterfaces(array $globalServices): array {
+    public function mappingInterfaces(array $globalServices): array 
+    {
         return [];
     }
 };
@@ -33,7 +36,8 @@ Similarly to the `Gacela::bootstrap()`, you can define the `config()` in your `g
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela 
+{
     public function config(): array
     {
         return [
@@ -49,7 +53,8 @@ return fn () => new class() extends AbstractConfigGacela {
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela 
+{
     public function config(): array
     {
         return [
@@ -82,7 +87,8 @@ want to resolve. For example:
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela 
+{
     public function mappingInterfaces(array $globalServices): array
     {
         return [
@@ -92,34 +98,31 @@ return fn () => new class() extends AbstractConfigGacela {
 };
 ```
 
-In the example above, whenever `OneInterface::class` is found then `ConcreteClass1::class` will be resolved.
+In the example above, whenever `OneInterface::class` is found then `OneConcrete::class` will be resolved.
 
 #### Using GlobalServices or while Mapping Interfaces
 
-First, we pass a key-value array in the second parameter of the `Gacela::bootstrap()` function. In this example 'useConcrete2':
+First, we pass a key-value array in the second parameter of the `Gacela::bootstrap()` function. In this example 'useUpdatedConcrete':
 
 ```php
 <?php # index.php
-Gacela::bootstrap($appRootDir, ['useConcrete2' => true]);
+Gacela::bootstrap($appRootDir, ['useUpdatedConcrete' => true]);
 ```
 
-This way we can access the value of that key `'useConcrete2'` in the `gacela.php` with the function `getGlobalService()`.
+This way we can access the value of that key `'useUpdatedConcrete'` in the `gacela.php` from `$globalServices`.
 For example:
-
-> **Important**: Notice that if you want to use the global services while bootstrapping Gacela, you have to pass them
-to the new anon-class that you are returning.
-
 ```php
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela {
+return fn () => new class() extends AbstractConfigGacela 
+{
     public function mappingInterfaces(array $globalServices): array
     {
-        $interfaces = [OneInterface::class => ConcreteClass1::class];
+        $interfaces = [OneInterface::class => OriginalConcrete::class];
 
-        if (isset($globalServices['useConcrete2'])) {
-            $interfaces[OneInterface::class] = ConcreteClass2::class;
+        if (isset($globalServices['useUpdatedConcrete'])) {
+            $interfaces[OneInterface::class] = UpdatedConcrete::class;
         }
 
         return $interfaces;
@@ -127,4 +130,4 @@ return fn () => new class() extends AbstractConfigGacela {
 };
 ```
 
-In the example above, whenever `OneInterface::class` is found then `ConcreteClass2::class` will be resolved.
+In the example above, whenever `OneInterface::class` is found then `UpdatedConcrete::class` will be resolved.
