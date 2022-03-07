@@ -60,15 +60,16 @@ out-of-the box in the Gacela repository. This package is not included by default
 
 ### Custom ConfigReaders
 
-You can implement your custom config reader by using `ConfigReaderInterface`.
+You can implement your custom config reader using `ConfigReaderInterface`:
 
 ```php
 <?php # index.php
 
 Gacela::bootstrap($appRootDir, [
-    'config-readers' => [
-        new PhpConfigReader(),
-        new CustomConfigReader(),
+    'config' => [
+        'path' => 'config/*.custom',
+        'path_local' => 'config/local.custom',
+        'reader' => CustomConfigReader::class,
     ],
 ]);
 ```

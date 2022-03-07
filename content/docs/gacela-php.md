@@ -58,9 +58,21 @@ return fn () => new class() extends AbstractConfigGacela
     public function config(): array
     {
         return [
-            ['path' => 'config/.env*'],
-            ['path' => 'config/*.php'],
-            ['path' => 'config/*.custom'],
+             [
+              'path' => 'config/.env',
+              'path_local' => 'config/.env.local',
+              'reader' => EnvConfigReader::class,
+            ],
+            [
+              'path' => 'config/*.php',
+              'path_local' => 'config/local.php',
+              'reader' => PhpConfigReader::class,
+            ],
+            [
+              'path' => 'config/*.custom',
+              'path_local' => 'config/local.custom',
+              'reader' => CustomConfigReader::class,
+            ],
         ];
     }
 };
@@ -72,6 +84,8 @@ return fn () => new class() extends AbstractConfigGacela
 - `path_local`: this is the last file loaded, which means, it will override the previous configuration, so you can
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
+- `reader`: specify the reader for those config files. It can be the instance or the class-name. 
+  It has to implement `CustomConfigReader`.
 
 ## mappingInterfaces()
 
