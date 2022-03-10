@@ -15,14 +15,27 @@ use Gacela\Framework\AbstractConfigGacela;
 
 return fn () => new class() extends AbstractConfigGacela 
 {
-    public function config(): array 
+    public function config(ConfigBuilder $configBuilder): void
     {
-        return [];
     }
 
-    public function mappingInterfaces(array $globalServices): array 
+    /**
+     * Define the mapping between interfaces and concretions, 
+     * so Gacela services will auto-resolve them automatically.
+     *
+     * @param array<string,mixed> $globalServices
+     */
+    public function mappingInterfaces(
+        MappingInterfacesBuilder $mappingInterfacesBuilder, 
+        array $globalServices
+    ): void {
+    }
+
+    /**
+     * Allow overriding gacela resolvable types.
+     */
+    public function suffixTypes(SuffixTypesBuilder $suffixTypesBuilder): void
     {
-        return [];
     }
 };
 ```
@@ -38,54 +51,41 @@ use Gacela\Framework\AbstractConfigGacela;
 
 return fn () => new class() extends AbstractConfigGacela 
 {
-    public function config(): array
+    public function config(ConfigBuilder $configBuilder): void
     {
-        return [
-            'path' => 'config/*.php',
-            'path_local' => 'config/local.php',
-        ];
+        $configBuilder->add(
+            reader: PhpConfigReader::class, 
+            path: 'config/*.php',
+            pathLocal: 'config/local.php'
+        );
     }
 };
 ```
 
-### Multiple and different config files
+#### Multiple and different config files
 ```php
 <?php # gacela.php
 use Gacela\Framework\AbstractConfigGacela;
 
 return fn () => new class() extends AbstractConfigGacela 
 {
-    public function config(): array
+    public function config(ConfigBuilder $configBuilder): void
     {
-        return [
-             [
-              'path' => 'config/.env',
-              'path_local' => 'config/.env.local',
-              'reader' => EnvConfigReader::class,
-            ],
-            [
-              'path' => 'config/*.php',
-              'path_local' => 'config/local.php',
-              'reader' => PhpConfigReader::class,
-            ],
-            [
-              'path' => 'config/*.custom',
-              'path_local' => 'config/local.custom',
-              'reader' => CustomConfigReader::class,
-            ],
-        ];
+        $configBuilder->add(EnvConfigReader::class, 'config/.env');
+        $configBuilder->add(PhpConfigReader::class, 'config/*.php');
+        $configBuilder->add(CustomConfigReader::class, 'config/*.custom');
     }
 };
 ```
 
-#### Config Keys
+You can add to the configBuilder as many config items as you want.
+
+- `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
-- `path_local`: this is the last file loaded, which means, it will override the previous configuration, so you can
+- `pathLocal`: this is the last file loaded, which means, it will override the previous configuration, so you can
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
-- `reader`: specify the reader for those config files. It can be the instance or the class-name. 
-  It has to implement `CustomConfigReader`.
 
 ## mappingInterfaces()
 
@@ -103,11 +103,11 @@ use Gacela\Framework\AbstractConfigGacela;
 
 return fn () => new class() extends AbstractConfigGacela 
 {
-    public function mappingInterfaces(array $globalServices): array
-    {
-        return [
-            OneInterface::class => ConcreteClass1::class
-        ];
+    public function mappingInterfaces(
+        MappingInterfacesBuilder $interfacesBuilder,
+        array $globalServices
+    ): void {
+        $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
     }
 };
 ```
@@ -131,17 +131,88 @@ use Gacela\Framework\AbstractConfigGacela;
 
 return fn () => new class() extends AbstractConfigGacela 
 {
-    public function mappingInterfaces(array $globalServices): array
-    {
-        $interfaces = [OneInterface::class => OriginalConcrete::class];
-
+    public function mappingInterfaces(
+        MappingInterfacesBuilder $interfacesBuilder,
+        array $globalServices
+    ): void {
+        $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
+        
         if (isset($globalServices['useUpdatedConcrete'])) {
-            $interfaces[OneInterface::class] = UpdatedConcrete::class;
+            $interfacesBuilder->bind(OneInterface::class, UpdatedConcrete::class);
         }
-
-        return $interfaces;
     }
 };
 ```
 
 In the example above, whenever `OneInterface::class` is found then `UpdatedConcrete::class` will be resolved.
+
+
+## suffixTypes()
+
+Apart from the known Gacela suffix classes: Factory, Config, and DependencyProvider, you can define other suffixes to be
+resolved for your different modules. You can do this by adding custom gacela resolvable types.
+
+```php
+<?php # index.php
+
+return fn () => new class() extends AbstractConfigGacela 
+{
+    public function suffixTypes(SuffixTypesBuilder $suffixTypesBuilder): void
+    {
+        $suffixTypesBuilder
+            ->addFactory('Creator')
+            ->addConfig('Conf')
+            ->addDependencyProvider('Binder');
+    }
+};
+```
+
+In the example above, you'll be able to create a gacela module with these file names:
+
+```bash
+ExampleModule
+├── Domain
+│   └── YourLogicClass.php
+├── Creator.php    <- this is the `Factory`
+└── Conf.php       <- this is the `Config`
+├── Binder.php     <- this is the `DependencyProvider` 
+└── EntryPoint.php <- this is the `Facade`
+```
+
+> **Notice**: the `Facade` can be named as you want. There are no restrictions for the `Facade` naming suffix.
+
+## A complete example
+
+```php
+<?php # gacela.php
+
+return fn () => new class() extends AbstractConfigGacela 
+{
+    public function config(ConfigBuilder $configBuilder): void
+    {
+        $configBuilder->add(EnvConfigReader::class, 'config/.env');
+        $configBuilder->add(PhpConfigReader::class, 'config/*.php');
+        $configBuilder->add(CustomConfigReader::class, 'config/*.custom');
+    }
+
+    public function mappingInterfaces(
+        MappingInterfacesBuilder $interfacesBuilder,
+        array $globalServices
+    ): void {
+        $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
+        
+        if (isset($globalServices['useUpdatedConcrete'])) {
+            $interfacesBuilder->bind(OneInterface::class, UpdatedConcrete::class);
+        }
+    }
+    
+    public function suffixTypes(SuffixTypesBuilder $suffixTypesBuilder): void
+    {
+        $suffixTypesBuilder
+            ->addFactory('Creator')
+            ->addConfig('Conf')
+            ->addDependencyProvider('Binder');
+    }
+};
+```
+
