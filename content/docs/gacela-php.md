@@ -54,9 +54,9 @@ return fn () => new class() extends AbstractConfigGacela
     public function config(ConfigBuilder $configBuilder): void
     {
         $configBuilder->add(
-            reader: PhpConfigReader::class, 
             path: 'config/*.php',
-            pathLocal: 'config/local.php'
+            pathLocal: 'config/local.php',
+            reader: PhpConfigReader::class 
         );
     }
 };
@@ -71,21 +71,21 @@ return fn () => new class() extends AbstractConfigGacela
 {
     public function config(ConfigBuilder $configBuilder): void
     {
-        $configBuilder->add(EnvConfigReader::class, 'config/.env');
-        $configBuilder->add(PhpConfigReader::class, 'config/*.php');
-        $configBuilder->add(CustomConfigReader::class, 'config/*.custom');
+        $configBuilder->add('config/.env', '', EnvConfigReader::class);
+        $configBuilder->add('config/*.custom', '', CustomConfigReader::class);
+        $configBuilder->add('config/*.php', 'config/local.php');
     }
 };
 ```
 
 You can add to the configBuilder as many config items as you want.
 
-- `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
 - `pathLocal`: this is the last file loaded, which means, it will override the previous configuration, so you can
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
+- `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 
 ## mappingInterfaces()
 
@@ -190,9 +190,9 @@ return fn () => new class() extends AbstractConfigGacela
 {
     public function config(ConfigBuilder $configBuilder): void
     {
-        $configBuilder->add(EnvConfigReader::class, 'config/.env');
-        $configBuilder->add(PhpConfigReader::class, 'config/*.php');
-        $configBuilder->add(CustomConfigReader::class, 'config/*.custom');
+        $configBuilder->add('config/.env', '', EnvConfigReader::class);
+        $configBuilder->add('config/*.custom', '', CustomConfigReader::class);
+        $configBuilder->add('config/*.php', 'config/local.php');
     }
 
     public function mappingInterfaces(

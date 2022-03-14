@@ -24,21 +24,21 @@ Gacela::bootstrap($appRootDir);
 Gacela::bootstrap($appRootDir, [
     'config' => function (ConfigBuilder $configBuilder): void {
         $configBuilder->add(
-            reader: PhpConfigReader::class, 
             path: 'config/*.php',
-            pathLocal: 'config/local.php'
+            pathLocal: 'config/local.php',
+            reader: PhpConfigReader::class 
         );
     }
 ]);
 ```
 You can add to the configBuilder as many config items as you want.
 
-- `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
 - `pathLocal`: this is the last file loaded, which means, it will override the previous configuration, so you can
   easily add it to your .gitignore and set your local config values in case you want to have something different for
   some cases.
+- `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 
 ### EnvConfigReader
 
@@ -60,9 +60,9 @@ You can implement your custom config reader using `ConfigReaderInterface`:
 Gacela::bootstrap($appRootDir, [
     'config' => function (ConfigBuilder $configBuilder): void {
         $configBuilder->add(
-            CustomConfigReader::class,
             'config/*.custom',
-            'config/local.custom'
+            'config/local.custom',
+            CustomConfigReader::class
         );
     }
 ]);
@@ -128,9 +128,9 @@ ExampleModule
 Gacela::bootstrap($appRootDir, [
     'config' => function (ConfigBuilder $configBuilder): void {
         $configBuilder->add(
-            PhpConfigReader::class,
             'config/*.php',
-            'config/local.php'
+            'config/local.php',
+            PhpConfigReader::class
         );
         $configBuilder->add(EnvConfigReader::class, 'config/.env*');
     },
