@@ -3,30 +3,37 @@ title = "About Gacela"
 template = "page-one-column.html"
 +++
 
-Gacela is a class resolver, which basically consist on these classes:
+Gacela helps you to build modular applications.
 
-- [**Facade**](/docs/facade): it is the entry point of your module.
-- [**Factory**](/docs/factory): it creates the module's services.
-- [**Config**](/docs/config): it can get the key-values from your config files.
-- [**DependencyProvider**](/docs/dependency-provider): it gets other Facades.
+Splitting your project into different modules help in terms of maintainability and scalability. It encourages your
+modules to interact with each other in a unified way by following these rules:
 
-## Basic Gacela structure
+- The [**Facade**](/docs/facade) is the entry point of your module, and has direct access to the Factory.
+- The [**Factory**](/docs/factory) resolves the intra-dependencies of your module's classes, and has access to the Config.
+- The [**Config**](/docs/config) has access to the key-values from your config files.
+- The [**DependencyProvider**](/docs/dependency-provider) resolves the extra-dependencies of your module.
+
+## Module structure
 
 ```bash
 application-name
-├── gacela.php
-├── config ## Default config behaviour. Changeable in `gacela.php`
-│   ├── local.php
-│   └── default.php
+├── gacela.php                     # You can customize some behaviours of gacela. 
+│
+├── config                         # Default config behaviour. Changeable in `gacela.php`.
+│   ├── default.php
+│   └── local.php
+│
+├── public
+│   └── index.php                  # An example of your application entry point.
 │
 ├── src
 │   ├── ExampleModuleWithoutPrefix
-│   │   ├── Domain
+│   │   ├── Domain                 # The directory structure/naming here is up to you.
 │   │   │   └── YourLogicClass.php
-│   │   ├── Facade.php
-│   │   └── Factory.php
-│   │   ├── Config.php
-│   │   └── DependencyProvider.php
+│   │   ├── Facade.php             # These are the 4 "gacela classes":
+│   │   └── Factory.php            # - You can prefix them with its module name.
+│   │   ├── Config.php             # - Autowiring customizable in `gacela.php`.
+│   │   └── DependencyProvider.php # - Suffix naming customizable in `gacela.php`.
 │   │
 │   └── ExampleModuleWithPrefix
 │       ├── Domain
