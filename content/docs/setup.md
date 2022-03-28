@@ -93,18 +93,21 @@ found during the process of **auto-wiring** in any Factory's Module dependencies
 
 #### Simple mapping
 
-Override the `mappingInterfaces()` method to return an array with the `interface => concreteClass|callable` that you
-want to resolve. For example:
+The MappingInterfacesBuilder instance let you bind a class with another class `interface => concreteClass|callable` 
+that you want to resolve. For example:
 
 ```php
 <?php
 
 $setup = (new SetupGacela())
     ->setMappingInterfaces(static function (
-        MappingInterfacesBuilder $mappingInterfacesBuilder,
+        MappingInterfacesBuilder $interfacesBuilder,
         array $globalServices
     ): void {
-        $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
+        $interfacesBuilder->bind(AbstractString::class, StringClass::class);
+        $interfacesBuilder->bind(ClassInterface::class, new ConcreteClass(/*args*/));
+        $interfacesBuilder->bind(ComplexInterface::class, new class() implements Foo { /** logic */ });
+        $interfacesBuilder->bind(FromCallable::class, fn() => new StringClass('From callable'));
     });
 ```
 
