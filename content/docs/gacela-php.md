@@ -110,7 +110,8 @@ First, we pass a key-value array in the second parameter of the `Gacela::bootstr
 
 Gacela::bootstrap(
     $appRootDir,
-    (new SetupGacela())->setGlobalServices(['useUpdatedConcrete' => true])
+    (new SetupGacela())
+        ->setGlobalServices(['useUpdatedConcrete' => true])
 );
 ```
 

@@ -24,9 +24,7 @@ Gacela::bootstrap($appRootDir);
 Gacela::bootstrap(
     $appRootDir,
     (new SetupGacela())
-        ->setConfig(static function (
-            ConfigBuilder $configBuilder
-        ): void {
+        ->setConfig(static function (ConfigBuilder $configBuilder): void {
             $configBuilder->add(
                 path: 'config/*.php',
                 pathLocal: 'config/local.php',
@@ -74,7 +72,7 @@ Gacela::bootstrap(
 );
 ```
 
-## mapping-interfaces
+## Mapping Interfaces
 
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor.
@@ -96,7 +94,7 @@ Gacela::bootstrap(
 );
 ```
 
-## suffix-types
+## Suffix Types
 
 Apart from the known Gacela suffix classes: Factory, Config, and DependencyProvider, you can define other suffixes to be
 resolved for your different modules. You can do this by adding custom gacela resolvable types.
