@@ -21,15 +21,19 @@ Gacela::bootstrap($appRootDir);
 
 // This is the default configuration.
 
-Gacela::bootstrap($appRootDir, [
-    'config' => function (ConfigBuilder $configBuilder): void {
-        $configBuilder->add(
-            path: 'config/*.php',
-            pathLocal: 'config/local.php',
-            reader: PhpConfigReader::class 
-        );
-    }
-]);
+Gacela::bootstrap(
+    $appRootDir,
+    (new SetupGacela())
+        ->setConfig(static function (
+            ConfigBuilder $configBuilder
+        ): void {
+            $configBuilder->add(
+                path: 'config/*.php',
+                pathLocal: 'config/local.php',
+                reader: PhpConfigReader::class
+            );
+        })
+);
 ```
 You can add to the configBuilder as many config items as you want.
 
@@ -57,15 +61,17 @@ You can implement your custom config reader using `ConfigReaderInterface`:
 ```php
 <?php # index.php
 
-Gacela::bootstrap($appRootDir, [
-    'config' => function (ConfigBuilder $configBuilder): void {
-        $configBuilder->add(
-            'config/*.custom',
-            'config/local.custom',
-            CustomConfigReader::class
-        );
-    }
-]);
+Gacela::bootstrap(
+    $appRootDir,
+    (new SetupGacela())
+        ->setConfig(static function (ConfigBuilder $configBuilder): void {
+            $configBuilder->add(
+                'config/*.custom',
+                'config/local.custom',
+                CustomConfigReader::class
+            );
+        })
+);
 ```
 
 ## mapping-interfaces
@@ -78,14 +84,16 @@ In the example below, whenever `OneInterface::class` is found then `OneConcrete:
 ```php
 <?php # index.php
 
-Gacela::bootstrap($appRootDir, [
-    'mapping-interfaces' => function (
-        MappingInterfacesBuilder $interfacesBuilder,
+Gacela::bootstrap(
+    $appRootDir,
+    (new SetupGacela())
+    ->setMappingInterfaces(static function (
+        MappingInterfacesBuilder $mappingInterfacesBuilder,
         array $globalServices
     ): void {
         $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
-    }
-]);
+    })
+);
 ```
 
 ## suffix-types
@@ -96,14 +104,16 @@ resolved for your different modules. You can do this by adding custom gacela res
 ```php
 <?php # index.php
 
-Gacela::bootstrap($appRootDir, [
-    'suffix-types' => function (SuffixTypesBuilder $suffixTypesBuilder): void {
-        $suffixTypesBuilder
-            ->addFactory('Creator')
-            ->addConfig('Conf')
-            ->addDependencyProvider('Binder');
-    },
-]);
+Gacela::bootstrap(
+    $appRootDir,
+    (new SetupGacela())
+        ->setSuffixTypes(static function (SuffixTypesBuilder $suffixTypesBuilder): void {
+            $suffixTypesBuilder
+                ->addFactory('Creator')
+                ->addConfig('Conf')
+                ->addDependencyProvider('Binder');
+        })
+);
 ```
 
 In the example above, you'll be able to create a gacela module with these file names:
@@ -125,26 +135,29 @@ ExampleModule
 ```php
 <?php # index.php
 
-Gacela::bootstrap($appRootDir, [
-    'config' => function (ConfigBuilder $configBuilder): void {
-        $configBuilder->add(
-            'config/*.php',
-            'config/local.php',
-            PhpConfigReader::class
-        );
-        $configBuilder->add(EnvConfigReader::class, 'config/.env*');
-    },
-    'mapping-interfaces' => function (
-        MappingInterfacesBuilder $interfacesBuilder,
-        array $globalServices
-    ): void {
-        $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
-    },
-    'suffix-types' => function (SuffixTypesBuilder $suffixTypesBuilder): void {
-        $suffixTypesBuilder
-            ->addFactory('Creator')
-            ->addConfig('Conf')
-            ->addDependencyProvider('Binder');
-    },
-]);
+Gacela::bootstrap(
+    $appRootDir,
+    (new SetupGacela())
+        ->setConfig(static function (
+            ConfigBuilder $configBuilder
+        ): void {
+            $configBuilder->add(
+                'config/*.php',
+                'config/local.php',
+                PhpConfigReader::class
+            );
+        })
+        ->setMappingInterfaces(static function (
+            MappingInterfacesBuilder $mappingInterfacesBuilder,
+            array $globalServices
+        ): void {
+            $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
+        })
+        ->setSuffixTypes(static function (SuffixTypesBuilder $suffixTypesBuilder): void {
+            $suffixTypesBuilder
+                ->addFactory('Creator')
+                ->addConfig('Conf')
+                ->addDependencyProvider('Binder');
+        })
+);
 ```
