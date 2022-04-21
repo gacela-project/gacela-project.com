@@ -23,7 +23,7 @@ This is the default behaviour for the `SetupGacela` when you don't define anythi
 
 // This is the default configuration.
 $setup = (new SetupGacela())
-    ->setConfig(static function (ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
         $configBuilder->add(
             path: 'config/*.php',
             pathLocal: 'config/local.php',
@@ -44,7 +44,7 @@ Check the [Setup page](/docs/setup/) to see what other behaviours you can alter 
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
 
 $setup = (new SetupGacela())
-    ->setGlobalServices(['symfony/kernel' => $kernel]);
+    ->setexternalServices(['symfony/kernel' => $kernel]);
 
 Gacela::bootstrap($appRootDir, $setup);
 ```
@@ -53,22 +53,22 @@ Gacela::bootstrap($appRootDir, $setup);
 <?php # gacela.php
 
 return (new SetupGacela())
-    ->setConfig(static function(ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
         $configBuilder->add('config/.env', '', EnvConfigReader::class);
     })
-    ->setMappingInterfaces(static function(
+    ->setMappingInterfaces(function (
         MappingInterfacesBuilder $mappingBuilder,
-        array $globalServices
+        array $externalServices
     ): void {
         /** @var Kernel $kernel */
-        $kernel = $globalServices['symfony/kernel'];
+        $kernel = $externalServices['symfony/kernel'];
 
         $mappingBuilder->bind(
             EntityManagerInterface::class,
             fn() => $kernel->getContainer()->get('doctrine.orm.entity_manager')
         );
     })
-    ->setSuffixTypes(static function(SuffixTypesBuilder $suffixBuilder): void {
+    ->setSuffixTypes(function (SuffixTypesBuilder $suffixBuilder): void {
         $suffixBuilder
             ->addFactory('Creator')
             ->addConfig('Conf')

@@ -23,25 +23,28 @@ return (new SetupGacela())
     /**
      * Define different config sources.
      */
-    ->setConfig(static function (ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
+        // ...
     })
 
     /**
      * Define the mapping between interfaces and concretions, 
      * so Gacela services will auto-resolve them automatically.
      *
-     * @param array<string,mixed> $globalServices
+     * @param array<string,mixed> $externalServices
      */
-    ->setMappingInterfaces(static function (
+    ->setMappingInterfaces(function (
         MappingInterfacesBuilder $mappingInterfacesBuilder,
-        array $globalServices
+        array $externalServices
     ): void {
+        // ...
     })
 
     /**
      * Allow overriding gacela resolvable types.
      */
-    ->setSuffixTypes(static function (SuffixTypesBuilder $suffixTypesBuilder): void {
+    ->setSuffixTypes(function (SuffixTypesBuilder $suffixTypesBuilder): void {
+        // ...
     });
 ```
 
@@ -55,7 +58,7 @@ readers. The `PhpConfigReader` is used by default.
 <?php
 
 $setup = (new SetupGacela())
-    ->setConfig(static function (ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
         $configBuilder->add(
             path: 'config/*.php',
             pathLocal: 'config/local.php',
@@ -79,7 +82,7 @@ You can add to the `$configBuilder` as many config locations as you want.
 <?php
 
 $setup = (new SetupGacela())
-    ->setConfig(static function (ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
         $configBuilder->add('config/.env', '', EnvConfigReader::class);
         $configBuilder->add('config/*.custom', '', CustomConfigReader::class);
         $configBuilder->add('config/*.php', 'config/local.php');
@@ -100,9 +103,9 @@ that you want to resolve. For example:
 <?php
 
 $setup = (new SetupGacela())
-    ->setMappingInterfaces(static function (
+    ->setMappingInterfaces(function (
         MappingInterfacesBuilder $interfacesBuilder,
-        array $globalServices
+        array $externalServices
     ): void {
         $interfacesBuilder->bind(AbstractString::class, StringClass::class);
         $interfacesBuilder->bind(ClassInterface::class, new ConcreteClass(/*args*/));
@@ -113,32 +116,32 @@ $setup = (new SetupGacela())
 
 In the example above, whenever `OneInterface::class` is found then `OneConcrete::class` will be resolved.
 
-#### Using GlobalServices
+#### Using externalServices
 
-First, we set global services as a key-value array from the `SetupGacela->setGlobalServices()`. 
+First, we set global services as a key-value array from the `SetupGacela->setExternalServices()`. 
 In this example `'useUpdatedConcrete'`:
 
 ```php
 <?php # index.php
 $setup = (new SetupGacela())
-    ->setGlobalServices(['useUpdatedConcrete' => true]);
+    ->setExternalServices(['useUpdatedConcrete' => true]);
 
 Gacela::bootstrap($appRootDir, $setup);
 ```
 
-This way we can access the value of that key `'useUpdatedConcrete'` in the `gacela.php` from `$globalServices`.
+This way we can access the value of that key `'useUpdatedConcrete'` in the `gacela.php` from `$externalServices`.
 For example:
 ```php
 <?php
 
 $setup = (new SetupGacela())
-    ->setMappingInterfaces(static function (
+    ->setMappingInterfaces(function (
         MappingInterfacesBuilder $mappingInterfacesBuilder,
-        array $globalServices
+        array $externalServices
     ): void {
         $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
         
-        if (isset($globalServices['useUpdatedConcrete'])) {
+        if (isset($externalServices['useUpdatedConcrete'])) {
             $interfacesBuilder->bind(OneInterface::class, UpdatedConcrete::class);
         }
     });
@@ -155,7 +158,7 @@ resolved for your different modules. You can do this by adding custom gacela res
 <?php
 
 $setup = (new SetupGacela())
-    ->setSuffixTypes(static function (SuffixTypesBuilder $suffixBuilder): void {
+    ->setSuffixTypes(function (SuffixTypesBuilder $suffixBuilder): void {
         $suffixBuilder
             ->addFactory('Creator')
             ->addConfig('Conf')
@@ -183,22 +186,22 @@ ExampleModule
 <?php # gacela.php
 
 return (new SetupGacela())
-    ->setConfig(static function (ConfigBuilder $configBuilder): void {
+    ->setConfig(function (ConfigBuilder $configBuilder): void {
         $configBuilder->add('config/.env', '', EnvConfigReader::class);
         $configBuilder->add('config/*.custom', '', CustomConfigReader::class);
         $configBuilder->add('config/*.php', 'config/local.php');
     })
-    ->setMappingInterfaces(static function (
+    ->setMappingInterfaces(function (
         MappingInterfacesBuilder $mappingInterfacesBuilder,
-        array $globalServices
+        array $externalServices
     ): void {
         $interfacesBuilder->bind(OneInterface::class, OneConcrete::class);
         
-        if (isset($globalServices['useUpdatedConcrete'])) {
+        if (isset($externalServices['useUpdatedConcrete'])) {
             $interfacesBuilder->bind(OneInterface::class, UpdatedConcrete::class);
         }
     })
-    ->setSuffixTypes(static function (SuffixTypesBuilder $suffixBuilder): void {
+    ->setSuffixTypes(function (SuffixTypesBuilder $suffixBuilder): void {
         $suffixBuilder
             ->addFactory('Creator')
             ->addConfig('Conf')
