@@ -25,43 +25,6 @@ html[color-theme=dark] #dark-mode, html[color-theme=light] #light-mode {
   }
 }
 
-//.site-header {
-//  padding: 0.5em 2em;
-//  border-bottom: 1px grey solid;
-//  display: flex;
-//  align-items: center;
-//  margin: 0 auto 2rem;
-//
-//  .site-header__logo {
-//    padding: 10px;
-//    text-decoration: none;
-//  }
-//
-//  .site-header__navigation {
-//    clear: both;
-//    transition: max-height .2s ease-out;
-//    min-width: fit-content;
-//    margin: 15px;
-//
-//    span {
-//      margin: 4px 12px;
-//      float: left;
-//
-//      a {
-//        @include color(color, --first-text-color, $theme-light-first-text-color);
-//        font-size: 18px;
-//        @include underline-from-center;
-//      }
-//
-//      a:hover {
-//        @include color(color, --accent-text-color, $theme-light-accent-text-color);
-//      }
-//    }
-//  }
-//
-
-//}
-//
 @media (max-width: 640px) {
   .menu-links {
     display: flex;

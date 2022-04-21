@@ -4,8 +4,9 @@ pre {
     font-size: $font-size-code;
     font-family: $font-mono;
 
-    border-top: 1px solid $color-base-lines;
-    border-bottom: 1px solid $color-base-lines;
+
+    @include border-color('border-top', 1px, solid, --second-text-color, $theme-light-second-text-color);
+    @include border-color('border-bottom', 1px, solid, --second-text-color, $theme-light-second-text-color);
 
     overflow-x: auto;
 }
