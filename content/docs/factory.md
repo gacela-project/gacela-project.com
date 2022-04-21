@@ -74,16 +74,21 @@ This map will be created in the `gacela.php` config file. For example:
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela
-{
-    public function mappingInterfaces(array $globalServices): array
-    {
-        return [
-            InterfaceToConcreteClass::class => ConcreteClass::class,
-            InterfaceToCallable::class => fn () => new ConcreteClass(/**/),
-        ];
-    }
-};
+return (new SetupGacela())
+    ->setMappingInterfaces(function (
+        MappingInterfacesBuilder $interfacesBuilder,
+        array $externalServices
+    ): void {
+        $interfacesBuilder->bind(
+            InterfaceToConcreteClass::class,
+            ConcreteClass::class
+        );
+        
+        $interfacesBuilder->bind(
+            InterfaceToCallable::class, 
+            fn () => new ConcreteClass(/**/)
+        );
+    });
 ```
 
 The major difference between these two are
@@ -103,10 +108,9 @@ by passing them in the entry point of your app:
 # A real example for a Symfony application
 $kernel = new Kernel($_SERVER['APP_ENV']);
 
-Gacela::bootstrap(
-    $appRootDir,
-    (new SetupGacela())->setGlobalServices(['symfony/kernel' => $kernel])
-);
+$setup = (new SetupGacela())->setGlobalServices(['symfony/kernel' => $kernel]);
+
+Gacela::bootstrap($appRootDir, $setup);
 ```
 
 this way you have access now to the global services, in this case the symfony kernel, so you
@@ -116,20 +120,17 @@ can map the EntityManagerInterface to the one that the `symfony.kernel.container
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return fn () => new class() extends AbstractConfigGacela
-{
-    public function mappingInterfaces(array $globalServices): array
-    {
+return (new SetupGacela())
+    ->setMappingInterfaces(function (
+        MappingInterfacesBuilder $interfacesBuilder,
+        array $externalServices
+    ): void {
         /** @var Kernel $kernel */
-        $kernel = $globalServices['symfony/kernel'];
+        $kernel = $externalServices['symfony/kernel'];
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
 
-        return [
-            EntityManagerInterface::class => fn() => $kernel
-                ->getContainer()
-                ->get('doctrine.orm.entity_manager'),
-        ];
-    }
-};
+        $interfacesBuilder->bind(EntityManagerInterface::class, $em);
+    });
 ```
 
 To see the complete example, please check out [this repository](https://github.com/gacela-project/symfony-gacela-example).
