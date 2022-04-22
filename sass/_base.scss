@@ -1,15 +1,13 @@
 :root {
   box-sizing: border-box;
   font-family: $font-primary;
-  line-height: 1.5;
-  background-color: white;
-  color: $color-text-primary;
   font-size: $font-size;
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
 }
 
 hr {
-  background-color: $color-base-lines;
+  @include color('background-color', --second-text-color, $theme-light-second-text-color);
   height: 1px;
   border: 0;
 }
@@ -22,7 +20,6 @@ nav {
 }
 
 a {
-  color: $color-base-primary;
   text-decoration: none;
 
   &:hover,
