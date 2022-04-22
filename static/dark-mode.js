@@ -1,3 +1,15 @@
+document.addEventListener("DOMContentLoaded", _ => {
+    gacelaLogoColor();
+});
+
+function gacelaLogoColor() {
+    let gacelaLogo = document.querySelector('#gacela-logo-head svg g');
+    if (gacelaLogo !== null) {
+        let svgColor = localStorage.theme !== 'dark' ? '#123456' : '#FFF';
+        gacelaLogo.setAttribute('stroke', svgColor);
+    }
+}
+
 window.toDarkMode = function () {
     localStorage.theme = "dark";
     localStorage.setItem('preference-theme', "theme-dark");
@@ -28,15 +40,7 @@ function updateTheme() {
     gacelaLogoColor();
 }
 
-function gacelaLogoColor() {
-    let gacelaLogo = document.querySelector('#gacela-logo-head svg g');
-    if (gacelaLogo !== null) {
-        let svgColor = localStorage.theme !== 'dark' ? '#123456' : '#FFF';
-        gacelaLogo.setAttribute('stroke', svgColor);
-    }
-}
-
-function addDynamicallyCssHighlightTheme(theme){
+function addDynamicallyCssHighlightTheme(theme) {
     const head = document.querySelector('head');
 
     const oldTheme = document.querySelector('.highlight_theme') ?? null;
