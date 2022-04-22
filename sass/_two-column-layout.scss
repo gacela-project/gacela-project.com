@@ -25,7 +25,7 @@
     max-width: unset;
 
     .two-column-layout__sidebar {
-      border-right: 1px solid $color-base-lines;
+      @include border-color('border-right', 1px, solid, --second-text-color, $theme-light-second-text-color);
       display: block;
       height: 100%;
       padding: 25px;
@@ -33,7 +33,7 @@
       width: 11.5em;
       margin-top: -43px;
 
-      .site-navigation{
+      .site-navigation {
         overflow-y: auto;
         max-height: calc(100vh - 7rem);
       }

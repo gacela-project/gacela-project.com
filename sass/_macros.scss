@@ -1,10 +1,9 @@
 @mixin color($property, $var, $fallback) {
-  #{$property}: $fallback;
   #{$property}: var($var, $fallback);
 }
 
-@mixin shadow($property, $shadow, $var, $fallback) {
-  #{$property}: $shadow var($var, $fallback);
+@mixin border-color($property, $px, $type, $var, $fallback) {
+  #{$property}: $px $type var($var, $fallback);
 }
 
 .theme-dark {

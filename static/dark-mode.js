@@ -1,25 +1,13 @@
 document.addEventListener("DOMContentLoaded", _ => {
-    gacelaLogoColor();
+    updateTheme()
 });
 
 function gacelaLogoColor() {
-    // // let currentTheme = localStorage.theme !== 'dark' ? 'light' : 'dark';
-    // let currentTheme = 'light';
-    // let svgColor = (currentTheme === 'dark') ? '#448aff' : '#FFF';
-    //
-    // let svgList = document.querySelectorAll('svg');
-    // svgList.forEach((svg) => {
-    //     let g = svg.querySelector('g');
-    //     if (g) {
-    //         g.setAttribute('stroke', svgColor);
-    //     }
-    // });
-    //
-    // let gitHubLogo = document.getElementById('fill-github');
-    // if (gitHubLogo !== null) {
-    //     gitHubLogo.setAttribute('fill', svgColor);
-    // }
-    // updateTheme();
+    let gacelaLogo = document.querySelector('#gacela-logo-head svg g');
+    if (gacelaLogo !== null) {
+        let svgColor = localStorage.theme !== 'dark' ? '#123456' : '#FFF';
+        gacelaLogo.setAttribute('stroke', svgColor);
+    }
 }
 
 window.toDarkMode = function () {
@@ -36,11 +24,11 @@ window.toLightMode = function () {
 
 function updateTheme() {
     switch (localStorage.theme) {
-        // case 'dark': // TODO: Not implemented yet.
-        //     document.documentElement.classList.add('theme-dark');
-        //     document.documentElement.setAttribute('color-theme', 'dark');
-        //     addDynamicallyCssHighlightTheme('dark');
-        //     break;
+        case 'dark':
+            document.documentElement.classList.add('theme-dark');
+            document.documentElement.setAttribute('color-theme', 'dark');
+            addDynamicallyCssHighlightTheme('dark');
+            break;
 
         default:
             document.documentElement.classList.remove('theme-dark');
@@ -51,8 +39,6 @@ function updateTheme() {
 
     gacelaLogoColor();
 }
-
-updateTheme();
 
 function addDynamicallyCssHighlightTheme(theme){
     const head = document.querySelector('head');
