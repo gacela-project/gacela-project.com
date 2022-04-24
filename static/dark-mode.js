@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", _ => {
 function gacelaLogoColor() {
     let gacelaLogo = document.querySelector('#gacela-logo-head svg g');
     if (gacelaLogo !== null) {
-        let svgColor = localStorage.theme !== 'dark' ? '#123456' : '#FFF';
+        let svgColor = localStorage.theme !== 'dark' ? '#123456' : '#b8b8b8';
         gacelaLogo.setAttribute('stroke', svgColor);
     }
 }

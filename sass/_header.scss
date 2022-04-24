@@ -1,6 +1,6 @@
 .site-header {
 
-  background-color: $color-base-primary;
+  @include color(background-color, --header-color, $theme-light-header-color);
   position: fixed;
   top: 0;
   left: 0;
@@ -50,7 +50,7 @@
         top: $header-height;
         bottom: 0;
         left: 0;
-        border-right: 1px solid $color-gray-lighter;
+        @include border-color('border-right', 1px, solid, --second-text-color, $theme-light-second-text-color);
         width: 15em;
         padding: 2em;
         @include color(background-color, --bg-color, $theme-light-bg-color);
