@@ -59,7 +59,8 @@ echo sprintf('Spam Score: %d', $score) . PHP_EOL;
 ## Use the Facade from your infrastructure layer
 
 You can easily access the Facade of your module from your infrastructure layer, like a Controller or a Command without
-the need of inheritance. You just need to use the trait: `FacadeResolverAwareTrait`.
+the need of inheritance. You just need to use the trait: `DocBlockResolverAwareTrait` and define the `getFacade()` method 
+in the DocBlock pointing to the concrete Facade.
 
 A usage example:
 ```php
@@ -69,7 +70,7 @@ A usage example:
  */
 final class TestCommand extends Command
 {
-    use FacadeResolverAwareTrait;
+    use DocBlockResolverAwareTrait;
     
     protected function configure(): void
     {
@@ -81,21 +82,16 @@ final class TestCommand extends Command
         $namespacesInformation = $this->getFacade()->getDependencies($paths);
         // etc ...
     }
-
-    protected function facadeClass(): string // This is the key!
-    {
-        return RunFacade::class;
-    }
 }
 ```
 
 #### Why not simply instantiate the Facade?
 
-Instantiating the Facade would be another alternative, but doing it this way Gacela will use the Locator singleton to avoid
-duplicating the creation of the same facade multiple times.
+Instantiating the Facade would be another alternative, but using `DocBlockResolverAwareTrait` Gacela will use the 
+Locator singleton to avoid duplicating the creation of the same Facade multiple times.
 
-#### How does this works?
+#### How do this works?
 
-Basically, the `FacadeResolverAwareTrait` forces to implement the method `facadeClass(): string` in which you have
-to explicitly define the Facade class name of the current module. This is the faster way to identify the module
-starting point, and Gacela will do the rest (of the autoloading of its Factory and other classes).  
+Basically, the `DocBlockResolverAwareTrait` resolves on runtime the type from that method, so this trait is not limited 
+to the Facade, but to any infrastructure class that you might want to load on the fly without the need of injecting via
+the constructor. Apart from this, Gacela will do the rest of the autoloading of its possible dependencies.  
