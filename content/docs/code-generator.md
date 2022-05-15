@@ -6,11 +6,18 @@ weight = 10
 Gacela Framework provides you some commands out-of-the-box to generate a `facade`, `factory`, `config`,
 `dependency provider` or a full `module` with a single command.
 
-- `make:module <target-namespace>`
-  - Creates a new Facade, Factory, Config, and Dependency Provider.
-- `make:file <target-namespace> [facade, factory, dependency-provider, config]`
-  - Create one or more files of the specified type/s.
+### Example
+```bash
+./vendor/bin/gacela make:module App/TestModule
+```
 
+#### Creates a new Facade, Factory, Config, and DependencyProvider
+```bash
+make:module <target-namespace>
+```
 
-Example:
-`./vendor/bin/gacela make:module App/TestModule`
+#### Create one or more files of the specified type/s
+```bash
+make:file <target-namespace> [facade, factory, dependency-provider, config]
+```
+

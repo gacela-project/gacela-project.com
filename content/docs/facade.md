@@ -74,13 +74,13 @@ final class TestCommand extends Command
     
     protected function configure(): void
     {
-        $this->setName(self::COMMAND_NAME);
+        $this->setName('test');
     }
-    
+
     protected function execute(InputInterface $in, OutputInterface $out): int
     {
-        $namespacesInformation = $this->getFacade()->getDependencies($paths);
-        // etc ...
+        $dependencies = $this->getFacade()->getDependencies($paths);
+        // ...
     }
 }
 ```

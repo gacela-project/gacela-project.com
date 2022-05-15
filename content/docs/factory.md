@@ -61,76 +61,74 @@ final class SpamChecker
 }
 ```
 
-## Autowiring dependencies into the Factory
+## Auto-wiring dependencies into the Factory
 
 Gacela can resolve automatically the dependencies for the Factory. If the dependency is a concrete class it will create
 a new instance of it - recursively with their inner dependencies as well. But, if the dependency is an interface, then
 the way to tell Gacela which instance do you want to create you need to create a map between the interface and the
-concrete class or object that you want to use.
-
-This map will be created in the `gacela.php` config file. For example:
+concrete class or object that you want to use. For example:
 ```php
 <?php # gacela.php
 
-use Gacela\Framework\AbstractConfigGacela;
+return function (GacelaConfig $config) {
+    $config->addMappingInterface(
+        InterfaceToConcreteClass::class,
+        ConcreteClass::class
+    );
 
-return (new SetupGacela())
-    ->setMappingInterfaces(function (
-        MappingInterfacesBuilder $interfacesBuilder,
-        array $externalServices
-    ): void {
-        $interfacesBuilder->bind(
-            InterfaceToConcreteClass::class,
-            ConcreteClass::class
-        );
-        
-        $interfacesBuilder->bind(
-            InterfaceToCallable::class, 
-            fn () => new ConcreteClass(/**/)
-        );
-    });
+    $config->addMappingInterface(
+        InterfaceToCallable::class, 
+        fn () => new ConcreteClass()
+    );
+};
 ```
 
-The major difference between these two are
+The major difference between these two are:
 
 - the `InterfaceToConcreteClass` will be resolved by creating an instance of that `ConcreteClass` on the fly (even using
   auto-wiring for its dependencies recursively if needed).
 - the `InterfaceToCallable` won't create a new instance, but instead it will use the instance that you might want to.
+- using a callable as value (the `fn () => ...`) is also a "lazy loading", so it will delay the execution of that code
+  till its needed.
 
 Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/master/gacela.php#L28)
 
-## Injecting global services to Gacela config
+### Injecting external services to Gacela config
 
-You can let know Gacela the global services that you want to have access in your `gacela.php` config file
+You can let know Gacela the external services that you want to have access in your `gacela.php` config file
 by passing them in the entry point of your app:
 ```php
 <?php # public/index.php
-# A real example for a Symfony application
+namespace Symfony\Component\HttpKernel\Kernel;
+# A real example for a Symfony application ...
 $kernel = new Kernel($_SERVER['APP_ENV']);
 
-$setup = (new SetupGacela())->setGlobalServices(['symfony/kernel' => $kernel]);
+$configFn = fn (GacelaConfig $config) => $config
+    ->addExternalService('symfony/kernel', $kernel);
 
-Gacela::bootstrap($appRootDir, $setup);
+Gacela::bootstrap($appRootDir, $configFn);
 ```
 
-this way you have access now to the global services, in this case the symfony kernel, so you
-can map the EntityManagerInterface to the one that the `symfony.kernel.container` itself already created:
+You have access now to the external services (in this case the symfony kernel), so you can map the 
+`EntityManagerInterface` to the one that the `symfony.kernel.container` itself already created:
 ```php
 <?php # gacela.php
 
 use Gacela\Framework\AbstractConfigGacela;
 
-return (new SetupGacela())
-    ->setMappingInterfaces(function (
-        MappingInterfacesBuilder $interfacesBuilder,
-        array $externalServices
-    ): void {
-        /** @var Kernel $kernel */
-        $kernel = $externalServices['symfony/kernel'];
-        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+return function (GacelaConfig $config) {
+    /** 
+     * Using $config we can get the service that we added in `public/index.php`
+     * 
+     * @var Kernel $kernel
+     */
+    $kernel = $config->getExternalService('symfony/kernel');
 
-        $interfacesBuilder->bind(EntityManagerInterface::class, $em);
-    });
+    $config->addMappingInterface(
+        EntityManagerInterface::class,
+        fn () => $kernel->getContainer()->get('doctrine.orm.entity_manager')
+    );
+});
 ```
 
 To see the complete example, please check out [this repository](https://github.com/gacela-project/symfony-gacela-example).
