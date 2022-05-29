@@ -19,7 +19,7 @@ modules to interact with each other in a unified way by following these rules:
 application-name
 ├── gacela.php                     # You can customize some behaviours of gacela. 
 │
-├── config                         # Default config behaviour. Changeable in `gacela.php`.
+├── config
 │   ├── default.php
 │   └── local.php
 │
