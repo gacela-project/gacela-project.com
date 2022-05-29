@@ -15,7 +15,10 @@ Gacela should be bootstrapped using the `Gacela::bootstrap` function.<br>
 Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void { ... });
 ```
 
-## Using `gacela.php` in your application root dir which it returns a `Closure(GacelaConfig)` function. 
+### The `gacela.php` file
+
+You can define the configuration as second parameter in the `Gacela::bootstrap()` in your `index.php` or, alternatively,
+you can create a `gacela.php` file in your application root directory which returns a `Closure(GacelaConfig)` function.
 
 ```php
 <?php # gacela.php
@@ -23,10 +26,10 @@ Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void { ... });
 return function (GacelaConfig $config): void { ... };
 ```
 
-## `$configFn` Closure(GacelaConfig)
+## GacelaConfig
 
-You can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the root of your project,
-however, if this file exists, it will be combined with the configuration from `Gacela::bootstrap()`.<br/>
+As we just mention, you can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
+root of your project, however, if this file exists, it will be combined with the configuration from `Gacela::bootstrap()`.<br/>
 It is not mandatory but recommended having a `gacela.php` file in order to decouple and centralize the custom Gacela configuration.
 
 In other words, you can modify some Gacela behaviour from two different places:
@@ -60,7 +63,7 @@ You can add to `addAppConfig()` method as many config locations as you want.
   some cases.
 - `reader`: Define the reader class which will read and parse the config files. It must implement `ConfigReaderInterface`.
 
-#### Multiple and different config files
+Multiple and different environment config files
 
 ```php
 <?php
@@ -76,18 +79,16 @@ $configFn = function (GacelaConfig $config): void {
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
 
-##### Simple mapping
-
-The MappingInterfacesBuilder instance let you bind a class with another class `interface => concreteClass|callable|string-class`
-that you want to resolve. For example:
+The `addMappingInterface()` let you bind a class with another class
+`interface => concreteClass|callable|string-class` that you want to resolve. For example:
 
 ```php
 <?php
 $configFn = function (GacelaConfig $config): void {
-    $config->setMappingInterfaces(AbstractString::class, StringClass::class);
-    $config->setMappingInterfaces(ClassInterface::class, new ConcreteClass(/*args*/));
-    $config->setMappingInterfaces(ComplexInterface::class, new class() implements Foo { /** logic */ });
-    $config->setMappingInterfaces(FromCallable::class, fn() => new StringClass('From callable'));
+    $config->addMappingInterface(AbstractString::class, StringClass::class);
+    $config->addMappingInterface(ClassInterface::class, new ConcreteClass(/*args*/));
+    $config->addMappingInterface(ComplexInterface::class, new class() implements Foo { /** logic */ });
+    $config->addMappingInterface(FromCallable::class, fn() => new StringClass('From callable'));
 };
 ```
 
@@ -128,7 +129,7 @@ resolved for your different modules. You can do this by adding custom gacela res
 ```php
 <?php
 $configFn = function (GacelaConfig $config): void {
-    $config->addSuffixTypeFacade('Fac');
+    $config->addSuffixTypeFacade('EntryPoint');
     $config->addSuffixTypeFactory('Creator');
     $config->addSuffixTypeConfig('Conf');
     $config->addSuffixTypeDependencyProvider('Binder');
@@ -141,11 +142,10 @@ In the example above, you'll be able to create a gacela module with these file n
 ExampleModule
 ├── Domain
 │   └── YourLogicClass.php
-├── Fac.php         # this is the `Facade`
+├── EntryPoint.php  # this is the `Facade`
 ├── Creator.php     # this is the `Factory`
 └── Conf.php        # this is the `Config`
-├── Binder.php      # this is the `DependencyProvider` 
-└── EntryPoint.php  # this is the `Facade`
+└── Binder.php      # this is the `DependencyProvider` 
 ```
 
 ### Reset Cache
@@ -203,7 +203,7 @@ namespace Symfony\Component\HttpKernel\Kernel;
 # ...
 $kernel = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
 
-$configFn = function (GacelaConfig $config): void {
+$configFn = function (GacelaConfig $config) use ($kernel): void {
     $config->addExternalService('symfony/kernel', $kernel);
 }
 
