@@ -96,18 +96,18 @@ In the example above, whenever `OneInterface::class` is found then `OneConcrete:
 
 #### Using externalServices
 
-First, we set global services as a key-value array from the `GacelaConfig->setExternalServices()`.
-In this example `'concreteClass'`:
+First, we set a global service using `GacelaConfig->addExternalService(string, class-string|object|callable)` (you can 
+set as many as you need). In this example `'concreteClass'`:
 
 ```php
 <?php # index.php
 $configFn = function (GacelaConfig $config): void {
-    $config->setExternalServices(['concreteClass' => ConcreteClass::class]);
+    $config->addExternalService('concreteClass', ConcreteClass::class);
 }
-Gacela::bootstrap($appRootDir, $setup);
+Gacela::bootstrap($appRootDir, $configFn);
 ```
 
-This way we can access the value of that key `'concreteClass'` in the `gacela.php` from `$config->getExternalService()`.
+This way we can access the value of that key `'concreteClass'` in the `gacela.php` from `$config->getExternalService(string)`.
 For example:
 ```php
 <?php # gacela.php
