@@ -52,6 +52,7 @@ $configFn = function (GacelaConfig $config): void {
         reader: PhpConfigReader::class 
     );
 };
+Gacela::bootstrap($appRootDir, $configFn);
 ```
 
 You can add to `addAppConfig()` method as many config locations as you want.
@@ -72,6 +73,7 @@ $configFn = function (GacelaConfig $config): void {
     $config->addAppConfig('config/*.custom', '', CustomConfigReader::class);
     $config->addAppConfig('config/*.php', 'config/local.php');
 };
+Gacela::bootstrap($appRootDir, $configFn);
 ```
 
 ### Mapping Interfaces
@@ -148,17 +150,46 @@ ExampleModule
 └── Binder.php      # this is the `DependencyProvider` 
 ```
 
-### Reset Cache
+### Enable Cache
 
 This flag will remove the cache from the auto-resolved services when the `Gacela::bootstrap()` method is executed.
 If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a
-global singleton pattern to store the resolved dependencies.
+global singleton pattern to store the resolved dependencies. This value by default is `true`.
+
 
 ```php
 <?php
 $configFn = function (GacelaConfig $config): void {
-    $config->setResetCache(false);
+    $config->setCacheEnabled(true);
 };
+Gacela::bootstrap(__DIR__, $configFn);
+```
+
+### Cache Directory
+
+When the method `setCacheEnabled()` is `true`, a new `/data/cache` folder will be created in the root of your project
+with the resolved classes.
+
+> You can customize the cache directory name considering the root app directory. This is the first argument you pass
+> when bootstrapping gacela: `Gacela::bootstrap(_DIR_)`.
+
+```php
+<?php
+$configFn = function (GacelaConfig $config): void {
+    $config->setCacheDirectory('/data/cache');
+};
+Gacela::bootstrap(__DIR__, $configFn);
+```
+
+### Project Cache
+
+You can also enable or disable the gacela file cache system via your project config values.
+
+```php
+<?php
+return [
+    GacelaCache::KEY_ENABLED => true|false,
+];
 ```
 
 ## A complete example using gacela.php
@@ -186,7 +217,10 @@ $configFn = function (GacelaConfig $config): void {
 
         // Remove the cache from Gacela when Gacela::bootstrap() is executed,
         // this is very handy for some integration tests.
-        ->setResetCache(false);
+        ->setCacheEnabled(false)
+
+        // Define a custom cache directory if cache is enabled.
+        ->setCacheDirectory('var/custom-cache-directory');
 };
 ```
 
