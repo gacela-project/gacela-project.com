@@ -26,6 +26,22 @@ you can create a `gacela.php` file in your application root directory which retu
 return function (GacelaConfig $config): void { ... };
 ```
 
+### Different environments
+
+You can define a **gacela configuration file** for different environments using `APP_ENV` environment variable.
+In case you have such gacela file with that suffix of the environment in the file, it will load that configuration 
+afterwards.
+
+For example:
+- `APP_ENV=dev` -> will load `gacela-dev.php`
+- `APP_ENV=prod` -> will load `gacela-prod.php`
+- `APP_ENV=anything` -> will load `gacela-anything.php`
+
+The loading of this particular file will happen after the default `gacela.php` (if exists). So it will override (or add) 
+the possible values you might have defined in the default `gacela.php` file.
+
+(A similar behaviour already exists for your app config files. See: [Config files for diff env](/docs/config/#config-files-for-different-environments).)
+
 ## GacelaConfig
 
 As we just mention, you can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
