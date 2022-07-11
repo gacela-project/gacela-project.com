@@ -7,7 +7,7 @@ This concept is not a design pattern itself, but it's designed in a way that you
 your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business
 objects with specific configuration values clearly and straightforwardly.
 
-Note: This example will use the "Config PHP files" by default. This is all files in `'config/*.php'`.
+Note: This example will use the "Config PHP files" by default; all files in `'config/*.php'`.
 
 ### The config file
 
@@ -87,3 +87,34 @@ final class CommentFacade extends AbstractFacade
     }
 }
 ```
+
+### Config files for different environments
+
+You can load (on top of the existing application config files) some particular files with the same suffix as
+the `APP_ENV` values in the config files. For example, having this config setup:
+```php
+<?php
+Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void {
+    $config->addAppConfig('config/default.php');
+});
+```
+
+```php
+<?php # config/default.php
+
+return [
+    'AKISMET-KEY' => 'default-akismet-key',
+];
+```
+
+```php
+<?php # config/default-prod.php
+
+return [
+    'AKISMET-KEY' => 'production-akismet-key',
+];
+```
+
+Then the config value that we will get when looking for `'AKISMET-KEY` will be:
+- If we don't have any `APP_ENV`, then `default-akismet-key`
+- If we have `APP_ENV=prod`, then `production-akismet-key`
