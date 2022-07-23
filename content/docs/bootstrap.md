@@ -208,6 +208,42 @@ return [
 ];
 ```
 
+### Project Namespaces
+
+You can add your project namespaces to be able to resolve gacela classes with priorities. 
+
+Gacela will start looking on your project namespaces when trying to resolve any gacela resolvable classes, eg: 
+`Facade`, `Factory`, `Config`, or `DependencyProvider`.
+
+Let's visualize it with an example. Consider this structure:
+```
+├── gacela.php
+├── index.php # entry point
+├── src
+│   ├── Main
+│   │   └── ModuleA
+│   │       └── Factory.php
+└── vendor
+    └── third-party
+        └── ModuleA
+            ├── Facade.php
+            └── Factory.php
+```
+
+```php
+<?php # gacela.php
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config): void {
+    $config->setProjectNamespaces(['Main']);
+});
+```
+
+Because you have defined `Main` as your project namespace, when you use the `ModuleA\Facade` from vendor, that Facade
+will load the Factory from `src/Main/ModuleA/Factory` and not `vendor/third-party/ModuleA/Factory` because `Main` has 
+priority (over `third-party`, in this case). 
+
+**TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your 
+project namespaces.
+
 ## A complete example using gacela.php
 
 ```php
@@ -236,7 +272,10 @@ $configFn = function (GacelaConfig $config): void {
         ->setCacheEnabled(false)
 
         // Define a custom cache directory if cache is enabled.
-        ->setCacheDirectory('var/custom-cache-directory');
+        ->setCacheDirectory('var/custom-cache-directory')
+        
+        // Define your project namespace resolve gacela classes with priorities.
+        ->setProjectNamespaces(['App']);
 };
 ```
 
