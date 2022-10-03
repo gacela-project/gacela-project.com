@@ -275,8 +275,8 @@ return function (GacelaConfig $config): void {
         ->setProjectNamespaces(['App'])
         
         // Enable Gacela profiler with a custom profiler directory.
-       ->setProfilerEnabled(true)
-       ->setProfilerDirectory('data/profiler');
+        ->setProfilerEnabled(true)
+        ->setProfilerDirectory('data/profiler');
 };
 ```
 
