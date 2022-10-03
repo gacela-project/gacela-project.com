@@ -60,15 +60,14 @@ readers. The `PhpConfigReader` is used by default.
 
 #### Config PHP files
 ```php
-<?php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config->addAppConfig(
         path: 'config/*.php',
         pathLocal: 'config/local.php',
         reader: PhpConfigReader::class 
     );
 };
-Gacela::bootstrap($appRootDir, $configFn);
 ```
 
 You can add to `addAppConfig()` method as many config locations as you want.
@@ -83,13 +82,12 @@ You can add to `addAppConfig()` method as many config locations as you want.
 Multiple and different environment config files
 
 ```php
-<?php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config->addAppConfig('config/.env', '', EnvConfigReader::class);
     $config->addAppConfig('config/*.custom', '', CustomConfigReader::class);
     $config->addAppConfig('config/*.php', 'config/local.php');
 };
-Gacela::bootstrap($appRootDir, $configFn);
 ```
 
 ### Mapping Interfaces
@@ -101,8 +99,8 @@ The `addMappingInterface()` let you bind a class with another class
 `interface => concreteClass|callable|string-class` that you want to resolve. For example:
 
 ```php
-<?php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config->addMappingInterface(AbstractString::class, StringClass::class);
     $config->addMappingInterface(ClassInterface::class, new ConcreteClass(/*args*/));
     $config->addMappingInterface(ComplexInterface::class, new class() implements Foo { /** logic */ });
@@ -118,11 +116,10 @@ First, we set a global service using `GacelaConfig->addExternalService(string, c
 set as many as you need). In this example `'concreteClass'`:
 
 ```php
-<?php # index.php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config->addExternalService('concreteClass', ConcreteClass::class);
 }
-Gacela::bootstrap($appRootDir, $configFn);
 ```
 
 This way we can access the value of that key `'concreteClass'` in the `gacela.php` from `$config->getExternalService(string)`.
@@ -145,8 +142,8 @@ Apart from the known Gacela suffix classes: `Factory`, `Config`, and `Dependency
 resolved for your different modules. You can do this by adding custom gacela resolvable types.
 
 ```php
-<?php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config->addSuffixTypeFacade('EntryPoint');
     $config->addSuffixTypeFactory('Creator');
     $config->addSuffixTypeConfig('Conf');
@@ -168,44 +165,17 @@ ExampleModule
 
 ### Enable Cache
 
-This flag will remove the cache from the auto-resolved services when the `Gacela::bootstrap()` method is executed.
+This flag will remove the "in memory cache" from the auto-resolved services when the `Gacela::bootstrap()` method is executed.
 If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a
 global singleton pattern to store the resolved dependencies. This value by default is `true`.
 
 
 ```php
-<?php
+<?php # gacela.php
 $configFn = function (GacelaConfig $config): void {
     $config->setCacheEnabled(true);
 };
 Gacela::bootstrap(__DIR__, $configFn);
-```
-
-### Cache Directory
-
-When the method `setCacheEnabled()` is `true`, a new `/data/cache` folder will be created in the root of your project
-with the resolved classes.
-
-> You can customize the cache directory name considering the root app directory. This is the first argument you pass
-> when bootstrapping gacela: `Gacela::bootstrap(_DIR_)`.
-
-```php
-<?php
-$configFn = function (GacelaConfig $config): void {
-    $config->setCacheDirectory('/data/cache');
-};
-Gacela::bootstrap(__DIR__, $configFn);
-```
-
-### Project Cache
-
-You can also enable or disable the gacela file cache system via your project config values.
-
-```php
-<?php
-return [
-    GacelaCache::KEY_ENABLED => true|false,
-];
 ```
 
 ### Project Namespaces
@@ -232,9 +202,9 @@ Let's visualize it with an example. Consider this structure:
 
 ```php
 <?php # gacela.php
-Gacela::bootstrap(__DIR__, function (GacelaConfig $config): void {
+return function (GacelaConfig $config): void {
     $config->setProjectNamespaces(['Main']);
-});
+};
 ```
 
 Because you have defined `Main` as your project namespace, when you use the `ModuleA\Facade` from vendor, that Facade
@@ -244,11 +214,38 @@ priority (over `third-party`, in this case).
 **TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your 
 project namespaces.
 
+### Gacela Profiler
+
+When the method `setProfilerEnabled()` is `true`, a new `.gacela/profiler` folder will be created in the root of
+your project with the resolved classes.
+
+> You can customize the profiler directory name considering the root app directory. This is the first argument you pass
+> when bootstrapping gacela: `Gacela::bootstrap(_DIR_)`.
+
+```php
+<?php # gacela.php
+return function (GacelaConfig $config): void {
+    $config->setProfilerEnabled(true);
+    $config->setProfilerDirectory('.gacela/profiler');
+};
+```
+
+You can also enable or disable the gacela file cache system via your project config values.
+
+```php
+<?php # config/default.php
+use Gacela\Framework\ClassResolver\Profiler\GacelaProfiler;
+
+return [
+    GacelaProfiler::KEY_ENABLED => true|false,
+];
+```
+
 ## A complete example using gacela.php
 
 ```php
-<?php
-$configFn = function (GacelaConfig $config): void {
+<?php # gacela.php
+return function (GacelaConfig $config): void {
     $config
         // Define different config sources.
         ->addAppConfig('config/*.php', 'config/override.php')
@@ -275,7 +272,11 @@ $configFn = function (GacelaConfig $config): void {
         ->setCacheDirectory('var/custom-cache-directory')
         
         // Define your project namespace resolve gacela classes with priorities.
-        ->setProjectNamespaces(['App']);
+        ->setProjectNamespaces(['App'])
+        
+        // Enable Gacela profiler with a custom profiler directory.
+       ->setProfilerEnabled(true)
+       ->setProfilerDirectory('data/profiler');
 };
 ```
 
