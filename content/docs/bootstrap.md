@@ -267,9 +267,6 @@ return function (GacelaConfig $config): void {
         // Remove the cache from Gacela when Gacela::bootstrap() is executed,
         // this is very handy for some integration tests.
         ->setCacheEnabled(false)
-
-        // Define a custom cache directory if cache is enabled.
-        ->setCacheDirectory('var/custom-cache-directory')
         
         // Define your project namespace resolve gacela classes with priorities.
         ->setProjectNamespaces(['App'])
