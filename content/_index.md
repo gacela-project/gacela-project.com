@@ -2,14 +2,14 @@
 title = "Home"
 +++
 
-## Build a modular PHP application with Gacela
+## Gacela helps you build modular applications
 
-#### Gacela helps you to split the logic of your app into different modules
+**VISION**: Simplify the communication of your different modules in your web application.
 
-Splitting your project into different modules will help its design in
-terms of maintainability and scalability. It will certainly encourage your modules to interact with each
-other in a unified way by
-following these rules:
+**MISSION**: Normalize the entry point of a module, without interfering with your domain-business logic.
+
+Splitting your project into different modules help in terms of maintainability and scalability.
+It encourages your modules to interact with each other in a unified way by following these rules:
 
 - Modules interact with each other **only** via their _Facade_.
 - The [Facade](/docs/facade) has access to the _Factory_.
