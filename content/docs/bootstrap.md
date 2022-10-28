@@ -262,10 +262,6 @@ return function (GacelaConfig $config): void {
             CustomInterface::class,
             $config->getExternalService('CustomClassKey')
         )
-
-        // Remove the cache from Gacela when Gacela::bootstrap() is executed,
-        // this is very handy for some integration tests.
-        ->setCacheEnabled(false)
         
         // Define your project namespace resolve gacela classes with priorities.
         ->setProjectNamespaces(['App'])
