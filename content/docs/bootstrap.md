@@ -163,21 +163,6 @@ ExampleModule
 └── Binder.php      # this is the `DependencyProvider` 
 ```
 
-### Enable Cache
-
-This flag will remove the "in memory cache" from the auto-resolved services when the `Gacela::bootstrap()` method is executed.
-If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a
-global singleton pattern to store the resolved dependencies. This value by default is `true`.
-
-
-```php
-<?php # gacela.php
-$configFn = function (GacelaConfig $config): void {
-    $config->setCacheEnabled(true);
-};
-Gacela::bootstrap(__DIR__, $configFn);
-```
-
 ### Project Namespaces
 
 You can add your project namespaces to be able to resolve gacela classes with priorities. 
@@ -214,19 +199,19 @@ priority (over `third-party`, in this case).
 **TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your 
 project namespaces.
 
-### Gacela Profiler
+### Gacela File Cache
 
-When the method `setProfilerEnabled()` is `true`, a new `.gacela/profiler` folder will be created in the root of
+When the method `setFileCacheEnabled()` is `true`, a new `.gacela/cache` folder will be created in the root of
 your project with the resolved classes.
 
-> You can customize the profiler directory name considering the root app directory. This is the first argument you pass
-> when bootstrapping gacela: `Gacela::bootstrap(_DIR_)`.
+> You can customize the file cache directory name considering the root app directory. This is the first argument you pass
+> when bootstrapping gacela: `Gacela::bootstrap(__DIR__)`.
 
 ```php
 <?php # gacela.php
 return function (GacelaConfig $config): void {
-    $config->setProfilerEnabled(true);
-    $config->setProfilerDirectory('.gacela/profiler');
+    $config->setFileCacheEnabled(true);
+    $config->setFileCacheDirectory('.gacela/cache');
 };
 ```
 
@@ -234,12 +219,26 @@ You can also enable or disable the gacela file cache system via your project con
 
 ```php
 <?php # config/default.php
-use Gacela\Framework\ClassResolver\Profiler\GacelaProfiler;
+use Gacela\Framework\ClassResolver\Cache\GacelaFileCache;
 
 return [
-    GacelaProfiler::KEY_ENABLED => true|false,
+    GacelaFileCache::KEY_ENABLED => true|false,
 ];
 ```
+
+### Reset internal InMemoryCache
+
+If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a
+global singleton pattern to store the resolved dependencies. This value by default is `false`.
+
+```php
+<?php # gacela.php
+$configFn = function (GacelaConfig $config): void {
+    $config->shouldResetInMemoryCache();
+};
+Gacela::bootstrap(__DIR__, $configFn);
+```
+
 
 ## A complete example using gacela.php
 
@@ -271,9 +270,9 @@ return function (GacelaConfig $config): void {
         // Define your project namespace resolve gacela classes with priorities.
         ->setProjectNamespaces(['App'])
         
-        // Enable Gacela profiler with a custom profiler directory.
-        ->setProfilerEnabled(true)
-        ->setProfilerDirectory('data/profiler');
+        // Enable Gacela file cache system with a custom cache directory.
+        ->setFileCacheEnabled(true)
+        ->setFileCacheDirectory('.gacela/cache');
 };
 ```
 
