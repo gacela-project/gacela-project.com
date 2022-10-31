@@ -17,7 +17,7 @@ Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void { ... });
 
 ### The `gacela.php` file
 
-You can define the configuration as second parameter in the `Gacela::bootstrap()` in your `index.php` or, alternatively,
+You can define the configuration as the second parameter in the `Gacela::bootstrap()` in your `index.php` or, alternatively,
 you can create a `gacela.php` file in your application root directory which returns a `Closure(GacelaConfig)` function.
 
 ```php
@@ -28,9 +28,8 @@ return function (GacelaConfig $config): void { ... };
 
 ### Different environments
 
-You can define a **gacela configuration file** for different environments using `APP_ENV` environment variable.
-In case you have such gacela file with that suffix of the environment in the file, it will load that configuration 
-afterwards.
+You can define a **gacela configuration file** for different environments using the `APP_ENV` environment variable.
+Where you have a Gacela file with the suffix of the environment in the file name, it will load that configuration.
 
 For example:
 - `APP_ENV=dev` -> will load `gacela-dev.php`
@@ -44,7 +43,7 @@ the possible values you might have defined in the default `gacela.php` file.
 
 ## GacelaConfig
 
-As we just mention, you can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
+As we just mentioned, you can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
 root of your project, however, if this file exists, it will be combined with the configuration from `Gacela::bootstrap()`.<br/>
 It is not mandatory but recommended having a `gacela.php` file in order to decouple and centralize the custom Gacela configuration.
 
@@ -95,7 +94,7 @@ return function (GacelaConfig $config): void {
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
 
-The `addMappingInterface()` let you bind a class with another class
+The `addMappingInterface()` method will let you bind a class with another class
 `interface => concreteClass|callable|string-class` that you want to resolve. For example:
 
 ```php
@@ -318,7 +317,6 @@ return function (GacelaConfig $config): void {
 ```
 
 In our current example (using Symfony) we want to use the doctrine service from the `kernel.container` and not just "a new
-one". A new one wouldn't have all services and stuff already define as the original one would have.
+one". A new one wouldn't have all services and stuff already defined as the original one would have.
 
-> Extra: using the `fn() => ...` as value when doing `addMappingInterface()` is to delay the execution of getContainer()
-> till later when is really needed as a "lazy loading".
+> Extra: using the `fn() => ...` as value when doing `addMappingInterface()` allows us to delay the execution of getContainer() to when it is really needed i.e. "lazy loading".
