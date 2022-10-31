@@ -109,7 +109,7 @@ $configFn = fn (GacelaConfig $config) => $config
 Gacela::bootstrap($appRootDir, $configFn);
 ```
 
-You have access now to the external services (in this case the symfony kernel), so you can map the 
+You now have access to the external services (in this case the symfony kernel), so you can map the 
 `EntityManagerInterface` to the one that the `symfony.kernel.container` itself already created:
 ```php
 <?php # gacela.php
