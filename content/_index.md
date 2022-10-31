@@ -2,13 +2,13 @@
 title = "Home"
 +++
 
-## Gacela helps you build modular applications
+## Gacela helps you build modular PHP applications
 
 **VISION**: Simplify the communication of your different modules in your web application.
 
 **MISSION**: Normalize the entry point of a module, without interfering with your domain-business logic.
 
-Splitting your project into different modules help in terms of maintainability and scalability.
+Splitting your project into different modules is vital for the maintainability and scalability for your app.
 It encourages your modules to interact with each other in a unified way by following these rules:
 
 - Modules interact with each other **only** via their _Facade_.
@@ -31,4 +31,10 @@ It encourages your modules to interact with each other in a unified way by follo
 
 ### Examples
 
-You can see an example of a module using gacela in this [repository](https://github.com/gacela-project/gacela-example).
+You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
+
+See how Gacela works with **Laravel** in this [repository](https://github.com/gacela-project/laravel-gacela-example).
+
+See how Gacela works with **Symfony** in this [repository](https://github.com/gacela-project/symfony-gacela-example).
+
+See how Gacela works with a real work wrapper for the Sprykjer Glue API in this [repository](https://github.com/the-customer-bureau/SprykerPHPBridgeGacela).
