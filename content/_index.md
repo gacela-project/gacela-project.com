@@ -36,5 +36,3 @@ You can see an example of a module using Gacela in this [repository](https://git
 See how Gacela works with **Laravel** in this [repository](https://github.com/gacela-project/laravel-gacela-example).
 
 See how Gacela works with **Symfony** in this [repository](https://github.com/gacela-project/symfony-gacela-example).
-
-See how Gacela works with a real work wrapper for the Sprykjer Glue API in this [repository](https://github.com/the-customer-bureau/SprykerPHPBridgeGacela).
