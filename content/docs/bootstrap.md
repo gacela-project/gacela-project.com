@@ -224,6 +224,63 @@ return [
     GacelaFileCache::KEY_ENABLED => true|false,
 ];
 ```
+### Listening internal gacela events
+
+Gacela has an internal event-listener system that dispatches a variety of events.
+These are read-only events interesting for tracing, debugging or act on them as you want.
+
+#### Register a generic listener to all internal gacela events
+
+```php
+<?php # gacela.php
+return function (GacelaConfig $config): void {
+    $config->registerGenericListener(
+        function (GacelaEventInterface $event): void {
+            echo $event->toString();
+        }
+    );
+};
+```
+
+#### Register a specific listener to one internal gacela event
+
+```php
+<?php # gacela.php
+return function (GacelaConfig $config): void {
+    $config->registerSpecificListener(
+        ResolvedClassCreatedEvent::class, 
+        function (GacelaEventInterface $event): void {
+            echo $event->toString();
+        }
+    );
+};
+```
+
+#### List of supported events
+
+##### Gacela\Framework\Event\ClassResolver\ClassNameFinder
+- ClassNameInvalidCandidateFoundEvent
+- ClassNameNotFoundEvent
+- ClassNameCachedFoundEvent
+- ClassNameValidCandidateFoundEvent
+
+##### Gacela\Framework\Event\ConfigReader
+- ReadPhpConfigEvent
+
+##### Gacela\Framework\Event\ClassResolver
+- AbstractGacelaClassResolverEvent
+- ResolvedClassCachedEvent
+- ResolvedClassCreatedEvent
+- ResolvedCreatedDefaultClassEvent
+- ResolvedClassTriedFromParentEvent
+
+##### Gacela\Framework\Event\ClassResolver\Cache
+- ClassNameCacheCachedEvent
+- ClassNamePhpCacheCreatedEvent
+- ClassNameInMemoryCacheCreatedEvent
+- CustomServicesCacheCachedEvent
+- CustomServicesPhpCacheCreatedEvent
+- CustomServicesInMemoryCacheCreatedEvent
 
 ### Reset internal InMemoryCache
 
@@ -267,7 +324,21 @@ return function (GacelaConfig $config): void {
         
         // Enable Gacela file cache system with a custom cache directory.
         ->setFileCacheEnabled(true)
-        ->setFileCacheDirectory('.gacela/cache');
+        ->setFileCacheDirectory('.gacela/cache')
+        
+        // Listening all internal gacela events
+        ->registerGenericListener(
+            function (GacelaEventInterface $event): void {
+                echo $event->toString();
+            }
+        )
+        // Listening a concrete internal gacela event
+        ->registerSpecificListener(
+            ResolvedClassCreatedEvent::class, 
+            function (GacelaEventInterface $event): void {
+                echo $event->toString();
+            }
+        );
 };
 ```
 
