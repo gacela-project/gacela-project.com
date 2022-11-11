@@ -11,11 +11,11 @@ title = "Home"
 Splitting your project into different modules is vital for the maintainability and scalability for your app.
 It encourages your modules to interact with each other in a unified way by following these rules:
 
-- Modules interact with each other **only** via their _Facade_.
-- The [Facade](/docs/facade) has access to the _Factory_.
-- The [Factory](/docs/factory) creates the module's objects.
-- The [Config](/docs/config) is accessible from the _Factory_.
-- The [DependencyProvider](/docs/dependency-provider) gets other _Facades_.
+- Modules interact with each other **only** via their **Facade**
+- The [**Facade**](/docs/facade) is the *entry point* of a module
+- The [**Factory**](/docs/factory) manage the *intra-dependencies* the module
+- The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
+- The [**Config**](/docs/config) has access to the project's *config files*
 
 ### Installation
 
