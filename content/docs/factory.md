@@ -4,10 +4,10 @@ weight = 4
 +++
 
 The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to
-orchestrate the creation of different classes, and it's dependencies (through DependencyProvider or Config).
+orchestrate the creation of different classes, and its dependencies (through DependencyProvider or Config).
 
-- The Factory creates the classes of your module and its dependencies.
-- The Factory is accessible to the Facade (with `getFactory()`).
+- The Factory creates the classes of your module and its dependencies
+- The Factory is accessible to the Facade (with `getFactory()`)
 
 ## Creating your objects
 
@@ -99,9 +99,9 @@ You can let know Gacela the external services that you want to have access in yo
 by passing them in the entry point of your app:
 ```php
 <?php # public/index.php
-namespace Symfony\Component\HttpKernel\Kernel;
+
 # A real example for a Symfony application ...
-$kernel = new Kernel($_SERVER['APP_ENV']);
+$kernel = new \Symfony\Component\HttpKernel\Kernel($_SERVER['APP_ENV']);
 
 $configFn = fn (GacelaConfig $config) => $config
     ->addExternalService('symfony/kernel', $kernel);
