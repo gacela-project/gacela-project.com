@@ -6,8 +6,8 @@ weight = 1
 ## Initializing Gacela
 
 Gacela should be bootstrapped using the `Gacela::bootstrap` function.<br>
-- The first parameter is the application root directory and is mandatory.
-- The second one is an optional `Closure(GacelaConfig)` configuration.
+- The first parameter is the application root directory and is mandatory
+- The second one is an optional `Closure(GacelaConfig)` configuration
 
 ```php
 <?php # index.php
