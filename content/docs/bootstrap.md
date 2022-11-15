@@ -41,6 +41,10 @@ the possible values you might have defined in the default `gacela.php` file.
 
 (A similar behaviour already exists for your app config files. See: [Config files for diff env](/docs/config/#config-files-for-different-environments).)
 
+> **Note**: If you are working "on top" of another project which is using gacela, you can always define your custom
+> `gacela.php` file and define your `GacelaConfig` configuration, which will be combined with the `gacela.php` of
+> the vendor project itself.
+
 ## GacelaConfig
 
 As we just mentioned, you can customize some Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
@@ -174,9 +178,9 @@ Let's visualize it with an example. Consider this structure:
 ├── gacela.php
 ├── index.php # entry point
 ├── src
-│   ├── Main
-│   │   └── ModuleA
-│   │       └── Factory.php
+│   └── Main
+│       └── ModuleA
+│           └── Factory.php
 └── vendor
     └── third-party
         └── ModuleA
@@ -295,6 +299,53 @@ $configFn = function (GacelaConfig $config): void {
 Gacela::bootstrap(__DIR__, $configFn);
 ```
 
+### Extend Service
+
+You are able to extend any service functionality. The `extendService()` receives the service name that will be defined in
+any `DependencyProvider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
+
+```php
+<?php # gacela.php
+Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
+    $config->extendService(
+        DependencyProvider::ARRAY_AS_OBJECT,
+        static function (ArrayObject $arrayObject, Container $container): void {
+            $arrayObject->append(3);
+        }
+    );
+});
+/************************************************************************/
+final class DependencyProvider extends AbstractDependencyProvider
+{
+    public const ARRAY_AS_OBJECT = 'ARRAY_AS_OBJECT';
+
+    public function provideModuleDependencies(Container $container): void
+    {
+        $container->set(self::ARRAY_AS_OBJECT, new ArrayObject([1, 2]));
+    }
+}
+/************************************************************************/
+final class Factory extends AbstractFactory
+{
+    public function getArrayAsObject(): ArrayObject
+    {
+        return $this->getProvidedDependency(DependencyProvider::ARRAY_AS_OBJECT);
+    }
+}
+/************************************************************************/
+final class Facade extends AbstractFacade
+{
+    public function getArrayAsObject(): ArrayObject
+    {
+        return $this->getFactory()->getArrayAsObject();
+    }
+}
+
+/************************************************************************/
+$facade = new Module\Facade();
+$facade->getArrayAsObject(); // === new ArrayObject([1, 2, 3])
+```
+
 
 ## A complete example using gacela.php
 
@@ -337,6 +388,13 @@ return function (GacelaConfig $config): void {
             ResolvedClassCreatedEvent::class, 
             function (GacelaEventInterface $event): void {
                 echo $event->toString();
+            }
+        )
+        // Extending the functionality of a particular service
+        ->extendService(
+            'any-service-name',
+            static function (ServiceType $service): void {
+                // you can retrieve/alter any functionality of the $service  
             }
         );
 };
