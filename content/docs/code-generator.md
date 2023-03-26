@@ -1,6 +1,6 @@
 +++
 title = "Code generator"
-weight = 10
+weight = 100
 +++
 
 Gacela brings out of the box a code generator utility. That means, you can generate a `facade`, `factory`, `config`,
