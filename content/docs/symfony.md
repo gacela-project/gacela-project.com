@@ -1,7 +1,11 @@
 +++
 title = "Symfony"
-weight = 6
+weight = 7
 +++
+
+### Example: Symfony & Gacela
+
+[https://github.com/gacela-project/symfony-gacela-example](https://github.com/gacela-project/symfony-gacela-example)
 
 ### Accessing a Doctrine-Repository from a Gacela-Factory
 
