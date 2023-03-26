@@ -1,22 +1,56 @@
 +++
 title = "Code generator"
+description = "Gacela brings out of the box a code generator utility"
 weight = 100
 +++
 
-Gacela brings out of the box a code generator utility. That means, you can generate a `facade`, `factory`, `config`,
-`dependency provider` or a full `module` with a single command.
+Note: To be able to use this, you have to have installed `"symfony/console": "^5.4"`.
 
-#### Create one or more files of the specified type/s
+You can generate a `facade`, `factory`, `config`, `dependency provider`, or full `module`
+
+## Create specific Gacela classes
+
 ```bash
-make:file <target-namespace> [facade, factory, dependency-provider, config]
+make:file [-s] <target-namespace> <facade factory config dependency-provider>
+# Description:
+#   Generate a Facade, Factory, Config, DependencyProvider
+# 
+# Usage:
+#   make:file [options] [--] <path> <filenames>...
+# 
+# Arguments:
+#   path                  The file path. For example "App/TestModule/TestSubModule"
+#   filenames             Facade, Factory, Config, DependencyProvider
+# 
+# Options:
+#   -s, --short-name      Remove module prefix to the class name
 ```
 
-#### Creates a new full module (Facade, Factory, Config, and DependencyProvider)
+You can create one or more files at once. Eg:
+```bash
+./vendor/bin/gacela make:file App/TestModule facade factory
+```
+
+## Creates a new full module
+
+Generates the Facade, Factory, Config, and DependencyProvider.
+
 ```bash
 make:module <target-namespace>
+# Description:
+#   Generate an empty module with a Facade, Factory, Config, DependencyProvider
+# 
+# Usage:
+#   make:module [options] [--] <path>
+# 
+# Arguments:
+#   path                  The file path. For example "App/TestModule/TestSubModule"
+# 
+# Options:
+#   -s, --short-name      Remove module prefix to the class name
 ```
 
-### Example
+Example:
 ```bash
 ./vendor/bin/gacela make:module App/TestModule
 ```
