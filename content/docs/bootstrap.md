@@ -12,6 +12,10 @@ Gacela should be bootstrapped using the `Gacela::bootstrap` function.<br>
 ```php
 <?php # index.php
 
+Gacela::bootstrap(__DIR__);
+
+# OR
+ 
 Gacela::bootstrap(
   __DIR__, 
   function (GacelaConfig $config): void { /*...*/ }
@@ -72,12 +76,12 @@ return function (GacelaConfig $config): void {
   $config->addAppConfig(
     path: 'config/*.php',
     pathLocal: 'config/local.php',
-    reader: PhpConfigReader::class 
+    reader: PhpConfigReader::class
   );
 };
 ```
 
-You can add to `addAppConfig()` method as many config locations as you want.
+You can add as many application configuration as you need using `addAppConfig()`.
 
 - `path`: this is the path of the folder which contains your application configuration. You can use ? or * in order to
   match 1 or multiple characters. Check [glob()](https://www.php.net/manual/en/function.glob.php) function for more info.
@@ -96,6 +100,12 @@ return function (GacelaConfig $config): void {
   $config->addAppConfig('config/*.custom', '', CustomConfigReader::class);
   $config->addAppConfig('config/*.php', 'config/local.php');
 };
+```
+
+**Hint**: there is a shortcut to specify a "default php config":
+```php
+<?php # index.php
+Gacela::bootstrap(__DIR__, GacelaConfig::withPhpConfigDefault());
 ```
 
 ### Mapping Interfaces
@@ -311,7 +321,6 @@ If you are working with integration tests, this option can be helpful to avoid f
 
 ```php
 <?php # gacela.php
-
 return function (GacelaConfig $config): void {
   $config->shouldResetInMemoryCache();
 };
