@@ -108,22 +108,22 @@ return function (GacelaConfig $config): void {
 Gacela::bootstrap(__DIR__, GacelaConfig::withPhpConfigDefault());
 ```
 
-### Mapping Interfaces
+### Bindings
 
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
 
-The `addMappingInterface()` method will let you bind a class with another class
+The `addBinding()` method will let you bind a class with another class
 `interface => concreteClass|callable|string-class` that you want to resolve. For example:
 
 ```php
 <?php # gacela.php
 
 return function (GacelaConfig $config): void {
-  $config->addMappingInterface(AbstractString::class, StringClass::class);
-  $config->addMappingInterface(ClassInterface::class, new ConcreteClass(/* args */));
-  $config->addMappingInterface(ComplexInterface::class, new class() implements Foo {/** logic */});
-  $config->addMappingInterface(FromCallable::class, fn() => new StringClass('From callable'));
+  $config->addBinding(AbstractString::class, StringClass::class);
+  $config->addBinding(ClassInterface::class, new ConcreteClass(/* args */));
+  $config->addBinding(ComplexInterface::class, new class() implements Foo {/** logic */});
+  $config->addBinding(FromCallable::class, fn() => new StringClass('From callable'));
 };
 ```
 
@@ -148,12 +148,12 @@ For example:
 <?php # gacela.php
 
 return function (GacelaConfig $config): void {
-  $config->addMappingInterface(
+  $config->addBinding(
     AnInterface::class, 
     $config->getExternalService('concreteClass')
   );
 
-  $config->addMappingInterface(
+  $config->addBinding(
     AnotherInterface::class, 
     $config->getExternalService('concreteInstance')
   );
@@ -407,8 +407,8 @@ return function (GacelaConfig $config): void {
 
     // Define the mapping between interfaces and concretions,
     // so Gacela services will auto-resolve them automatically.
-    ->addMappingInterface(GeneratorInterface::class, ConcreteGenerator::class)
-    ->addMappingInterface(
+    ->addBinding(GeneratorInterface::class, ConcreteGenerator::class)
+    ->addBinding(
       CustomInterface::class,
       $config->getExternalService('CustomClassKey')
     )
