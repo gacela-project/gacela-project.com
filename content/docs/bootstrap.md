@@ -468,3 +468,9 @@ return function (GacelaConfig $config): void {
 ;
 };
 ```
+
+## Additional
+
+### Gacela::get(string::class)
+
+`Gacela::get(string::class)` gets a located binding or singleton already loaded considering the existing container dependencies on runtime.
