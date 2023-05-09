@@ -163,6 +163,33 @@ return function (GacelaConfig $config): void {
 In the example above, whenever `AnInterface` is found then `ConcreteClass::class` will be resolved.
 The same for `AnotherInterface`, the `$concreteInstance` will be used.
 
+### Plugins
+
+You can run custom logic right after bootstraping gacela from multiple and different places by adding plugins using the `addPlugin` method.
+
+The class must be invokable, and it will receive no arguments. However, it has autoload capabilities, so all dependencies will be resolved automatically as soon as you have defined them using "[Bindings](#bindings)" For example:
+
+```php
+<?php
+# index.php
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
+    $config->addPlugin(ApiRoutesPlugin::class);
+});
+
+### Having this other class somewhere else:
+final class ApiRoutesPlugin
+{
+  public function __construct(private RouterInterface $router) {}
+
+  public function __invoke(): void
+  {
+    $this->router->configure(function (Routes $routes): void {
+      $routes->get('{name}', HelloController::class);
+    });
+  }
+}
+```
+
 ### Suffix Types
 
 Apart from the known Gacela suffix classes: `Factory`, `Config`, and `DependencyProvider`, you can define other suffixes to be
@@ -408,7 +435,10 @@ final class RouterConfig
 {
   public function __invoke(GacelaConfig $config): void
   {
-    $config->addBinding(Router::class, new Router());
+    $router = new Router();
+
+    $config->addBinding(Router::class, $router);
+    $config->addBinding(RouterInterface::class, $router);
   }
 }
 ```
@@ -435,7 +465,10 @@ return function (GacelaConfig $config): void {
       CustomInterface::class,
       $config->getExternalService('CustomClassKey')
     )
-    
+
+    // Run custom logic right after bootstrapping gacela
+    ->addPlugin(ApiRoutesPlugin::class)
+
     // Define your project namespace resolve gacela classes with priorities.
     ->setProjectNamespaces(['App'])
     
@@ -464,8 +497,7 @@ return function (GacelaConfig $config): void {
       }
     )
     // Add additional gacela configuration
-    ->addExtendConfig(RouterConfig::class)
-;
+    ->addExtendConfig(RouterConfig::class);
 };
 ```
 
