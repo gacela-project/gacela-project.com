@@ -390,6 +390,29 @@ $facade = new Module\Facade();
 $facade->getArrayAsObject(); // === new ArrayObject([1, 2, 3])
 ```
 
+### Extend Config
+
+You can extend GacelaConfig from multiple and different places by adding the class name using the `addExtendConfig` method.
+
+The class must be invokable, and it will receive the GacelaConfig object. For example:
+
+```php
+<?php
+# index.php
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
+  $config->addExtendConfig(RouterConfig::class);
+});
+
+### Having this other class somewhere else:
+final class RouterConfig
+{
+  public function __invoke(GacelaConfig $config): void
+  {
+    $config->addBinding(Router::class, new Router());
+  }
+}
+```
+
 ## A complete example using gacela.php
 
 ```php
