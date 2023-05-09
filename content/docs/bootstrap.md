@@ -462,6 +462,9 @@ return function (GacelaConfig $config): void {
       static function (ServiceType $service): void {
         // you can retrieve/alter any functionality of the $service  
       }
-    );
+    )
+    // Add additional gacela configuration
+    ->addExtendConfig(RouterConfig::class)
+;
 };
 ```
