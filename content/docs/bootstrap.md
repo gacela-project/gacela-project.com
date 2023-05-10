@@ -255,20 +255,20 @@ priority (over `third-party`, in this case).
 **TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your
 project namespaces.
 
-### Gacela File Cache
+### File Cache
 
-When the method `setFileCacheEnabled()` is `true`, a new `.gacela/cache` folder will be created in the root of
-your project with the resolved classes.
+```php
+setFileCache(bool $enabled, string $directory = '.gacela/cache')
+```
+The gacela file cache is disabled by default. You can enable it using the `setFileCache`.
 
-> You can customize the file cache directory name considering the root app directory. This is the first argument you pass
-> when bootstrapping gacela: `Gacela::bootstrap(__DIR__)`.
+This will generate a file with all resolved classes by gacela will be cached resulting in a faster execution next time.
 
 ```php
 <?php # gacela.php
 
 return function (GacelaConfig $config): void {
-  $config->setFileCacheEnabled(true);
-  $config->setFileCacheDirectory('.gacela/cache');
+  $config->setFileCache(true)
 };
 ```
 
@@ -473,8 +473,7 @@ return function (GacelaConfig $config): void {
     ->setProjectNamespaces(['App'])
     
     // Enable Gacela file cache system with a custom cache directory.
-    ->setFileCacheEnabled(true)
-    ->setFileCacheDirectory('.gacela/cache')
+    ->setFileCache(true, '.gacela/cache')
     
     // Listening all internal gacela events
     ->registerGenericListener(
