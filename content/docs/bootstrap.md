@@ -381,7 +381,7 @@ return function (GacelaConfig $config): void {
 resetInMemoryCache();
 ```
 
-If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a global singleton pattern to store the resolved dependencies. This value by default is `false`.
+If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a global singleton pattern to store the resolved dependencies.
 
 ```php
 <?php # gacela.php
