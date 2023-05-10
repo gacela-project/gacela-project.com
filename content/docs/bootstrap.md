@@ -65,6 +65,10 @@ In other words, you can modify some Gacela behaviour from two different places:
 
 ### Application Config
 
+```php
+addAppConfig(string $path, string $pathLocal = '', $reader = null);
+```
+
 Using the GacelaConfig object you can add different paths and use different config file types, even with custom config
 readers. The `PhpConfigReader` is used by default.
 
@@ -110,6 +114,10 @@ Gacela::bootstrap(__DIR__, GacelaConfig::withPhpConfigDefault());
 
 ### Bindings
 
+```php
+addBinding(string $key, string|object|callable $value);
+```
+
 You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
 found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
 
@@ -130,6 +138,10 @@ return function (GacelaConfig $config): void {
 In the example above, whenever `OneInterface::class` is found then `OneConcrete::class` will be resolved.
 
 #### Using externalServices
+
+```php
+addExternalService(string $key, $value);
+```
 
 Add the external service using `addExternalService(string, string|object|callable)`. Eg:
 
@@ -165,6 +177,11 @@ The same for `AnotherInterface`, the `$concreteInstance` will be used.
 
 ### Plugins
 
+```php
+addPlugin(string $plugin);
+addPlugins(array $list);
+```
+
 You can run custom logic right after bootstraping gacela from multiple and different places by adding plugins using the `addPlugin` method.
 
 The class must be invokable, and it will receive no arguments. However, it has autoload capabilities, so all dependencies will be resolved automatically as soon as you have defined them using "[Bindings](#bindings)" For example:
@@ -191,6 +208,13 @@ final class ApiRoutesPlugin
 ```
 
 ### Suffix Types
+
+```php
+addSuffixTypeFacade(string $suffix);
+addSuffixTypeFactory(string $suffix);
+addSuffixTypeConfig(string $suffix);
+addSuffixTypeDependencyProvider(string $suffix);
+```
 
 Apart from the known Gacela suffix classes: `Factory`, `Config`, and `DependencyProvider`, you can define other suffixes to be
 resolved for your different modules. You can do this by adding custom gacela resolvable types.
@@ -219,6 +243,10 @@ ExampleModule
 ```
 
 ### Project Namespaces
+
+```php
+setProjectNamespaces(array $list);
+```
 
 You can add your project namespaces to be able to resolve gacela classes with priorities.
 
@@ -258,7 +286,7 @@ project namespaces.
 ### File Cache
 
 ```php
-setFileCache(bool $enabled, string $directory = '.gacela/cache')
+setFileCache(bool $enabled, string $directory = '.gacela/cache');
 ```
 The gacela file cache is disabled by default. You can enable it using the `setFileCache`.
 
@@ -283,6 +311,11 @@ return [
 ];
 ```
 ### Listening internal gacela events
+
+```php
+registerGenericListener(callable $listener);
+registerSpecificListener(string $event, callable $listener);
+```
 
 Gacela has an internal event-listener system that dispatches a variety of events.
 These are read-only events interesting for tracing, debugging or act on them as you want.
@@ -344,16 +377,24 @@ return function (GacelaConfig $config): void {
 
 ### Reset internal InMemoryCache
 
+```php
+resetInMemoryCache();
+```
+
 If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a global singleton pattern to store the resolved dependencies. This value by default is `false`.
 
 ```php
 <?php # gacela.php
 return function (GacelaConfig $config): void {
-  $config->shouldResetInMemoryCache();
+  $config->resetInMemoryCache();
 };
 ```
 
 ### Extend Service
+
+```php
+extendService(string $id, Closure $service);
+```
 
 You are able to extend any service functionality. The `extendService()` receives the service name that will be defined in any `DependencyProvider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
 
@@ -418,6 +459,11 @@ $facade->getArrayAsObject(); // === new ArrayObject([1, 2, 3])
 ```
 
 ### Extend Config
+
+```php
+addExtendConfig(string $configClass);
+addExtendConfigs(array $list);
+```
 
 You can extend GacelaConfig from multiple and different places by adding the class name using the `addExtendConfig` method.
 
