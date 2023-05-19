@@ -109,7 +109,7 @@ return function (GacelaConfig $config): void {
 **Hint**: there is a shortcut to specify a "default php config":
 ```php
 <?php # index.php
-Gacela::bootstrap(__DIR__, GacelaConfig::withPhpConfigDefault());
+Gacela::bootstrap(__DIR__, GacelaConfig::defaultPhpConfig());
 ```
 
 ### Bindings
