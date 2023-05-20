@@ -472,7 +472,7 @@ extendGacelaConfig(string $configClass);
 extendGacelaConfigs(array $list);
 ```
 
-You can extend GacelaConfig from multiple and different places by adding the class name using the `extendGacelaConfig` method.
+You can extend `GacelaConfig` from different places using the `extendGacelaConfig` method.
 
 The class must be invokable, and it will receive the GacelaConfig object. For example:
 
