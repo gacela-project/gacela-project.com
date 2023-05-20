@@ -143,14 +143,17 @@ In the example above, whenever `OneInterface::class` is found then `OneConcrete:
 addExternalService(string $key, $value);
 ```
 
-Add the external service using `addExternalService(string, string|object|callable)`. Eg:
+Add the external service using `addExternalService(string, string|object|callable)`. 
+This is useful to share objects between the initial bootstrap callable and the `gacela.php` config files. Eg:
 
 ```php
 <?php # index.php
 
-Gacela::bootstrap(__DIR__, function (GacelaConfig $config): void {
+$instance = ...;
+
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) use ($instance) : void {
   $config->addExternalService('concreteClass', ConcreteClass::class);
-  $config->addExternalService('concreteInstance', $concreteInstance);
+  $config->addExternalService('concreteInstance', $instance);
 });
 ```
 
@@ -160,15 +163,10 @@ For example:
 <?php # gacela.php
 
 return function (GacelaConfig $config): void {
-  $config->addBinding(
-    AnInterface::class, 
-    $config->getExternalService('concreteClass')
-  );
+  $instance = $config->getExternalService('concreteInstance');
 
-  $config->addBinding(
-    AnotherInterface::class, 
-    $config->getExternalService('concreteInstance')
-  );
+  $config->addBinding(AnInterface::class, $instance);
+  $config->addBinding(AnotherInterface::class, $instance);
 }
 ```
 
@@ -187,8 +185,8 @@ You can run custom logic right after bootstraping gacela from multiple and diffe
 The class must be invokable, and it will receive no arguments. However, it has autoload capabilities, so all dependencies will be resolved automatically as soon as you have defined them using "[Bindings](#bindings)" For example:
 
 ```php
-<?php
-# index.php
+<?php # index.php
+
 Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
     $config->addPlugin(ApiRoutesPlugin::class);
 });
@@ -196,7 +194,9 @@ Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
 ### Having this other class somewhere else:
 final class ApiRoutesPlugin
 {
-  public function __construct(private RouterInterface $router) {}
+  public function __construct(
+    private RouterInterface $router,
+  ) {}
 
   public function __invoke(): void
   {
@@ -286,9 +286,10 @@ project namespaces.
 ### File Cache
 
 ```php
+enableFileCache(string $directory = '.gacela/cache');
 setFileCache(bool $enabled, string $directory = '.gacela/cache');
 ```
-The gacela file cache is disabled by default. You can enable it using the `setFileCache`.
+The gacela file cache is disabled by default. You can enable it using the `enableFileCache()` or `setFileCache`.
 
 This will generate a file with all resolved classes by gacela will be cached resulting in a faster execution next time.
 
@@ -296,7 +297,9 @@ This will generate a file with all resolved classes by gacela will be cached res
 <?php # gacela.php
 
 return function (GacelaConfig $config): void {
-  $config->setFileCache(true)
+  $config->setFileCache(true);
+  // or using the shortcut:
+  $config->enableFileCache();
 };
 ```
 
@@ -304,6 +307,7 @@ You can also enable or disable the gacela file cache system via your project con
 
 ```php
 <?php # config/default.php
+
 use Gacela\Framework\ClassResolver\Cache\GacelaFileCache;
 
 return [
@@ -385,6 +389,7 @@ If you are working with integration tests, this option can be helpful to avoid f
 
 ```php
 <?php # gacela.php
+
 return function (GacelaConfig $config): void {
   $config->resetInMemoryCache();
 };
@@ -399,6 +404,7 @@ extendService(string $id, Closure $service);
 You are able to extend any service functionality. The `extendService()` receives the service name that will be defined in any `DependencyProvider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
 
 #### An example
+
 Consider we have a module with these `DependencyProvider`, `Factory` and `Facade`. 
 
 The `DependencyProvider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see `Module/DependencyProvider.php`)
@@ -409,6 +415,7 @@ Its state when using the Facade and resolving that will be `[1, 2, 3]` (see `ind
 
 ```php
 <?php 
+
 /************************************************************************/
 # Module/DependencyProvider.php
 final class DependencyProvider extends AbstractDependencyProvider
@@ -458,22 +465,22 @@ $facade = new Module\Facade();
 $facade->getArrayAsObject(); // === new ArrayObject([1, 2, 3])
 ```
 
-### Extend Config
+### Extend Gacela Config
 
 ```php
-addExtendConfig(string $configClass);
-addExtendConfigs(array $list);
+extendGacelaConfig(string $configClass);
+extendGacelaConfigs(array $list);
 ```
 
-You can extend GacelaConfig from multiple and different places by adding the class name using the `addExtendConfig` method.
+You can extend GacelaConfig from multiple and different places by adding the class name using the `extendGacelaConfig` method.
 
 The class must be invokable, and it will receive the GacelaConfig object. For example:
 
 ```php
-<?php
-# index.php
+<?php # index.php
+
 Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
-  $config->addExtendConfig(RouterConfig::class);
+  $config->extendGacelaConfig(RouterConfig::class);
 });
 
 ### Having this other class somewhere else:
@@ -507,10 +514,7 @@ return function (GacelaConfig $config): void {
     // Define the mapping between interfaces and concretions,
     // so Gacela services will auto-resolve them automatically.
     ->addBinding(GeneratorInterface::class, ConcreteGenerator::class)
-    ->addBinding(
-      CustomInterface::class,
-      $config->getExternalService('CustomClassKey')
-    )
+    ->addBinding(CustomInterface::class, $config->getExternalService('key'))
 
     // Run custom logic right after bootstrapping gacela
     ->addPlugin(ApiRoutesPlugin::class)
@@ -519,7 +523,7 @@ return function (GacelaConfig $config): void {
     ->setProjectNamespaces(['App'])
     
     // Enable Gacela file cache system with a custom cache directory.
-    ->setFileCache(true, '.gacela/cache')
+    ->enableFileCache('.gacela/cache')
     
     // Listening all internal gacela events
     ->registerGenericListener(
@@ -542,7 +546,7 @@ return function (GacelaConfig $config): void {
       }
     )
     // Add additional gacela configuration
-    ->addExtendConfig(RouterConfig::class);
+    ->extendGacelaConfig(RouterConfig::class);
 };
 ```
 
