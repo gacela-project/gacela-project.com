@@ -18,7 +18,7 @@ Gacela::bootstrap(__DIR__);
  
 Gacela::bootstrap(
   __DIR__, 
-  function (GacelaConfig $config): void { /*...*/ }
+  function (GacelaConfig $config) { /*...*/ }
 );
 ```
 
@@ -30,7 +30,7 @@ you can create a `gacela.php` file in your application root directory which retu
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void { ... };
+return function (GacelaConfig $config) { ... };
 ```
 
 ### Different environments
@@ -63,6 +63,39 @@ In other words, you can modify some Gacela behaviour from two different places:
 1. Directly with `Gacela::bootstrap()`
 2. Or using `gacela.php`
 
+### File Cache
+
+```php
+enableFileCache(string $directory = '.gacela/cache');
+setFileCache(bool $enabled, string $directory = '.gacela/cache');
+```
+The gacela file cache is disabled by default. You can enable it using the `enableFileCache()` or `setFileCache`.
+
+This will generate a file with all resolved classes by gacela will be cached resulting in a faster execution next time.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->enableFileCache();
+
+  // or using the setter method
+  $config->setFileCache(true|false);
+};
+```
+
+You can also enable or disable the gacela file cache system via your project config values.
+
+```php
+<?php # config/default.php
+
+use Gacela\Framework\ClassResolver\Cache\GacelaFileCache;
+
+return [
+  GacelaFileCache::KEY_ENABLED => true|false,
+];
+```
+
 ### Application Config
 
 ```php
@@ -76,7 +109,7 @@ readers. The `PhpConfigReader` is used by default.
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->addAppConfig(
     path: 'config/*.php',
     pathLocal: 'config/local.php',
@@ -99,7 +132,7 @@ Multiple and different environment config files
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->addAppConfig('config/.env', '', EnvConfigReader::class);
   $config->addAppConfig('config/*.custom', '', CustomConfigReader::class);
   $config->addAppConfig('config/*.php', 'config/local.php');
@@ -127,7 +160,7 @@ The `addBinding()` method will let you bind a class with another class
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->addBinding(AbstractString::class, StringClass::class);
   $config->addBinding(ClassInterface::class, new ConcreteClass(/* args */));
   $config->addBinding(ComplexInterface::class, new class() implements Foo {/** logic */});
@@ -151,7 +184,7 @@ This is useful to share objects between the initial bootstrap callable and the `
 
 $instance = ...;
 
-Gacela::bootstrap(__DIR__, function (GacelaConfig $config) use ($instance) : void {
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) use ($instance) {
   $config->addExternalService('concreteClass', ConcreteClass::class);
   $config->addExternalService('concreteInstance', $instance);
 });
@@ -162,7 +195,7 @@ For example:
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $instance = $config->getExternalService('concreteInstance');
 
   $config->addBinding(AnInterface::class, $instance);
@@ -176,22 +209,33 @@ The same for `AnotherInterface`, the `$concreteInstance` will be used.
 ### Plugins
 
 ```php
-addPlugin(string $plugin);
+addPlugin(callable|class-string $plugin);
 addPlugins(array $list);
 ```
 
-You can run custom logic right after bootstraping gacela from multiple and different places by adding plugins using the `addPlugin` method.
-
-The class must be invokable, and it will receive no arguments. However, it has autoload capabilities, so all dependencies will be resolved automatically as soon as you have defined them using "[Bindings](#bindings)" For example:
+You can run custom logic right after bootstrapping gacela from different places by adding plugins using the `addPlugin` method.
 
 ```php
 <?php # index.php
 
 Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
-    $config->addPlugin(ApiRoutesPlugin::class);
-});
+  // using a callable
+  $config->addPlugin(function (RouterInterface $router) {
+    $router->configure(function (Routes $routes) {
+      $routes->get('/uri', YourController::class, 'uriAction');
+    });
+  });
 
-### Having this other class somewhere else:
+  // or using a class name
+  $config->addPlugin(ApiRoutesPlugin::class);
+});
+```
+
+The class must be invokable, and it has autoload capabilities: all dependencies will be resolved automatically as soon as you have defined them using [bindings](#bindings). The same applies to the callable arguments above.
+
+For example, having this other class `ApiRoutesPlugin` somewhere else:
+```php
+<?php # ApiRoutesPlugin.php
 final class ApiRoutesPlugin
 {
   public function __construct(
@@ -222,7 +266,7 @@ resolved for your different modules. You can do this by adding custom gacela res
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->addSuffixTypeFacade('EntryPoint');
   $config->addSuffixTypeFactory('Creator');
   $config->addSuffixTypeConfig('Conf');
@@ -271,7 +315,7 @@ Let's visualize it with an example. Consider this structure:
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->setProjectNamespaces(['Main']);
 };
 ```
@@ -283,37 +327,6 @@ priority (over `third-party`, in this case).
 **TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your
 project namespaces.
 
-### File Cache
-
-```php
-enableFileCache(string $directory = '.gacela/cache');
-setFileCache(bool $enabled, string $directory = '.gacela/cache');
-```
-The gacela file cache is disabled by default. You can enable it using the `enableFileCache()` or `setFileCache`.
-
-This will generate a file with all resolved classes by gacela will be cached resulting in a faster execution next time.
-
-```php
-<?php # gacela.php
-
-return function (GacelaConfig $config): void {
-  $config->setFileCache(true);
-  // or using the shortcut:
-  $config->enableFileCache();
-};
-```
-
-You can also enable or disable the gacela file cache system via your project config values.
-
-```php
-<?php # config/default.php
-
-use Gacela\Framework\ClassResolver\Cache\GacelaFileCache;
-
-return [
-  GacelaFileCache::KEY_ENABLED => true|false,
-];
-```
 ### Listening internal gacela events
 
 ```php
@@ -329,9 +342,9 @@ These are read-only events interesting for tracing, debugging or act on them as 
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->registerGenericListener(
-    function (GacelaEventInterface $event): void {
+    function (GacelaEventInterface $event) {
       echo $event->toString();
     }
   );
@@ -343,7 +356,7 @@ return function (GacelaConfig $config): void {
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->registerSpecificListener(
     ResolvedClassCreatedEvent::class, 
     function (GacelaEventInterface $event): void {
@@ -390,7 +403,7 @@ If you are working with integration tests, this option can be helpful to avoid f
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config->resetInMemoryCache();
 };
 ```
@@ -450,7 +463,7 @@ final class Facade extends AbstractFacade
 
 /************************************************************************/
 # gacela.php
-Gacela::bootstrap(__DIR__, function (GacelaConfig $config): void {
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
   $config->extendService(
     DependencyProvider::ARRAY_OBJ,
     function (ArrayObject $arrayObject, Container $container) {
@@ -500,7 +513,7 @@ final class RouterConfig
 
 ```php
 <?php # gacela.php
-return function (GacelaConfig $config): void {
+return function (GacelaConfig $config) {
   $config
     // Define different config sources.
     ->addAppConfig('config/*.php', 'config/override.php')
