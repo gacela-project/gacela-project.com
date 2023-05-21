@@ -552,6 +552,11 @@ return function (GacelaConfig $config): void {
 
 ## Additional
 
+
+### Gacela::rootDir()
+
+Get the application root dir set when bootstrapping gacela.
+
 ### Gacela::get(string::class)
 
-`Gacela::get(string::class)` gets a located binding or singleton already loaded considering the existing container dependencies on runtime.
+Get a located binding or singleton already loaded considering the existing container dependencies on runtime.
