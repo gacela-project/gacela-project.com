@@ -17,7 +17,7 @@ It encourages your modules to interact with each other in a unified way by follo
 - The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
 - The [**Config**](/docs/config) has access to the project's *config files*
 
-### Installation
+#### Installation
 
 <div id="installation-composer">
     <pre><code>composer require gacela-project/gacela</code></pre>
@@ -29,13 +29,20 @@ It encourages your modules to interact with each other in a unified way by follo
     </span>
 </div>
 
+### Extra Modules
+
+- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router.
+- [Container](https://github.com/gacela-project/container): A minimalistic container dependency.
+
+### Templates
+
+- [API Skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
+
 ### Examples
 
 You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
 
-See how Gacela works with **Laravel** in this [repository](https://github.com/gacela-project/laravel-gacela-example).
-
-See how Gacela works with **Symfony** in this [repository](https://github.com/gacela-project/symfony-gacela-example).
+See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
 
 ---
 
