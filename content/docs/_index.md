@@ -1,5 +1,5 @@
 +++
 sort_by = "weight"
 template = "page.html"
-redirect_to = "/docs/gacela-bootstrap"
+redirect_to = "/docs/bootstrap"
 +++
