@@ -1,5 +1,5 @@
 +++
-title = "Frameworks"
+title = "Other Frameworks"
 weight = 7
 +++
 
