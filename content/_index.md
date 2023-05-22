@@ -17,7 +17,7 @@ It encourages your modules to interact with each other in a unified way by follo
 - The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
 - The [**Config**](/docs/config) has access to the project's *config files*
 
-#### Installation
+#### Installation <small>(via [packagist](https://packagist.org/packages/gacela-project/gacela))</small>
 
 <div id="installation-composer">
     <pre><code>composer require gacela-project/gacela</code></pre>
@@ -36,7 +36,7 @@ It encourages your modules to interact with each other in a unified way by follo
 
 ### Templates
 
-- [API Skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
+- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
 
 ### Examples
 
