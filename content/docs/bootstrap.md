@@ -151,8 +151,7 @@ Gacela::bootstrap(__DIR__, GacelaConfig::defaultPhpConfig());
 addBinding(string $key, string|object|callable $value);
 ```
 
-You can define a map between an interface and the concrete class that you want to create (or use) when that interface is
-found during the process of **auto-wiring** in any Factory's Module dependencies via its constructor. Let's see an example:
+You can define a map between a type (class or interface) and the concrete class that you want to create (or use) when a certain type is found during the process of **auto-wiring** in any Gacela plugin or class.
 
 The `addBinding()` method will let you bind a class with another class
 `interface => concreteClass|callable|string-class` that you want to resolve. For example:
@@ -236,15 +235,12 @@ The class must be invokable, and it has autoload capabilities: all dependencies 
 For example, having this other class `ApiRoutesPlugin` somewhere else:
 ```php
 <?php # ApiRoutesPlugin.php
+
 final class ApiRoutesPlugin
 {
-  public function __construct(
-    private RouterInterface $router,
-  ) {}
-
-  public function __invoke(): void
+  public function __invoke(RouterInterface $router): void
   {
-    $this->router->configure(function (Routes $routes): void {
+    $router->configure(function (Routes $routes): void {
       $routes->get('{name}', HelloController::class);
     });
   }
