@@ -18,11 +18,11 @@ template = "page-one-column.html"
   </div>
 
   <div class="author">
-    <img src="https://avatars.githubusercontent.com/u/6381924?s=155" alt="author Chemaclass">
+    <img src="https://avatars.githubusercontent.com/u/6381924?s=155" alt="author JesusValera">
     <div class="content">
       <span><b>JesusValera</b> <small>| Jesus Valera Reales</small></span>
       <ul>
-        <li><a href="https://jesusvalerareales.medium.com/" target="_blank">Medium</a></li>
+        <li><a href="https://jesusvalerareales.com/" target="_blank">Webpage</a></li>
         <li><a href="https://github.com/JesusValera/" target="_blank">GitHub</a></li>
         <li><a href="https://twitter.com/JesusValera96/" target="_blank">Twitter</a></li>
         <li><a href="https://www.linkedin.com/in/jesusvalera/" target="_blank">LinkedIn</a></li>
