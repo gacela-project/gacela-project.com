@@ -1,6 +1,6 @@
 +++
 title = "Gacela script"
-description = "Gacela brings out of the box a code generator utility"
+description = "Out-of-the-box utility scripts that Gacela brings"
 weight = 100
 +++
 
