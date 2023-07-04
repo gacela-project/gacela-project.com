@@ -46,9 +46,12 @@ See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/o
 
 ## Community
 
-We have a community forum where you can get the latest news and openly ask any of your questions to help spread the knowledge in the [commerceverse.space](https://commerceverse.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project).
+We have a community forum where you can get the latest news and openly ask any of your questions to help spread the
+knowledge in
+the <a href="https://commerceverse.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project" target="_blank">
+commerceverse.space</a>
 
 ---
 
 > If something is still unclear, do not hesitate to write [us](/team)
-on [Twitter](https://twitter.com/gacela_project), and we will answer any questions you might have about this project.
+> on [Twitter](https://twitter.com/gacela_project), and we will answer any questions you might have about this project.
