@@ -44,10 +44,11 @@ You can see an example of a module using Gacela in this [repository](https://git
 
 See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
 
+## Community
+
+We have a community forum where you can get the latest news and openly ask any of your questions to help spread the knowledge in the [commerceverse.space](https://commerceverse.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project).
+
 ---
 
-### *"I've got questions..."*
-
-Apart from reading the [docs](/docs/bootstrap), if something is unclear, don't hesitate to write us 
+> If something is still unclear, do not hesitate to write [us](/team)
 on [Twitter](https://twitter.com/gacela_project), and we will answer any questions you might have about this project.
-Feel free to contact directly any member of the [team](/team).
