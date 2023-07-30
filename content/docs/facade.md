@@ -36,9 +36,9 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-## A ready to use thing
+## The entry point of the module
 
-The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
+The Facade uses the Factory to create the module's internal instances and executes the desired behaviour from them.
 
 Full code snippet: [gacela-example/comment-spam-score/entry-point](https://github.com/gacela-project/gacela-example/blob/master/comment-spam-score/app.php)
 ```php
@@ -71,14 +71,10 @@ A usage example:
 final class TestCommand extends Command
 {
     use DocBlockResolverAwareTrait;
-    
-    protected function configure(): void
-    {
-        $this->setName('test');
-    }
 
     protected function execute(InputInterface $in, OutputInterface $out): int
     {
+        // Eg: `getDependencies()` is a method from `RunFacade` 
         $dependencies = $this->getFacade()->getDependencies($paths);
         // ...
     }
