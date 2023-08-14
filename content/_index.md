@@ -48,8 +48,8 @@ See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/o
 
 We have a community forum where you can get the latest news and openly ask any of your questions to help spread the
 knowledge in
-the <a href="https://commerceverse.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project" target="_blank">
-commerceverse.space</a>
+the <a href="https://commercequest.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project" target="_blank">
+commercequest.space</a>
 
 ---
 
