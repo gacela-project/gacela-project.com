@@ -54,4 +54,4 @@ commercequest.space</a>
 ---
 
 > If something is still unclear, do not hesitate to write [us](/team)
-> on [Twitter](https://twitter.com/gacela_project), and we will answer any questions you might have about this project.
+> on [X](https://x.com/gacela_project), and we will answer any questions you might have about this project.

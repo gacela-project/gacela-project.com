@@ -11,7 +11,7 @@ template = "page-one-column.html"
       <ul>
         <li><a href="https://chemaclass.com/" target="_blank">Webpage</a></li>
         <li><a href="https://github.com/Chemaclass/" target="_blank">GitHub</a></li>
-        <li><a href="https://twitter.com/Chemaclass/" target="_blank">Twitter</a></li>
+        <li><a href="https://x.com/Chemaclass/" target="_blank">X</a></li>
         <li><a href="https://www.linkedin.com/in/jose-maria-valera-reales/" target="_blank">LinkedIn</a></li>
       </ul>
     </div>
@@ -24,7 +24,7 @@ template = "page-one-column.html"
       <ul>
         <li><a href="https://jesusvalerareales.com/" target="_blank">Webpage</a></li>
         <li><a href="https://github.com/JesusValera/" target="_blank">GitHub</a></li>
-        <li><a href="https://twitter.com/JesusValera96/" target="_blank">Twitter</a></li>
+        <li><a href="https://x.com/JesusValera96/" target="_blank">X</a></li>
         <li><a href="https://www.linkedin.com/in/jesusvalera/" target="_blank">LinkedIn</a></li>
       </ul>
     </div>
