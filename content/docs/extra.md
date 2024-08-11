@@ -4,6 +4,15 @@ description = "Extra things you can do with Gacela"
 weight = 60
 +++
 
+## Extra Modules
+
+- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router.
+- [Container](https://github.com/gacela-project/container): A minimalistic container dependency.
+
+## Templates
+
+- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
+
 ## Gacela in a file
 
 With `AnonymousGlobal::addGlobal()`, you can attach a Gacela class to a context (either an object or string).

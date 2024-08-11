@@ -3,6 +3,10 @@ title = "About Gacela"
 template = "page-one-column.html"
 +++
 
+**VISION**: Simplify the communication of your different modules in your web application.
+
+**MISSION**: Normalize the entry point of a module, without interfering with your domain-business logic.
+
 ## Gacela helps you to build modular applications
 
 Splitting your project into different modules help in terms of maintainability and scalability. 

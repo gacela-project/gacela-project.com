@@ -4,18 +4,7 @@ title = "Home"
 
 ## Gacela helps you build modular PHP applications
 
-**VISION**: Simplify the communication of your different modules in your web application.
-
-**MISSION**: Normalize the entry point of a module, without interfering with your domain-business logic.
-
-Splitting your project into different modules is vital for the maintainability and scalability for your app.
-It encourages your modules to interact with each other in a unified way by following these rules:
-
-- Modules interact with each other **only** via their **Facade**
-- The [**Facade**](/docs/facade) is the *entry point* of a module
-- The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
-- The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
-- The [**Config**](/docs/config) has access to the project's *config files*
+[**Quickstart**](/docs/quickstart): Simplify the communication of your different modules in your application.
 
 #### Installation <small>(via [packagist](https://packagist.org/packages/gacela-project/gacela))</small>
 
@@ -29,27 +18,11 @@ It encourages your modules to interact with each other in a unified way by follo
     </span>
 </div>
 
-### Extra Modules
-
-- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router.
-- [Container](https://github.com/gacela-project/container): A minimalistic container dependency.
-
-### Templates
-
-- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
-
 ### Examples
 
 You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
 
 See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
-
-## Community
-
-We have a community forum where you can get the latest news and openly ask any of your questions to help spread the
-knowledge in
-the <a href="https://commercequest.space/categories/gacela-project?utm_campaign=gacela&utm_medium=website&utm_source=gacela-project" target="_blank">
-commercequest.space</a>
 
 ---
 
