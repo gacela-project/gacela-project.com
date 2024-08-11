@@ -1,6 +1,6 @@
 +++
 title = "Bootstrap"
-weight = 1
+weight = 2
 +++
 
 ## Initializing Gacela
