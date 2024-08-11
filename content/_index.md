@@ -18,13 +18,12 @@ title = "Home"
     </span>
 </div>
 
-### Examples
+<br>
 
-You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
+Gacela encourages your modules to interact with each other in a unified way:
 
-See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
-
----
-
-> If something is still unclear, do not hesitate to write [us](/team)
-> on [X](https://x.com/gacela_project), and we will answer any questions you might have about this project.
+- Modules interact with each other **only** via their **Facade**
+- The [**Facade**](/docs/facade) is the *entry point* of a module
+- The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
+- The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
+- The [**Config**](/docs/config) has access to the project's *config files*

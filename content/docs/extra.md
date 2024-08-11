@@ -13,7 +13,13 @@ weight = 60
 
 - [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela.
 
-## Gacela in a file
+## Examples
+
+You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
+
+See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
+
+### Gacela in a file
 
 With `AnonymousGlobal::addGlobal()`, you can attach a Gacela class to a context (either an object or string).
 In this example, you can see how you can have a full Gacela modularity concepts in a single file by linking them to the same context; in this case the current file name.
