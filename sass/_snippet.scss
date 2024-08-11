@@ -1,6 +1,5 @@
 #installation-composer {
   pre {
-    @include color(background-color, --code-color, $theme-light-code-color);
     padding: 1em;
 
     code::before {
@@ -35,7 +34,6 @@
   right: 6px;
   @include color(fill, --accent-text-color, $theme-light-accent-text-color);
   padding: 0 0.5em;
-  @include color(background-color, --code-color, $theme-light-code-color);
 }
 
 .button-copy-code-snippet:hover {
