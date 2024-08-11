@@ -1,7 +1,7 @@
 +++
 title = "Gacela script"
 description = "Out-of-the-box utility scripts that Gacela brings"
-weight = 100
+weight = 50
 +++
 
 > **Note**: To use the *Gacela script*, you need at least `"symfony/console": "^5.4"`
