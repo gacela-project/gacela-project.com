@@ -9,7 +9,7 @@ title = "Home"
 #### Installation <small>(via [packagist](https://packagist.org/packages/gacela-project/gacela))</small>
 
 <div id="installation-composer">
-    <pre><code>composer require gacela-project/gacela</code></pre>
+    <pre><code><span class="z-variable z-function z-shell">composer</span> <span class="z-meta z-function-call z-arguments z-shell">require gacela-project/gacela</span></code></pre>
     <span class="button-copy-code-snippet tooltip" onclick="document.execCommand('copy')">
         <span class="tooltip-text">Copied!</span>
         <svg aria-hidden="true" viewBox="0 0 16 16" data-view-component="true" height="24" width="24">
