@@ -151,7 +151,7 @@ Gacela::bootstrap(__DIR__, GacelaConfig::defaultPhpConfig());
 addBinding(string $key, string|object|callable $value);
 ```
 
-You can define a map between a type (class or interface) and the concrete class that you want to create (or use) when a certain type is found during the process of **auto-wiring** in a Gacela `Plugin` or `Locator's container` from any `DependencyProvider`.
+You can define a map between a type (class or interface) and the concrete class that you want to create (or use) when a certain type is found during the process of **auto-wiring** in a Gacela `Plugin` or `Locator's container` from any `Provider`.
 
 The `addBinding()` method will let you bind a class with another class
 `interface => concreteClass|callable|string-class` that you want to resolve. For example:
@@ -253,10 +253,10 @@ final class ApiRoutesPlugin
 addSuffixTypeFacade(string $suffix);
 addSuffixTypeFactory(string $suffix);
 addSuffixTypeConfig(string $suffix);
-addSuffixTypeDependencyProvider(string $suffix);
+addSuffixTypeProvider(string $suffix);
 ```
 
-Apart from the known Gacela suffix classes: `Factory`, `Config`, and `DependencyProvider`, you can define other suffixes to be
+Apart from the known Gacela suffix classes: `Factory`, `Config`, and `Provider`, you can define other suffixes to be
 resolved for your different modules. You can do this by adding custom gacela resolvable types.
 
 ```php
@@ -266,7 +266,7 @@ return function (GacelaConfig $config) {
   $config->addSuffixTypeFacade('EntryPoint');
   $config->addSuffixTypeFactory('Creator');
   $config->addSuffixTypeConfig('Conf');
-  $config->addSuffixTypeDependencyProvider('Binder');
+  $config->addSuffixTypeProvider('Binder');
 };
 ```
 
@@ -279,7 +279,7 @@ ExampleModule
 ├── EntryPoint.php  # this is the `Facade`
 ├── Creator.php     # this is the `Factory`
 ├── Conf.php        # this is the `Config`
-└── Binder.php      # this is the `DependencyProvider` 
+└── Binder.php      # this is the `Provider` 
 ```
 
 ### Project Namespaces
@@ -291,7 +291,7 @@ setProjectNamespaces(array $list);
 You can add your project namespaces to be able to resolve gacela classes with priorities.
 
 Gacela will start looking on your project namespaces when trying to resolve any gacela resolvable classes, eg:
-`Facade`, `Factory`, `Config`, or `DependencyProvider`.
+`Facade`, `Factory`, `Config`, or `Provider`.
 
 Let's visualize it with an example. Consider this structure:
 ```
@@ -410,13 +410,13 @@ return function (GacelaConfig $config) {
 extendService(string $id, Closure $service);
 ```
 
-You are able to extend any service functionality. The `extendService()` receives the service name that will be defined in any `DependencyProvider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
+You are able to extend any service functionality. The `extendService()` receives the service name that will be defined in any `Provider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
 
 #### An example
 
-Consider we have a module with these `DependencyProvider`, `Factory` and `Facade`. 
+Consider we have a module with these `Provider`, `Factory` and `Facade`. 
 
-The `DependencyProvider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see `Module/DependencyProvider.php`)
+The `Provider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see `Module/Provider.php`)
 
 We "extend" that service `'ARRAY_OBJ'` and appending `3` (see `gacela.php`)
 
@@ -426,8 +426,8 @@ Its state when using the Facade and resolving that will be `[1, 2, 3]` (see `ind
 <?php 
 
 /************************************************************************/
-# Module/DependencyProvider.php
-final class DependencyProvider extends AbstractDependencyProvider
+# Module/Provider.php
+final class Provider extends AbstractProvider
 {
   public const ARRAY_OBJ = 'ARRAY_OBJ';
 
@@ -443,7 +443,7 @@ final class Factory extends AbstractFactory
 {
   public function getArrayAsObject(): ArrayObject
   {
-    return $this->getProvidedDependency(DependencyProvider::ARRAY_OBJ);
+    return $this->getProvidedDependency(Provider::ARRAY_OBJ);
   }
 }
 
@@ -461,7 +461,7 @@ final class Facade extends AbstractFacade
 # gacela.php
 Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
   $config->extendService(
-    DependencyProvider::ARRAY_OBJ,
+    Provider::ARRAY_OBJ,
     function (ArrayObject $arrayObject, Container $container) {
       $arrayObject->append(3);
     }
@@ -518,7 +518,7 @@ return function (GacelaConfig $config) {
     ->addSuffixTypeFacade('FacadeFromBootstrap')
     ->addSuffixTypeFactory('FactoryFromBootstrap')
     ->addSuffixTypeConfig('ConfigFromBootstrap')
-    ->addSuffixTypeDependencyProvider('DependencyProviderFromBootstrap')
+    ->addSuffixTypeProvider('ProviderFromBootstrap')
 
     // Define the mapping between interfaces and concretions,
     // so Gacela services will auto-resolve them automatically.

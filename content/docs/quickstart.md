@@ -12,7 +12,7 @@ Gacela encourages your modules to interact with each other in a unified way:
 - Modules interact with each other **only** via their **Facade**
 - The [**Facade**](/docs/facade) is the *entry point* of a module
 - The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
-- The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
+- The [**Provider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
 - The [**Config**](/docs/config) has access to the project's *config files*
 
 ## Installation
@@ -120,7 +120,7 @@ echo $facade->greet('Alice'); # Hi, Alice!
 ```
 
 Additionally, the [Factory](/docs/factory) can access the [Config](/docs/config) and
-the [DependencyProvider](/docs/dependency-provider) classes of the module which provides a lot of
+the [Provider](/docs/dependency-provider) classes of the module which provides a lot of
 potential for configuration and extension. I didn't add them in this example to keep it simple.
 
 ## Next steps
@@ -132,6 +132,6 @@ Dive deeper into the [documentation](/docs/bootstrap) to discover:
 - Check the full documentation for each Gacela class _(within a module context)_: 
   - [Facade](/docs/facade): the *entry point*
   - [Factory](/docs/factory): manages the *intra-dependencies*
-  - [DependencyProvider](/docs/dependency-provider): resolves the *extra-dependencies*
+  - [Provider](/docs/dependency-provider): resolves the *extra-dependencies*
   - [Config](/docs/config): access the project's *config* key values
 - Want to go crazy? Check "[Gacela in a file](/docs/extra/#gacela-in-a-file)" to see the flexibility of Gacela.

@@ -31,7 +31,7 @@ In this example, you can see how you can have a full Gacela modularity concepts 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Gacela\Framework\AbstractConfig;
-use Gacela\Framework\AbstractDependencyProvider;
+use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\AbstractFacade;
 use Gacela\Framework\AbstractFactory;
 use Gacela\Framework\Bootstrap\GacelaConfig;
@@ -56,7 +56,7 @@ AnonymousGlobal::addGlobal(
 
 AnonymousGlobal::addGlobal(
     $contextName,
-    new class() extends AbstractDependencyProvider {
+    new class() extends AbstractProvider {
         public function provideModuleDependencies(Container $container): void
         {
             $container->set('my-greeter', new class() {

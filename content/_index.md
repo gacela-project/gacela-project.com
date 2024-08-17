@@ -25,5 +25,5 @@ Gacela encourages your modules to interact with each other in a unified way:
 - Modules interact with each other **only** via their **Facade**
 - The [**Facade**](/docs/facade) is the *entry point* of a module
 - The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
-- The [**DependencyProvider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
+- The [**Provider**](/docs/dependency-provider) resolves the *extra-dependencies* of the module
 - The [**Config**](/docs/config) has access to the project's *config files*

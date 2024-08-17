@@ -32,14 +32,14 @@ You can generate a `facade`, `factory`, `config`, `dep. provider`, or full `modu
 ```bash
 vendor/bin/gacela make:file [-s] <target-namespace> <facade factory config dep-provider>
 # Description:
-#   Generate a Facade, Factory, Config, DependencyProvider
+#   Generate a Facade, Factory, Config, Provider
 # 
 # Usage:
 #   make:file [options] [--] <path> <filenames>...
 # 
 # Arguments:
 #   path                  The file path. For example "App/TestModule/TestSubModule"
-#   filenames             Facade, Factory, Config, DependencyProvider
+#   filenames             Facade, Factory, Config, Provider
 # 
 # Options:
 #   -s, --short-name      Remove module prefix to the class name
@@ -53,12 +53,12 @@ vendor/bin/gacela make:file App/TestModule facade factory dep-provider
 
 ### Creates a new full module
 
-Generates the Facade, Factory, Config, and DependencyProvider.
+Generates the Facade, Factory, Config, and Provider.
 
 ```bash
 vendor/bin/gacela make:module [-s] <target-namespace>
 # Description:
-#   Generate an empty module with a Facade, Factory, Config, DependencyProvider
+#   Generate an empty module with a Facade, Factory, Config, Provider
 # 
 # Usage:
 #   make:module [options] [--] <path>

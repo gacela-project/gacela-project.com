@@ -1,12 +1,12 @@
 +++
-title = "DependencyProvider"
+title = "Provider"
 weight = 6
 +++
 
 The communication between different modules it's done via their Facades because they are the main entry point of a
 module. 
 
-### Factory vs DependencyProvider
+### Factory vs Provider
 
 The main difference between Factories and Dependency Providers:
 - Factories are responsible for in-module dependencies, 
@@ -15,11 +15,11 @@ The main difference between Factories and Dependency Providers:
 ### Setting a provided dependency
 
 ```php
-<?php # src/Sales/SalesDependencyProvider.php
+<?php # src/Sales/SalesProvider.php
 
-use Gacela\Framework\AbstractDependencyProvider;
+use Gacela\Framework\AbstractProvider;
 
-final class SalesDependencyProvider extends AbstractDependencyProvider
+final class SalesProvider extends AbstractProvider
 {
     public const FACADE_COMMENT = 'FACADE_COMMENT';
 
@@ -62,7 +62,7 @@ final class SalesFactory extends AbstractFactory
     private function getOtherFacade(): OtherFacade
     {
         return $this->getProvidedDependency(
-            DependencyProvider::FACADE_COMMENT
+            Provider::FACADE_COMMENT
         );
     }
 }

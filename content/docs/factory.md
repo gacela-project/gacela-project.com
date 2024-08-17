@@ -4,7 +4,7 @@ weight = 4
 +++
 
 The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to
-orchestrate the creation of different classes, and its dependencies (through DependencyProvider or Config).
+orchestrate the creation of different classes, and its dependencies (through Provider or Config).
 
 - The Factory creates the classes of your module and its dependencies
 - The Factory is accessible to the Facade (with `getFactory()`)
