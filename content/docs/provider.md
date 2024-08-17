@@ -1,6 +1,7 @@
 +++
 title = "Provider"
 weight = 6
+aliases = [ "docs/dependency-provider" ]
 +++
 
 The communication between different modules it's done via their Facades because they are the main entry point of a
