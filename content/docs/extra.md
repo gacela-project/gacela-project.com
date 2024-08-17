@@ -28,56 +28,50 @@ In this example, you can see how you can have a full Gacela modularity concepts 
 <?php declare(strict_types=1);
 # file: local/gacela-in-a-file.php
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Gacela\Framework\AbstractConfig;
 use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\AbstractFacade;
 use Gacela\Framework\AbstractFactory;
-use Gacela\Framework\Bootstrap\GacelaConfig;
-use Gacela\Framework\ClassResolver\GlobalInstance\AnonymousGlobal;
 use Gacela\Framework\Container\Container;
 use Gacela\Framework\Gacela;
 
 Gacela::bootstrap(__DIR__);
 
-$contextName = basename(__FILE__, '.php');
-
-AnonymousGlobal::addGlobal(
-    $contextName,
+Gacela::addGlobal(
     new class() extends AbstractConfig {
         /** @return list<int> */
         public function getValues(): array
         {
             return [1, 2, 3];
         }
-    }
+    },
+    __FILE__,
 );
 
-AnonymousGlobal::addGlobal(
-    $contextName,
+Gacela::addGlobal(
     new class() extends AbstractProvider {
         public function provideModuleDependencies(Container $container): void
         {
             $container->set('my-greeter', new class() {
                 public function greet(string $name): string
                 {
-                    return "Hello, $name!";
+                    return "Hello, {$name}!";
                 }
             });
         }
-    }
+    },
 );
 
-AnonymousGlobal::addGlobal(
-    $contextName,
+Gacela::addGlobal(
     new class() extends AbstractFactory {
         public function createDomainClass(): object
         {
             /** @var object $myService */
             $myService = $this->getProvidedDependency('my-greeter');
 
-            /** @var list<int> $configValues */
+            /** @var int[] $configValues */
             $configValues = $this->getConfig()->getValues();
 
             return new class($myService, ...$configValues) {
@@ -87,7 +81,7 @@ AnonymousGlobal::addGlobal(
 
                 public function __construct(
                     object $myService,
-                    int ...$configValues
+                    int ...$configValues,
                 ) {
                     $this->myService = $myService;
                     $this->configValues = $configValues;
@@ -104,7 +98,7 @@ AnonymousGlobal::addGlobal(
                 }
             };
         }
-    }
+    },
 );
 
 $facade = new class() extends AbstractFacade {
