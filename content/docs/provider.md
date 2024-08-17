@@ -1,6 +1,6 @@
 +++
 title = "Provider"
-weight = 6
+weight = 5
 aliases = [ "docs/dependency-provider" ]
 +++
 
