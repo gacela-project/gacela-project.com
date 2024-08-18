@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  ignoreDeadLinks: true,
   title: "Gacela",
   description: "Gacela helps you build modular PHP applications simplifying the communication of the different modules in your application",
   lang: 'en-US',

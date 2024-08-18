@@ -7,6 +7,7 @@ export default defineConfig({
             external: [
                 'public/full-gacela-logo.svg',
                 'public/full-gacela-logo-dark.svg',
+                'README.md'
             ]
         }
     }
