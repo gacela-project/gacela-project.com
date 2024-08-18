@@ -25,12 +25,12 @@ vendor/bin/gacela list:modules [--detailed|-d]
 
 ## Code generator
 
-You can generate a `facade`, `factory`, `config`, `dep. provider`, or full `module`.
+You can generate a `facade`, `factory`, `config`, `provider`, or full `module`.
 
 ### Create specific Gacela classes
 
 ```bash
-vendor/bin/gacela make:file [-s] <target-namespace> <facade factory config dep-provider>
+vendor/bin/gacela make:file [-s] <target-namespace> <facade factory config provider>
 # Description:
 #   Generate a Facade, Factory, Config, Provider
 # 
@@ -48,7 +48,7 @@ vendor/bin/gacela make:file [-s] <target-namespace> <facade factory config dep-p
 Example:
 ```bash
 # You can create one or more files at once
-vendor/bin/gacela make:file App/TestModule facade factory dep-provider
+vendor/bin/gacela make:file App/TestModule facade factory provider
 ```
 
 ### Creates a new full module
