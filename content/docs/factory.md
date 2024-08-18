@@ -6,8 +6,8 @@ weight = 4
 The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to
 orchestrate the creation of different classes, and its dependencies (through Provider or Config).
 
-- The Factory creates the classes of your module and its dependencies
-- The Factory is accessible to the Facade (with `getFactory()`)
+- The Factory creates the classes of your module and resolves its dependencies
+- The Facade can access its Factory with `getFactory()`
 
 ## Creating your objects
 
@@ -71,64 +71,18 @@ concrete class or object that you want to use. For example:
 <?php # gacela.php
 
 return function (GacelaConfig $config) {
-    $config->addMappingInterface(
-        InterfaceToConcreteClass::class,
-        ConcreteClass::class
-    );
+    $config->addBinding(InterfaceToConcrete::class, Concrete::class);
 
-    $config->addMappingInterface(
-        InterfaceToCallable::class, 
-        fn () => new ConcreteClass()
-    );
+    $config->addBinding(InterfaceToCallable::class, fn() => new Concrete());
 };
 ```
 
 The major difference between these two are:
 
-- the `InterfaceToConcreteClass` will be resolved by creating an instance of that `ConcreteClass` on the fly (even using
+- the `InterfaceToConcrete` will be resolved by creating an instance of that `Concrete` on the fly (even using
   auto-wiring for its dependencies recursively if needed).
 - the `InterfaceToCallable` won't create a new instance, but instead it will use the instance that you might want to.
 - using a callable as value (the `fn () => ...`) is also a "lazy loading", so it will delay the execution of that code
   till its needed.
 
 Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/master/gacela.php#L28)
-
-### Injecting external services to Gacela config
-
-You can let know Gacela the external services that you want to have access in your `gacela.php` config file
-by passing them in the entry point of your app:
-```php
-<?php # public/index.php
-
-# A real example for a Symfony application ...
-$kernel = new \Symfony\Component\HttpKernel\Kernel($_SERVER['APP_ENV']);
-
-$configFn = fn (GacelaConfig $config) => $config
-    ->addExternalService('symfony/kernel', $kernel);
-
-Gacela::bootstrap($appRootDir, $configFn);
-```
-
-You now have access to the external services (in this case the symfony kernel), so you can map the 
-`EntityManagerInterface` to the one that the `symfony.kernel.container` itself already created:
-```php
-<?php # gacela.php
-
-use Gacela\Framework\AbstractConfigGacela;
-
-return function (GacelaConfig $config) {
-    /** 
-     * Using $config we can get the service that we added in `public/index.php`
-     * 
-     * @var Kernel $kernel
-     */
-    $kernel = $config->getExternalService('symfony/kernel');
-
-    $config->addMappingInterface(
-        EntityManagerInterface::class,
-        fn () => $kernel->getContainer()->get('doctrine.orm.entity_manager')
-    );
-});
-```
-
-To see the complete example, please check out [this repository](https://github.com/gacela-project/symfony-gacela-example).
