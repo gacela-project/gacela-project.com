@@ -9,9 +9,9 @@ module.
 
 ### Factory vs Provider
 
-The main difference between Factories and Dependency Providers:
+The main difference between Factories and Providers:
 - Factories are responsible for in-module dependencies, 
-- while Dependency Providers are responsible for module-to-module dependencies.
+- while Providers are responsible for module-to-module dependencies.
 
 ### Setting a provided dependency
 
