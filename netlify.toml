@@ -3,4 +3,4 @@ NODE_VERSION = "20"
 
 [build]
 publish = "docs/.vitepress/dist"
-command = "npm run build"
+command = "npm run docs:build"
