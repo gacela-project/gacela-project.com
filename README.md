@@ -15,8 +15,8 @@
 <br>
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="public/full-gacela-logo-dark.svg">
-        <img alt="Gacela logo" src="public/full-gacela-logo.svg" width="350">
+        <source media="(prefers-color-scheme: dark)" srcset="docs/public/full-gacela-logo-dark.svg">
+        <img alt="Gacela logo" src="docs/public/full-gacela-logo.svg" width="350">
     </picture>
 </p>
 

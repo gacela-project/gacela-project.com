@@ -7,7 +7,7 @@
  * Fonts
  */
 
-@import url('./fonts.css');
+@import url('fonts.css');
 
 :root {
     --vp-font-family-base: Heebo, sans-serif;

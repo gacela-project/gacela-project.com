@@ -41,15 +41,15 @@ export default defineConfig({
     sidebar: [
       {
         items: [
-          { text: 'Quickstart', link: '/quickstart' },
-          { text: 'Bootstrap', link: '/bootstrap' },
-          { text: 'Facade', link: '/facade' },
-          { text: 'Factory', link: '/factory' },
-          { text: 'Provider', link: '/provider' },
-          { text: 'Config', link: '/config' },
-          { text: 'Other Frameworks', link: '/other-frameworks' },
-          { text: 'Gacela script', link: '/gacela-script' },
-          { text: 'Extra', link: '/extra' },
+          { text: 'Quickstart', link: '/docs/quickstart' },
+          { text: 'Bootstrap', link: '/docs/bootstrap' },
+          { text: 'Facade', link: '/docs/facade' },
+          { text: 'Factory', link: '/docs/factory' },
+          { text: 'Provider', link: '/docs/provider' },
+          { text: 'Config', link: '/docs/config' },
+          { text: 'Other Frameworks', link: '/docs/other-frameworks' },
+          { text: 'Gacela script', link: '/docs/gacela-script' },
+          { text: 'Extra', link: '/docs/extra' },
         ]
       }
     ],

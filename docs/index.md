@@ -13,7 +13,7 @@ hero:
   actions:
     - theme: brand
       text: Quickstart
-      link: /quickstart
+      link: /docs/quickstart
     - theme: alt
       text: About Gacela
       link: /about-gacela
@@ -26,21 +26,21 @@ features:
       src: /features-facade.svg
     title: Facade
     details: is the <i>entry point</i> of a module
-    link: /facade
+    link: /docs/facade
   - icon:
       src: /features-factory.svg
     title: Factory
     details: manages the <i>intra-dependencies</i> of the module
-    link: /factory
+    link: /docs/factory
   - icon:
       src: /features-provider.svg
     title: Provider
     details: resolves the <i>extra-dependencies</i> of the module
-    link: /provider
+    link: /docs/provider
   - icon:
       src: /features-config.svg
     title: Config
     details: has access to the project's <i>config</i> files
-    link: /config
+    link: /docs/config
 ---
 
