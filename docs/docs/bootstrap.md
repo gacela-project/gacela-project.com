@@ -41,7 +41,7 @@ For example:
 The loading of this particular file will happen after the default `gacela.php` (if exists). So it will override (or add)
 the possible values you might have defined in the default `gacela.php` file.
 
-(A similar behaviour already exists for your app config files. See: [Config files for diff env](/config/#config-files-for-different-environments).)
+(A similar behaviour already exists for your app config files. See: [Config files for diff env](/docs/config/#config-files-for-different-environments).)
 
 ::: info
 If you are working "on top" of another project which is using gacela, you can always define your custom

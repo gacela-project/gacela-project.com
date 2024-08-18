@@ -13,7 +13,7 @@
 
 You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
 
-See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/other-frameworks/).
+See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
 
 ## Gacela in a file
 

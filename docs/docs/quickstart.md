@@ -6,10 +6,10 @@ maintainability and scalability.
 Gacela encourages your modules to interact with each other in a unified way:
 
 - Modules interact with each other **only** via their **Facade**
-- The [**Facade**](/docs/docs/facade.mdde.md) is the *entry point* of a module
-- The [**Factory**](/docs/docs/factory.mdry.md) manages the *intra-dependencies* of the module
-- The [**Provider**](/docs/docs/provider.mder.md) resolves the *extra-dependencies* of the module
-- The [**Config**](/docs/docs/config.mdig.md) has access to the project's *config files*
+- The [**Facade**](/docs/facade) is the *entry point* of a module
+- The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
+- The [**Provider**](/docs/provider) resolves the *extra-dependencies* of the module
+- The [**Config**](/docs/config) has access to the project's *config files*
 
 ## Installation
 
@@ -30,7 +30,7 @@ First, create your first module directory:
 mkdir src/Module
 ```
 
-Next, create a [Facade](/docs/docs/facade.mdde.md) for your module:
+Next, create a [Facade](/docs/facade) for your module:
 
 ```php source
 # file: src/Module/Facade.php
@@ -51,7 +51,7 @@ final class Facade extends AbstractFacade
     }
 }
 ```
-The [Facade](/docs/docs/facade.mdde.md) has an auto-resolver for the sibling [Factory](/docs/docs/factory.mdry.md) of the module.
+The [Facade](/docs/facade) has an auto-resolver for the sibling [Factory](/docs/factory) of the module.
 Let's create it:
 ```php source
 # file: src/Module/Factory.php
@@ -71,7 +71,7 @@ final class Factory extends AbstractFactory
 }
 ```
 
-Create the application service that will be instantiated in the [Factory](/docs/docs/factory.mdry.md):
+Create the application service that will be instantiated in the [Factory](/docs/factory):
 
 ```bash
 mkdir src/Module/Service
@@ -94,7 +94,7 @@ final class Greeter
 }
 ```
 
-Finally, create an entry point, where you can instantiate the [Facade](/docs/docs/facade.mdde.md) and use it.
+Finally, create an entry point, where you can instantiate the [Facade](/docs/facade) and use it.
 ```php source
 # file: example.php
 use Gacela\Framework\Gacela;
@@ -109,19 +109,19 @@ $facade = new Facade();
 echo $facade->greet('Alice'); # Hi, Alice!
 ```
 
-Additionally, the [Factory](/docs/docs/factory.mdry.md) can access the [Config](/docs/docs/config.mdig.md) and
-the [Provider](/docs/docs/provider.mder.md) classes of the module which provides a lot of
+Additionally, the [Factory](/docs/factory) can access the [Config](/docs/config) and
+the [Provider](/docs/provider) classes of the module which provides a lot of
 potential for configuration and extension. I didn't add them in this example to keep it simple.
 
 ## Next steps
 
-Dive deeper into the [documentation](/docs/docs/bootstrap.mdap.md) to discover:
+Dive deeper into the [documentation](/docs/bootstrap) to discover:
 
-- The options provided by [GacelaConfig](/bootstrap/#gacelaconfig) such as custom bindings, plugins, suffix names,
+- The options provided by [GacelaConfig](/docs/bootstrap/#gacelaconfig) such as custom bindings, plugins, suffix names,
   project namespaces, extend services, internal event, cache system and more
 - Check the full documentation for each Gacela class _(within a module context)_:
-    - [Facade](/docs/docs/facade.mdde.md): the *entry point*
-    - [Factory](/docs/docs/factory.mdry.md): manages the *intra-dependencies*
-    - [Provider](/docs/docs/provider.mder.md): resolves the *extra-dependencies*
-    - [Config](/docs/docs/config.mdig.md): access the project's *config* key values
-- Want to go crazy? Check "[Gacela in a file](/extra/#gacela-in-a-file)" to see the flexibility of Gacela
+    - [Facade](/docs/facade): the *entry point*
+    - [Factory](/docs/factory): manages the *intra-dependencies*
+    - [Provider](/docs/provider): resolves the *extra-dependencies*
+    - [Config](/docs/config): access the project's *config* key values
+- Want to go crazy? Check "[Gacela in a file](/docs/extra/#gacela-in-a-file)" to see the flexibility of Gacela
