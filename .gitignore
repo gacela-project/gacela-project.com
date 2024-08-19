@@ -1,5 +1,7 @@
 .idea
 .vscode
-public/
-static/processed_images/
-static/syntax-theme-*.css
+
+node_modules
+
+docs/.vitepress/dist
+docs/.vitepress/cache
