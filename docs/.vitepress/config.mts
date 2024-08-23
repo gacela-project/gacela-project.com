@@ -20,11 +20,6 @@ export default defineConfig({
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: {
-      light: 'gacela-header-logo.svg',
-      dark: 'gacela-header-logo-dark.svg',
-    },
-    siteTitle: false,
     footer: {
       message: '© 2021-present, <a href="/team">Team</a> and <a href="/license">License</a>',
     },
