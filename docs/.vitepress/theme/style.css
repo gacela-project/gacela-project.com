@@ -166,3 +166,10 @@ h6 {
     object-position: center;
 }
 
+.VPNavBarTitle span {
+    font-family: Raleway, sans-serif;
+    font-size: xx-large;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
