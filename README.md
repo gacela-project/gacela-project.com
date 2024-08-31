@@ -8,6 +8,9 @@
     <a href="https://github.com/gacela-project/gacela/actions/workflows/mutation-testing.yml">
         <img src="https://github.com/gacela-project/gacela/actions/workflows/mutation-testing.yml/badge.svg" alt="Mutation Testing">
     </a>
+    <a href="https://app.netlify.com/sites/gacela-project/deploys">
+        <img src="https://api.netlify.com/api/v1/badges/eed2291b-697f-4c55-9cd2-89d847a16a76/deploy-status" alt="Netlify Status">
+    </a>
     <a href="https://github.com/gacela-project/gacela/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT Software License">
     </a>
