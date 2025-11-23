@@ -39,9 +39,9 @@ const members = [
         },
         link: 'https://jesusvalerareales.com/' 
       },
-      { icon: 'github', link: 'https://github.com/JesusValera/' },
-      { icon: 'x', link: 'https://x.com/JesusValera96/' },
-      { icon: 'linkedin', link: 'https://www.linkedin.com/in/jesusvalera/' }
+      { icon: 'github', link: 'https://github.com/JesusValeraDev/' },
+      { icon: 'x', link: 'https://x.com/JesusValeraDev/' },
+      { icon: 'linkedin', link: 'https://www.linkedin.com/in/jesus-valera-reales/' }
     ]
   },
 ]
