@@ -32,4 +32,4 @@ It is a dialect of Lisp inspired by Clojure and Janet.
 - It runs on cheap hosting providers
 - Easy to write and debug
 
-You can read more about Phel Lang [here](https://chemaclass.es/blog/phel-first-release/).
+You can read more about Phel Lang [here](https://chemaclass.com/blog/phel-first-release/).
