@@ -55,36 +55,64 @@ echo sprintf('Spam Score: %d', $score) . PHP_EOL;
 
 ## Use the Facade from your infrastructure layer
 
-You can easily access the Facade of your module from your infrastructure layer, like a Controller or a Command without
-the need of inheritance. You just need to use the trait: `DocBlockResolverAwareTrait` and define the `getFacade()` method
-in the DocBlock pointing to the concrete Facade.
+You can access the Facade from your infrastructure layer (Controller, Command, etc.) without inheriting from it. Use the `ServiceResolverAwareTrait` together with the `#[ServiceMap]` attribute — or, as an alternative, the older DocBlock `@method` form — to let Gacela resolve the Facade lazily through the Locator singleton.
 
-A usage example:
+### Recommended: `#[ServiceMap]` attribute
+
 ```php
 <?php
-/**
- * @method RunFacade getFacade()
- */
+
+use Gacela\Framework\ServiceResolver\ServiceMap;
+use Gacela\Framework\ServiceResolverAwareTrait;
+
+#[ServiceMap(method: 'getFacade', className: RunFacade::class)]
 final class TestCommand extends Command
 {
-    use DocBlockResolverAwareTrait;
+    use ServiceResolverAwareTrait;
 
     protected function execute(InputInterface $in, OutputInterface $out): int
     {
-        // Eg: `getDependencies()` is a method from `RunFacade` 
+        // getDependencies() is a method on RunFacade
         $dependencies = $this->getFacade()->getDependencies($paths);
         // ...
     }
 }
 ```
 
+`#[ServiceMap]` is repeatable — declare as many resolvable services as the class needs.
+
+### Alternative: DocBlock `@method`
+
+Still fully supported; useful on PHP versions where attributes are awkward, or when migrating a legacy code base.
+
+```php
+<?php
+
+use Gacela\Framework\ServiceResolverAwareTrait;
+
+/**
+ * @method RunFacade getFacade()
+ */
+final class TestCommand extends Command
+{
+    use ServiceResolverAwareTrait;
+
+    protected function execute(InputInterface $in, OutputInterface $out): int
+    {
+        $dependencies = $this->getFacade()->getDependencies($paths);
+        // ...
+    }
+}
+```
+
+::: info Migration
+`DocBlockResolverAwareTrait` was renamed to `ServiceResolverAwareTrait` in `1.12.0`. The old trait name still works, but new code should use `ServiceResolverAwareTrait`.
+:::
+
 #### Why not simply instantiate the Facade?
 
-Instantiating the Facade would be another alternative, but using `DocBlockResolverAwareTrait` Gacela will use the
-Locator singleton to avoid duplicating the creation of the same Facade multiple times.
+Instantiating the Facade would be another alternative, but using `ServiceResolverAwareTrait` Gacela will use the Locator singleton to avoid duplicating the creation of the same Facade multiple times.
 
-#### How do this works?
+#### How does this work?
 
-Basically, the `DocBlockResolverAwareTrait` resolves on runtime the type from that method, so this trait is not limited
-to the Facade, but to any infrastructure class that you might want to load on the fly without the need of injecting via
-the constructor. Apart from this, Gacela will do the rest of the autoloading of its possible dependencies.
+The `ServiceResolverAwareTrait` resolves on runtime the type from `#[ServiceMap]` (or the DocBlock `@method`), so this trait is not limited to the Facade — you can use it to lazily load any Gacela-resolvable class without the need of injecting it via the constructor. Gacela will do the rest of the autoloading of its dependencies.

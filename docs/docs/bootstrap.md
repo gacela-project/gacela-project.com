@@ -556,8 +556,132 @@ return function (GacelaConfig $config) {
 };
 ```
 
-## Additional
+### Factory Services
 
+```php
+addFactory(string $id, Closure $factory);
+```
+
+Unlike regular bindings (which are singletons), factory services return a new instance every time they are resolved from the container.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addFactory('session', fn () => new SessionHandler());
+};
+```
+
+Every call to `$container->get('session')` returns a fresh `SessionHandler`.
+
+### Protected Services
+
+```php
+addProtected(string $id, Closure $service);
+```
+
+Store a closure **without invoking it**. Useful for callable configurations or lazy factories you want to trigger by hand.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addProtected('db.factory', fn () => new Database());
+};
+```
+
+```php
+$factory = $container->get('db.factory'); // the closure itself
+$db      = $factory();                    // invoke when needed
+```
+
+Protected services cannot be extended via `extendService()`.
+
+### Service Aliases
+
+```php
+addAlias(string $alias, string $id);
+```
+
+Reference the same service with a different name (useful for short names or backward-compatibility).
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addBinding(LoggerInterface::class, FileLogger::class);
+  $config->addAlias('logger', LoggerInterface::class);
+};
+```
+
+Both `$container->get(LoggerInterface::class)` and `$container->get('logger')` resolve to the same instance.
+
+### Contextual Bindings
+
+```php
+when(string|array $concrete)->needs(string $abstract)->give(string|object|callable $concrete);
+```
+
+Provide different implementations of an interface depending on **which class is requesting it**.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->when(UserController::class)
+    ->needs(LoggerInterface::class)
+    ->give(FileLogger::class);
+
+  $config->when(AdminController::class)
+    ->needs(LoggerInterface::class)
+    ->give(DatabaseLogger::class);
+
+  // Bind multiple consumers at once
+  $config->when([ApiController::class, WebController::class])
+    ->needs(CacheInterface::class)
+    ->give(RedisCache::class);
+};
+```
+
+Contextual bindings win over the global `addBinding()` for the same interface.
+
+### Health Checks
+
+```php
+addHealthCheck(class-string|ModuleHealthCheckInterface $check);
+```
+
+Register a per-module health check. All registered checks are aggregated by the `doctor` command and the `HealthChecker`. See the full [Module health checks](/docs/health-checks) page.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addHealthCheck(DatabaseHealthCheck::class);
+  $config->addHealthCheck(new CacheHealthCheck($redis));
+};
+```
+
+### Handler Registry
+
+```php
+addHandlerRegistry(string $registryKey, array<string|int,class-string> $handlers);
+```
+
+Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a `HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after boot — there is no runtime `register()` method.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addHandlerRegistry(PaymentGatewayInterface::class, [
+    'stripe' => StripeGateway::class,
+    'paypal' => PaypalGateway::class,
+  ]);
+};
+```
+
+## Additional
 
 ### Gacela::rootDir()
 
@@ -565,4 +689,22 @@ Get the application root dir set when bootstrapping gacela.
 
 ### Gacela::get(string::class)
 
-Get a located binding or singleton already loaded considering the existing container dependencies on runtime.
+Get a located binding or singleton already loaded considering the existing container dependencies on runtime. Returns `null` when the service is not registered.
+
+### Gacela::getRequired(string::class)
+
+Same as `Gacela::get()` but throws `ServiceNotFoundException` when the service is missing. The exception message includes did-you-mean suggestions built from the registered service names.
+
+```php
+try {
+    $facade = Gacela::getRequired(UserFacade::class);
+} catch (ServiceNotFoundException $e) {
+    // Typo'd service name? The message contains suggestions.
+}
+```
+
+`Locator::getRequiredSingleton()` is the equivalent shortcut when working with the locator directly.
+
+### Gacela::container()
+
+Get the main dependency injection container created during bootstrap — useful for tooling (e.g. `debug:container`) and for tests that need direct container access.

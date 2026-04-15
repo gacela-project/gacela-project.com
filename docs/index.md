@@ -42,5 +42,17 @@ features:
     title: Config
     details: has access to the project's <i>config</i> files
     link: /docs/config
+  - title: Container DI
+    details: contextual bindings, aliases, protected & factory services
+    link: /docs/bootstrap#factory-services
+  - title: Caching
+    details: three layers — framework resolution, cacheable methods, file cache
+    link: /docs/caching
+  - title: Tooling
+    details: <code>cache:warm</code>, <code>doctor</code>, <code>debug:dependencies</code>, <code>profile:report</code>
+    link: /docs/gacela-script
+  - title: Health checks
+    details: per-module status aggregated for the <code>doctor</code> CLI and HTTP endpoints
+    link: /docs/health-checks
 ---
 

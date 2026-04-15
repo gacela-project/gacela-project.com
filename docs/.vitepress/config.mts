@@ -35,18 +35,40 @@ export default defineConfig({
 
     sidebar: [
       {
+        text: 'Getting started',
         items: [
           { text: 'Quickstart', link: '/docs/quickstart' },
           { text: 'Bootstrap', link: '/docs/bootstrap' },
+        ],
+      },
+      {
+        text: 'Module pillars',
+        items: [
           { text: 'Facade', link: '/docs/facade' },
           { text: 'Factory', link: '/docs/factory' },
           { text: 'Provider', link: '/docs/provider' },
           { text: 'Config', link: '/docs/config' },
-          { text: 'Other Frameworks', link: '/docs/other-frameworks' },
+          { text: 'Service Map', link: '/docs/service-map' },
+        ],
+      },
+      {
+        text: 'Production & tooling',
+        items: [
           { text: 'Gacela script', link: '/docs/gacela-script' },
+          { text: 'Caching', link: '/docs/caching' },
+          { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
+          { text: 'Opcache preload', link: '/docs/opcache-preload' },
+          { text: 'Health checks', link: '/docs/health-checks' },
+          { text: 'Static analysis', link: '/docs/static-analysis' },
+        ],
+      },
+      {
+        text: 'Integrations',
+        items: [
+          { text: 'Other Frameworks', link: '/docs/other-frameworks' },
           { text: 'Extra', link: '/docs/extra' },
-        ]
-      }
+        ],
+      },
     ],
 
     socialLinks: [
