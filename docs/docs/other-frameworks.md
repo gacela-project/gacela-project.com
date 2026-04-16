@@ -14,6 +14,36 @@ Or, in the case of Laravel, `/bootstrap/app.php`.
 - Symfony: [https://github.com/gacela-project/symfony-gacela-example](https://github.com/gacela-project/symfony-gacela-example)
 - Laravel: [https://github.com/gacela-project/laravel-gacela-example](https://github.com/gacela-project/laravel-gacela-example)
 
+## Symfony bridge
+
+::: tip Since 1.14
+The `gacela/symfony-bridge` package provides a compiler pass that routes `#[Inject]` parameters through Gacela's container in Symfony apps.
+:::
+
+Install the bridge:
+
+```bash
+composer require gacela/symfony-bridge
+```
+
+Register the compiler pass in your kernel or bundle:
+
+```php
+use Gacela\SymfonyBridge\DependencyInjection\GacelaInjectCompilerPass;
+
+final class AppKernel extends Kernel
+{
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new GacelaInjectCompilerPass());
+    }
+}
+```
+
+The compiler pass rewrites Symfony service definitions so constructor parameters annotated with `#[Inject]` resolve via Gacela's container (`[@gacela.container, 'get']`). If a parameter already has a Symfony argument configured, the build fails with a clear conflict message.
+
+See the [Inject attribute](/docs/inject) page for the full `#[Inject]` reference.
+
 ## Tricks
 
 #### Use Symfony Doctrine Entity Manager

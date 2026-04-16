@@ -89,3 +89,56 @@ final class SalesFacade extends AbstractFacade
     }
 }
 ```
+
+## `#[Provides]` attribute
+
+::: tip Since 1.14
+Replace stringly-typed `$container->set(KEY, fn () => ...)` boilerplate with a declarative method-level attribute.
+:::
+
+Instead of overriding `provideModuleDependencies()`, annotate methods with `#[Provides('ID')]`. Each method is wrapped in a lazy closure and auto-injected with `Container` when declared in the signature.
+
+```php
+<?php # src/Sales/SalesProvider.php
+
+use Gacela\Framework\AbstractProvider;
+use Gacela\Framework\Attribute\Provides;
+use Gacela\Framework\Container\Container;
+
+final class SalesProvider extends AbstractProvider
+{
+    #[Provides('COMMANDS')]
+    public function commands(): array
+    {
+        return [new SyncCommand()];
+    }
+
+    #[Provides('FACADE_COMMENT')]
+    public function commentFacade(Container $container): CommentFacade
+    {
+        return $container->getLocator()->get(CommentFacade::class);
+    }
+}
+```
+
+With `#[Provides]`, `provideModuleDependencies()` becomes non-abstract — providers can go attribute-only or mix both styles.
+
+### Mixing with `provideModuleDependencies()`
+
+You can use attributes alongside the traditional method. Attribute-registered services are resolved first, then `provideModuleDependencies()` runs as before:
+
+```php
+final class SalesProvider extends AbstractProvider
+{
+    #[Provides('COMMANDS')]
+    public function commands(): array
+    {
+        return [new SyncCommand()];
+    }
+
+    public function provideModuleDependencies(Container $container): void
+    {
+        $container->set('LEGACY_SERVICE', fn () => new LegacyAdapter());
+    }
+}
+```

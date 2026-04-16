@@ -49,6 +49,7 @@ export default defineConfig({
           { text: 'Provider', link: '/docs/provider' },
           { text: 'Config', link: '/docs/config' },
           { text: 'Service Map', link: '/docs/service-map' },
+          { text: 'Inject attribute', link: '/docs/inject' },
         ],
       },
       {
@@ -66,6 +67,7 @@ export default defineConfig({
         text: 'Integrations',
         items: [
           { text: 'Other Frameworks', link: '/docs/other-frameworks' },
+          { text: 'Testing', link: '/docs/testing' },
           { text: 'Extra', link: '/docs/extra' },
         ],
       },

@@ -1,18 +1,19 @@
 # Cacheable facade methods
 
-Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute and `CacheableTrait`.
+Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute.
+
+::: tip Since 1.14
+`CacheableTrait` is now built into `AbstractFacade`. You no longer need `use CacheableTrait;` — any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
+:::
 
 ## Quick start
 
 ```php
 use Gacela\Framework\Attribute\Cacheable;
-use Gacela\Framework\Attribute\CacheableTrait;
 use Gacela\Framework\AbstractFacade;
 
 final class CatalogFacade extends AbstractFacade
 {
-    use CacheableTrait;
-
     #[Cacheable(ttl: 3600)]
     public function getPopularProducts(): array
     {
@@ -33,7 +34,7 @@ Subsequent calls within the TTL return the cached value without invoking the cal
 2. Builds a cache key from the class, method, and arguments.
 3. Returns the cached value on hit, or runs the callback and stores the result on miss.
 
-The method name and arguments are inferred from the caller's stack frame via `debug_backtrace()`. You don't pass them — but you can, for performance or when calling from a helper (see [Opting out of backtrace](#opting-out-of-backtrace)).
+The method name and arguments are inferred from the caller's stack frame via `debug_backtrace()` automatically. You can pass them explicitly for performance or when calling from a helper (see [Opting out of backtrace](#opting-out-of-backtrace)).
 
 ## Arguments shape the cache key
 

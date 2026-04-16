@@ -43,7 +43,7 @@ vendor/bin/gacela debug:dependencies <class|file>
 
 - Accepts a fully qualified class name or a path to a PHP file declaring the class.
 - Each parameter is tagged (`bound → target`, `autowirable`, `has default`, or `unresolvable` with a reason).
-- Parameters annotated with `#[Inject]` show up tagged `inject`, with the override concrete rendered inline when present.
+- Parameters annotated with [`#[Inject]`](/docs/inject) show up tagged `inject`, with the override concrete rendered inline when present.
 
 ### `debug:container`
 

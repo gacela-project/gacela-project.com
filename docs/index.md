@@ -54,5 +54,11 @@ features:
   - title: Health checks
     details: per-module status aggregated for the <code>doctor</code> CLI and HTTP endpoints
     link: /docs/health-checks
+  - title: Inject attribute
+    details: opt-in <code>#[Inject]</code> constructor injection with implementation overrides
+    link: /docs/inject
+  - title: Provides attribute
+    details: declarative <code>#[Provides]</code> for provider service registration
+    link: /docs/provider#provides-attribute
 ---
 

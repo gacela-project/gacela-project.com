@@ -41,17 +41,14 @@ See also: [Opcache preload](/docs/opcache-preload) for getting PHP itself to cac
 
 ## Layer 2 — Cacheable facade methods
 
-Cache the *result* of a facade method with the `#[Cacheable]` attribute and `CacheableTrait`. Full reference: [Cacheable methods](/docs/cacheable-methods).
+Cache the *result* of a facade method with the `#[Cacheable]` attribute. Since 1.14, `CacheableTrait` is built into `AbstractFacade` — no extra `use` needed. Full reference: [Cacheable methods](/docs/cacheable-methods).
 
 ```php
 use Gacela\Framework\AbstractFacade;
 use Gacela\Framework\Attribute\Cacheable;
-use Gacela\Framework\Attribute\CacheableTrait;
 
 final class CatalogFacade extends AbstractFacade
 {
-    use CacheableTrait;
-
     #[Cacheable(ttl: 3600)]
     public function getPopularProducts(): array
     {
