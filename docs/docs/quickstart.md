@@ -117,11 +117,12 @@ potential for configuration and extension. I didn't add them in this example to 
 
 Dive deeper into the [documentation](/docs/bootstrap) to discover:
 
-- The options provided by [GacelaConfig](/docs/bootstrap/#gacelaconfig) such as custom bindings, plugins, suffix names,
-  project namespaces, extend services, internal event, cache system and more
-- Check the full documentation for each Gacela class _(within a module context)_:
+- [Bindings](/docs/bindings) — dependency injection, factory services, aliases, contextual bindings
+- [Extensions & Plugins](/docs/extensions) — plugins, extendService, handler registry
+- [Module Customization](/docs/customization) — suffix types, project namespaces, events
+- Each core concept in detail:
     - [Facade](/docs/facade): the *entry point*
     - [Factory](/docs/factory): manages the *intra-dependencies*
     - [Provider](/docs/provider): resolves the *extra-dependencies*
     - [Config](/docs/config): access the project's *config* key values
-- Want to go crazy? Check "[Gacela in a file](/docs/extra/#gacela-in-a-file)" to see the flexibility of Gacela
+- Want to go crazy? Check "[Gacela in a file](/docs/extra#gacela-in-a-file)" to see the flexibility of Gacela

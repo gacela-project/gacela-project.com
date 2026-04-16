@@ -166,6 +166,83 @@ h6 {
     object-position: center;
 }
 
+/**
+ * Component: Home — Hero name font
+ * -------------------------------------------------------------------------- */
+
+.VPHero .name {
+    font-family: Raleway, sans-serif !important;
+}
+
+/**
+ * Component: Home — Secondary features
+ * -------------------------------------------------------------------------- */
+
+.more-features {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 2rem 24px 64px;
+}
+
+.more-features-title {
+    text-align: center;
+    font-family: Rubik, sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--vp-c-text-2);
+    margin-bottom: 2rem;
+}
+
+.more-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2rem;
+}
+
+@media (max-width: 640px) {
+    .more-features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.more-features-item,
+.more-features-item:hover {
+    display: block;
+    padding: 0.75rem 0 0.75rem 1rem;
+    border-left: 3px solid var(--vp-c-divider);
+    text-decoration: none !important;
+    color: inherit;
+    font-weight: normal;
+    transition: border-color 0.25s;
+}
+
+.more-features-item:hover {
+    border-left-color: var(--vp-c-brand-1);
+}
+
+.more-features-item strong {
+    display: block;
+    font-size: 0.95rem;
+    font-family: Rubik, sans-serif;
+    color: var(--vp-c-text-1);
+    margin-bottom: 0.15rem;
+    text-decoration: none !important;
+}
+
+.more-features-item span {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.4;
+    text-decoration: none !important;
+}
+
+/**
+ * Component: Nav
+ * -------------------------------------------------------------------------- */
+
 .VPNavBarTitle span {
     font-family: Raleway, sans-serif;
     font-size: xx-large;

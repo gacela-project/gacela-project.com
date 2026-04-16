@@ -16,9 +16,7 @@ Or, in the case of Laravel, `/bootstrap/app.php`.
 
 ## Symfony bridge
 
-::: tip Since 1.14
 The `gacela/symfony-bridge` package provides a compiler pass that routes `#[Inject]` parameters through Gacela's container in Symfony apps.
-:::
 
 Install the bridge:
 

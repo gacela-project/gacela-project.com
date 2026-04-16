@@ -19,7 +19,7 @@ hero:
       link: /about-gacela
     - theme: alt
       text: Why decoupling?
-      link: /why-decoupling
+      link: /about-gacela#why-decoupling
 
 features:
   - icon:
@@ -42,23 +42,35 @@ features:
     title: Config
     details: has access to the project's <i>config</i> files
     link: /docs/config
-  - title: Container DI
-    details: contextual bindings, aliases, protected & factory services
-    link: /docs/bootstrap#factory-services
-  - title: Caching
-    details: three layers — framework resolution, cacheable methods, file cache
-    link: /docs/caching
-  - title: Tooling
-    details: <code>cache:warm</code>, <code>doctor</code>, <code>debug:dependencies</code>, <code>profile:report</code>
-    link: /docs/gacela-script
-  - title: Health checks
-    details: per-module status aggregated for the <code>doctor</code> CLI and HTTP endpoints
-    link: /docs/health-checks
-  - title: Inject attribute
-    details: opt-in <code>#[Inject]</code> constructor injection with implementation overrides
-    link: /docs/inject
-  - title: Provides attribute
-    details: declarative <code>#[Provides]</code> for provider service registration
-    link: /docs/provider#provides-attribute
 ---
+
+<section class="more-features">
+  <h2 class="more-features-title">And more</h2>
+  <div class="more-features-grid">
+    <a class="more-features-item" href="/docs/bindings#factory-services">
+      <strong>Container DI</strong>
+      <span>Contextual bindings, aliases, protected & factory services</span>
+    </a>
+    <a class="more-features-item" href="/docs/caching">
+      <strong>Caching</strong>
+      <span>Three layers — framework resolution, cacheable methods, file cache</span>
+    </a>
+    <a class="more-features-item" href="/docs/gacela-script">
+      <strong>Tooling</strong>
+      <span>cache:warm, doctor, debug:dependencies, profile:report</span>
+    </a>
+    <a class="more-features-item" href="/docs/health-checks">
+      <strong>Health checks</strong>
+      <span>Per-module status for the doctor CLI and HTTP endpoints</span>
+    </a>
+    <a class="more-features-item" href="/docs/inject">
+      <strong>Inject attribute</strong>
+      <span>Opt-in #[Inject] constructor injection with implementation overrides</span>
+    </a>
+    <a class="more-features-item" href="/docs/provider#provides-attribute">
+      <strong>Provides attribute</strong>
+      <span>Declarative #[Provides] for provider service registration</span>
+    </a>
+  </div>
+</section>
 

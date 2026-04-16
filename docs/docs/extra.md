@@ -1,23 +1,8 @@
-# Extra
-
-## Extra Modules
-
-- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
-- [Container](https://github.com/gacela-project/container): A minimalistic container dependency
-
-## Templates
-
-- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela
-
-## Examples
-
-You can see an example of a module using Gacela in this [repository](https://github.com/gacela-project/gacela-example).
-
-See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
+# Advanced Patterns
 
 ## Gacela in a file
 
-With `AnonymousGlobal::addGlobal()`, you can attach a Gacela class to a context (either an object or string).
+With `Gacela::addGlobal()`, you can attach a Gacela class to a context (either an object or string).
 In this example, you can see how you can have a full Gacela modularity concepts in a single file by linking them to the same context; in this case the current file name.
 
 ```php
@@ -129,3 +114,12 @@ Hello, Gacela!
 # This means that the anonymous Facade will have the Factory, Provider and Config
 # connected to it because they are all bind to the same file.
 ```
+
+## Related resources
+
+- [Router](https://github.com/gacela-project/router) — A minimalistic HTTP router
+- [Container](https://github.com/gacela-project/container) — A minimalistic container dependency
+- [API skeleton](https://github.com/gacela-project/api-skeleton) — A skeleton to build an API using Gacela
+- [Example project](https://github.com/gacela-project/gacela-example) — A complete module example
+
+See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).

@@ -92,9 +92,7 @@ final class SalesFacade extends AbstractFacade
 
 ## `#[Provides]` attribute
 
-::: tip Since 1.14
 Replace stringly-typed `$container->set(KEY, fn () => ...)` boilerplate with a declarative method-level attribute.
-:::
 
 Instead of overriding `provideModuleDependencies()`, annotate methods with `#[Provides('ID')]`. Each method is wrapped in a lazy closure and auto-injected with `Container` when declared in the signature.
 

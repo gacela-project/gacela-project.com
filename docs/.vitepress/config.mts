@@ -21,16 +21,40 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     footer: {
-      message: '© 2021-present, <a href="/team">Team</a> and <a href="/license">License</a>',
+      message: 'PHP 8.1+ · v1.14.1',
+      copyright: '© 2021-present, <a href="/team">Team</a> · <a href="/license">License</a> · <a href="https://packagist.org/packages/gacela-project/gacela">Packagist</a>',
     },
     outline: {
       level: [1, 3],
     },
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'About Gacela', link: '/about-gacela' },
-      { text: 'Why decoupling?', link: '/why-decoupling' },
+      {
+        text: 'Docs',
+        items: [
+          { text: 'Quickstart', link: '/docs/quickstart' },
+          { text: 'Bootstrap', link: '/docs/bootstrap' },
+          { text: 'Facade', link: '/docs/facade' },
+          { text: 'Factory', link: '/docs/factory' },
+          { text: 'Provider', link: '/docs/provider' },
+          { text: 'Config', link: '/docs/config' },
+        ],
+      },
+      {
+        text: 'Features',
+        items: [
+          { text: 'Inject attribute', link: '/docs/inject' },
+          { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
+          { text: 'CLI commands', link: '/docs/gacela-script' },
+          { text: 'Health checks', link: '/docs/health-checks' },
+          { text: 'Extensions & Plugins', link: '/docs/extensions' },
+        ],
+      },
+      { text: 'About', link: '/about-gacela' },
       { text: 'Used in', link: '/used-in' },
+      {
+        text: 'v1.14.1',
+        link: 'https://github.com/gacela-project/gacela/releases',
+      },
     ],
 
     sidebar: [
@@ -42,7 +66,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Module pillars',
+        text: 'Core concepts',
         items: [
           { text: 'Facade', link: '/docs/facade' },
           { text: 'Factory', link: '/docs/factory' },
@@ -53,12 +77,25 @@ export default defineConfig({
         ],
       },
       {
-        text: 'Production & tooling',
+        text: 'Configuration',
         items: [
-          { text: 'Gacela script', link: '/docs/gacela-script' },
+          { text: 'Bindings', link: '/docs/bindings' },
+          { text: 'Extensions & Plugins', link: '/docs/extensions' },
+          { text: 'Module Customization', link: '/docs/customization' },
+        ],
+      },
+      {
+        text: 'Caching & performance',
+        items: [
           { text: 'Caching', link: '/docs/caching' },
           { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
           { text: 'Opcache preload', link: '/docs/opcache-preload' },
+        ],
+      },
+      {
+        text: 'Tooling',
+        items: [
+          { text: 'CLI commands', link: '/docs/gacela-script' },
           { text: 'Health checks', link: '/docs/health-checks' },
           { text: 'Static analysis', link: '/docs/static-analysis' },
         ],
@@ -68,7 +105,7 @@ export default defineConfig({
         items: [
           { text: 'Other Frameworks', link: '/docs/other-frameworks' },
           { text: 'Testing', link: '/docs/testing' },
-          { text: 'Extra', link: '/docs/extra' },
+          { text: 'Advanced patterns', link: '/docs/extra' },
         ],
       },
     ],

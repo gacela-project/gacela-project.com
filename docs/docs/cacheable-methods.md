@@ -2,9 +2,7 @@
 
 Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute.
 
-::: tip Since 1.14
-`CacheableTrait` is now built into `AbstractFacade`. You no longer need `use CacheableTrait;` — any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
-:::
+`CacheableTrait` is built into `AbstractFacade` — any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
 
 ## Quick start
 
