@@ -31,22 +31,55 @@ export default defineConfig({
       {
         text: 'Docs',
         items: [
-          { text: 'Quickstart', link: '/docs/quickstart' },
-          { text: 'Bootstrap', link: '/docs/bootstrap' },
-          { text: 'Facade', link: '/docs/facade' },
-          { text: 'Factory', link: '/docs/factory' },
-          { text: 'Provider', link: '/docs/provider' },
-          { text: 'Config', link: '/docs/config' },
+          {
+            text: 'Getting started',
+            items: [
+              { text: 'Quickstart', link: '/docs/quickstart' },
+              { text: 'Bootstrap', link: '/docs/bootstrap' },
+            ],
+          },
+          {
+            text: 'Core concepts',
+            items: [
+              { text: 'Facade', link: '/docs/facade' },
+              { text: 'Factory', link: '/docs/factory' },
+              { text: 'Provider', link: '/docs/provider' },
+              { text: 'Config', link: '/docs/config' },
+            ],
+          },
+          {
+            text: 'Configuration',
+            items: [
+              { text: 'Bindings', link: '/docs/bindings' },
+              { text: 'Extensions & Plugins', link: '/docs/extensions' },
+            ],
+          },
         ],
       },
       {
         text: 'Features',
         items: [
-          { text: 'Inject attribute', link: '/docs/inject' },
-          { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
-          { text: 'CLI commands', link: '/docs/gacela-script' },
-          { text: 'Health checks', link: '/docs/health-checks' },
-          { text: 'Extensions & Plugins', link: '/docs/extensions' },
+          {
+            text: 'Caching & performance',
+            items: [
+              { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
+              { text: 'Caching', link: '/docs/caching' },
+            ],
+          },
+          {
+            text: 'Tooling',
+            items: [
+              { text: 'CLI commands', link: '/docs/gacela-script' },
+              { text: 'Health checks', link: '/docs/health-checks' },
+            ],
+          },
+          {
+            text: 'Integrations',
+            items: [
+              { text: 'Other Frameworks', link: '/docs/other-frameworks' },
+              { text: 'Testing', link: '/docs/testing' },
+            ],
+          },
         ],
       },
       { text: 'About', link: '/about-gacela' },
@@ -60,6 +93,7 @@ export default defineConfig({
     sidebar: [
       {
         text: 'Getting started',
+        collapsed: true,
         items: [
           { text: 'Quickstart', link: '/docs/quickstart' },
           { text: 'Bootstrap', link: '/docs/bootstrap' },
@@ -67,6 +101,7 @@ export default defineConfig({
       },
       {
         text: 'Core concepts',
+        collapsed: true,
         items: [
           { text: 'Facade', link: '/docs/facade' },
           { text: 'Factory', link: '/docs/factory' },
@@ -78,6 +113,7 @@ export default defineConfig({
       },
       {
         text: 'Configuration',
+        collapsed: true,
         items: [
           { text: 'Bindings', link: '/docs/bindings' },
           { text: 'Extensions & Plugins', link: '/docs/extensions' },
@@ -86,6 +122,7 @@ export default defineConfig({
       },
       {
         text: 'Caching & performance',
+        collapsed: true,
         items: [
           { text: 'Caching', link: '/docs/caching' },
           { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
@@ -94,6 +131,7 @@ export default defineConfig({
       },
       {
         text: 'Tooling',
+        collapsed: true,
         items: [
           { text: 'CLI commands', link: '/docs/gacela-script' },
           { text: 'Health checks', link: '/docs/health-checks' },
@@ -102,6 +140,7 @@ export default defineConfig({
       },
       {
         text: 'Integrations',
+        collapsed: true,
         items: [
           { text: 'Other Frameworks', link: '/docs/other-frameworks' },
           { text: 'Testing', link: '/docs/testing' },
