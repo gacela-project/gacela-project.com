@@ -54,7 +54,10 @@ export default defineConfig({
             text: 'Configuration',
             items: [
               { text: 'Bindings', link: '/docs/bindings' },
+              { text: 'Service Map', link: '/docs/service-map' },
+              { text: 'Inject attribute', link: '/docs/inject' },
               { text: 'Extensions & Plugins', link: '/docs/extensions' },
+              { text: 'Module Customization', link: '/docs/customization' },
             ],
           },
         ],
@@ -65,8 +68,9 @@ export default defineConfig({
           {
             text: 'Caching & performance',
             items: [
-              { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
               { text: 'Caching', link: '/docs/caching' },
+              { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
+              { text: 'Opcache preload', link: '/docs/opcache-preload' },
             ],
           },
           {
@@ -74,6 +78,7 @@ export default defineConfig({
             items: [
               { text: 'CLI commands', link: '/docs/gacela-script' },
               { text: 'Health checks', link: '/docs/health-checks' },
+              { text: 'Static analysis', link: '/docs/static-analysis' },
             ],
           },
           {
@@ -81,6 +86,7 @@ export default defineConfig({
             items: [
               { text: 'Other Frameworks', link: '/docs/other-frameworks' },
               { text: 'Testing', link: '/docs/testing' },
+              { text: 'Advanced patterns', link: '/docs/extra' },
             ],
           },
         ],

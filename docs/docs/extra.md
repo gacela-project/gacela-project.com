@@ -2,8 +2,13 @@
 
 ## Gacela in a file
 
-With `Gacela::addGlobal()`, you can attach a Gacela class to a context (either an object or string).
-In this example, you can see how you can have a full Gacela modularity concepts in a single file by linking them to the same context; in this case the current file name.
+`Gacela::addGlobal()` lets you bind Gacela pillar classes (Facade, Factory, Provider, Config) to a shared context. When no context is passed, the current file is used. This means you can wire a full module in a single file using anonymous classes.
+
+::: tip When is this useful?
+Prototyping, one-off scripts, or small CLI tools where a full directory-per-module structure would be overkill.
+:::
+
+### 1. Bootstrap and domain classes
 
 ```php
 <?php declare(strict_types=1);
@@ -19,12 +24,14 @@ use Gacela\Framework\Bootstrap\GacelaConfig;
 use Gacela\Framework\Container\Container;
 use Gacela\Framework\Gacela;
 
-Gacela::bootstrap(__DIR__,function (GacelaConfig $config){
-    // this can be read from a config file
-    $config->addAppConfigKeyValue('default-name', 'Gacela'); 
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
+    $config->addAppConfigKeyValue('default-name', 'Gacela');
 });
+```
 
-/** This is an example class from your @infrastructure layer */
+Two simple domain classes (these would normally live in your module's `Domain/` or `Application/` directory):
+
+```php
 final class Printer
 {
     public function print(string $str): void
@@ -33,7 +40,6 @@ final class Printer
     }
 }
 
-/**This is an example class from your @application layer */
 final class Greeter
 {
     public function __construct(
@@ -49,77 +55,80 @@ final class Greeter
         $this->printer->print("Hello, {$name}!\n");
     }
 }
+```
 
-##########################################################
-# The Gacela classes example of a module all-in-one file #
-##########################################################
+### 2. Wire the Gacela pillars as anonymous classes
+
+Each anonymous class is bound to the same file context via `addGlobal()`, so they auto-resolve each other:
+
+```php
+// Facade: the entry point
 $facade = new class() extends AbstractFacade {
     public function greet(string $name): void
     {
-        $this->getFactory()   // the Facade uses the Factory
-            ->createGreeter() // to create
-            ->greet($name);   // and use the object directly
+        $this->getFactory()
+            ->createGreeter()
+            ->greet($name);
     }
 };
 
+// Factory: creates internal objects, pulls config and provided deps
 Gacela::addGlobal(
     new class() extends AbstractFactory {
-        public function createGreeter(): object
+        public function createGreeter(): Greeter
         {
-            // the Factory creates the internal dependencies
-            // has access to external dependencies
-            // and has access to the config values
-            return new Greeter( 
-                $this->getProvidedDependency('printer'), 
-                $this->getConfig()->getDefaultName(), 
+            return new Greeter(
+                $this->getProvidedDependency('printer'),
+                $this->getConfig()->getDefaultName(),
             );
         }
     },
 );
 
+// Provider: defines cross-module / external dependencies
 Gacela::addGlobal(
     new class() extends AbstractProvider {
         public function provideModuleDependencies(Container $container): void
         {
-            // the Provider defines the extra dependencies of the "module"
             $container->set('printer', static fn () => new Printer());
         }
     },
 );
 
+// Config: reads from config files
 Gacela::addGlobal(
     new class() extends AbstractConfig {
         public function getDefaultName(): string
         {
-            // the Config can access the config files
             return $this->get('default-name');
         }
     },
 );
-
-$facade->greet('World');
-$facade->greet('');
 ```
 
-Usage:
+### 3. Use the Facade
+
+```php
+$facade->greet('World');  // Hello, World!
+$facade->greet('');       // Hello, Gacela!
+```
 
 ```bash
-➜ php local/gacela-in-a-file.php
+php local/gacela-in-a-file.php
 
 Hello, World!
 Hello, Gacela!
-
-# Explanation: Gacela::addGlobal() will create a class binding to a context, 
-# if none is passed (2nd argument) then the current file will be used. 
-# This means that the anonymous Facade will have the Factory, Provider and Config
-# connected to it because they are all bind to the same file.
 ```
+
+### How `addGlobal()` works
+
+`Gacela::addGlobal()` binds a class to a context (2nd argument). When omitted, the current file path is used as the context. Because all four anonymous classes above share the same file context, the Facade automatically resolves its Factory, the Factory resolves the Provider and Config, just like a regular directory-based module.
 
 ## Related resources
 
-- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
-- [Container](https://github.com/gacela-project/container): A minimalistic container dependency
-- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela
 - [Example project](https://github.com/gacela-project/gacela-example): A complete module example
+- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela
+- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
+- [Container](https://github.com/gacela-project/container): A minimalistic dependency container
 
 See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
