@@ -1,14 +1,14 @@
 # Config
 
-This concept is not a design pattern itself, but it's designed in a way that you can easily access all config values in
-your modules, and it's accessible from the Factory out of the box. The Config allows you to construct your business
-objects with specific configuration values clearly and straightforwardly.
+The Config gives your module access to **key-value configuration** from your project's config files. It's accessible from the [Factory](/docs/factory) out of the box, so you can pass config values directly into your domain objects at creation time.
 
-Note: This example will use the "Config PHP files" by default; all files in `'config/*.php'`.
+::: info
+The examples below use PHP config files by default (`config/*.php`). See [Bootstrap > Application Config](/docs/bootstrap#application-config) for other formats and custom readers.
+:::
 
-### The config file
+## The config file
 
-First, we need a config file with the key-values that we want to access from out `Config`:
+First, create a config file with the key-values that you want to access from your module's `Config`:
 ```php
 <?php # config/default.php
 
@@ -17,7 +17,7 @@ return [
 ];
 ```
 
-### The Module's Config class
+## The Module's Config class
 
 The `Config` class from your module can access those config key-values by their keys:
 ```php
@@ -37,9 +37,9 @@ final class CommentConfig extends AbstractConfig
 } 
 ```
 
-### Accessing the Config from the Factory
+## Accessing the Config from the Factory
 
-You can access the `Config` methods from the `Factory`, to create your domain logic:
+You can access the `Config` methods from the `Factory` to create your domain objects with the right configuration:
 ```php
 <?php # src/Comment/CommentFactory.php
 
@@ -60,9 +60,9 @@ final class CommentFactory extends AbstractFactory
 }
 ```
 
-### The Facade uses the Factory
+## The Facade uses the Factory
 
-In the end, the Factory will be used by the module's Facade:
+The Factory is used by the module's Facade, completing the chain: **Facade → Factory → Config**:
 
 ```php
 <?php # src/Comment/CommentFacade.php
@@ -85,10 +85,9 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-### Config files for different environments
+## Config files for different environments
 
-You can load (on top of the existing application config files) some particular files with the same suffix as
-the `APP_ENV` values in the config files. For example, having this config setup:
+You can load environment-specific config files on top of the defaults. Gacela looks for files with the same suffix as the `APP_ENV` value. For example:
 ```php
 <?php
 Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void {
@@ -112,6 +111,6 @@ return [
 ];
 ```
 
-Then the config value that we will get when looking for `'AKISMET-KEY` will be:
-- If we don't have any `APP_ENV`, then `default-akismet-key`
-- If we have `APP_ENV=prod`, then `production-akismet-key`
+The resolved value for `'AKISMET-KEY'` depends on the environment:
+- No `APP_ENV` set → `default-akismet-key`
+- `APP_ENV=prod` → `production-akismet-key` (overrides the default)

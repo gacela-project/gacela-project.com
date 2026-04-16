@@ -1,6 +1,6 @@
 # Bindings
 
-Gacela's container supports several binding strategies. All are configured via `GacelaConfig` — either in `gacela.php` or the `Gacela::bootstrap()` closure.
+Gacela's container supports several binding strategies. All are configured via `GacelaConfig`, either in `gacela.php` or the `Gacela::bootstrap()` closure.
 
 ## addBinding
 

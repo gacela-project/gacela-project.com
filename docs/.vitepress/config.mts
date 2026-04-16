@@ -110,8 +110,6 @@ export default defineConfig({
           { text: 'Factory', link: '/docs/factory' },
           { text: 'Provider', link: '/docs/provider' },
           { text: 'Config', link: '/docs/config' },
-          { text: 'Service Map', link: '/docs/service-map' },
-          { text: 'Inject attribute', link: '/docs/inject' },
         ],
       },
       {
@@ -119,6 +117,8 @@ export default defineConfig({
         collapsed: true,
         items: [
           { text: 'Bindings', link: '/docs/bindings' },
+          { text: 'Service Map', link: '/docs/service-map' },
+          { text: 'Inject attribute', link: '/docs/inject' },
           { text: 'Extensions & Plugins', link: '/docs/extensions' },
           { text: 'Module Customization', link: '/docs/customization' },
         ],

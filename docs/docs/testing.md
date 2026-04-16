@@ -29,7 +29,7 @@ final class MyTest extends TestCase
 
 | Method | Description |
 |--------|-------------|
-| `resetContainer()` | Wipe the container and all static caches — clean slate for the next test |
+| `resetContainer()` | Wipe the container and all static caches. Clean slate for the next test |
 | `captureContainerState()` | Snapshot the current container (bindings, services, caches) |
 | `restoreContainerState()` | Roll back to the last snapshot taken by `captureContainerState()` |
 | `containerTempDir()` | Return a per-test temporary directory, auto-cleaned after the test |
@@ -72,6 +72,6 @@ public function testFileCacheWrite(): void
 
 ## Tips
 
-- Prefer `resetContainer()` in a `#[Before]` method over `setUp()` — it makes the intent explicit and works alongside other `setUp` logic.
+- Prefer `resetContainer()` in a `#[Before]` method over `setUp()`. It makes the intent explicit and works alongside other `setUp` logic.
 - For integration tests that need the full bootstrap, call `Gacela::bootstrap()` inside the test and `resetContainer()` in teardown.
 - `ContainerFixture` replaces the older pattern of calling `$config->resetInMemoryCache()` inside `gacela.php` for tests.

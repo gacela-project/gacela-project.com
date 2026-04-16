@@ -151,7 +151,7 @@ final class RouterConfig
 addHandlerRegistry(string $registryKey, array<string|int,class-string> $handlers);
 ```
 
-Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a `HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after boot — there is no runtime `register()` method.
+Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a `HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after boot. There is no runtime `register()` method.
 
 ```php
 <?php # gacela.php

@@ -117,9 +117,9 @@ Hello, Gacela!
 
 ## Related resources
 
-- [Router](https://github.com/gacela-project/router) — A minimalistic HTTP router
-- [Container](https://github.com/gacela-project/container) — A minimalistic container dependency
-- [API skeleton](https://github.com/gacela-project/api-skeleton) — A skeleton to build an API using Gacela
-- [Example project](https://github.com/gacela-project/gacela-example) — A complete module example
+- [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
+- [Container](https://github.com/gacela-project/container): A minimalistic container dependency
+- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela
+- [Example project](https://github.com/gacela-project/gacela-example): A complete module example
 
 See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).

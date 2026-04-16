@@ -120,10 +120,10 @@ $report->toArray();
 
 ## Best practices
 
-- **Be fast** — checks should complete in under a second. Prefer a quick ping (`SELECT 1`) over full queries.
-- **Include metadata** — latency, error codes, retry counts help diagnose issues.
-- **Catch exceptions** — never let a failing check crash the health endpoint.
-- **Pick the right level** — reserve `unhealthy` for real outages; use `degraded` for slow-but-working.
+- **Be fast**: checks should complete in under a second. Prefer a quick ping (`SELECT 1`) over full queries.
+- **Include metadata**: latency, error codes, retry counts help diagnose issues.
+- **Catch exceptions**: never let a failing check crash the health endpoint.
+- **Pick the right level**: reserve `unhealthy` for real outages; use `degraded` for slow-but-working.
 
 ## API reference
 

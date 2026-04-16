@@ -1,14 +1,14 @@
 # Facade
 
-The responsibility of the [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is to provide a simplified interface to
-hide the domain implementation.
+The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point** of your module. It exposes what the module can do through a clean, public API while hiding the internal classes, services, and wiring behind simple method calls.
 
-In Gacela, the Facade is the entry point of your module. It will simply give you the methods with the possible actions
-this module can do.
+::: tip Why use a Facade?
+Other modules, controllers, and commands never reach into your module's internals. They call the Facade, which delegates to the [Factory](/docs/factory) to build the right objects and run the logic. This keeps your module's domain encapsulated and easy to refactor.
+:::
 
-## Entering your module
+## Defining a Facade
 
-The Facade uses the Factory to create the module's domain instances and executes the desired behaviour from them.
+Extend `AbstractFacade` and use `getFactory()` to access the module's internal services.
 
 Full code snippet: [gacela-example/comment-spam-score/facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php)
 
@@ -33,9 +33,9 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-## The entry point of the module
+## Using the Facade
 
-The Facade uses the Factory to create the module's internal instances and executes the desired behaviour from them.
+Instantiate the Facade and call its methods. No need to know about the Factory, services, or config behind it.
 
 Full code snippet: [gacela-example/comment-spam-score/entry-point](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/app.php)
 ```php
@@ -53,9 +53,9 @@ $score = $facade->getSpamScore('Lorem ipsum!');
 echo sprintf('Spam Score: %d', $score) . PHP_EOL;
 ```
 
-## Use the Facade from your infrastructure layer
+## Accessing the Facade from controllers and commands
 
-You can access the Facade from your infrastructure layer (Controller, Command, etc.) without inheriting from it. Use the `ServiceResolverAwareTrait` together with the `#[ServiceMap]` attribute — or, as an alternative, the older DocBlock `@method` form — to let Gacela resolve the Facade lazily through the Locator singleton.
+In your infrastructure layer (controllers, CLI commands, etc.) you often can't extend `AbstractFacade`. Use `ServiceResolverAwareTrait` together with the `#[ServiceMap]` attribute to let Gacela resolve the Facade lazily through the Locator singleton. No constructor injection needed.
 
 ### Recommended: `#[ServiceMap]` attribute
 
@@ -79,7 +79,7 @@ final class TestCommand extends Command
 }
 ```
 
-`#[ServiceMap]` is repeatable — declare as many resolvable services as the class needs.
+`#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs.
 
 ### Alternative: DocBlock `@method`
 
@@ -115,4 +115,4 @@ Instantiating the Facade would be another alternative, but using `ServiceResolve
 
 #### How does this work?
 
-The `ServiceResolverAwareTrait` resolves on runtime the type from `#[ServiceMap]` (or the DocBlock `@method`), so this trait is not limited to the Facade — you can use it to lazily load any Gacela-resolvable class without the need of injecting it via the constructor. Gacela will do the rest of the autoloading of its dependencies.
+The `ServiceResolverAwareTrait` resolves at runtime the type from `#[ServiceMap]` (or the DocBlock `@method`), so this trait is not limited to the Facade. You can use it to lazily load any Gacela-resolvable class without constructor injection. Gacela handles the autoloading of its dependencies.

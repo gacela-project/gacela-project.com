@@ -53,7 +53,7 @@ features:
     </a>
     <a class="more-features-item" href="/docs/caching">
       <strong>Caching</strong>
-      <span>Three layers — framework resolution, cacheable methods, file cache</span>
+      <span>Three layers: framework resolution, cacheable methods, file cache</span>
     </a>
     <a class="more-features-item" href="/docs/gacela-script">
       <strong>Tooling</strong>

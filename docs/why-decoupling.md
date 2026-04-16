@@ -11,4 +11,4 @@ if (typeof window !== 'undefined') {
 }
 </script>
 
-This content has moved to [About Gacela — Why decoupling?](/about-gacela#why-decoupling).
+This content has moved to [About Gacela: Why decoupling?](/about-gacela#why-decoupling).

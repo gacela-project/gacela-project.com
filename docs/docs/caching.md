@@ -1,14 +1,14 @@
 # Caching
 
-Gacela caches at three different levels. Each solves a different problem — they compose, they don't replace one another.
+Gacela caches at three different levels. Each solves a different problem. They compose, they don't replace one another.
 
 | Layer | What it caches | Where | Typical use |
 |---|---|---|---|
-| [Framework resolution](#layer-1-framework-resolution-cache) | Resolved facades, factories, configs, merged config | Memory or disk | Always on — pick the mode per environment |
+| [Framework resolution](#layer-1-framework-resolution-cache) | Resolved facades, factories, configs, merged config | Memory or disk | Always on, pick the mode per environment |
 | [Cacheable methods](#layer-2-cacheable-facade-methods) | Return values of facade methods | Memory (pluggable) | Expensive, deterministic reads |
 | [Value primitives](#layer-3-value-primitives) | Arbitrary key → value data, optionally with a dependency graph | Disk | Your code needs its own cache (compilers, pipelines, parsed artefacts) |
 
-## Layer 1 — Framework resolution cache
+## Layer 1: Framework resolution cache
 
 Gacela resolves classes by convention: `Facade` → `Factory` → `Provider` → `Config`. Those lookups walk namespaces and files, and the merged configuration is reassembled from every `config/*.php` file. All of it is memoised once per process, and can additionally be persisted to disk between runs.
 
@@ -29,19 +29,19 @@ Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
 });
 ```
 
-The directory can also be overridden at runtime with the `GACELA_CACHE_DIR` environment variable — handy when the same image is reused across environments.
+The directory can also be overridden at runtime with the `GACELA_CACHE_DIR` environment variable. Handy when the same image is reused across environments.
 
 Typical wiring:
 
-- **Development** — file cache **off**. Edits take effect immediately.
-- **Production** — file cache **on**, pre-populated with `vendor/bin/gacela cache:warm`, directory baked into the image. Re-deploy (or `cache:clear`) to refresh.
-- **Tests** — call `resetInMemoryCache()` between suites so resolution state doesn't bleed.
+- **Development**: file cache **off**. Edits take effect immediately.
+- **Production**: file cache **on**, pre-populated with `vendor/bin/gacela cache:warm`, directory baked into the image. Re-deploy (or `cache:clear`) to refresh.
+- **Tests**: call `resetInMemoryCache()` between suites so resolution state doesn't bleed.
 
 See also: [Opcache preload](/docs/opcache-preload) for getting PHP itself to cache Gacela's own source files.
 
-## Layer 2 — Cacheable facade methods
+## Layer 2: Cacheable facade methods
 
-Cache the *result* of a facade method with the `#[Cacheable]` attribute. `CacheableTrait` is built into `AbstractFacade` — no extra `use` needed. Full reference: [Cacheable methods](/docs/cacheable-methods).
+Cache the *result* of a facade method with the `#[Cacheable]` attribute. `CacheableTrait` is built into `AbstractFacade`, no extra `use` needed. Full reference: [Cacheable methods](/docs/cacheable-methods).
 
 ```php
 use Gacela\Framework\AbstractFacade;
@@ -66,9 +66,9 @@ CatalogFacade::clearMethodCache();                        // all of this facade
 CatalogFacade::clearMethodCacheFor('getPopularProducts'); // one method, any args
 ```
 
-## Layer 3 — Value primitives
+## Layer 3: Value primitives
 
-When *your code* needs a cache — compiled artefacts, parsed data, a build pipeline — use `Gacela\Framework\Cache\FileCache`:
+When *your code* needs a cache (compiled artefacts, parsed data, a build pipeline) use `Gacela\Framework\Cache\FileCache`:
 
 ```php
 use Gacela\Framework\Cache\FileCache;
@@ -83,11 +83,11 @@ $cache->clear();
 
 - One `.php` file per key (SHA1-hashed), written atomically via staged `.tmp` + `rename`.
 - TTL per entry; `ttl: 0` means forever.
-- `beginBatch()` / `commitBatch()` defer writes behind a single index-locked flush — useful for warming many entries at once.
+- `beginBatch()` / `commitBatch()` defer writes behind a single index-locked flush. Useful for warming many entries at once.
 - `stats()` returns entry count, total bytes, and oldest/newest timestamps.
 - Safe against torn reads: concurrent readers see either the previous file or the new one, never a half-written one.
 
-### ScopedCache — dependency-aware decorator
+### ScopedCache: dependency-aware decorator
 
 When invalidating one entry should cascade to every downstream entry that derived from it, wrap `FileCache` in `ScopedCache`:
 
@@ -108,9 +108,9 @@ $cache->invalidate('ns:core');          // cascades: file:a.php and fragment:a#1
 $cache->invalidateLeaf('file:a.php');   // only this key; dependents stay valid
 ```
 
-- `get` / `put` / `has` delegate straight to the underlying `FileCache` — zero overhead on the hot path.
+- `get` / `put` / `has` delegate straight to the underlying `FileCache`. Zero overhead on the hot path.
 - The dependency graph is persisted alongside the values (`.gacela-scoped-cache-graph.php`) and survives process restarts.
-- Cycles are rejected eagerly at `dependsOn()` — self, two-node, and transitive.
+- Cycles are rejected eagerly at `dependsOn()`: self, two-node, and transitive.
 - Single-writer concurrency: multiple processes racing on `dependsOn()` may lose edges added between load and persist.
 
 ## Picking a layer

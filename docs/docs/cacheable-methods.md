@@ -2,7 +2,7 @@
 
 Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute.
 
-`CacheableTrait` is built into `AbstractFacade` — any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
+`CacheableTrait` is built into `AbstractFacade`. Any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
 
 ## Quick start
 
@@ -56,7 +56,7 @@ Single `int` or `string` arguments become part of the key directly (`Facade::met
 
 ## Custom key templates
 
-Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key — useful for shared keys across modules or for readable keys in an external cache.
+Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key. Useful for shared keys across modules or for readable keys in an external cache.
 
 ```php
 #[Cacheable(ttl: 3600, key: 'user:{0}')]
@@ -68,7 +68,7 @@ public function getUser(int $id): array
 }
 ```
 
-A bare string with no placeholders is args-agnostic — every call shares the same entry regardless of arguments.
+A bare string with no placeholders is args-agnostic. Every call shares the same entry regardless of arguments.
 
 ## Clearing the cache
 
@@ -84,7 +84,7 @@ CatalogFacade::clearMethodCacheFor('getPopularProducts');
 
 ## Pluggable storage backend
 
-By default, cache lives in process memory via `InMemoryCacheStorage`. On PHP-FPM that means entries die with the request — fine for batch jobs and long-running workers, but effectively a no-op for typical web traffic.
+By default, cache lives in process memory via `InMemoryCacheStorage`. On PHP-FPM that means entries die with the request. Fine for batch jobs and long-running workers, but effectively a no-op for typical web traffic.
 
 Swap in any backend that implements `CacheStorageInterface` (e.g. APCu, Redis, a PSR-16 adapter):
 
@@ -110,7 +110,7 @@ Call `CacheableConfig::setStorage()` once at bootstrap. All facades using `Cache
 
 ## TTL overrides per method
 
-Override the TTL declared on the attribute without changing code — useful for tuning hot paths per environment.
+Override the TTL declared on the attribute without changing code. Useful for tuning hot paths per environment.
 
 ```php
 CacheableConfig::setTtlOverrides([
@@ -123,7 +123,7 @@ The override applies on the next `set()`; existing entries keep their original e
 
 ## Opting out of backtrace
 
-`cached()` calls `debug_backtrace()` (limit 2) to infer the method name and arguments. Cost is 1–5 µs — unmeasurable for typical "expensive" methods (DB, HTTP). Pass `$method` and `$args` explicitly when:
+`cached()` calls `debug_backtrace()` (limit 2) to infer the method name and arguments. Cost is 1-5 µs, unmeasurable for typical "expensive" methods (DB, HTTP). Pass `$method` and `$args` explicitly when:
 
 - The cached operation itself is very fast and the overhead matters.
 - The method takes very large arguments (frame-construction cost scales with arg count).
@@ -143,7 +143,7 @@ public function getUser(int $id): array
 
 ## Caching `null`
 
-A method that returns `null` is cached correctly — repeated calls do **not** re-invoke the callback. `CacheableTrait` distinguishes "cached null" from "cache miss" via a sentinel, so `Optional`-style return types work as expected.
+A method that returns `null` is cached correctly. Repeated calls do **not** re-invoke the callback. `CacheableTrait` distinguishes "cached null" from "cache miss" via a sentinel, so `Optional`-style return types work as expected.
 
 ## Limitations
 

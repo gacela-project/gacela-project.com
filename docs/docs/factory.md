@@ -1,14 +1,16 @@
 # Factory
 
-The responsibility of the [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is to
-orchestrate the creation of different classes, and its dependencies (through Provider or Config).
+The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is responsible for **creating the internal objects** of your module and wiring their dependencies, pulling values from [Config](/docs/config) and services from the [Provider](/docs/provider).
 
-- The Factory creates the classes of your module and resolves its dependencies
-- The Facade can access its Factory with `getFactory()`
+::: tip Key points
+- The Factory creates and assembles the classes inside your module
+- Only the [Facade](/docs/facade) accesses the Factory (via `getFactory()`)
+- Dependencies from other modules come through the [Provider](/docs/provider), not the Factory
+:::
 
 ## Creating your objects
 
-The Factory is the place where you create your domain services and objects. It is accessible only by the Facade.
+The Factory is where you build your domain services, injecting whatever they need.
 
 Full code snippet: [gacela-example/comment-spam-score/factory](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFactory.php)
 
@@ -60,26 +62,23 @@ final class SpamChecker
 
 ## Auto-wiring dependencies into the Factory
 
-Gacela can resolve automatically the dependencies for the Factory. If the dependency is a concrete class it will create
-a new instance of it - recursively with their inner dependencies as well. But, if the dependency is an interface, then
-the way to tell Gacela which instance do you want to create you need to create a map between the interface and the
-concrete class or object that you want to use. For example:
+Gacela auto-wires Factory constructor dependencies. Concrete classes are instantiated automatically (recursively resolving their own dependencies). For interfaces, you need to tell Gacela which implementation to use by defining a [binding](/docs/bindings):
+
 ```php
 <?php # gacela.php
 
 return function (GacelaConfig $config) {
+    // Class binding: Gacela instantiates Concrete (and auto-wires its deps)
     $config->addBinding(InterfaceToConcrete::class, Concrete::class);
 
+    // Callable binding: lazy-loaded, you control the instantiation
     $config->addBinding(InterfaceToCallable::class, fn() => new Concrete());
 };
 ```
 
-The major difference between these two are:
+The difference between these two styles:
 
-- the `InterfaceToConcrete` will be resolved by creating an instance of that `Concrete` on the fly (even using
-  auto-wiring for its dependencies recursively if needed)
-- the `InterfaceToCallable` won't create a new instance, but instead it will use the instance that you might want to
-- using a callable as value (the `fn () => ...`) is also a "lazy loading", so it will delay the execution of that code
-  till its needed
+- **Class binding** (`Concrete::class`): Gacela creates a new instance on the fly, auto-wiring its constructor dependencies recursively
+- **Callable binding** (`fn() => ...`): You control instantiation. The closure is lazy-loaded, it only runs when the dependency is needed
 
 Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L28)

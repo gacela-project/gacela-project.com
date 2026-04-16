@@ -1,13 +1,11 @@
 # Provider
 
-The communication between different modules it's done via their Facades because they are the main entry point of a
-module.
+The Provider handles **cross-module dependencies**. When your module needs something from another module, the Provider is where you wire that connection, always through the other module's [Facade](/docs/facade).
 
-## Factory vs Provider
-
-The main difference between Factories and Providers:
-- Factories are responsible for in-module dependencies,
-- while Providers are responsible for module-to-module dependencies.
+::: tip Factory vs Provider
+- **Factory** → creates objects *inside* your module (intra-module)
+- **Provider** → brings in dependencies *from other modules* (inter-module)
+:::
 
 ## Setting a provided dependency
 
@@ -56,18 +54,18 @@ final class SalesFactory extends AbstractFactory
         );
     }
 
-    private function getOtherFacade(): OtherFacade
+    private function getCommentFacade(): CommentFacade
     {
         return $this->getProvidedDependency(
-            Provider::FACADE_COMMENT
+            SalesProvider::FACADE_COMMENT
         );
     }
 }
 ```
 
-## The Facade uses the Factory
+## Putting it together
 
-In the end, the Factory will be used by the module's Facade:
+The Facade calls the Factory, which pulls the provided dependency, completing the chain **Facade → Factory → Provider**:
 
 ```php
 <?php # src/Sales/SalesFacade.php
@@ -119,7 +117,7 @@ final class SalesProvider extends AbstractProvider
 }
 ```
 
-With `#[Provides]`, `provideModuleDependencies()` becomes non-abstract — providers can go attribute-only or mix both styles.
+With `#[Provides]`, `provideModuleDependencies()` becomes non-abstract. Providers can go attribute-only or mix both styles.
 
 ### Mixing with `provideModuleDependencies()`
 

@@ -62,9 +62,9 @@ You can modify Gacela behaviour from two different places:
 
 The full GacelaConfig API is documented across these pages:
 
-- [Bindings](/docs/bindings) — addBinding, factory services, protected services, aliases, contextual bindings
-- [Extensions & Plugins](/docs/extensions) — plugins, extendService, extendGacelaConfig, handler registry
-- [Module Customization](/docs/customization) — suffix types, project namespaces, events
+- [Bindings](/docs/bindings): addBinding, factory services, protected services, aliases, contextual bindings
+- [Extensions & Plugins](/docs/extensions): plugins, extendService, extendGacelaConfig, handler registry
+- [Module Customization](/docs/customization): suffix types, project namespaces, events
 
 ### File Cache
 
@@ -228,4 +228,4 @@ try {
 
 ### Gacela::container()
 
-Get the main dependency injection container created during bootstrap — useful for tooling (e.g. `debug:container`) and for tests that need direct container access.
+Get the main dependency injection container created during bootstrap. Useful for tooling (e.g. `debug:container`) and for tests that need direct container access.

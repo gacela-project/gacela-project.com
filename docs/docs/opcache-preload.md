@@ -42,7 +42,7 @@ env[GACELA_PRELOAD_USER_FILES] = /path/to/project/config/app-preload.php
 
 ## Deployment
 
-Preloaded files are snapshotted at startup — restart PHP-FPM after every deploy:
+Preloaded files are snapshotted at startup. Restart PHP-FPM after every deploy:
 
 ```bash
 composer install --no-dev --optimize-autoloader
@@ -80,4 +80,4 @@ opcache.preload_user=www-data
 ## See also
 
 - [PHP Opcache Documentation](https://www.php.net/manual/en/book.opcache.php)
-- [Caching](/docs/caching) — other layers (framework resolution, cacheable methods, file cache primitives)
+- [Caching](/docs/caching): other layers (framework resolution, cacheable methods, file cache primitives)

@@ -1,6 +1,6 @@
 # Inject attribute
 
-Opt-in constructor injection with the `#[Inject]` attribute. Declare what a class needs directly on its constructor parameters — Gacela's container resolves them automatically.
+Opt-in constructor injection with the `#[Inject]` attribute. Declare what a class needs directly on its constructor parameters. Gacela's container resolves them automatically.
 
 ## Quick start
 
@@ -23,12 +23,12 @@ final class CatalogService
 
 When a parameter carries `#[Inject]`, the container resolves it following this chain:
 
-1. **Explicit override** — the class passed to the attribute (`#[Inject(RedisCache::class)]`)
-2. **Contextual binding** — a `when()->needs()->give()` rule targeting this consumer
-3. **Global binding** — `addBinding(CacheInterface::class, RedisCache::class)`
-4. **Autowire** — the container tries to instantiate the type hint
-5. **Default value** — if the parameter has a default, use it
-6. **Exception** — `UnresolvableParameterException` with a clear message
+1. **Explicit override**: the class passed to the attribute (`#[Inject(RedisCache::class)]`)
+2. **Contextual binding**: a `when()->needs()->give()` rule targeting this consumer
+3. **Global binding**: `addBinding(CacheInterface::class, RedisCache::class)`
+4. **Autowire**: the container tries to instantiate the type hint
+5. **Default value**: if the parameter has a default, use it
+6. **Exception**: `UnresolvableParameterException` with a clear message
 
 ## Inspecting with `debug:dependencies`
 
@@ -51,7 +51,7 @@ vendor/bin/gacela debug:dependencies App\\Catalog\\CatalogService
 | One class needs a different implementation | `#[Inject(Concrete::class)]` on the parameter |
 | Multiple classes need the same override | `when()->needs()->give()` contextual binding |
 
-`#[Inject]` is opt-in — classes without it continue to resolve via the usual autowiring and binding chain.
+`#[Inject]` is opt-in. Classes without it continue to resolve via the usual autowiring and binding chain.
 
 ## Symfony integration
 

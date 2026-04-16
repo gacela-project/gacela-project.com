@@ -18,8 +18,8 @@ Render every module discovered under your project namespaces.
 vendor/bin/gacela list:modules [--detailed|-d] [<filter>]
 ```
 
-- `filter` — substring to narrow the output
-- `-d`, `--detailed` — render each module's contents in detail
+- `filter`: substring to narrow the output
+- `-d`, `--detailed`: render each module's contents in detail
 
 ### `debug:modules`
 
@@ -63,9 +63,9 @@ Pre-resolve all module classes, write the persistent caches and (optionally) the
 vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes] [-p|--parallel]
 ```
 
-- `-c`, `--clear` — clear existing cache before warming (same as running `cache:clear` first)
-- `-a`, `--attributes` — pre-scan and cache `#[ServiceMap]` attributes
-- `-p`, `--parallel` — warm modules in parallel via PHP 8.1 Fibers (up to 5× faster on large code bases)
+- `-c`, `--clear`: clear existing cache before warming (same as running `cache:clear` first)
+- `-a`, `--attributes`: pre-scan and cache `#[ServiceMap]` attributes
+- `-p`, `--parallel`: warm modules in parallel via PHP 8.1 Fibers (up to 5× faster on large code bases)
 
 Under the hood `cache:warm` batches file writes via `AbstractPhpFileCache::beginBatch()` / `commitBatch()` and flushes with atomic `rename()`, so a single write replaces the previous _N modules × 4 resolvers_ full-file rewrites.
 
@@ -89,8 +89,8 @@ Aggregate environmental and wiring health checks with per-check remediation hint
 vendor/bin/gacela doctor [<filter>]
 ```
 
-- `filter` — restrict module-scoped checks to a namespace substring.
-- Exit code is `0` on OK/Warning and `1` on Error — safe to wire into CI.
+- `filter`: restrict module-scoped checks to a namespace substring.
+- Exit code is `0` on OK/Warning and `1` on Error. Safe to wire into CI.
 
 ### `validate:config`
 
@@ -114,8 +114,8 @@ Generate a performance report from the in-memory `Profiler`. Enable the profiler
 vendor/bin/gacela profile:report [--format=table|json|summary] [--sort=duration|memory|operation]
 ```
 
-- `--format` — `table` (default), `json`, or `summary`.
-- `--sort` — `duration` (default), `memory`, or `operation`.
+- `--format`: `table` (default), `json`, or `summary`.
+- `--sort`: `duration` (default), `memory`, or `operation`.
 
 ## Code generation
 
@@ -127,9 +127,9 @@ Generate a `Facade`, `Factory`, `Config`, `Provider`, or any combination of them
 vendor/bin/gacela make:file [-s|--short-name] <path> <filenames>...
 ```
 
-- `path` — file path, e.g. `App/TestModule/TestSubModule`
-- `filenames` — any combination of `facade`, `factory`, `config`, `provider`
-- `-s`, `--short-name` — drop the module prefix from the generated class name
+- `path`: file path, e.g. `App/TestModule/TestSubModule`
+- `filenames`: any combination of `facade`, `factory`, `config`, `provider`
+- `-s`, `--short-name`: drop the module prefix from the generated class name
 
 ```bash
 vendor/bin/gacela make:file App/TestModule facade factory provider

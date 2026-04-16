@@ -117,9 +117,9 @@ potential for configuration and extension. I didn't add them in this example to 
 
 Dive deeper into the [documentation](/docs/bootstrap) to discover:
 
-- [Bindings](/docs/bindings) — dependency injection, factory services, aliases, contextual bindings
-- [Extensions & Plugins](/docs/extensions) — plugins, extendService, handler registry
-- [Module Customization](/docs/customization) — suffix types, project namespaces, events
+- [Bindings](/docs/bindings): dependency injection, factory services, aliases, contextual bindings
+- [Extensions & Plugins](/docs/extensions): plugins, extendService, handler registry
+- [Module Customization](/docs/customization): suffix types, project namespaces, events
 - Each core concept in detail:
     - [Facade](/docs/facade): the *entry point*
     - [Factory](/docs/factory): manages the *intra-dependencies*

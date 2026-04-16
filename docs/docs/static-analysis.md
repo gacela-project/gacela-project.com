@@ -37,7 +37,7 @@ Beyond the suppressions, `phpstan-gacela.neon` enforces Gacela naming convention
 </psalm>
 ```
 
-The `InvalidArgument` suppression is required — Gacela resolves concrete types at runtime that Psalm can't infer statically. Suppress inline if you prefer narrower scope:
+The `InvalidArgument` suppression is required because Gacela resolves concrete types at runtime that Psalm can't infer statically. Suppress inline if you prefer narrower scope:
 
 ```php
 /** @psalm-suppress InvalidArgument */
@@ -46,8 +46,8 @@ return new YourService($this->getConfig());
 
 ## Troubleshooting
 
-- **PHPStan can't find the file** — verify the include path resolves relative to your `phpstan.neon`.
-- **Psalm ignores the include** — ensure `xmlns:xi="http://www.w3.org/2001/XInclude"` is declared, then `vendor/bin/psalm --clear-cache`.
+- **PHPStan can't find the file**: verify the include path resolves relative to your `phpstan.neon`.
+- **Psalm ignores the include**: ensure `xmlns:xi="http://www.w3.org/2001/XInclude"` is declared, then `vendor/bin/psalm --clear-cache`.
 
 ## See also
 
