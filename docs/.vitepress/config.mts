@@ -20,6 +20,9 @@ export default defineConfig({
 
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    search: {
+      provider: 'local',
+    },
     footer: {
       message: 'PHP 8.1+ · v1.14.1',
       copyright: '© 2021-present, <a href="/team">Team</a> · <a href="/license">License</a> · <a href="https://packagist.org/packages/gacela-project/gacela">Packagist</a>',
