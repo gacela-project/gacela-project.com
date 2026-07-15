@@ -21,6 +21,8 @@ vendor/bin/gacela list:modules [--detailed|-d] [<filter>]
 - `filter`: substring to narrow the output
 - `-d`, `--detailed`: render each module's contents in detail
 
+Scope which directories this (and `debug:modules`, `cache:warm`, `doctor`) scans with [`setAppModulePaths()`](/docs/bootstrap#application-module-paths).
+
 ### `debug:modules`
 
 Walk every discovered module and inspect the constructor of each pillar (Facade, Factory, Config, Provider). Complements `list:modules` (structural view) and `debug:dependencies` (single-class deep-dive).

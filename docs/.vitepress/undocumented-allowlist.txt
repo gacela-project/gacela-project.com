@@ -1,0 +1,7 @@
+# API symbols mentioned in Gacela release notes that are intentionally NOT
+# documented on the site (internal/low-level). One search key per line
+# (method name, attribute, or `word:word` command). Read by the
+# docs-drift-guard workflow. Lines starting with # are ignored.
+isUsable
+isPersistent
+writeAtomically
