@@ -98,7 +98,7 @@ Finally, create an entry point, where you can instantiate the [Facade](/docs/fac
 ```php source
 # file: example.php
 use Gacela\Framework\Gacela;
-use Gacela\Module\Facade;
+use Module\Facade;
 
 require __DIR__ . '/vendor/autoload.php';
 

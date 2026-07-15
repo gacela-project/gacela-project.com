@@ -13,7 +13,7 @@ Gacela caches at three different levels. Each solves a different problem. They c
 Gacela resolves classes by convention: `Facade` → `Factory` → `Provider` → `Config`. Those lookups walk namespaces and files, and the merged configuration is reassembled from every `config/*.php` file. All of it is memoised once per process, and can additionally be persisted to disk between runs.
 
 - **In-memory** (default): `InMemoryCache` holds resolved class names for the life of the process.
-- **On-disk**: `ClassNamePhpCache` and `CustomServicesPhpCache` persist the same data to `gacela-class-names.php` / `gacela-custom-services.php`; `MergedConfigCache` persists the merged configuration to `gacela-merged-config[{env}].php` keyed per `APP_ENV`.
+- **On-disk**: `ClassNamePhpCache` and `CustomServicesPhpCache` persist the same data to `gacela-class-names.php` / `gacela-custom-services.php`; `MergedConfigCache` persists the merged configuration to `gacela-merged-config-{env}.php` keyed per `APP_ENV`.
 
 Configure at bootstrap:
 
@@ -30,6 +30,10 @@ Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
 ```
 
 The directory can also be overridden at runtime with the `GACELA_CACHE_DIR` environment variable. Handy when the same image is reused across environments.
+
+With the file cache enabled, the merged configuration **auto-warms on the first miss**: the first bootstrap persists `gacela-merged-config-{env}.php`, so later bootstraps skip globbing and parsing config files — no manual `cache:warm` required for the config layer.
+
+In a **read-only environment** (e.g. a read-only project root inside a build sandbox) the file caches degrade gracefully to in-memory instead of failing the bootstrap: writes become no-ops, no raw PHP warnings are emitted, and any pre-warmed cache files already on disk stay readable. Warm-at-build / run-read-only deployments keep their cache hits.
 
 Typical wiring:
 

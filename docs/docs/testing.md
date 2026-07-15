@@ -30,9 +30,9 @@ final class MyTest extends TestCase
 | Method | Description |
 |--------|-------------|
 | `resetContainer()` | Wipe the container and all static caches. Clean slate for the next test |
-| `captureContainerState()` | Snapshot the current container (bindings, services, caches) |
-| `restoreContainerState()` | Roll back to the last snapshot taken by `captureContainerState()` |
-| `containerTempDir()` | Return a per-test temporary directory, auto-cleaned after the test |
+| `captureContainerState()` | Return a `ContainerSnapshot` of config values and the in-memory class-name cache (not resolved service instances) |
+| `restoreContainerState(ContainerSnapshot $snapshot)` | Restore a snapshot previously returned by `captureContainerState()` |
+| `containerTempDir()` | Return a per-test temporary directory, removed at process shutdown (or synchronously via `cleanupContainerTempDirs()`) |
 
 ### Snapshot and restore
 
@@ -41,7 +41,7 @@ Use `captureContainerState()` / `restoreContainerState()` when a test mutates th
 ```php
 public function testServiceOverride(): void
 {
-    $this->captureContainerState();
+    $snapshot = $this->captureContainerState();
 
     Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
         $config->addBinding(LoggerInterface::class, NullLogger::class);
@@ -49,7 +49,7 @@ public function testServiceOverride(): void
 
     // ... assertions with NullLogger ...
 
-    $this->restoreContainerState();
+    $this->restoreContainerState($snapshot);
 
     // container is back to its pre-override state
 }
@@ -66,7 +66,7 @@ public function testFileCacheWrite(): void
     $cache->put('key', 'value', ttl: 60);
 
     self::assertSame('value', $cache->get('key'));
-    // directory cleaned up automatically after test
+    // temp dirs are removed at process shutdown; call cleanupContainerTempDirs() for synchronous per-test cleanup
 }
 ```
 

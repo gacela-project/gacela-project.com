@@ -99,14 +99,14 @@ final class Facade extends AbstractFacade
 
 /************************************************************************/
 # gacela.php
-Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
+return function (GacelaConfig $config) {
   $config->extendService(
     Provider::ARRAY_OBJ,
     function (ArrayObject $arrayObject, Container $container) {
       $arrayObject->append(3);
     }
   );
-});
+};
 
 /************************************************************************/
 # index.php
@@ -131,8 +131,13 @@ The class must be invokable, and it will receive the GacelaConfig object. For ex
 Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
   $config->extendGacelaConfig(RouterConfig::class);
 });
+```
 
-### Having this other class somewhere else:
+The invokable config class, defined elsewhere:
+
+```php
+<?php
+
 final class RouterConfig
 {
   public function __invoke(GacelaConfig $config): void

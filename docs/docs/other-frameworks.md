@@ -16,18 +16,22 @@ Or, in the case of Laravel, `/bootstrap/app.php`.
 
 ## Symfony bridge
 
-The `gacela/symfony-bridge` package provides a compiler pass that routes `#[Inject]` parameters through Gacela's container in Symfony apps.
+The `gacela-project/symfony-bridge` package provides a compiler pass that routes `#[Inject]` parameters through Gacela's container in Symfony apps.
+
+::: warning Not yet on Packagist
+`gacela-project/symfony-bridge` is not published on Packagist yet — it currently lives inside the [gacela monorepo](https://github.com/gacela-project/gacela/tree/main/symfony-bridge). The `composer require` below will work once the package is released.
+:::
 
 Install the bridge:
 
 ```bash
-composer require gacela/symfony-bridge
+composer require gacela-project/symfony-bridge
 ```
 
 Register the compiler pass in your kernel or bundle:
 
 ```php
-use Gacela\SymfonyBridge\DependencyInjection\GacelaInjectCompilerPass;
+use Gacela\SymfonyBridge\GacelaInjectCompilerPass;
 
 final class AppKernel extends Kernel
 {

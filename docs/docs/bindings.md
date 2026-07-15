@@ -21,7 +21,7 @@ return function (GacelaConfig $config) {
 };
 ```
 
-In the example above, whenever `OneInterface::class` is found then `OneConcrete::class` will be resolved.
+In the example above, whenever `AbstractString` is found then `StringClass` will be resolved.
 
 ### Using externalServices
 
@@ -56,8 +56,7 @@ return function (GacelaConfig $config) {
 }
 ```
 
-In the example above, whenever `AnInterface` is found then `ConcreteClass::class` will be resolved.
-The same for `AnotherInterface`, the `$concreteInstance` will be used.
+In the example above, both `AnInterface` and `AnotherInterface` resolve to the same shared `$instance` pulled from `getExternalService('concreteInstance')`.
 
 ## Factory Services
 
@@ -75,7 +74,29 @@ return function (GacelaConfig $config) {
 };
 ```
 
-Every call to `$container->get('session')` returns a fresh `SessionHandler`.
+Every call to `$container->get('session')` returns a fresh `SessionHandler`. The closure may type-hint `Container` to resolve its own dependencies.
+
+## Lazy Services
+
+```php
+addLazy(string $id, Closure $factory);
+```
+
+Runtime behaviour is the same as `addFactory` — the closure is deferred out of bootstrap and runs on **every** resolve, returning a new instance each time — but the name documents the intent: skip building an expensive service until something first asks for it.
+
+```php
+<?php # gacela.php
+
+use Gacela\Framework\Container\Container;
+
+return function (GacelaConfig $config) {
+  $config->addLazy(ReportBuilder::class, fn (Container $c) =>
+    new ReportBuilder($c->get(DatabaseInterface::class))
+  );
+};
+```
+
+Nothing is built at bootstrap; the first `$container->get(ReportBuilder::class)` invokes the closure, and each later resolve builds a fresh instance. Reach for `addLazy` over `addFactory` when the intent is deferring a costly construction; they are otherwise interchangeable.
 
 ## Protected Services
 
@@ -146,4 +167,4 @@ return function (GacelaConfig $config) {
 };
 ```
 
-Contextual bindings win over the global `addBinding()` for the same interface.
+Contextual bindings win over the global `addBinding()` for the same interface. For a per-parameter alternative driven by an attribute, see [`#[Inject]`](/docs/inject).
