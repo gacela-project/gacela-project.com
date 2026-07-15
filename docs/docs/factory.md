@@ -81,4 +81,6 @@ The difference between these two styles:
 - **Class binding** (`Concrete::class`): Gacela creates a new instance on the fly, auto-wiring its constructor dependencies recursively
 - **Callable binding** (`fn() => ...`): You control instantiation. The closure is lazy-loaded, it only runs when the dependency is needed
 
-Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L28)
+Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
+
+For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject).

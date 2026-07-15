@@ -1,0 +1,74 @@
+name: Update Gacela version
+
+on:
+  schedule:
+    # Mondays 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VERSION_FILE: docs/.vitepress/gacela-version.json
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve versions
+        id: v
+        run: |
+          set -euo pipefail
+          latest=$(gh api repos/gacela-project/gacela/releases/latest --jq .tag_name)
+          current=$(jq -r .version "$VERSION_FILE")
+          echo "latest=$latest"   >> "$GITHUB_OUTPUT"
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+
+          # Bump only when the release is strictly newer than what the site shows.
+          newest=$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)
+          if [ "$current" = "$latest" ] || [ "$newest" != "$latest" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open bump PR
+        if: steps.v.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          latest="${{ steps.v.outputs.latest }}"
+          branch="chore/bump-gacela-$latest"
+
+          # Idempotent: nothing to do if a PR for this version is already open.
+          if [ -n "$(gh pr list --head "$branch" --state open --json number --jq '.[].number')" ]; then
+            echo "PR for $branch already open; skipping."
+            exit 0
+          fi
+
+          jq --arg v "$latest" '.version = $v' "$VERSION_FILE" > "$VERSION_FILE.tmp"
+          mv "$VERSION_FILE.tmp" "$VERSION_FILE"
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add "$VERSION_FILE"
+          git commit -m "chore: bump Gacela version to $latest"
+          git push -u origin "$branch"
+
+          rel="https://github.com/gacela-project/gacela/releases/tag/$latest"
+          body=$(printf '%s\n' \
+            "Automated update: Gacela [$latest]($rel) was released. This bumps the version shown in the navbar and footer." \
+            "" \
+            "Previous: ${{ steps.v.outputs.current }}" \
+            "" \
+            "Review the [release notes]($rel) and update any docs pages affected by new features before merging.")
+
+          gh pr create \
+            --title "chore: bump Gacela version to $latest" \
+            --body "$body" \
+            --base main \
+            --head "$branch"

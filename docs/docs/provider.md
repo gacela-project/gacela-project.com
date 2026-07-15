@@ -47,7 +47,7 @@ use Gacela\Framework\AbstractFactory;
  */
 final class SalesFactory extends AbstractFactory
 {
-    public function createOrderCommentSaver(): FooService
+    public function createOrderCommentSaver(): OrderCommentSaver
     {
         return new OrderCommentSaver(
             $this->getCommentFacade()

@@ -69,8 +69,8 @@ The full GacelaConfig API is documented across these pages:
 ### File Cache
 
 ```php
-enableFileCache(string $directory = '.gacela/cache');
-setFileCache(bool $enabled, string $directory = '.gacela/cache');
+enableFileCache(?string $dir = null);            // defaults to .gacela/cache
+setFileCache(bool $enabled, ?string $dir = null); // defaults to .gacela/cache
 ```
 The gacela file cache is disabled by default. You can enable it using the `enableFileCache()` or `setFileCache`.
 

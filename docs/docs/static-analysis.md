@@ -1,6 +1,6 @@
 # Static analysis
 
-Gacela ships configs for PHPStan and Psalm that suppress false positives from dynamic resolution via `#[ServiceMap]` attributes and the magic `getFacade()` / `getFactory()` / `getConfig()` dispatch, as well as related `AbstractConfig` type mismatches.
+Gacela ships configs for PHPStan and Psalm that suppress false positives from dynamic resolution via `#[ServiceMap]` attributes and the magic `getFacade()` / `getFactory()` / `getConfig()` dispatch.
 
 ## PHPStan
 
@@ -11,7 +11,14 @@ includes:
     - vendor/gacela-project/gacela/phpstan-gacela.neon
 ```
 
-Beyond the suppressions, `phpstan-gacela.neon` enforces Gacela naming conventions (Facade, Factory, Provider, Config) and improves generic type support via `@extends` on the abstract classes, so the concrete `Facade` / `Factory` / `Config` / `Provider` of a module get accurate return types across `getFactory()`, `getConfig()` and `getProvidedDependency()`.
+Beyond the suppressions, `phpstan-gacela.neon` also enables architectural rules:
+
+- **Naming conventions** — a `Facade` / `Factory` / `Provider` / `Config` class must extend the matching Gacela abstract (`SuffixExtendsRule`).
+- **`FacadeOnlyDelegatesRule`** — a Facade only delegates to its Factory instead of holding business logic.
+- **`FactoryDoesNotCallFacadeRule`** — a Factory never calls back into a Facade.
+- **`CrossModuleViaFacadeRule`** — opt-in (commented out in the shipped config): uncomment it and pass your root namespace to enforce that modules communicate only through Facades.
+
+Accurate module return types across `getFactory()`, `getConfig()` and `getProvidedDependency()` come from the `@template` annotations on Gacela's abstract classes plus the `@extends` on your concrete module classes — independent of this config.
 
 ## Psalm
 

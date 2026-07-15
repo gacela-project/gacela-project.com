@@ -1,4 +1,10 @@
 import { defineConfig } from 'vitepress'
+import { readFileSync } from 'node:fs'
+
+// Single source of truth for the displayed Gacela version; bumped by the update-gacela-version workflow.
+const gacelaVersion: string = JSON.parse(
+  readFileSync(new URL('./gacela-version.json', import.meta.url), 'utf-8'),
+).version
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -24,7 +30,7 @@ export default defineConfig({
       provider: 'local',
     },
     footer: {
-      message: 'PHP 8.1+ · v1.14.1',
+      message: `PHP 8.1+ · v${gacelaVersion}`,
       copyright: '© 2021-present, <a href="/team">Team</a> · <a href="/license">License</a> · <a href="https://packagist.org/packages/gacela-project/gacela">Packagist</a>',
     },
     outline: {
@@ -94,8 +100,8 @@ export default defineConfig({
       { text: 'About', link: '/about-gacela' },
       { text: 'Used in', link: '/used-in' },
       {
-        text: 'v1.14.1',
-        link: 'https://github.com/gacela-project/gacela/releases',
+        text: `v${gacelaVersion}`,
+        link: `https://github.com/gacela-project/gacela/releases/tag/${gacelaVersion}`,
       },
     ],
 

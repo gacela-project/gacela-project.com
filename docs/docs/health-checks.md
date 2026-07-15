@@ -137,7 +137,7 @@ public function getModuleName(): string;
 ### `HealthStatus`
 
 ```php
-HealthStatus::healthy(string $message = '', array $metadata = []): self
+HealthStatus::healthy(string $message = 'Module is healthy', array $metadata = []): self
 HealthStatus::degraded(string $message, array $metadata = []): self
 HealthStatus::unhealthy(string $message, array $metadata = []): self
 

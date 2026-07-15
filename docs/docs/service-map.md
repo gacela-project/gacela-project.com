@@ -64,7 +64,7 @@ The trait was renamed from `DocBlockResolverAwareTrait` to `ServiceResolverAware
 
 `#[ServiceMap]` is a thin sugar on top of the Locator. The service is ultimately resolved through the main container, respecting every binding, alias, contextual binding and `AnonymousGlobal` declaration registered in `gacela.php`.
 
-If you are authoring a class managed by another container (Symfony, Laravel), prefer constructor injection with `#[Inject]` (see [Container configuration](https://github.com/gacela-project/gacela/blob/main/docs/container-configuration.md)). `#[ServiceMap]` is targeted at classes instantiated outside of Gacela where constructor injection is not practical.
+If you are authoring a class managed by another container (Symfony, Laravel), prefer constructor injection with [`#[Inject]`](/docs/inject). `#[ServiceMap]` is targeted at classes instantiated outside of Gacela where constructor injection is not practical.
 
 ## Limitations
 

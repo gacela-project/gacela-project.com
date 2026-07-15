@@ -3,7 +3,7 @@
 Gacela ships a small CLI that assists you while building, inspecting and tuning modules in your application.
 
 ::: info
-To use the *Gacela script*, you need the dependency `"symfony/console": "^5.4 || ^6.4 || ^7.0"`.
+To use the *Gacela script*, you need the dependency `"symfony/console": "^6.4"`.
 :::
 
 All commands below are invoked through `vendor/bin/gacela` (Gacela's binary was moved to `bin/` in `1.8.0`).
@@ -47,11 +47,14 @@ vendor/bin/gacela debug:dependencies <class|file>
 
 ### `debug:container`
 
-Print a snapshot of the main container: registered services, frozen services, factory services, bindings, cached dependencies and current memory usage.
+Inspect the container's **user bindings and plugins only** (framework-internal services are excluded).
 
 ```bash
-vendor/bin/gacela debug:container
+vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 ```
+
+- No arguments (or `-s`, `--stats`): print container statistics — registered services, frozen services, factory services, bindings, cached dependencies and memory usage.
+- `<class>` (or `-t`, `--tree` with a class): render the dependency tree for that fully qualified class name. Passing a class implies `--tree`; `--tree` without a class errors.
 
 ## Caching & production
 
@@ -103,6 +106,17 @@ vendor/bin/gacela validate:config
 - Reports missing `gacela.php` (warning).
 - Walks every registered binding and emits type-mismatch warnings with the expected interface/class, the actual type chain, and a fix hint.
 - Interface-keyed bindings are checked as well (previously skipped).
+
+### `debug:config`
+
+Print the effective merged configuration as a table, after every `config/*.php` file and environment override is resolved.
+
+```bash
+vendor/bin/gacela debug:config [<filter>]
+```
+
+- `filter`: only show keys containing this substring.
+- Backed by `Config::getAllValues()`, so it reflects exactly what your modules see at runtime.
 
 ## Profiling
 

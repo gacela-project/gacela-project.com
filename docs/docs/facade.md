@@ -79,7 +79,7 @@ final class TestCommand extends Command
 }
 ```
 
-`#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs.
+`#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs. Full reference: [Service Map](/docs/service-map).
 
 ### Alternative: DocBlock `@method`
 

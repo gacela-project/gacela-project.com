@@ -24,11 +24,11 @@ final class CatalogService
 When a parameter carries `#[Inject]`, the container resolves it following this chain:
 
 1. **Explicit override**: the class passed to the attribute (`#[Inject(RedisCache::class)]`)
-2. **Contextual binding**: a `when()->needs()->give()` rule targeting this consumer
-3. **Global binding**: `addBinding(CacheInterface::class, RedisCache::class)`
-4. **Autowire**: the container tries to instantiate the type hint
-5. **Default value**: if the parameter has a default, use it
-6. **Exception**: `UnresolvableParameterException` with a clear message
+2. **Default value**: if the parameter declares a default, it is used
+3. **Contextual binding**: a `when()->needs()->give()` rule targeting this consumer
+4. **Global binding**: `addBinding(CacheInterface::class, RedisCache::class)`
+5. **Autowire**: the container tries to instantiate the type hint
+6. **Exception**: `DependencyNotFoundException` when no concrete can be resolved (or `DependencyInvalidArgumentException` for a missing type hint or an unresolvable scalar)
 
 ## Inspecting with `debug:dependencies`
 
@@ -55,4 +55,4 @@ vendor/bin/gacela debug:dependencies App\\Catalog\\CatalogService
 
 ## Symfony integration
 
-In Symfony apps, the `gacela/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container via a compiler pass. See [Symfony bridge](/docs/other-frameworks#symfony-bridge) for setup.
+In Symfony apps, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container via a compiler pass. See [Symfony bridge](/docs/other-frameworks#symfony-bridge) for setup.

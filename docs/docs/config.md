@@ -114,3 +114,7 @@ return [
 The resolved value for `'AKISMET-KEY'` depends on the environment:
 - No `APP_ENV` set → `default-akismet-key`
 - `APP_ENV=prod` → `production-akismet-key` (overrides the default)
+
+## Inspecting the merged config
+
+`Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every `config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/gacela-script#debug-config) command prints the same data as a table.
