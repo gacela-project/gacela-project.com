@@ -148,6 +148,28 @@ return function (GacelaConfig $config) {
 Gacela::bootstrap(__DIR__, GacelaConfig::defaultPhpConfig());
 ```
 
+### Application Module Paths
+
+```php
+setAppModulePaths(array $paths): self
+```
+
+Restrict which directories are scanned when Gacela discovers application modules. This scan powers the console commands `list:modules`, `debug:modules`, `cache:warm`, and `doctor`.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->setAppModulePaths(['src/Domain', 'src/Infrastructure']);
+};
+```
+
+- Paths can be absolute or relative to the application root
+- Missing paths are skipped with a warning at scan time
+- When unset, the entire application root is scanned
+
+On large code bases this narrows the scan to your module directories, so `cache:warm` and the discovery commands skip unrelated folders.
+
 ## A complete example using gacela.php
 
 ```php
@@ -173,6 +195,9 @@ return function (GacelaConfig $config) {
 
     // Define your project namespace resolve gacela classes with priorities.
     ->setProjectNamespaces(['App'])
+
+    // Restrict module discovery to specific directories.
+    ->setAppModulePaths(['src/Domain', 'src/Infrastructure'])
     
     // Enable Gacela file cache system with a custom cache directory.
     ->enableFileCache('.gacela/cache')
