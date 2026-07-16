@@ -40,6 +40,23 @@ Gacela encourages your modules to interact with each other in a unified way:
 
 You can find the complete documentation for **gacela** online in the [official gacela documentation](https://gacela-project.com/).
 
+## Development
+
+This site is built with [VitePress](https://vitepress.dev/).
+
+```bash
+npm ci             # install dependencies
+npm run docs:dev   # local dev server with hot reload
+npm run docs:build # production build into docs/.vitepress/dist
+npm run docs:preview # preview the production build
+```
+
+The theme lives in `docs/.vitepress/theme/`:
+
+- `style.css` — design tokens (default indigo accent, blue-ink dark mode) and home page sections
+- `fonts.css` — self-hosted fonts: Raleway (display), Heebo (body), JetBrains Mono (code)
+- `GacelaMark.vue` — the animated hero gazelle, drawn facet by facet on page load
+
 ## Contribute
 
 You are welcome to contribute reporting issues, sharing ideas,

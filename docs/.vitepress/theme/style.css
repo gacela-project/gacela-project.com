@@ -1,252 +1,406 @@
 /**
- * Customize default theme styling by overriding CSS variables:
+ * Gacela theme.
+ *
+ * Direction: "assembled from facets". The logo is a low-poly gazelle built
+ * from small triangular pieces — the same way Gacela applications are built
+ * from small modules. The brand accent is the default VitePress indigo.
+ *
+ * Base theme variables:
  * https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/styles/vars.css
- */
-
-/**
- * Fonts
  */
 
 @import url('fonts.css');
 
+/**
+ * Typography
+ * -------------------------------------------------------------------------- */
+
 :root {
-    --vp-font-family-base: Heebo, sans-serif;
-    --vp-font-family-mono: Cousine, monospace;
+    --vp-font-family-base: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --vp-font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --gz-font-display: 'Raleway', var(--vp-font-family-base);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: Rubik, sans-serif;
+.vp-doc h1,
+.vp-doc h2 {
+    font-family: var(--gz-font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.vp-doc h3,
+.vp-doc h4,
+.vp-doc h5,
+.vp-doc h6 {
     font-weight: 600;
 }
 
 /**
  * Colors
- *
- * Each colors have exact same color scale system with 3 levels of solid
- * colors with different brightness, and 1 soft color.
- *
- * - `XXX-1`: The most solid color used mainly for colored text. It must
- *   satisfy the contrast ratio against when used on top of `XXX-soft`.
- *
- * - `XXX-2`: The color used mainly for hover state of the button.
- *
- * - `XXX-3`: The color for solid background, such as bg color of the button.
- *   It must satisfy the contrast ratio with pure white (#ffffff) text on
- *   top of it.
- *
- * - `XXX-soft`: The color used for subtle background such as custom container
- *   or badges. It must satisfy the contrast ratio when putting `XXX-1` colors
- *   on top of it.
- *
- *   The soft color must be semi transparent alpha channel. This is crucial
- *   because it allows adding multiple "soft" colors on top of each other
- *   to create a accent, such as when having inline code block inside
- *   custom containers.
- *
- * - `default`: The color used purely for subtle indication without any
- *   special meanings attached to it such as bg color for menu hover state.
- *
- * - `brand`: Used for primary brand colors, such as link text, button with
- *   brand theme, etc.
- *
- * - `tip`: Used to indicate useful information. The default theme uses the
- *   brand color for this by default.
- *
- * - `warning`: Used to indicate warning to the users. Used in custom
- *   container, badges, etc.
- *
- * - `danger`: Used to show error, or dangerous message to the users. Used
- *   in custom container, badges, etc.
  * -------------------------------------------------------------------------- */
 
 :root {
-    --vp-c-default-1: #d3d7cf;
-    --vp-c-default-2: #e1e3de;
-    --vp-c-default-3: #eceeee;
-    --vp-c-default-soft: #d3d7cf2e;
+    /* Brand: VitePress default indigo (intentionally not overridden). */
 
-    /*--vp-c-brand-1: #4e9a06;*/
-    /*--vp-c-brand-2: #6cbe1d;*/
-    /*--vp-c-brand-3: #8ae234;*/
-    /*--vp-c-brand-soft: #8ae2342e;*/
+    --vp-c-default-1: #cfd6dd;
+    --vp-c-default-2: #dde3e8;
+    --vp-c-default-3: #eaeef1;
+    --vp-c-default-soft: #cfd6dd2e;
 
-    --vp-c-tip-1: #3465a4;
-    --vp-c-tip-2: #5382ba;
-    --vp-c-tip-3: #729fcf;
-    --vp-c-tip-soft: #729fcf2e;
+    --vp-c-tip-1: #33618f;
+    --vp-c-tip-2: #4a7cad;
+    --vp-c-tip-3: #123456;
+    --vp-c-tip-soft: #4a7cad24;
 
-    --vp-c-warning-1: #c4a000;
-    --vp-c-warning-2: #e0c528;
-    --vp-c-warning-3: #fce94f;
-    --vp-c-warning-soft: #fce94f2e;
-
-    --vp-c-danger-1: #cc0000;
-    --vp-c-danger-2: #de1515;
-    --vp-c-danger-3: #ef2929;
-    --vp-c-danger-soft: #ef29292e;
-}
-
-.dark {
-    --vp-c-default-1: #535557;
-    --vp-c-default-2: #414547;
-    --vp-c-default-3: #2e3436;
-    --vp-c-default-soft: #5557532e;
-
-    /*--vp-c-brand-1: #8ae234;*/
-    /*--vp-c-brand-2: #6cbe1d;*/
-    /*--vp-c-brand-3: #4e9a06;*/
-    /*--vp-c-brand-soft: #8ae2342e;*/
-
-    --vp-c-tip-1: #729fcf;
-    --vp-c-tip-2: #5382ba;
-    --vp-c-tip-3: #3465a4;
-    --vp-c-tip-soft: #729fcf2e;
-
-    --vp-c-warning-1: #fce94f;
-    --vp-c-warning-2: #e0c528;
+    --vp-c-warning-1: #9a7d00;
+    --vp-c-warning-2: #b89500;
     --vp-c-warning-3: #c4a000;
-    --vp-c-warning-soft: #fce94f2e;
+    --vp-c-warning-soft: #e0c52826;
 
-    --vp-c-danger-1: #ef2929;
-    --vp-c-danger-2: #de1515;
+    --vp-c-danger-1: #c02929;
+    --vp-c-danger-2: #d63c3c;
     --vp-c-danger-3: #cc0000;
-    --vp-c-danger-soft: #ef29292e;
+    --vp-c-danger-soft: #ef292926;
+}
+
+.dark {
+    --vp-c-default-1: #4d5a66;
+    --vp-c-default-2: #3b4854;
+    --vp-c-default-3: #2a3641;
+    --vp-c-default-soft: #4d5a662e;
+
+    --vp-c-tip-1: #85aed4;
+    --vp-c-tip-2: #6b98c2;
+    --vp-c-tip-3: #33618f;
+    --vp-c-tip-soft: #6b98c224;
+
+    --vp-c-warning-1: #e8cf5a;
+    --vp-c-warning-2: #d4b830;
+    --vp-c-warning-3: #9a7d00;
+    --vp-c-warning-soft: #e0c52826;
+
+    --vp-c-danger-1: #f06a6a;
+    --vp-c-danger-2: #e04747;
+    --vp-c-danger-3: #b52222;
+    --vp-c-danger-soft: #ef292926;
 }
 
 /**
- * Background
- *
- * - `bg`: The bg color used for main screen.
- *
- * - `bg-alt`: The alternative bg color used in places such as "sidebar",
- *   or "code block".
- *
- * - `bg-elv`: The elevated bg color. This is used at parts where it "floats",
- *   such as "dialog".
- *
- * - `bg-soft`: The bg color to slightly distinguish some components from
- *   the page. Used for things like "carbon ads" or "table".
+ * Backgrounds: light is cool paper; dark is blue-ink, not neutral gray,
+ * so the whole dark UI carries the logo's navy.
  * -------------------------------------------------------------------------- */
 
 :root {
-    --vp-c-bg: #fafbfb;
-    --vp-c-bg-alt: #f1f2f2;
-    --vp-c-bg-elv: #f6f7f7;
-    --vp-c-bg-soft: #f6f7f7;
+    --vp-c-bg: #fbfcfd;
+    --vp-c-bg-alt: #f1f4f6;
+    --vp-c-bg-elv: #ffffff;
+    --vp-c-bg-soft: #f1f4f6;
 }
 
 .dark {
-    --vp-c-bg: #232729;
-    --vp-c-bg-alt: #171a1b;
-    --vp-c-bg-elv: #0c0d0e;
-    --vp-c-bg-soft: #171a1b;
+    --vp-c-bg: #111c27;
+    --vp-c-bg-alt: #0a121a;
+    --vp-c-bg-elv: #16232f;
+    --vp-c-bg-soft: #0e1721;
+
+    --vp-c-divider: #253442;
+    --vp-c-gutter: #0a121a;
 }
 
 /**
- * Component: Home
+ * Buttons
  * -------------------------------------------------------------------------- */
+
+.VPButton {
+    font-family: var(--gz-font-display);
+    letter-spacing: 0.01em;
+}
+
+/**
+ * Accessibility
+ * -------------------------------------------------------------------------- */
+
+:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: 2px;
+}
+
+/**
+ * Nav
+ * -------------------------------------------------------------------------- */
+
+.VPNavBarTitle .title {
+    font-family: var(--gz-font-display);
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: 0.02em;
+    user-select: none;
+}
+
+/**
+ * Sidebar
+ * -------------------------------------------------------------------------- */
+
+.VPSidebarItem.level-0 > .item .text {
+    font-family: var(--gz-font-display);
+    letter-spacing: 0.02em;
+}
+
+/**
+ * Home: hero
+ * -------------------------------------------------------------------------- */
+
+:root {
+    --vp-home-hero-name-color: var(--vp-c-brand-1);
+    --vp-home-hero-image-background-image: radial-gradient(
+        closest-side,
+        var(--vp-c-brand-soft),
+        transparent 70%
+    );
+    --vp-home-hero-image-filter: none;
+    --gz-stroke: #3451b2;
+}
 
 .dark {
-    --vp-home-hero-name-color: #b8b8b8;
+    --gz-stroke: #b8b8b8;
 }
 
-.VPFeature .VPImage {
-    all: unset;
-    background: #2e3436;
-    padding: 0.4rem;
-    border-radius: 0.6rem;
-    width: 2rem;
-    height: 2rem;
-    object-fit: contain;
-    object-position: center;
+/* The name becomes a small wordmark eyebrow (the nav already carries the
+   full-size wordmark); the text line is the headline. */
+.VPHero .main .name {
+    font-family: var(--gz-font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+}
+
+.VPHero .main .text {
+    font-family: var(--gz-font-display);
+    font-weight: 700;
+    letter-spacing: -0.005em;
+}
+
+.VPHero .main .tagline {
+    max-width: 34em;
+}
+
+.VPHero .image-container {
+    transform: none;
+}
+
+@media (min-width: 960px) {
+    .VPHero .image-container {
+        width: 400px;
+        height: 400px;
+    }
 }
 
 /**
- * Component: Home — Hero name font
+ * Home: shared section scaffolding for the markdown body
  * -------------------------------------------------------------------------- */
 
-.VPHero .name {
-    font-family: Raleway, sans-serif !important;
-}
-
-/**
- * Component: Home — Secondary features
- * -------------------------------------------------------------------------- */
-
-.more-features {
+.gz-section {
     max-width: 1152px;
     margin: 0 auto;
-    padding: 2rem 24px 64px;
+    padding: 48px 24px;
 }
 
-.more-features-title {
-    text-align: center;
-    font-family: Rubik, sans-serif;
+.gz-eyebrow {
+    font-family: var(--gz-font-display);
     font-weight: 600;
-    font-size: 1.1rem;
-    letter-spacing: 0.04em;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--vp-c-brand-1);
+    margin: 0 0 0.5rem;
+}
+
+.gz-section h2 {
+    font-family: var(--gz-font-display);
+    font-weight: 600;
+    font-size: 1.75rem;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--vp-c-text-1);
+    margin: 0;
+    border-top: none;
+    padding-top: 0;
+}
+
+.gz-lede {
+    margin: 0.75rem 0 0;
+    max-width: 44em;
+    font-size: 1rem;
+    line-height: 1.6;
     color: var(--vp-c-text-2);
-    margin-bottom: 2rem;
 }
 
-.more-features-grid {
+.gz-lede a {
+    color: var(--vp-c-brand-1);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/**
+ * Home: anatomy of a module
+ * -------------------------------------------------------------------------- */
+
+.gz-anatomy-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem 2rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
-@media (max-width: 640px) {
-    .more-features-grid {
+@media (max-width: 959px) {
+    .gz-anatomy-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 559px) {
+    .gz-anatomy-grid {
         grid-template-columns: 1fr;
     }
 }
 
-.more-features-item,
-.more-features-item:hover {
+.gz-anatomy-card {
     display: block;
-    padding: 0.75rem 0 0.75rem 1rem;
-    border-left: 3px solid var(--vp-c-divider);
+    padding: 1.25rem 1.25rem 1.4rem;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid transparent;
+    border-radius: 8px;
     text-decoration: none !important;
-    color: inherit;
-    font-weight: normal;
-    transition: border-color 0.25s;
+    transition: border-color 0.25s, background-color 0.25s;
 }
 
-.more-features-item:hover {
-    border-left-color: var(--vp-c-brand-1);
+.gz-anatomy-card:hover {
+    border-color: var(--vp-c-brand-1);
 }
 
-.more-features-item strong {
-    display: block;
-    font-size: 0.95rem;
-    font-family: Rubik, sans-serif;
+.gz-anatomy-file {
+    display: inline-block;
+    font-family: var(--vp-font-family-mono);
+    font-size: 0.75rem;
+    color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.9rem;
+}
+
+.gz-anatomy-card h3 {
+    font-family: var(--gz-font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
     color: var(--vp-c-text-1);
-    margin-bottom: 0.15rem;
-    text-decoration: none !important;
+    margin: 0 0 0.35rem;
 }
 
-.more-features-item span {
-    display: block;
-    font-size: 0.85rem;
+.gz-anatomy-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
     color: var(--vp-c-text-2);
-    line-height: 1.4;
-    text-decoration: none !important;
+    margin: 0;
+}
+
+.gz-anatomy-note {
+    margin: 1.5rem 0 0;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-2);
+}
+
+.gz-anatomy-note strong {
+    color: var(--vp-c-text-1);
 }
 
 /**
- * Component: Nav
+ * Home: code walkthrough
  * -------------------------------------------------------------------------- */
 
-.VPNavBarTitle span {
-    font-family: Raleway, sans-serif;
-    font-size: xx-large;
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+.gz-code {
+    max-width: 880px;
+}
+
+.gz-code .vp-code-group {
+    margin-top: 2rem;
+}
+
+/**
+ * Home: "beyond the basics" grid
+ * -------------------------------------------------------------------------- */
+
+.gz-more-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2.5rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+    .gz-more-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.gz-more-item {
+    display: block;
+    padding: 0.75rem 0 0.75rem 1.1rem;
+    border-left: 2px solid var(--vp-c-divider);
+    text-decoration: none !important;
+    transition: border-color 0.25s;
+}
+
+.gz-more-item:hover {
+    border-left-color: var(--vp-c-brand-1);
+}
+
+.gz-more-item strong {
+    display: block;
+    font-family: var(--gz-font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--vp-c-text-1);
+    margin-bottom: 0.15rem;
+}
+
+.gz-more-item span {
+    display: block;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--vp-c-text-2);
+}
+
+/**
+ * Home: closing call to action
+ * -------------------------------------------------------------------------- */
+
+.gz-cta {
+    text-align: center;
+    padding-bottom: 96px;
+}
+
+.gz-cta .gz-eyebrow {
+    justify-content: center;
+}
+
+.gz-cta div[class*='language-'] {
+    display: inline-block;
+    margin: 1.5rem auto 0;
+    text-align: left;
+    min-width: min(28rem, 100%);
+}
+
+.gz-cta-links {
+    margin-top: 1.25rem;
+    font-size: 0.95rem;
+}
+
+.gz-cta-links a {
+    color: var(--vp-c-brand-1);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }

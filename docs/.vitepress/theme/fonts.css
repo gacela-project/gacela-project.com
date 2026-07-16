@@ -1,40 +1,29 @@
-@font-face {
-    font-family: 'Heebo';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url(/fonts/Heebo-Regular.ttf) format('woff2');
-}
-
-
-@font-face {
-    font-family: 'Heebo';
-    font-style: normal;
-    font-weight: 600;
-    font-display: swap;
-    src: url(/fonts/Heebo-SemiBold.ttf) format('woff2');
-}
-
-
-@font-face {
-    font-family: 'Cousine';
-    font-style: normal;
-    font-weight: 400;
-    src: url(/fonts/Cousine-Regular.ttf) format('woff2');
-}
-
+/* Self-hosted fonts (latin subset, woff2).
+ * Raleway — display: headings, wordmark, buttons (variable, 600-700).
+ * Heebo — body text (variable, 400-600).
+ * JetBrains Mono — code.
+ */
 
 @font-face {
     font-family: 'Raleway';
     font-style: normal;
-    font-weight: 400;
-    src: url(/fonts/Raleway-Regular.ttf) format('woff2');
+    font-weight: 600 700;
+    font-display: swap;
+    src: url(/fonts/Raleway-Variable.woff2) format('woff2');
 }
 
+@font-face {
+    font-family: 'Heebo';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url(/fonts/Heebo-Variable.woff2) format('woff2');
+}
 
 @font-face {
-    font-family: 'Rubik';
+    font-family: 'JetBrains Mono';
     font-style: normal;
-    font-weight: 600;
-    src: url(/fonts/Rubik-SemiBold.ttf) format('woff2');
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/JetBrainsMono-Regular.woff2) format('woff2');
 }
