@@ -34,6 +34,10 @@ Subsequent calls within the TTL return the cached value without invoking the cal
 
 The method name and arguments are inferred from the caller's stack frame via `debug_backtrace()` automatically. You can pass them explicitly for performance or when calling from a helper (see [Opting out of backtrace](#opting-out-of-backtrace)).
 
+::: tip Generic return type
+Since 1.17.0, `cached()` is generic (`@template T`): static analysis infers the return type from the callback you pass, so no `@var` annotation or cast is needed at the call site.
+:::
+
 ## Arguments shape the cache key
 
 Calls with different arguments are cached separately.

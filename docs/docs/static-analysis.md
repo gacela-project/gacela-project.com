@@ -16,7 +16,27 @@ Beyond the suppressions, `phpstan-gacela.neon` also enables architectural rules:
 - **Naming conventions** — a `Facade` / `Factory` / `Provider` / `Config` class must extend the matching Gacela abstract (`SuffixExtendsRule`).
 - **`FacadeOnlyDelegatesRule`** — a Facade only delegates to its Factory instead of holding business logic.
 - **`FactoryDoesNotCallFacadeRule`** — a Factory never calls back into a Facade.
-- **`CrossModuleViaFacadeRule`** — opt-in (commented out in the shipped config): uncomment it and pass your root namespace to enforce that modules communicate only through Facades.
+- **`CrossModuleViaFacadeRule`** — opt-in (commented out in the shipped config): enforces that modules communicate only through Facades. See [Enforcing module boundaries](#enforcing-module-boundaries).
+
+### Enforcing module boundaries
+
+`CrossModuleViaFacadeRule` ships commented out in `phpstan-gacela.neon`. Uncomment it and pass your namespaces to enable it:
+
+```neon
+services:
+    -
+        class: Gacela\PHPStan\Rules\CrossModuleViaFacadeRule
+        tags: [phpstan.rules.rule]
+        arguments:
+            rootNamespace: App\Modules
+            modulePathSegments: 1
+            sharedNamespaces:
+                - App\Modules\Shared
+```
+
+- `rootNamespace` (string, required) — your project's module root, e.g. `App\Modules`.
+- `modulePathSegments` (int, default `1`) — how many namespace segments beneath the root identify a single module.
+- `sharedNamespaces` (list of strings, default `[]`, since 1.18.0) — shared kernels exempt from the boundary: references *into* them are always allowed, and classes *inside* them aren't checked.
 
 Accurate module return types across `getFactory()`, `getConfig()` and `getProvidedDependency()` come from the `@template` annotations on Gacela's abstract classes plus the `@extends` on your concrete module classes — independent of this config.
 

@@ -47,6 +47,31 @@ vendor/bin/gacela debug:dependencies <class|file>
 - Each parameter is tagged (`bound → target`, `autowirable`, `has default`, or `unresolvable` with a reason).
 - Parameters annotated with [`#[Inject]`](/docs/inject) show up tagged `inject`, with the override concrete rendered inline when present.
 
+### `debug:module`
+
+Inspect a single module: its resolved Facade, Factory, Config and Provider, the container bindings it registers, and its dependency tree. Complements `debug:modules` (all modules, structural) and `debug:dependencies` (single class).
+
+```bash
+vendor/bin/gacela debug:module <module> [-j|--json] [-t|--tree]
+```
+
+- `module`: module name, or a part of it (required)
+- `-j`, `--json`: output machine-readable JSON
+- `-t`, `--tree`: only print the dependency tree
+
+### `debug:graph`
+
+Render the whole-app module dependency graph — which module imports which (edges via cross-module Facade usage).
+
+```bash
+vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json]
+```
+
+- `filter`: only include modules matching this substring
+- `-f`, `--format`: `text` (default), `mermaid`, `graphviz`, or `json`
+
+Note the `mermaid` / `graphviz` formats are handy for pasting an architecture diagram into docs or a README.
+
 ### `debug:container`
 
 Inspect the container's **user bindings and plugins only** (framework-internal services are excluded).
@@ -57,6 +82,7 @@ vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 
 - No arguments (or `-s`, `--stats`): print container statistics — registered services, frozen services, factory services, bindings, cached dependencies and memory usage.
 - `<class>` (or `-t`, `--tree` with a class): render the dependency tree for that fully qualified class name. Passing a class implies `--tree`; `--tree` without a class errors.
+- `-s`, `--stats` always takes precedence: `debug:container SomeClass --stats` prints statistics, not the dependency tree, even though a class was given.
 
 ## Caching & production
 
@@ -65,12 +91,11 @@ vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 Pre-resolve all module classes, write the persistent caches and (optionally) the merged configuration cache. Run this once per deploy in production.
 
 ```bash
-vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes] [-p|--parallel]
+vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes]
 ```
 
 - `-c`, `--clear`: clear existing cache before warming (same as running `cache:clear` first)
 - `-a`, `--attributes`: pre-scan and cache `#[ServiceMap]` attributes
-- `-p`, `--parallel`: warm modules in parallel via PHP 8.1 Fibers (up to 5× faster on large code bases)
 
 Under the hood `cache:warm` batches file writes via `AbstractPhpFileCache::beginBatch()` / `commitBatch()` and flushes with atomic `rename()`, so a single write replaces the previous _N modules × 4 resolvers_ full-file rewrites.
 
@@ -82,7 +107,7 @@ Remove every Gacela cache file.
 vendor/bin/gacela cache:clear
 ```
 
-Clears class-name caches, custom-service caches, the merged config cache (per `APP_ENV`), and cacheable-method entries.
+Clears class-name caches, custom-service caches, the merged config cache (per `APP_ENV`), and cacheable-method entries. Registered in the console as of `1.17.0` (it shipped earlier but wasn't wired into the CLI); also removes the custom-services cache file (`gacela-custom-services.php`).
 
 ## Configuration health
 
@@ -156,9 +181,17 @@ vendor/bin/gacela make:file App/TestModule facade factory provider
 Generate a full module: `Facade`, `Factory`, `Config`, and `Provider`.
 
 ```bash
-vendor/bin/gacela make:module [-s|--short-name] <path>
+vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service] [--with-tests] <path>
 ```
+
+- `-s`, `--short-name`: drop the module prefix from the generated class name
+- `-t`, `--template`: `basic` (default — four empty pillars) or `service` — scaffolds a module that runs out of the box: the four pillars plus a `Domain` service the Facade is wired to.
+- `--with-tests`: also scaffold a `GacelaTestCase`-based facade test (only valid with `--template=service`).
 
 ```bash
 vendor/bin/gacela make:module -s App/TestModule
+```
+
+```bash
+vendor/bin/gacela make:module --template=service --with-tests App/Checkout
 ```

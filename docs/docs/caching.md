@@ -86,6 +86,7 @@ $cache->clear();
 ```
 
 - One `.php` file per key (SHA1-hashed), written atomically via staged `.tmp` + `rename`.
+- `writeContentsAtomically(string $file, string $content): bool` — atomically writes already-rendered content to a path, with the same staged-`.tmp` + `rename` guarantees as `put()`. The higher-level `writeAtomically()` wraps it.
 - TTL per entry; `ttl: 0` means forever.
 - `beginBatch()` / `commitBatch()` defer writes behind a single index-locked flush. Useful for warming many entries at once.
 - `stats()` returns entry count, total bytes, and oldest/newest timestamps.

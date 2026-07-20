@@ -84,3 +84,36 @@ The difference between these two styles:
 Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
 
 For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject).
+
+## Sharing a single instance
+
+Plain `create...()` methods build a fresh object on every call. When a dependency should instead be built once and reused, use `singleton()`:
+
+```php
+protected function singleton(string $key, callable $creator): mixed;
+```
+
+It memoises the result of `$creator` under `$key` and returns the **same instance** on every later call within the module. The creator is lazy — it only runs on first access.
+
+```php
+<?php # src/Comment/CommentFactory.php
+
+final class CommentFactory extends AbstractFactory
+{
+    public function createSpamChecker(): SpamChecker
+    {
+        return $this->singleton(
+            SpamChecker::class,
+            fn (): SpamChecker => new SpamChecker(
+                HttpClient::create(),
+                $this->getConfig()->getSpamCheckerEndpoint(),
+            ),
+        );
+    }
+}
+```
+
+::: tip Key points
+- `create...()` methods build a new instance every call; `singleton()` builds once and reuses it
+- Since 1.17.0, `singleton()` is generic (`@template T`, `@return T`): the inferred return type matches what `$creator` returns, no cast needed
+:::

@@ -129,7 +129,11 @@ echo $facade->greet('Alice'); # Hi, Alice!
     </a>
     <a class="gz-more-item" href="/docs/gacela-script">
       <strong>Tooling</strong>
-      <span>cache:warm, doctor, debug:dependencies, profile:report</span>
+      <span>cache:warm, doctor, debug:module, debug:graph, profile:report</span>
+    </a>
+    <a class="gz-more-item" href="/docs/events">
+      <strong>Lifecycle events</strong>
+      <span>Zero-cost bootstrap, config, container &amp; cache events for tracing</span>
     </a>
     <a class="gz-more-item" href="/docs/health-checks">
       <strong>Health checks</strong>
@@ -142,6 +146,10 @@ echo $facade->greet('Alice'); # Hi, Alice!
     <a class="gz-more-item" href="/docs/provider#provides-attribute">
       <strong>Provides attribute</strong>
       <span>Declarative #[Provides] for provider service registration</span>
+    </a>
+    <a class="gz-more-item" href="/docs/testing">
+      <strong>Testing</strong>
+      <span>GacelaTestCase: bootstrap isolation and event-backed assertions</span>
     </a>
   </div>
 </section>

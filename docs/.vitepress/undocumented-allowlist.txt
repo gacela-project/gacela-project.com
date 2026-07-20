@@ -5,3 +5,5 @@
 isUsable
 isPersistent
 writeAtomically
+ConfigLoader
+getEventDispatcher

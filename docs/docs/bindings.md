@@ -168,3 +168,46 @@ return function (GacelaConfig $config) {
 ```
 
 Contextual bindings win over the global `addBinding()` for the same interface. For a per-parameter alternative driven by an attribute, see [`#[Inject]`](/docs/inject).
+
+### Binding scalar parameters by name
+
+```php
+when(string $concrete)->needs(string $parameterName)->give(mixed $value);
+```
+
+Since `1.18.0`, `needs()` also accepts a parameter name string of the form `'$parameterName'` (note the leading `$`), binding a scalar value to that specific constructor parameter **by name** instead of by type.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->when(RetryingHttpClient::class)
+    ->needs('$maxRetries')   // constructor parameter named $maxRetries
+    ->give(30);              // inject the scalar 30
+};
+```
+
+Class and interface names passed to `needs()` bind by type; a `'$name'` string binds that scalar constructor parameter by name instead. `give()` accepts the scalar directly (int, string, bool, array, etc.) and injects it as-is.
+
+As of `1.17.0`, contextual bindings also apply when Gacela resolves its **own** classes (factories, configs, providers), not only plain auto-wired classes — previously the global `addBinding()` always won for those.
+
+## Array access on the container
+
+```php
+Container implements ArrayAccess
+```
+
+Since `1.18.0`, the main [`Container`](/docs/bootstrap#gacela-container) implements PHP's `ArrayAccess`, giving terse sugar over the usual `get()` / `set()` / `has()` operations.
+
+```php
+<?php
+
+$container = Gacela::container();
+
+$container[LoggerInterface::class] = FileLogger::class; // assignment   → register a binding
+$logger = $container[LoggerInterface::class];           // offsetGet    → resolve the service
+isset($container[LoggerInterface::class]);              // offsetExists → is it registered?
+unset($container[LoggerInterface::class]);              // offsetUnset  → remove the binding
+```
+
+It's purely ergonomic — identical behaviour to the method calls above, handy in tests and quick scripts.

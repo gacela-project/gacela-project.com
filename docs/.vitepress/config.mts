@@ -86,6 +86,7 @@ export default defineConfig({
               { text: 'CLI commands', link: '/docs/gacela-script' },
               { text: 'Health checks', link: '/docs/health-checks' },
               { text: 'Static analysis', link: '/docs/static-analysis' },
+              { text: 'Events', link: '/docs/events' },
             ],
           },
           {
@@ -152,6 +153,7 @@ export default defineConfig({
           { text: 'CLI commands', link: '/docs/gacela-script' },
           { text: 'Health checks', link: '/docs/health-checks' },
           { text: 'Static analysis', link: '/docs/static-analysis' },
+          { text: 'Events', link: '/docs/events' },
         ],
       },
       {
