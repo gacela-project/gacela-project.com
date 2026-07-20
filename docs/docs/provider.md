@@ -7,6 +7,10 @@ The Provider handles **cross-module dependencies**. When your module needs somet
 - **Provider** → brings in dependencies *from other modules* (inter-module)
 :::
 
+::: warning `register()` is final
+Since 1.17.0, `AbstractProvider::register()` is `final`. Overriding it used to silently disable `#[Provides]` attribute scanning. Register services by overriding `provideModuleDependencies()` (or using `#[Provides]`) instead.
+:::
+
 ## Setting a provided dependency
 
 ```php

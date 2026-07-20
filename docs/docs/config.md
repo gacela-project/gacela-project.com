@@ -37,6 +37,57 @@ final class CommentConfig extends AbstractConfig
 } 
 ```
 
+## Typed config accessors
+
+`AbstractConfig` also provides typed accessors, so you get a concrete return type without a manual cast at the call site:
+
+| Method | Returns |
+| --- | --- |
+| `getString(string $key, ?string $default = null)` | `string` |
+| `getInt(string $key, ?int $default = null)` | `int` |
+| `getFloat(string $key, ?float $default = null)` | `float` |
+| `getBool(string $key, ?bool $default = null)` | `bool` |
+| `getArray(string $key, ?array $default = null)` | `array` |
+
+```php
+<?php # src/Comment/CommentConfig.php
+
+use Gacela\Framework\AbstractConfig;
+
+final class CommentConfig extends AbstractConfig
+{
+    public function getApiKey(): string
+    {
+        return $this->getString('AKISMET-KEY');   // required: throws if missing or non-string
+    }
+
+    public function getMaxRetries(): int
+    {
+        return $this->getInt('MAX_RETRIES', 3);    // optional: 3 when absent
+    }
+}
+```
+
+::: info
+`$default` is `null` by default, which makes the key **required**: a missing key throws immediately instead of failing silently later on. Pass a non-null `$default` to make the key optional — it's returned whenever the key is absent.
+:::
+
+::: tip Fails fast on the wrong type
+Unlike a bare `(int)`/`(string)` cast, these throw when the stored value doesn't match the requested type instead of silently coercing it. The one exception is `getFloat()`, which also accepts an `int` value. They're also faster than `get()` plus a manual cast, and the return type is visible to static analysis.
+:::
+
+Before, with a manual cast and no validation:
+```php
+$maxRetries = (int) $this->get('MAX_RETRIES', 3);
+```
+
+After, with a typed accessor that validates the stored value:
+```php
+$maxRetries = $this->getInt('MAX_RETRIES', 3);
+```
+
+The generic `get(string $key, mixed $default = null): mixed` is still there for values that don't fit these five types.
+
 ## Accessing the Config from the Factory
 
 You can access the `Config` methods from the `Factory` to create your domain objects with the right configuration:

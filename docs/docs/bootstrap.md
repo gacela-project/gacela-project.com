@@ -254,3 +254,7 @@ try {
 ### Gacela::container()
 
 Get the main dependency injection container created during bootstrap. Useful for tooling (e.g. `debug:container`) and for tests that need direct container access.
+
+### Gacela::resetCache()
+
+Wipe every Gacela cache in the current process — the in-memory resolution caches, the merged-config cache and the config-file glob cache — so config files added or removed on disk are picked up by the next `Gacela::bootstrap()`. Handy in tests and long-running workers. See also [`resetInMemoryCache()`](/docs/customization#reset-inmemorycache) for the bootstrap-time equivalent.

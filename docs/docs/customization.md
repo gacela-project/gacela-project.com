@@ -117,31 +117,11 @@ return function (GacelaConfig $config) {
 };
 ```
 
-### Supported events
+### The full event catalog
 
-#### Gacela\Framework\Event\ClassResolver\ClassNameFinder
-- ClassNameInvalidCandidateFoundEvent
-- ClassNameNotFoundEvent
-- ClassNameCachedFoundEvent
-- ClassNameValidCandidateFoundEvent
-
-#### Gacela\Framework\Event\ConfigReader
-- ReadPhpConfigEvent
-
-#### Gacela\Framework\Event\ClassResolver
-- AbstractGacelaClassResolverEvent
-- ResolvedClassCachedEvent
-- ResolvedClassCreatedEvent
-- ResolvedCreatedDefaultClassEvent
-- ResolvedClassTriedFromParentEvent
-
-#### Gacela\Framework\Event\ClassResolver\Cache
-- ClassNameCacheCachedEvent
-- ClassNamePhpCacheCreatedEvent
-- ClassNameInMemoryCacheCreatedEvent
-- CustomServicesCacheCachedEvent
-- CustomServicesPhpCacheCreatedEvent
-- CustomServicesInMemoryCacheCreatedEvent
+The high-level lifecycle events (bootstrap, config, container, provider and cache)
+and every low-level class-resolution event live in one place, each with its typed
+accessors and copy-paste recipes: see **[Events](/docs/events)**.
 
 ## Reset InMemoryCache
 
