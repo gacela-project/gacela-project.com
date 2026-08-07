@@ -2,6 +2,7 @@
 import { h } from 'vue'
 import Theme from 'vitepress/theme-without-fonts'
 import DocActions from './DocActions.vue'
+import DocFeedback from './DocFeedback.vue'
 import GacelaMark from './GacelaMark.vue'
 import './style.css'
 
@@ -12,6 +13,7 @@ export default {
             // https://vitepress.dev/guide/extending-default-theme#layout-slots
             'home-hero-image': () => h(GacelaMark),
             'doc-before': () => h(DocActions),
+            'doc-footer-before': () => h(DocFeedback),
         })
     },
 }

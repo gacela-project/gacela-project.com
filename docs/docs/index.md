@@ -33,6 +33,20 @@ Start with the [Quickstart](/docs/quickstart). It takes you from installation to
   </a>
 </div>
 
+## Recommended journey
+
+Follow this sequence once; use search and the task index after that:
+
+1. **Get a working result:** complete the [Quickstart](/docs/quickstart) and run `example.php`.
+2. **Understand the boundary:** read [Facade](/docs/facade) and [Factory](/docs/factory) while following the call inward.
+3. **Add real dependencies:** use the [dependency decision guide](/docs/getting-dependencies), then add Provider or Config only when required.
+4. **Make it production-ready:** add [tests](/docs/testing), [static analysis](/docs/static-analysis), and [health checks](/docs/health-checks).
+5. **Inspect a real system:** compare the result with the [Phel production case study](/used-in).
+
+::: tip Find an answer quickly
+Press <kbd>⌘ K</kbd> on macOS or <kbd>Ctrl K</kbd> on Windows/Linux to search every page. For wiring questions, start with [Getting dependencies](/docs/getting-dependencies) instead of browsing individual APIs.
+:::
+
 ## The module boundary
 
 | Class | Responsibility | Called by |
@@ -72,5 +86,6 @@ Every page has **Copy Markdown** and **View Markdown** actions above its title. 
 - [`/llms.txt`](/llms.txt) — compact index with page descriptions
 - [`/llms-full.txt`](/llms-full.txt) — the complete documentation in one context file
 - Append `.md` to a page URL — for example, [`/docs/bootstrap.md`](/docs/bootstrap.md)
+- Use **Copy agent prompt** on any page to copy a source-of-truth instruction with its Markdown URL
 
 When prompting an agent, give it `https://gacela-project.com/llms.txt` for discovery or `https://gacela-project.com/llms-full.txt` when the entire documentation fits the task's context budget.

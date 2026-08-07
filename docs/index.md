@@ -10,14 +10,14 @@ hero:
   tagline: Gacela 2.0 · PHP 8.3+. Split your application into modules that talk through one door. Everything behind it stays private.
   actions:
     - theme: brand
-      text: Quickstart
+      text: Build your first module
       link: /docs/quickstart
     - theme: alt
-      text: About Gacela
-      link: /about-gacela
+      text: Browse the docs
+      link: /docs/
     - theme: alt
-      text: Why decoupling?
-      link: /about-gacela#why-decoupling
+      text: See production code
+      link: /used-in
 ---
 
 <section class="gz-section">

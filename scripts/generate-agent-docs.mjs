@@ -50,6 +50,8 @@ function buildIndex() {
     '',
     'Use these Markdown documents as the source of truth for installing, configuring, and using Gacela 2.0.',
     '',
+    'Recommended workflow: begin with the Quickstart, follow the caller through Facade and Factory, then consult Getting dependencies before adding Provider, Config, bindings, Inject, or Service Map.',
+    '',
   ]
 
   for (const group of docsGroups) {
