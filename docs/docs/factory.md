@@ -13,38 +13,14 @@ The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming
 - Dependencies from other modules come through the [Provider](/docs/provider), not the Factory
 :::
 
-## Creating your objects
+## Start from the object you need
 
-The Factory is where you build your domain services, injecting whatever they need.
+After a Facade delegates an operation, design the application or domain service that will fulfill it. Its constructor makes the required collaborators explicit:
 
-Full code snippet: [gacela-example/comment-spam-score/factory](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFactory.php)
+```php [src/Comment/Domain/SpamChecker.php]
+<?php
 
-```php
-<?php # src/Comment/CommentFactory.php
-
-namespace App\Comment;
-
-use App\Comment\Domain\SpamChecker;
-use Gacela\Framework\AbstractFactory;
-use Symfony\Contracts\HttpClient\HttpClient;
-
-/**
- * @method CommentConfig getConfig()
- */
-final class CommentFactory extends AbstractFactory
-{
-    public function createSpamChecker(): SpamChecker
-    {
-        return new SpamChecker(
-            HttpClient::create(),
-            $this->getConfig()->getSpamCheckerEndpoint()
-        );
-    }    
-}
-```
-
-```php
-<?php # src/Comment/Domain/SpamChecker.php
+declare(strict_types=1);
 
 namespace App\Comment\Domain;
 
@@ -54,16 +30,48 @@ final class SpamChecker
 {
     public function __construct(
         private HttpClientInterface $client,
-        private string $endpoint
+        private string $endpoint,
     ) {}
 
     public function getSpamScore(string $comment): int
     {
-        // your business logic
-        return $x;
+        // Business logic using $this->client and $this->endpoint.
+        return 0;
     }
 }
 ```
+
+## Construct it in the Factory
+
+Now make the Factory satisfy that constructor. Configuration and wiring stay here instead of leaking into the service or Facade.
+
+```php [src/Comment/CommentFactory.php]
+<?php
+
+declare(strict_types=1);
+
+namespace App\Comment;
+
+use App\Comment\Domain\SpamChecker;
+use Gacela\Framework\AbstractFactory;
+use Symfony\Contracts\HttpClient\HttpClient;
+
+/**
+ * @extends AbstractFactory<CommentConfig>
+ */
+final class CommentFactory extends AbstractFactory
+{
+    public function createSpamChecker(): SpamChecker
+    {
+        return new SpamChecker(
+            HttpClient::create(),
+            $this->getConfig()->getSpamCheckerEndpoint(),
+        );
+    }
+}
+```
+
+[View the complete Factory](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFactory.php).
 
 ## Auto-wiring dependencies into the Factory
 

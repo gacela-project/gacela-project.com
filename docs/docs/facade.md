@@ -11,21 +11,44 @@ The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point*
 Other modules, controllers, and commands never reach into your module's internals. They call the Facade, which delegates to the [Factory](/docs/factory) to build the right objects and run the logic. This keeps your module's domain encapsulated and easy to refactor.
 :::
 
-## Defining a Facade
+## Start from the caller
 
-Extend `AbstractFacade` and use `getFactory()` to access the module's internal services.
+Write the call you want consumers to make before designing the implementation. The caller should know the Facade and nothing behind it.
 
-Full code snippet: [gacela-example/comment-spam-score/facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php)
+```php [app.php]
+<?php
 
-```php
-<?php # src/Comment/CommentFacade.php
+declare(strict_types=1);
+
+use App\Comment\CommentFacade;
+use Gacela\Framework\Gacela;
+
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__);
+
+$score = (new CommentFacade())->getSpamScore('Lorem ipsum!');
+
+echo "Spam score: {$score}" . PHP_EOL;
+```
+
+[View the complete entry point](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/app.php).
+
+## Define the boundary
+
+Turn the caller's desired operation into a Facade method. Extend `AbstractFacade` and delegate the implementation through `getFactory()`.
+
+```php [src/Comment/CommentFacade.php]
+<?php
+
+declare(strict_types=1);
 
 namespace App\Comment;
 
 use Gacela\Framework\AbstractFacade;
 
 /**
- * @method CommentFactory getFactory()
+ * @extends AbstractFacade<CommentFactory>
  */
 final class CommentFacade extends AbstractFacade
 {
@@ -38,25 +61,7 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-## Using the Facade
-
-Instantiate the Facade and call its methods. No need to know about the Factory, services, or config behind it.
-
-Full code snippet: [gacela-example/comment-spam-score/entry-point](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/app.php)
-```php
-<?php
-require __DIR__ . '/vendor/autoload.php';
-
-use App\Comment\CommentFacade;
-use Gacela\Framework\Gacela;
-
-Gacela::bootstrap(__DIR__);
-
-$facade = new CommentFacade();
-$score = $facade->getSpamScore('Lorem ipsum!');
-
-echo sprintf('Spam Score: %d', $score) . PHP_EOL;
-```
+[View the complete Facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php). Keep this API small: add a method because a real caller needs the capability, not because an internal service happens to expose it.
 
 ## Accessing the Facade from controllers and commands
 

@@ -27,6 +27,18 @@ Gacela keeps those boundaries predictable:
 - The [**Provider**](/docs/provider) supplies cross-module and infrastructure dependencies
 - The [**Config**](/docs/config) exposes application settings through typed getters
 
+### Think from the caller inward
+
+Begin with the capability a controller, command, or another module needs. Express that capability on the Facade, delegate its implementation to a service built by the Factory, and introduce Provider or Config wiring only when the implementation requires it.
+
+```text
+caller → Facade → Factory → application/domain service
+                              ↓
+                       Provider or Config
+```
+
+This outside-in sequence makes the reasoning visible and prevents framework structure from driving the domain design.
+
 ## Module structure
 
 ```bash

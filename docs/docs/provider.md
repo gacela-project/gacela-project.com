@@ -16,65 +16,61 @@ The Provider handles **cross-module dependencies**. When your module needs somet
 Do not override `AbstractProvider::register()`. Register services through `#[Provides]` or `provideModuleDependencies()`.
 :::
 
-## Setting a provided dependency
+## Start from the consuming service
 
-```php
-<?php # src/Sales/SalesProvider.php
+Let the service constructor show that the Sales module needs the Comment module. The Factory asks for the other module's Facade interface; it does not decide how to locate it.
 
-use Gacela\Framework\AbstractProvider;
+```php [src/Sales/SalesFactory.php]
+<?php
 
-final class SalesProvider extends AbstractProvider
-{
-    public const FACADE_COMMENT = 'FACADE_COMMENT';
+declare(strict_types=1);
 
-    public function provideModuleDependencies(Container $container): void
-    {
-        $this->addCommentFacade($container);
-    }
+namespace App\Sales;
 
-    private function addCommentFacade(Container $container): void
-    {
-        $container->set(
-            self::FACADE_COMMENT,
-            function (Container $container) {
-                return $container->getLocator()->get(CommentFacade::class);
-            }
-        );
-    }
-}
-```
-
-## Factory using a provided dependency
-
-```php
-<?php # src/Sales/SalesFactory.php
-
+use App\Comment\CommentFacadeInterface;
 use Gacela\Framework\AbstractFactory;
 
-/**
- * @method SalesConfig getConfig()
- */
 final class SalesFactory extends AbstractFactory
 {
     public function createOrderCommentSaver(): OrderCommentSaver
     {
         return new OrderCommentSaver(
-            $this->getCommentFacade()
+            $this->getProvidedDependency(CommentFacadeInterface::class),
         );
     }
+}
+```
 
-    private function getCommentFacade(): CommentFacade
+## Satisfy the boundary in the Provider
+
+Now connect that interface to the Comment module's Facade. `#[Provides]` keeps the dependency local to the Sales module and resolves it lazily.
+
+```php [src/Sales/SalesProvider.php]
+<?php
+
+declare(strict_types=1);
+
+namespace App\Sales;
+
+use App\Comment\CommentFacade;
+use App\Comment\CommentFacadeInterface;
+use Gacela\Framework\AbstractProvider;
+use Gacela\Framework\Attribute\Provides;
+use Gacela\Framework\Container\Container;
+
+final class SalesProvider extends AbstractProvider
+{
+    #[Provides(CommentFacadeInterface::class)]
+    public function commentFacade(Container $container): CommentFacadeInterface
     {
-        return $this->getProvidedDependency(
-            SalesProvider::FACADE_COMMENT
-        );
+        return $container->getLocator()->getRequired(CommentFacade::class);
     }
 }
 ```
 
 ## Putting it together
 
-The Facade calls the Factory, which pulls the provided dependency, completing the chain **Facade → Factory → Provider**:
+The caller still sees only the Sales Facade. The dependency becomes visible only when following the implementation inward: **Facade → Factory → Provider → Comment Facade**.
 
 ```php
 <?php # src/Sales/SalesFacade.php
@@ -97,11 +93,9 @@ final class SalesFacade extends AbstractFacade
 }
 ```
 
-## `#[Provides]` attribute
+## More `#[Provides]` patterns
 
-Replace stringly-typed `$container->set(KEY, fn () => ...)` boilerplate with a declarative method-level attribute.
-
-Instead of overriding `provideModuleDependencies()`, annotate methods with `#[Provides('ID')]`. Each method is wrapped in a lazy closure and auto-injected with `Container` when declared in the signature.
+`#[Provides]` also accepts string IDs and non-Facade services. Each method is wrapped in a lazy closure and receives `Container` automatically when declared in the signature.
 
 ```php
 <?php # src/Sales/SalesProvider.php

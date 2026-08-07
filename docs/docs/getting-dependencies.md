@@ -5,7 +5,16 @@ description: Choose the right mechanism for internal collaborators, cross-module
 
 # Getting dependencies
 
-Gacela has several dependency-resolution tools because different relationships need different shapes. Use this table as the default decision guide.
+Choose wiring only after the caller and service reveal a dependency. Start with the relationship: **who needs what, and who owns it?** Gacela has several resolution tools because those relationships need different boundaries.
+
+Ask these questions in order:
+
+1. Is the dependency created inside this module? Use the Factory.
+2. Is it owned by another module? Request that module's Facade through the Provider.
+3. Is it an application-wide implementation policy? Add a binding.
+4. Is the caller created by another framework? Use constructor injection or Service Map at that entry point.
+
+Then use this table as the concise decision guide.
 
 | Intent | Recommended path |
 |---|---|

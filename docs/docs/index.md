@@ -44,6 +44,17 @@ Start with the [Quickstart](/docs/quickstart). It takes you from installation to
 
 You do not need all four classes in every module. Start with a Facade and Factory; add a Provider when the module crosses a boundary, and a Config when it needs application settings.
 
+## Design outside-in
+
+Gacela works best when you follow the request from the caller into the module:
+
+1. Write the controller, command, or script call you want to make.
+2. Turn that call into a small Facade method.
+3. Let the Factory construct the service that fulfills it.
+4. Add a Provider or Config only when that service needs something outside the module.
+
+This keeps the public API driven by real use cases instead of exposing internal classes speculatively. The [Quickstart](/docs/quickstart) demonstrates the complete flow.
+
 ## Common tasks
 
 - [Bootstrap an application](/docs/bootstrap)
