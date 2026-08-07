@@ -31,7 +31,7 @@ export default defineConfig({
       provider: 'local',
     },
     footer: {
-      message: `PHP 8.1+ · v${gacelaVersion}`,
+      message: `PHP 8.3+ · v${gacelaVersion}`,
       copyright: '© 2021-present, <a href="/team">Team</a> · <a href="/license">License</a> · <a href="https://packagist.org/packages/gacela-project/gacela">Packagist</a>',
     },
     outline: {
@@ -46,6 +46,8 @@ export default defineConfig({
             items: [
               { text: 'Quickstart', link: '/docs/quickstart' },
               { text: 'Bootstrap', link: '/docs/bootstrap' },
+              { text: 'Getting dependencies', link: '/docs/getting-dependencies' },
+              { text: 'Upgrade to 2.0', link: '/docs/upgrading' },
             ],
           },
           {
@@ -114,6 +116,8 @@ export default defineConfig({
         items: [
           { text: 'Quickstart', link: '/docs/quickstart' },
           { text: 'Bootstrap', link: '/docs/bootstrap' },
+          { text: 'Getting dependencies', link: '/docs/getting-dependencies' },
+          { text: 'Upgrade to 2.0', link: '/docs/upgrading' },
         ],
       },
       {

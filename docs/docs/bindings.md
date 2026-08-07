@@ -98,6 +98,20 @@ return function (GacelaConfig $config) {
 
 Nothing is built at bootstrap; the first `$container->get(ReportBuilder::class)` invokes the closure, and each later resolve builds a fresh instance. Reach for `addLazy` over `addFactory` when the intent is deferring a costly construction; they are otherwise interchangeable.
 
+Gacela 2.0 also honors the container's `#[Lazy]` class attribute and `Container::lazy()`. These return an instance whose constructor is deferred until the object is used on PHP 8.4+. On PHP 8.3 the same declaration is accepted but construction is eager. Unlike `addLazy()`, the class-level lazy service follows the class's normal lifetime rather than acting as a fresh-instance factory.
+
+```php
+use Gacela\Container\Attribute\Lazy;
+
+#[Lazy]
+final class ExpensiveReport
+{
+    // ...
+}
+```
+
+The attribute is honored by normal container resolution and `AbstractFactory::make()`.
+
 ## Protected Services
 
 ```php
@@ -120,6 +134,25 @@ $db      = $factory();                    // invoke when needed
 ```
 
 Protected services cannot be extended via `extendService()`.
+
+## Resolution hooks
+
+```php
+afterResolving(string $id, Closure $callback);
+```
+
+Run a callback against a resolved object without replacing it:
+
+```php
+$config->afterResolving(
+    LoggerAwareInterface::class,
+    static fn (LoggerAwareInterface $service) => $service->setLogger($logger),
+);
+```
+
+The id may be an interface, so one hook can cover every implementation. Hooks fire in registration order for top-level `get()`, `getOrFail()`, and `make()` resolutions, but not for a nested constructor dependency.
+
+A hook runs **once per resolution, not once per instance**. Fetching a shared service three times runs the callback three times on the same object, so callbacks must be safe to repeat. A callback that throws evicts the affected instance. Use `extendService()` when you need to replace or decorate the returned object, and an event listener when you only need to observe resolution.
 
 ## Service Aliases
 
@@ -191,13 +224,65 @@ Class and interface names passed to `needs()` bind by type; a `'$name'` string b
 
 As of `1.17.0`, contextual bindings also apply when Gacela resolves its **own** classes (factories, configs, providers), not only plain auto-wired classes — previously the global `addBinding()` always won for those.
 
+## Definitions as data
+
+`loadDefinitions()` registers wiring from an inline array, a PHP file returning an array, or a JSON file:
+
+```php
+$config->loadDefinitions([
+    LoggerInterface::class => FileLogger::class,
+    Database::class => ['singleton' => DatabasePool::class],
+    'db.dsn' => ['value' => 'pgsql://localhost/app'],
+    'logger' => ['alias' => LoggerInterface::class],
+    Metrics::class => [
+        'singleton' => Metrics::class,
+        'tags' => ['reporters'],
+    ],
+]);
+
+$config->loadDefinitions(__DIR__ . '/config/services.json');
+```
+
+Sources apply in declaration order and **after** imperative registrations, so later sources override earlier ones and definitions override `addBinding()`. Tags accumulate instead of replacing prior entries. Paths are used exactly as passed, so use `__DIR__`; missing, unreadable, or invalid files throw.
+
+Definitions loaded through `GacelaConfig` are app-wide. A Provider can keep definitions within its own module scope with `$container->load([...])` or `$container->loadFile(__DIR__ . '/services.php')`. Each registered id emits `BindingRegisteredEvent`, like an imperative binding. YAML is not built in; parse it yourself and pass the resulting array:
+
+```php
+$config->loadDefinitions(Yaml::parseFile(__DIR__ . '/services.yaml'));
+```
+
+## Service tags
+
+Group services under a label when a consumer needs every implementation:
+
+```php
+$config->tag(
+    [NotEmptyValidator::class, EmailValidator::class],
+    'validators',
+);
+```
+
+Resolve the iterable with `$container->tagged('validators')`. `taggedByKey()` and `taggedKeys()` are also forwarded by Gacela 2.0. App-wide tags reach every module scope; a tag added with `$container->tag()` from a Provider stays local to that module. Repeated registrations accumulate and duplicate ids are yielded once.
+
+Use tags for an unkeyed set you iterate. Use [`addHandlerRegistry()`](/docs/extensions#handler-registry) when callers select one handler by business key.
+
+## Advanced container surface
+
+Gacela 2.0 forwards the complete container 2.x API. Most applications should use the higher-level configuration above, but advanced integrations can call:
+
+- `provides()`, `taggedByKey()`, `taggedKeys()`, `lazy()`, and `createScope()`.
+- `writeCompiledCache()`, `writeCompiledFactories()`, `useCompiledFactories()`, and `compileReport()` for opt-in compiled constructor plans.
+- `getStats()` for the legacy untyped array or `stats()` for the stable `ContainerStats` object.
+
+Compiled plans are intentionally off by default: loading a 300-class plan file measured slower than reflecting those classes in the 2.0 release tests. The shared in-process `PlanCache` removes repeated reflection across module scopes without disk I/O. `resetStaticCaches()` is available for explicit low-level cleanup; normal application code should use `Gacela::resetCache()` or `cache:clear`.
+
 ## Array access on the container
 
 ```php
 Container implements ArrayAccess
 ```
 
-Since `1.18.0`, the main [`Container`](/docs/bootstrap#gacela-container) implements PHP's `ArrayAccess`, giving terse sugar over the usual `get()` / `set()` / `has()` operations.
+The main [`Container`](/docs/bootstrap#gacela-container) implements PHP's `ArrayAccess`, giving terse sugar over the usual `get()` / `set()` / `has()` operations.
 
 ```php
 <?php
@@ -206,8 +291,8 @@ $container = Gacela::container();
 
 $container[LoggerInterface::class] = FileLogger::class; // assignment   → register a binding
 $logger = $container[LoggerInterface::class];           // offsetGet    → resolve the service
-isset($container[LoggerInterface::class]);              // offsetExists → is it registered?
+isset($container[LoggerInterface::class]);              // offsetExists → can get() resolve it?
 unset($container[LoggerInterface::class]);              // offsetUnset  → remove the binding
 ```
 
-It's purely ergonomic — identical behaviour to the method calls above, handy in tests and quick scripts.
+It is purely ergonomic. In container 2.x, `has()` follows PSR-11 semantics: it returns true when `get()` can resolve the id, including an autowirable unregistered class. Use `provides()` when you specifically need to know whether this container owns a binding or instance.

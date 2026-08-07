@@ -1,6 +1,6 @@
 # Testing
 
-Gacela ships two PHPUnit helpers for tests: `GacelaTestCase`, the recommended base class for tests that bootstrap a Gacela app, and `ContainerFixture`, the lower-level trait it builds on and that you can use directly.
+Gacela ships two PHPUnit helpers for tests: `GacelaTestCase`, the recommended base class for tests that bootstrap a Gacela app, and `ContainerFixture`, the lower-level trait it builds on. PHPUnit is a suggested development dependency, not a Gacela runtime dependency, so require it in your application when using these helpers.
 
 ## GacelaTestCase
 

@@ -3,7 +3,7 @@
 Gacela dispatches **read-only lifecycle events** as it boots, resolves services, reads config and manages caches. Listen to them for tracing, profiling, debugging or metrics — without touching your module code.
 
 ::: tip Zero-cost when nobody listens
-Event dispatch is free when nothing listens. Every dispatch site first checks `hasListeners()` and skips building the event entirely when there are no listeners, so an app that registers none pays nothing — warm resolves are ~20% faster than before this optimisation landed in `1.18.0`.
+Event dispatch is free when nothing listens. Every dispatch site first checks `hasListeners()` and skips building the event entirely when there are no listeners.
 :::
 
 ## Registering listeners
@@ -55,7 +55,7 @@ Every event implements `GacelaEventInterface`, which exposes `toString(): string
 
 ## Lifecycle event catalog
 
-The high-level events dispatched over a bootstrap, in the order you meet them. All were added in `1.18.0`.
+The high-level events dispatched over a bootstrap, in the order you meet them.
 
 ### `Gacela\Framework\Event\Bootstrap`
 
@@ -90,7 +90,9 @@ The high-level events dispatched over a bootstrap, in the order you meet them. A
 | Event | Dispatched when | Accessors |
 |---|---|---|
 | `CacheClearedEvent` | a cache file is removed (`cache:clear`) | `cacheFile(): string` |
-| `CacheWarmedEvent` | `cache:warm` finishes | `moduleCount(): int`, `failedCount(): int` |
+| `CacheWarmedEvent` | `cache:warm` finishes | `moduleCount(): int`, `failedCount(): int`, `skippedCount(): int` |
+
+In 2.0, `failedCount()` only counts pillar classes that were found and failed during resolution. `skippedCount()` counts pillars a module simply does not contain, which is a healthy and expected module shape. Alert on failures, not skips.
 
 ## Recipes
 
@@ -181,6 +183,8 @@ return function (GacelaConfig $config) {
 };
 ```
 
+This setting wins over registrations: listeners remain configured but silently do not run. Check `disableEventListeners()` first when a production listener appears inactive.
+
 ## Custom dispatcher
 
 Gacela's default dispatcher implements `EventDispatcherInterface`:
@@ -195,10 +199,6 @@ interface EventDispatcherInterface
     public function hasListeners(string $eventClass): bool;
 }
 ```
-
-::: warning Upgrading from < 1.18.0
-`hasListeners()` was **added** to `EventDispatcherInterface` in `1.18.0`. If you ship your own implementation of this interface, add the method — returning `true` keeps the previous always-dispatch behaviour.
-:::
 
 ## See also
 

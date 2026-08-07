@@ -38,7 +38,7 @@ Gacela encourages your modules to interact with each other in a unified way:
 
 ## Documentation
 
-You can find the complete documentation for **gacela** online in the [official gacela documentation](https://gacela-project.com/).
+You can find the complete documentation for **Gacela 2.0** online in the [official Gacela documentation](https://gacela-project.com/). Gacela 2.0 requires PHP 8.3 or newer; applications upgrading from 1.21 should start with the [2.0 upgrade guide](https://gacela-project.com/docs/upgrading).
 
 ## Development
 
@@ -62,7 +62,7 @@ The theme lives in `docs/.vitepress/theme/`:
 You are welcome to contribute reporting issues, sharing ideas,
 or with your pull requests.
 
-Make sure to read our [contribution guide](.github/CONTRIBUTING.md) where you will find, among other things, how to set up your environment with the various tools we use to develop this framework.
+Make sure to read our [contribution guide](https://github.com/gacela-project/gacela/blob/main/.github/CONTRIBUTING.md) where you will find, among other things, how to set up your environment with the various tools we use to develop this framework.
 
 ## Contributors
 

@@ -81,9 +81,9 @@ final class TestCommand extends Command
 
 `#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs. Full reference: [Service Map](/docs/service-map).
 
-### Alternative: DocBlock `@method`
+### Migration aid: DocBlock `@method`
 
-Still fully supported; useful on PHP versions where attributes are awkward, or when migrating a legacy code base.
+Keep a `@method` annotation alongside the attribute when your IDE needs it. Using a docblock as the **runtime** source still works in 2.0, but raises `E_USER_DEPRECATED` and will be removed in 3.0.
 
 ```php
 <?php
@@ -105,8 +105,19 @@ final class TestCommand extends Command
 }
 ```
 
-::: info Migration
-`DocBlockResolverAwareTrait` was renamed to `ServiceResolverAwareTrait` in `1.12.0`. The old trait name still works, but new code should use `ServiceResolverAwareTrait`.
+Add the attribute even when retaining the docblock:
+
+```php
+/** @method RunFacade getFacade() */
+#[ServiceMap(method: 'getFacade', className: RunFacade::class)]
+final class TestCommand extends Command
+{
+    use ServiceResolverAwareTrait;
+}
+```
+
+::: warning Removed in 2.0
+`DocBlockResolverAwareTrait` no longer exists. Replace it with `ServiceResolverAwareTrait`; the API is otherwise unchanged. See [Upgrade to 2.0](/docs/upgrading).
 :::
 
 #### Why not simply instantiate the Facade?

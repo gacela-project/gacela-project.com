@@ -77,14 +77,20 @@ A bare string with no placeholders is args-agnostic. Every call shares the same 
 ## Clearing the cache
 
 ```php
-// Clear everything for this facade class
-CatalogFacade::clearMethodCache();
-
 // Clear all entries for a specific method (any args)
 CatalogFacade::clearMethodCacheFor('getPopularProducts');
+
+// Clear the whole shared storage backend, across every facade
+CatalogFacade::clearMethodCache();
 ```
 
 `clearMethodCacheFor()` matches on the exact `Class::method::` prefix. Passing `'get'` does **not** clear every method whose name starts with `get`.
+
+`clearMethodCache()` calls `clear()` on the shared backend and is not scoped to the facade class. Prefer the method-specific operation unless clearing all application entries is intentional.
+
+Custom key templates do not contain the normal `Class::method::` prefix, so `clearMethodCacheFor()` cannot find them. Invalidate those keys through the configured storage backend.
+
+`Gacela::resetCache()` clears only the default in-process method storage. In 2.0 it never clears an external backend registered through `CacheableConfig::setStorage()`; calling `clearMethodCache()` yourself still does.
 
 ## Pluggable storage backend
 

@@ -3,10 +3,22 @@
 Gacela ships a small CLI that assists you while building, inspecting and tuning modules in your application.
 
 ::: info
-To use the *Gacela script*, you need the dependency `"symfony/console": "^6.4"`.
+The CLI needs `symfony/console` 7 or 8. Gacela suggests rather than requires it, so add the package to applications that use the binary.
 :::
 
-All commands below are invoked through `vendor/bin/gacela` (Gacela's binary was moved to `bin/` in `1.8.0`).
+All commands below are invoked through `vendor/bin/gacela`. Run it without arguments to list the installed commands, or `vendor/bin/gacela help <command>` for one command's complete options.
+
+## Project setup
+
+### `init`
+
+Create the `gacela.php` bootstrap file required by every other command:
+
+```bash
+vendor/bin/gacela init [--force|-f]
+```
+
+`--force` overwrites an existing file.
 
 ## Module discovery
 
@@ -40,12 +52,13 @@ vendor/bin/gacela debug:modules [--detail|-d] [<filter>]
 Inspect a single class's constructor and report each parameter's resolvability through the container.
 
 ```bash
-vendor/bin/gacela debug:dependencies <class|file>
+vendor/bin/gacela debug:dependencies <class|file> [--tree]
 ```
 
 - Accepts a fully qualified class name or a path to a PHP file declaring the class.
 - Each parameter is tagged (`bound → target`, `autowirable`, `has default`, or `unresolvable` with a reason).
 - Parameters annotated with [`#[Inject]`](/docs/inject) show up tagged `inject`, with the override concrete rendered inline when present.
+- `--tree` appends the transitive dependency graph after applying bindings and contextual bindings. Nodes are marked `binding`, `instance`, `autowired`, or `unresolvable`; cycles are shown and cut.
 
 ### `debug:module`
 
@@ -64,13 +77,16 @@ vendor/bin/gacela debug:module <module> [-j|--json] [-t|--tree]
 Render the whole-app module dependency graph — which module imports which (edges via cross-module Facade usage).
 
 ```bash
-vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json]
+vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json] [--check]
 ```
 
 - `filter`: only include modules matching this substring
 - `-f`, `--format`: `text` (default), `mermaid`, `graphviz`, or `json`
+- `--check`: exit non-zero when an unreviewed dependency cycle exists
+- `--allowed-cycles <file>`: JSON allowlist of reviewed cycles and their reasons
+- `--compare-to <graph.json>`: diff the current graph against saved JSON output
 
-Note the `mermaid` / `graphviz` formats are handy for pasting an architecture diagram into docs or a README.
+The `mermaid` / `graphviz` formats are handy for architecture diagrams. Use `--check` in CI.
 
 ### `debug:container`
 
@@ -80,7 +96,7 @@ Inspect the container's **user bindings and plugins only** (framework-internal s
 vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 ```
 
-- No arguments (or `-s`, `--stats`): print container statistics — registered services, frozen services, factory services, bindings, cached dependencies and memory usage.
+- No arguments (or `-s`, `--stats`): print container statistics — registered services, frozen services, factory services, bindings, cached dependencies, and **process** memory usage.
 - `<class>` (or `-t`, `--tree` with a class): render the dependency tree for that fully qualified class name. Passing a class implies `--tree`; `--tree` without a class errors.
 - `-s`, `--stats` always takes precedence: `debug:container SomeClass --stats` prints statistics, not the dependency tree, even though a class was given.
 
@@ -107,20 +123,20 @@ Remove every Gacela cache file.
 vendor/bin/gacela cache:clear
 ```
 
-Clears class-name caches, custom-service caches, the merged config cache (per `APP_ENV`), and cacheable-method entries. Registered in the console as of `1.17.0` (it shipped earlier but wasn't wired into the CLI); also removes the custom-services cache file (`gacela-custom-services.php`).
+Clears the project-scoped class-name, custom-service, and merged-config cache files, cacheable-method entries, and the container's in-process reflection memos.
 
 ## Configuration health
 
 ### `doctor`
 
-Aggregate environmental and wiring health checks with per-check remediation hints. Bundled checks include cache staleness and suffix mismatches, plus any `ModuleHealthCheckInterface` you registered via `GacelaConfig::addHealthCheck()`.
+Aggregate environmental and wiring health checks with per-check remediation hints. Bundled checks include cache staleness, suffix mismatches, and filename/class mismatches, plus any `ModuleHealthCheckInterface` registered through `GacelaConfig::addHealthCheck()`.
 
 ```bash
-vendor/bin/gacela doctor [<filter>]
+vendor/bin/gacela doctor [<filter>] [--strict]
 ```
 
 - `filter`: restrict module-scoped checks to a namespace substring.
-- Exit code is `0` on OK/Warning and `1` on Error. Safe to wire into CI.
+- By default warnings still exit `0`; `--strict` makes warnings fail too and is the recommended CI mode.
 
 ### `validate:config`
 
@@ -181,11 +197,12 @@ vendor/bin/gacela make:file App/TestModule facade factory provider
 Generate a full module: `Facade`, `Factory`, `Config`, and `Provider`.
 
 ```bash
-vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service] [--with-tests] <path>
+vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service|minimal] [--minimal] [--with-tests] <path>
 ```
 
 - `-s`, `--short-name`: drop the module prefix from the generated class name
-- `-t`, `--template`: `basic` (default — four empty pillars) or `service` — scaffolds a module that runs out of the box: the four pillars plus a `Domain` service the Facade is wired to.
+- `-t`, `--template`: `basic` (four pillars), `service` (four pillars plus a wired Domain service), or `minimal` (Facade and Factory only).
+- `--minimal`: shorthand for `--template=minimal`.
 - `--with-tests`: also scaffold a `GacelaTestCase`-based facade test (only valid with `--template=service`).
 
 ```bash

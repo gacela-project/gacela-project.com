@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Gacela"
   text: "Build modular PHP applications"
-  tagline: Split your application into modules that talk through one door. Everything behind it stays private.
+  tagline: Gacela 2.0 · PHP 8.3+. Split your application into modules that talk through one door. Everything behind it stays private.
   actions:
     - theme: brand
       text: Quickstart
@@ -53,6 +53,18 @@ hero:
 
 ::: code-group
 
+```php [example.php]
+use Gacela\Framework\Gacela;
+use Module\Facade;
+
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__);
+
+$facade = new Facade();
+echo $facade->greet('Alice'); # Hi, Alice!
+```
+
 ```php [Facade.php]
 namespace Module;
 
@@ -99,18 +111,6 @@ final class Greeter
 }
 ```
 
-```php [example.php]
-use Gacela\Framework\Gacela;
-use Module\Facade;
-
-require __DIR__ . '/vendor/autoload.php';
-
-Gacela::bootstrap(__DIR__);
-
-$facade = new Facade();
-echo $facade->greet('Alice'); # Hi, Alice!
-```
-
 :::
 
 </section>
@@ -121,7 +121,7 @@ echo $facade->greet('Alice'); # Hi, Alice!
   <div class="gz-more-grid">
     <a class="gz-more-item" href="/docs/bindings#factory-services">
       <strong>Container DI</strong>
-      <span>Contextual bindings, aliases, protected & factory services</span>
+      <span>Bindings, tags, hooks, definitions, scopes &amp; lazy services</span>
     </a>
     <a class="gz-more-item" href="/docs/caching">
       <strong>Caching</strong>
@@ -141,7 +141,7 @@ echo $facade->greet('Alice'); # Hi, Alice!
     </a>
     <a class="gz-more-item" href="/docs/inject">
       <strong>Inject attribute</strong>
-      <span>Opt-in #[Inject] constructor injection with implementation overrides</span>
+      <span>#[Inject] on constructors, properties and setters</span>
     </a>
     <a class="gz-more-item" href="/docs/provider#provides-attribute">
       <strong>Provides attribute</strong>
@@ -159,8 +159,8 @@ echo $facade->greet('Alice'); # Hi, Alice!
   <h2>Start your first module</h2>
 
 ```bash
-composer require gacela-project/gacela
+composer require gacela-project/gacela:^2.0
 ```
 
-  <p class="gz-cta-links"><a href="/docs/quickstart">Read the quickstart</a> · <a href="/used-in">See who uses Gacela</a></p>
+  <p class="gz-cta-links"><a href="/docs/quickstart">Read the quickstart</a> · <a href="/docs/upgrading">Upgrade from 1.21</a> · <a href="/used-in">See who uses Gacela</a></p>
 </section>

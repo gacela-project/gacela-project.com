@@ -13,7 +13,9 @@ Gacela caches at three different levels. Each solves a different problem. They c
 Gacela resolves classes by convention: `Facade` → `Factory` → `Provider` → `Config`. Those lookups walk namespaces and files, and the merged configuration is reassembled from every `config/*.php` file. All of it is memoised once per process, and can additionally be persisted to disk between runs.
 
 - **In-memory** (default): `InMemoryCache` holds resolved class names for the life of the process.
-- **On-disk**: `ClassNamePhpCache` and `CustomServicesPhpCache` persist the same data to `gacela-class-names.php` / `gacela-custom-services.php`; `MergedConfigCache` persists the merged configuration to `gacela-merged-config-{env}.php` keyed per `APP_ENV`.
+- **On-disk**: `ClassNamePhpCache`, `CustomServicesPhpCache`, and `MergedConfigCache` persist the same data in project-scoped PHP files. In 2.0 every filename includes a hash of the application root, preventing two applications sharing the default cache directory from serving each other's data; merged config files are also scoped by `APP_ENV`.
+
+Module containers are scopes of one application container in 2.0. They also share an in-process constructor-plan cache, so classes used by several modules are reflected once while bindings, tags, instances, and Provider registrations remain scoped. Persisting constructor plans was measured as a net loss and is not enabled automatically.
 
 Configure at bootstrap:
 
@@ -23,15 +25,15 @@ use Gacela\Framework\Gacela;
 
 Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
     $config->enableFileCache();                  // use the default cache dir
-    // $config->enableFileCache('/custom/dir');  // or pick one
+    // $config->enableFileCache('var/cache');    // relative to the app root
     // $config->setFileCache(false);             // explicitly off
     // $config->resetInMemoryCache();            // wipe static caches (tests)
 });
 ```
 
-The directory can also be overridden at runtime with the `GACELA_CACHE_DIR` environment variable. Handy when the same image is reused across environments.
+A configured path is resolved relative to the application root—even a leading slash does not escape it. Use the `GACELA_CACHE_DIR` environment variable for a genuinely absolute directory outside the project; it takes precedence and is used verbatim.
 
-With the file cache enabled, the merged configuration **auto-warms on the first miss**: the first bootstrap persists `gacela-merged-config-{env}.php`, so later bootstraps skip globbing and parsing config files — no manual `cache:warm` required for the config layer.
+With the file cache enabled, the merged configuration **auto-warms on the first miss**: the first bootstrap persists the app- and environment-scoped merged-config file, so later bootstraps skip globbing and parsing config files—no manual `cache:warm` is required for that layer.
 
 In a **read-only environment** (e.g. a read-only project root inside a build sandbox) the file caches degrade gracefully to in-memory instead of failing the bootstrap: writes become no-ops, no raw PHP warnings are emitted, and any pre-warmed cache files already on disk stay readable. Warm-at-build / run-read-only deployments keep their cache hits.
 
@@ -66,9 +68,11 @@ final class CatalogFacade extends AbstractFacade
 Storage is `InMemoryCacheStorage` by default, which means entries die with the request on PHP-FPM. For cross-request caching swap in a shared backend (APCu, Redis, PSR-16) via `CacheableConfig::setStorage()`.
 
 ```php
-CatalogFacade::clearMethodCache();                        // all of this facade
 CatalogFacade::clearMethodCacheFor('getPopularProducts'); // one method, any args
+CatalogFacade::clearMethodCache();                        // the whole shared store
 ```
+
+`clearMethodCache()` is not facade-scoped: it calls `clear()` on the shared storage backend. `Gacela::resetCache()` only clears Gacela's default in-memory method cache and deliberately leaves a custom APCu/Redis backend registered through `CacheableConfig::setStorage()` alone.
 
 ## Layer 3: Value primitives
 

@@ -62,19 +62,22 @@ You can modify Gacela behaviour from two different places:
 
 The full GacelaConfig API is documented across these pages:
 
-- [Bindings](/docs/bindings): addBinding, factory services, protected services, aliases, contextual bindings
+- [Bindings](/docs/bindings): bindings, factories, tags, resolution hooks, aliases, contextual bindings, and definitions
+- [Getting dependencies](/docs/getting-dependencies): which configuration mechanism to use for each intent
 - [Extensions & Plugins](/docs/extensions): plugins, extendService, extendGacelaConfig, handler registry
 - [Module Customization](/docs/customization): suffix types, project namespaces, events
 
 ### File Cache
 
 ```php
-enableFileCache(?string $dir = null);            // defaults to .gacela/cache
-setFileCache(bool $enabled, ?string $dir = null); // defaults to .gacela/cache
+enableFileCache(?string $dir = null);             // default: system temp directory
+setFileCache(bool $enabled, ?string $dir = null); // default: system temp directory
 ```
 The gacela file cache is disabled by default. You can enable it using the `enableFileCache()` or `setFileCache`.
 
 This will generate a file with all resolved classes by gacela will be cached resulting in a faster execution next time.
+
+A configured directory is relative to the application root. A leading `/` is still rooted under the app; use `GACELA_CACHE_DIR` for an external absolute path. In 2.0, cache filenames include an app-root hash so applications can safely share the default system temp directory.
 
 ```php
 <?php # gacela.php
@@ -170,6 +173,10 @@ return function (GacelaConfig $config) {
 
 On large code bases this narrows the scan to your module directories, so `cache:warm` and the discovery commands skip unrelated folders.
 
+### Container scopes in 2.0
+
+Gacela now creates one application container and gives each module a child scope carrying that module's Provider registrations. App-wide `gacela.php` wiring is applied once per bootstrap instead of once per Factory. A module cannot see a sibling's Provider keys, and app-wide bindings resolved from two module scopes still produce independently scoped instances.
+
 ## A complete example using gacela.php
 
 ```php
@@ -257,4 +264,4 @@ Get the main dependency injection container created during bootstrap. Useful for
 
 ### Gacela::resetCache()
 
-Wipe every Gacela cache in the current process — the in-memory resolution caches, the merged-config cache and the config-file glob cache — so config files added or removed on disk are picked up by the next `Gacela::bootstrap()`. Handy in tests and long-running workers. See also [`resetInMemoryCache()`](/docs/customization#reset-inmemorycache) for the bootstrap-time equivalent.
+Wipe Gacela's in-process resolution caches, file-backed cache copies, merged-config memo, config-file glob cache, and shared constructor-plan cache so the next `Gacela::bootstrap()` starts clean. It does **not** clear an external cache backend registered through `CacheableConfig::setStorage()`; use the method-cache APIs when that is intentional. Handy in tests and long-running workers. See also [`resetInMemoryCache()`](/docs/customization#reset-inmemorycache) for the bootstrap-time equivalent.

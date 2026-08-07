@@ -13,22 +13,21 @@ Gacela encourages your modules to interact with each other in a unified way:
 
 ## Installation
 
-Install Gacela as a vendor package from [Packagist](https://packagist.org/packages/gacela-project/gacela) using
-composer:
+Gacela 2.0 requires **PHP 8.3 or newer**. Install it from [Packagist](https://packagist.org/packages/gacela-project/gacela):
 
 ```bash
-composer require gacela-project/gacela
+composer require gacela-project/gacela:^2.0
 ```
 
 ## Usage
 
-Once Gacela is installed, you're ready to get started.
-This is like a "Hello, World!" example with Gacela.
-First, create your first module directory:
+Create your first module directory:
 
 ```bash
 mkdir src/Module
 ```
+
+For projects that use the optional CLI (`symfony/console` 7 or 8), `vendor/bin/gacela init` also scaffolds a `gacela.php` configuration file. This minimal example does not need one.
 
 Next, create a [Facade](/docs/facade) for your module:
 
@@ -118,6 +117,8 @@ potential for configuration and extension. I didn't add them in this example to 
 Dive deeper into the [documentation](/docs/bootstrap) to discover:
 
 - [Bindings](/docs/bindings): dependency injection, factory services, aliases, contextual bindings
+- [Getting dependencies](/docs/getting-dependencies): the recommended path for each dependency type
+- [Upgrade to 2.0](/docs/upgrading): breaking changes and mechanical migrations from 1.21
 - [Extensions & Plugins](/docs/extensions): plugins, extendService, handler registry
 - [Module Customization](/docs/customization): suffix types, project namespaces, events
 - Each core concept in detail:
