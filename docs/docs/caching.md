@@ -1,3 +1,8 @@
+---
+title: Caching
+description: Choose between Gacela’s framework cache, cacheable Facade methods, and value-cache primitives.
+---
+
 # Caching
 
 Gacela caches at three different levels. Each solves a different problem. They compose, they don't replace one another.
@@ -6,7 +11,7 @@ Gacela caches at three different levels. Each solves a different problem. They c
 |---|---|---|---|
 | [Framework resolution](#layer-1-framework-resolution-cache) | Resolved facades, factories, configs, merged config | Memory or disk | Always on, pick the mode per environment |
 | [Cacheable methods](#layer-2-cacheable-facade-methods) | Return values of facade methods | Memory (pluggable) | Expensive, deterministic reads |
-| [Value primitives](#layer-3-value-primitives) | Arbitrary key → value data, optionally with a dependency graph | Disk | Your code needs its own cache (compilers, pipelines, parsed artefacts) |
+| [Value primitives](#layer-3-value-primitives) | Arbitrary key → value data, optionally with a dependency graph | Disk | Your code needs its own cache (compilers, pipelines, parsed artifacts) |
 
 ## Layer 1: Framework resolution cache
 
@@ -76,7 +81,7 @@ CatalogFacade::clearMethodCache();                        // the whole shared st
 
 ## Layer 3: Value primitives
 
-When *your code* needs a cache (compiled artefacts, parsed data, a build pipeline) use `Gacela\Framework\Cache\FileCache`:
+When *your code* needs a cache (compiled artifacts, parsed data, or a build pipeline), use `Gacela\Framework\Cache\FileCache`:
 
 ```php
 use Gacela\Framework\Cache\FileCache;

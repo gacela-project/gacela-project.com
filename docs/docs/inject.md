@@ -1,3 +1,8 @@
+---
+title: Inject attribute
+description: Inject services into constructors, properties, or setters when ordinary type-based autowiring is not enough.
+---
+
 # Inject attribute
 
 Use `#[Inject]` when ordinary type-based autowiring cannot express the dependency: to force a concrete implementation, mark container-owned wiring for tooling, or inject a property/setter on a class whose constructor you cannot change.

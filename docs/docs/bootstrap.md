@@ -1,20 +1,23 @@
+---
+title: Bootstrap
+description: Bootstrap Gacela and configure environments, application paths, caches, and container behavior.
+---
+
 # Bootstrap
 
-Gacela should be bootstrapped using the `Gacela::bootstrap` function.
-- The first parameter is the application root directory and is mandatory
-- The second one is an optional `Closure(GacelaConfig)` configuration
+Call `Gacela::bootstrap()` once in each application entry point, before resolving a Facade. Pass the application root as the first argument and an optional `Closure(GacelaConfig)` as the second.
 
 ```php
 <?php # index.php
 
-Gacela::bootstrap(__DIR__);
+use Gacela\Framework\Bootstrap\GacelaConfig;
+use Gacela\Framework\Gacela;
 
-# OR
- 
-Gacela::bootstrap(
-  __DIR__, 
-  function (GacelaConfig $config) { /*...*/ }
-);
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
+    // Optional application-wide configuration.
+});
 ```
 
 ### The `gacela.php` file
@@ -41,7 +44,7 @@ For example:
 The loading of this particular file will happen after the default `gacela.php` (if exists). So it will override (or add)
 the possible values you might have defined in the default `gacela.php` file.
 
-(A similar behaviour already exists for your app config files. See: [Config files for diff env](/docs/config/#config-files-for-different-environments).)
+Application config supports the same pattern; see [environment-specific config files](/docs/config#config-files-for-different-environments).
 
 ::: info
 If you are working "on top" of another project which is using gacela, you can always define your custom
@@ -51,7 +54,7 @@ the vendor project itself.
 
 ## GacelaConfig
 
-You can customize Gacela behaviours while bootstrapping without the need of a `gacela.php` in the
+You can customize Gacela behavior while bootstrapping without a `gacela.php` file in the
 root of your project, however, if this file exists, it will be combined with the configuration from `Gacela::bootstrap()`.
 It is not mandatory but recommended having a `gacela.php` file in order to decouple and centralize the custom Gacela configuration.
 

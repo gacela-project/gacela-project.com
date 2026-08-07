@@ -1,3 +1,8 @@
+---
+title: Service Map
+description: Resolve typed Gacela services from controllers, commands, and other classes created outside Gacela’s container.
+---
+
 # Service Map
 
 Gacela resolves sibling pillars (Facade → Factory → Config → Provider) by convention. The **`#[ServiceMap]` attribute** declares that another class can resolve a Gacela service on demand—for example, a controller accessing a Facade without constructor injection.

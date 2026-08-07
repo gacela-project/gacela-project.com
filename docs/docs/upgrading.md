@@ -1,4 +1,9 @@
-# Upgrading from 1.21 to 2.0
+---
+title: Upgrade from Gacela 1.21 to 2.0
+description: Update PHP and container requirements, replace removed APIs, declare service accessors, and verify the migration.
+---
+
+# Upgrade from Gacela 1.21 to 2.0
 
 Gacela 2.0 raises the PHP floor, moves to `gacela-project/container` 2.x, removes three deprecated aliases, and makes undeclared pillar accessors visible to static analysis. Version 1.21.0 is the final 1.x release.
 

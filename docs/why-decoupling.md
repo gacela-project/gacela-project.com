@@ -3,6 +3,7 @@ next: false
 prev: false
 sidebar: false
 outline: false
+docActions: false
 ---
 
 <script setup>

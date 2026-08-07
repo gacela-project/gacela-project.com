@@ -1,3 +1,8 @@
+---
+title: Events
+description: Observe bootstrap, configuration, container, cache, and module lifecycle activity without changing module code.
+---
+
 # Events
 
 Gacela dispatches **read-only lifecycle events** as it boots, resolves services, reads config and manages caches. Listen to them for tracing, profiling, debugging or metrics — without touching your module code.

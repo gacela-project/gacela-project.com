@@ -1,3 +1,8 @@
+---
+title: Module health checks
+description: Report module health through the doctor command, orchestration probes, or application endpoints.
+---
+
 # Module health checks
 
 Report each module's operational status and aggregate them into a single system health view. Great for `/health` HTTP endpoints, container orchestrators and the `doctor` CLI.

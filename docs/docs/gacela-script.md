@@ -1,4 +1,9 @@
-# Gacela script
+---
+title: CLI reference
+description: Inspect, diagnose, warm, profile, and visualize a Gacela application from the command line.
+---
+
+# CLI reference
 
 Gacela ships a small CLI that assists you while building, inspecting and tuning modules in your application.
 

@@ -1,3 +1,8 @@
+---
+title: Opcache preload
+description: Generate and deploy an Opcache preload script for Gacela’s framework and application module classes.
+---
+
 # Opcache preload
 
 Gacela ships a preload script that loads its core files into shared memory at PHP startup, removing their per-request compilation cost and lowering per-request memory. Measure the benefit on your own workload.

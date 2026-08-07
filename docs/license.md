@@ -1,4 +1,6 @@
 ---
+title: License
+description: Read the MIT license covering Gacela and its documentation.
 next: false
 prev: false
 sidebar: false

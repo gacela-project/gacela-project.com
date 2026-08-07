@@ -1,3 +1,8 @@
+---
+title: Provider
+description: Declare the cross-module and infrastructure services a module is allowed to consume.
+---
+
 # Provider
 
 The Provider handles **cross-module dependencies**. When your module needs something from another module, the Provider is where you wire that connection, always through the other module's [Facade](/docs/facade).
@@ -8,7 +13,7 @@ The Provider handles **cross-module dependencies**. When your module needs somet
 :::
 
 ::: warning `register()` is final
-Since 1.17.0, `AbstractProvider::register()` is `final`. Overriding it used to silently disable `#[Provides]` attribute scanning. Register services by overriding `provideModuleDependencies()` (or using `#[Provides]`) instead.
+Do not override `AbstractProvider::register()`. Register services through `#[Provides]` or `provideModuleDependencies()`.
 :::
 
 ## Setting a provided dependency

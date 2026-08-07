@@ -1,6 +1,18 @@
-# Extensions & Plugins
+---
+title: Extensions and plugins
+description: Run post-bootstrap logic, decorate services, extend configuration, and register application handlers.
+---
 
-Gacela provides several extension points to run custom logic after bootstrap, modify service behavior, and register domain-specific handlers.
+# Extensions and plugins
+
+Use the narrowest extension point that matches the job:
+
+| Need | Extension point |
+|---|---|
+| Run setup after bootstrap | Plugin |
+| Decorate or alter one service | `extendService()` |
+| Add a reusable configuration bundle | `extendGacelaConfig()` |
+| Resolve keyed domain handlers | Handler registry |
 
 ## Plugins
 

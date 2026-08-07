@@ -1,8 +1,14 @@
 ---
 layout: page
+title: Team
+description: Meet the maintainers of Gacela.
 sidebar: false
 # https://vitepress.dev/reference/default-theme-team-page
 ---
+
+# Team
+
+Gacela is maintained by the following open-source contributors.
 
 <script setup>
 import {

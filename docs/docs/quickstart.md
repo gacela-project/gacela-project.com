@@ -1,15 +1,19 @@
+---
+title: Quickstart
+description: Install Gacela 2.0 and build a complete, working module in a few minutes.
+---
+
 # Quickstart
 
-**Gacela helps you to build modular applications.** Splitting your project into different modules help in terms of
-maintainability and scalability.
+Gacela gives PHP modules a predictable public boundary without imposing rules on your domain model. This guide creates a complete module you can run from the command line.
 
 Gacela encourages your modules to interact with each other in a unified way:
 
 - Modules interact with each other **only** via their **Facade**
 - The [**Facade**](/docs/facade) is the *entry point* of a module
-- The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
-- The [**Provider**](/docs/provider) resolves the *extra-dependencies* of the module
-- The [**Config**](/docs/config) has access to the project's *config files*
+- The [**Factory**](/docs/factory) creates and wires services inside the module
+- The [**Provider**](/docs/provider) resolves dependencies from other modules or infrastructure
+- The [**Config**](/docs/config) exposes application settings through typed getters
 
 ## Installation
 
@@ -123,7 +127,7 @@ Dive deeper into the [documentation](/docs/bootstrap) to discover:
 - [Module Customization](/docs/customization): suffix types, project namespaces, events
 - Each core concept in detail:
     - [Facade](/docs/facade): the *entry point*
-    - [Factory](/docs/factory): manages the *intra-dependencies*
-    - [Provider](/docs/provider): resolves the *extra-dependencies*
+    - [Factory](/docs/factory): creates and wires internal services
+    - [Provider](/docs/provider): supplies cross-module dependencies
     - [Config](/docs/config): access the project's *config* key values
 - Want to go crazy? Check "[Gacela in a file](/docs/extra#gacela-in-a-file)" to see the flexibility of Gacela

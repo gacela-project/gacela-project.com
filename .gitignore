@@ -6,3 +6,10 @@ node_modules
 
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# Generated from the Markdown sources by scripts/generate-agent-docs.mjs.
+docs/public/docs
+docs/public/*.md
+docs/public/llms.txt
+docs/public/llms-full.txt
+docs/public/.agent-docs-manifest.json

@@ -1,3 +1,8 @@
+---
+title: Static analysis
+description: Configure PHPStan and Psalm for typed service accessors, pillar conventions, and enforceable module boundaries.
+---
+
 # Static analysis
 
 Gacela ships PHPStan rules, Psalm configuration, and a 2.0 Psalm plugin for dynamic pillar accessors and module architecture.
@@ -76,7 +81,7 @@ services:
 
 - `rootNamespace` (string, required) — your project's module root, e.g. `App\Modules`.
 - `modulePathSegments` (int, default `1`) — how many namespace segments beneath the root identify a single module.
-- `sharedNamespaces` (list of strings, default `[]`, since 1.18.0) — shared kernels exempt from the boundary: references *into* them are always allowed, and classes *inside* them aren't checked.
+- `sharedNamespaces` (list of strings, default `[]`) — shared kernels exempt from the boundary: references *into* them are always allowed, and classes *inside* them aren't checked.
 
 The rule covers construction, static calls, class constants, and static properties. Namespace matching respects boundaries, so `App\Modules\Shared` does not accidentally exempt `App\Modules\SharedFoo`.
 

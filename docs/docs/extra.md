@@ -1,4 +1,11 @@
-# Advanced Patterns
+---
+title: Single-file modules
+description: Build a small Gacela module in one file for prototypes, scripts, and focused command-line tools.
+---
+
+# Single-file modules
+
+Use this pattern when a directory-per-module structure would add more ceremony than clarity. For application modules expected to grow, use the conventional layout from the [Quickstart](/docs/quickstart).
 
 ## Gacela in a file
 
@@ -131,4 +138,4 @@ Hello, Gacela!
 - [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
 - [Container](https://github.com/gacela-project/container): A minimalistic dependency container
 
-See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/other-frameworks/).
+See how Gacela works with **Symfony**, **Laravel**, and [other frameworks](/docs/other-frameworks).

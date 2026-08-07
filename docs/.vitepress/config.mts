@@ -1,179 +1,81 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig, type HeadConfig } from 'vitepress'
 import { readFileSync } from 'node:fs'
+import { allPages, docsGroups, rawPathForRoute } from './docs-manifest.mjs'
 
-// Single source of truth for the displayed Gacela version; bumped by the update-gacela-version workflow.
+const siteUrl = 'https://gacela-project.com'
 const gacelaVersion: string = JSON.parse(
   readFileSync(new URL('./gacela-version.json', import.meta.url), 'utf-8'),
 ).version
 
-// https://vitepress.dev/reference/site-config
+const pagesBySource = new Map(allPages.map((page) => [page.source, page]))
+
 export default defineConfig({
-  ignoreDeadLinks: true,
-  title: "Gacela",
-  description: "Gacela helps you build modular PHP applications simplifying the communication of the different modules in your application",
+  title: 'Gacela',
+  description: 'Build modular PHP applications with explicit, predictable boundaries.',
   lang: 'en-US',
   cleanUrls: true,
+  lastUpdated: true,
 
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:image', content: '/og-image.png' }],
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }]
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
 
-  sitemap: {
-    hostname: 'https://gacela-project.com'
+  transformHead({ pageData }): HeadConfig[] {
+    const page = pagesBySource.get(pageData.relativePath)
+    if (!page) return []
+
+    const canonical = `${siteUrl}${page.link}`
+    const markdown = `${siteUrl}${rawPathForRoute(page.link)}`
+
+    return [
+      ['meta', { name: 'description', content: page.description }],
+      ['meta', { property: 'og:description', content: page.description }],
+      ['meta', { property: 'og:url', content: canonical }],
+      ['link', { rel: 'canonical', href: canonical }],
+      ['link', { rel: 'alternate', type: 'text/markdown', href: markdown }],
+    ]
   },
 
+  sitemap: { hostname: siteUrl },
+
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
-    search: {
-      provider: 'local',
+    search: { provider: 'local' },
+    editLink: {
+      pattern: 'https://github.com/gacela-project/gacela-project.com/edit/main/docs/:path',
+      text: 'Edit this page on GitHub',
     },
+    lastUpdated: { text: 'Updated' },
     footer: {
-      message: `PHP 8.3+ · v${gacelaVersion}`,
+      message: `PHP 8.3+ · Gacela ${gacelaVersion}`,
       copyright: '© 2021-present, <a href="/team">Team</a> · <a href="/license">License</a> · <a href="https://packagist.org/packages/gacela-project/gacela">Packagist</a>',
     },
-    outline: {
-      level: [1, 3],
-    },
+    outline: { level: [2, 3], label: 'On this page' },
     nav: [
+      { text: 'Get started', link: '/docs/' },
       {
-        text: 'Docs',
-        items: [
-          {
-            text: 'Getting started',
-            items: [
-              { text: 'Quickstart', link: '/docs/quickstart' },
-              { text: 'Bootstrap', link: '/docs/bootstrap' },
-              { text: 'Getting dependencies', link: '/docs/getting-dependencies' },
-              { text: 'Upgrade to 2.0', link: '/docs/upgrading' },
-            ],
-          },
-          {
-            text: 'Core concepts',
-            items: [
-              { text: 'Facade', link: '/docs/facade' },
-              { text: 'Factory', link: '/docs/factory' },
-              { text: 'Provider', link: '/docs/provider' },
-              { text: 'Config', link: '/docs/config' },
-            ],
-          },
-          {
-            text: 'Configuration',
-            items: [
-              { text: 'Bindings', link: '/docs/bindings' },
-              { text: 'Service Map', link: '/docs/service-map' },
-              { text: 'Inject attribute', link: '/docs/inject' },
-              { text: 'Extensions & Plugins', link: '/docs/extensions' },
-              { text: 'Module Customization', link: '/docs/customization' },
-            ],
-          },
-        ],
-      },
-      {
-        text: 'Features',
-        items: [
-          {
-            text: 'Caching & performance',
-            items: [
-              { text: 'Caching', link: '/docs/caching' },
-              { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
-              { text: 'Opcache preload', link: '/docs/opcache-preload' },
-            ],
-          },
-          {
-            text: 'Tooling',
-            items: [
-              { text: 'CLI commands', link: '/docs/gacela-script' },
-              { text: 'Health checks', link: '/docs/health-checks' },
-              { text: 'Static analysis', link: '/docs/static-analysis' },
-              { text: 'Events', link: '/docs/events' },
-            ],
-          },
-          {
-            text: 'Integrations',
-            items: [
-              { text: 'Other Frameworks', link: '/docs/other-frameworks' },
-              { text: 'Testing', link: '/docs/testing' },
-              { text: 'Advanced patterns', link: '/docs/extra' },
-            ],
-          },
-        ],
+        text: 'Reference',
+        items: docsGroups.slice(1).map((group) => ({
+          text: group.text,
+          items: group.items.map(({ text, link }) => ({ text, link })),
+        })),
       },
       { text: 'About', link: '/about-gacela' },
-      { text: 'Used in', link: '/used-in' },
+      { text: 'Used in production', link: '/used-in' },
       {
         text: `v${gacelaVersion}`,
         link: `https://github.com/gacela-project/gacela/releases/tag/${gacelaVersion}`,
       },
     ],
-
-    sidebar: [
-      {
-        text: 'Getting started',
-        collapsed: true,
-        items: [
-          { text: 'Quickstart', link: '/docs/quickstart' },
-          { text: 'Bootstrap', link: '/docs/bootstrap' },
-          { text: 'Getting dependencies', link: '/docs/getting-dependencies' },
-          { text: 'Upgrade to 2.0', link: '/docs/upgrading' },
-        ],
-      },
-      {
-        text: 'Core concepts',
-        collapsed: true,
-        items: [
-          { text: 'Facade', link: '/docs/facade' },
-          { text: 'Factory', link: '/docs/factory' },
-          { text: 'Provider', link: '/docs/provider' },
-          { text: 'Config', link: '/docs/config' },
-        ],
-      },
-      {
-        text: 'Configuration',
-        collapsed: true,
-        items: [
-          { text: 'Bindings', link: '/docs/bindings' },
-          { text: 'Service Map', link: '/docs/service-map' },
-          { text: 'Inject attribute', link: '/docs/inject' },
-          { text: 'Extensions & Plugins', link: '/docs/extensions' },
-          { text: 'Module Customization', link: '/docs/customization' },
-        ],
-      },
-      {
-        text: 'Caching & performance',
-        collapsed: true,
-        items: [
-          { text: 'Caching', link: '/docs/caching' },
-          { text: 'Cacheable methods', link: '/docs/cacheable-methods' },
-          { text: 'Opcache preload', link: '/docs/opcache-preload' },
-        ],
-      },
-      {
-        text: 'Tooling',
-        collapsed: true,
-        items: [
-          { text: 'CLI commands', link: '/docs/gacela-script' },
-          { text: 'Health checks', link: '/docs/health-checks' },
-          { text: 'Static analysis', link: '/docs/static-analysis' },
-          { text: 'Events', link: '/docs/events' },
-        ],
-      },
-      {
-        text: 'Integrations',
-        collapsed: true,
-        items: [
-          { text: 'Other Frameworks', link: '/docs/other-frameworks' },
-          { text: 'Testing', link: '/docs/testing' },
-          { text: 'Advanced patterns', link: '/docs/extra' },
-        ],
-      },
-    ],
-
+    sidebar: docsGroups.map((group) => ({
+      ...group,
+      items: group.items.map(({ text, link }) => ({ text, link })),
+    })),
     socialLinks: [
       { icon: 'github', link: 'https://github.com/gacela-project/gacela' },
       { icon: 'x', link: 'https://x.com/gacela_project' },
-    ]
-  }
+    ],
+  },
 })

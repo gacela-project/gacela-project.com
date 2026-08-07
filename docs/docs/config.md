@@ -1,3 +1,8 @@
+---
+title: Config
+description: Read typed application configuration inside a module without coupling domain code to files or environment variables.
+---
+
 # Config
 
 The Config gives your module access to **key-value configuration** from your project's config files. It's accessible from the [Factory](/docs/factory) out of the box, so you can pass config values directly into your domain objects at creation time.

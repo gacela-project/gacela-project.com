@@ -147,6 +147,124 @@
 }
 
 /**
+ * Documentation actions
+ * -------------------------------------------------------------------------- */
+
+.gz-doc-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    min-height: 2rem;
+    margin: 0 0 1.5rem;
+}
+
+.gz-doc-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 6px;
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-2);
+    font-family: var(--vp-font-family-base);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.gz-doc-action:hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+}
+
+.gz-doc-action-status {
+    color: var(--vp-c-text-2);
+    font-size: 0.78rem;
+}
+
+.gz-doc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 2rem;
+}
+
+.gz-doc-card {
+    display: block;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+    color: var(--vp-c-text-1) !important;
+    text-decoration: none !important;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.gz-doc-card:hover {
+    border-color: var(--vp-c-brand-1);
+    background: var(--vp-c-brand-soft);
+}
+
+.gz-doc-card strong,
+.gz-doc-card span {
+    display: block;
+}
+
+.gz-doc-card span {
+    margin-top: 0.3rem;
+    color: var(--vp-c-text-2);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.gz-case-study-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.gz-case-study-stat {
+    padding: 0.9rem;
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+    background: var(--vp-c-bg-soft);
+    text-align: center;
+}
+
+.gz-case-study-stat strong,
+.gz-case-study-stat span {
+    display: block;
+}
+
+.gz-case-study-stat strong {
+    font-family: var(--gz-font-display);
+    font-size: 1.15rem;
+}
+
+.gz-case-study-stat span {
+    color: var(--vp-c-text-2);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+    .gz-doc-grid,
+    .gz-case-study-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .gz-doc-actions {
+        align-items: flex-start;
+    }
+}
+
+/**
  * Home: hero
  * -------------------------------------------------------------------------- */
 

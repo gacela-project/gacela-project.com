@@ -1,5 +1,5 @@
 ---
-title: Using Gacela with Laravel and Symfony
+title: Framework integration
 description: "Run Gacela inside an existing Laravel or Symfony app: bootstrap from your entry point, honor #[Inject] through Symfony's container with the bridge, and share host services like Doctrine's EntityManager."
 head:
   - - meta
@@ -10,9 +10,9 @@ head:
       content: "Bootstrap Gacela inside Laravel or Symfony, wire #[Inject] through Symfony's container with the bridge, and share host services like Doctrine's EntityManager."
 ---
 
-# Other Frameworks
+# Framework integration
 
-Gacela is framework-agnostic — you can run it **inside** an existing Laravel or Symfony application. Bootstrap Gacela from your app's entry point, alongside the host framework's own initialization, and your [modules](/docs/quickstart) behave exactly as they do standalone.
+Gacela can run inside an existing Laravel or Symfony application. Bootstrap it beside the host framework, then bridge only the services that cross the boundary. Your Gacela [modules](/docs/quickstart) remain independent of the host framework.
 
 ::: tip Where to bootstrap
 - **Symfony** — `public/index.php` and `bin/console`

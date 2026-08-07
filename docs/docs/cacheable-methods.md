@@ -1,3 +1,8 @@
+---
+title: Cacheable facade methods
+description: Cache Facade method results with explicit TTLs, keys, storage, and invalidation.
+---
+
 # Cacheable facade methods
 
 Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute.
@@ -35,7 +40,7 @@ Subsequent calls within the TTL return the cached value without invoking the cal
 The method name and arguments are inferred from the caller's stack frame via `debug_backtrace()` automatically. You can pass them explicitly for performance or when calling from a helper (see [Opting out of backtrace](#opting-out-of-backtrace)).
 
 ::: tip Generic return type
-Since 1.17.0, `cached()` is generic (`@template T`): static analysis infers the return type from the callback you pass, so no `@var` annotation or cast is needed at the call site.
+`cached()` is generic (`@template T`), so static analysis infers the return type from the callback without a call-site annotation or cast.
 :::
 
 ## Arguments shape the cache key

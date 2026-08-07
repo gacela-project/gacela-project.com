@@ -1,3 +1,8 @@
+---
+title: Facade
+description: Expose a small, stable public API while keeping a module’s implementation private.
+---
+
 # Facade
 
 The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point** of your module. It exposes what the module can do through a clean, public API while hiding the internal classes, services, and wiring behind simple method calls.

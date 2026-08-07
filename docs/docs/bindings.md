@@ -1,6 +1,20 @@
-# Bindings
+---
+title: Bindings and container services
+description: Configure bindings, service lifetimes, aliases, tags, hooks, contextual wiring, and definitions.
+---
 
-Gacela's container supports several binding strategies. All are configured via `GacelaConfig`, either in `gacela.php` or the `Gacela::bootstrap()` closure.
+# Bindings and container services
+
+Use application-wide bindings when a dependency policy applies across modules. For a dependency owned by one module, prefer its [Provider](/docs/provider). All bindings are configured through `GacelaConfig`, either in `gacela.php` or the `Gacela::bootstrap()` closure.
+
+| Need | API | Lifetime |
+|---|---|---|
+| Map an interface or ID to a service | `addBinding()` | Shared in its container scope |
+| Create a new value for every resolution | `addFactory()` | New instance |
+| Defer an expensive factory | `addLazy()` | New instance; deferred |
+| Store a closure as a value | `addProtected()` | The closure itself |
+| Use a different implementation for one consumer | `when()->needs()->give()` | Follows the supplied service |
+| Collect implementations | `tag()` | Lazy iterable |
 
 ## addBinding
 
@@ -30,7 +44,7 @@ addExternalService(string $key, $value);
 ```
 
 Add the external service using `addExternalService(string, string|object|callable)`.
-This is useful to share objects between the initial bootstrap callable and the `gacela.php` config files. Eg:
+Use external services to share runtime objects between the bootstrap closure and `gacela.php`. For example:
 
 ```php
 <?php # index.php
@@ -208,7 +222,7 @@ Contextual bindings win over the global `addBinding()` for the same interface. F
 when(string $concrete)->needs(string $parameterName)->give(mixed $value);
 ```
 
-Since `1.18.0`, `needs()` also accepts a parameter name string of the form `'$parameterName'` (note the leading `$`), binding a scalar value to that specific constructor parameter **by name** instead of by type.
+`needs()` accepts a parameter name string of the form `'$parameterName'` (note the leading `$`), binding a scalar value to that constructor parameter **by name** instead of by type.
 
 ```php
 <?php # gacela.php
@@ -222,7 +236,7 @@ return function (GacelaConfig $config) {
 
 Class and interface names passed to `needs()` bind by type; a `'$name'` string binds that scalar constructor parameter by name instead. `give()` accepts the scalar directly (int, string, bool, array, etc.) and injects it as-is.
 
-As of `1.17.0`, contextual bindings also apply when Gacela resolves its **own** classes (factories, configs, providers), not only plain auto-wired classes — previously the global `addBinding()` always won for those.
+Contextual bindings apply to Gacela pillar classes (Factories, Configs, and Providers) as well as ordinary autowired classes.
 
 ## Definitions as data
 

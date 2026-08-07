@@ -1,3 +1,8 @@
+---
+title: Getting dependencies
+description: Choose the right mechanism for internal collaborators, cross-module Facades, infrastructure, and framework entry points.
+---
+
 # Getting dependencies
 
 Gacela has several dependency-resolution tools because different relationships need different shapes. Use this table as the default decision guide.

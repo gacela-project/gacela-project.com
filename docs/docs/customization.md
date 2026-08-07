@@ -1,6 +1,11 @@
-# Module Customization
+---
+title: Module customization
+description: Customize Gacela pillar suffixes, project namespaces, module paths, and discovery behavior.
+---
 
-Advanced configuration options for customizing how Gacela discovers and resolves module classes.
+# Module customization
+
+These advanced options change how Gacela discovers and resolves module classes. Keep the defaults unless you are integrating an established project structure or building framework-level tooling.
 
 ## Suffix Types
 
@@ -45,7 +50,7 @@ setProjectNamespaces(array $list);
 
 You can add your project namespaces to be able to resolve gacela classes with priorities.
 
-Gacela will start looking on your project namespaces when trying to resolve any gacela resolvable classes, eg:
+Gacela searches the configured project namespaces when resolving pillar classes. For example:
 `Facade`, `Factory`, `Config`, or `Provider`.
 
 Let's visualize it with an example. Consider this structure:

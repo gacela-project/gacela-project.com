@@ -8,8 +8,12 @@
     "vitepress": "^1.6.4"
   },
   "scripts": {
+    "docs:generate": "node scripts/generate-agent-docs.mjs",
+    "predocs:dev": "npm run docs:generate",
     "docs:dev": "vitepress dev docs",
+    "predocs:build": "npm run docs:generate",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "docs:check": "npm run docs:generate && node scripts/check-docs.mjs"
   }
 }

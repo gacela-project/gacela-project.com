@@ -4,3 +4,18 @@ NODE_VERSION = "20"
 [build]
 publish = "docs/.vitepress/dist"
 command = "npm run docs:build"
+
+[[headers]]
+for = "/*.md"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+for = "/docs/*.md"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+for = "/llms*.txt"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"

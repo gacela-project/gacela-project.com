@@ -1,3 +1,8 @@
+---
+title: Factory
+description: Create a module’s internal services and wire configuration and provided dependencies into them.
+---
+
 # Factory
 
 The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is responsible for **creating the internal objects** of your module and wiring their dependencies, pulling values from [Config](/docs/config) and services from the [Provider](/docs/provider).
@@ -115,5 +120,5 @@ final class CommentFactory extends AbstractFactory
 
 ::: tip Key points
 - `create...()` methods build a new instance every call; `singleton()` builds once and reuses it
-- Since 1.17.0, `singleton()` is generic (`@template T`, `@return T`): the inferred return type matches what `$creator` returns, no cast needed
+- `singleton()` is generic (`@template T`, `@return T`), so its inferred return type matches `$creator` without a cast
 :::

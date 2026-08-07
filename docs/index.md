@@ -1,6 +1,8 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+title: Gacela 2.0
+description: Build modular PHP applications with explicit Facade, Factory, Provider, and Config boundaries.
 
 hero:
   name: "Gacela"
