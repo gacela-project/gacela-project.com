@@ -68,7 +68,7 @@ final class SalesProvider extends AbstractProvider
 }
 ```
 
-## Putting it together
+## Complete call path
 
 The caller still sees only the Sales Facade. The dependency becomes visible only when following the implementation inward: **Facade → Factory → Provider → Comment Facade**.
 

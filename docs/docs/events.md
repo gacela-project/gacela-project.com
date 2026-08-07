@@ -97,7 +97,7 @@ The high-level events dispatched over a bootstrap, in the order you meet them.
 | `CacheClearedEvent` | a cache file is removed (`cache:clear`) | `cacheFile(): string` |
 | `CacheWarmedEvent` | `cache:warm` finishes | `moduleCount(): int`, `failedCount(): int`, `skippedCount(): int` |
 
-In 2.0, `failedCount()` only counts pillar classes that were found and failed during resolution. `skippedCount()` counts pillars a module simply does not contain, which is a healthy and expected module shape. Alert on failures, not skips.
+`failedCount()` counts pillar classes found but not resolved. `skippedCount()` counts pillars a module does not contain, which is a valid module shape. Alert on failures, not skips.
 
 ## Recipes
 

@@ -1,35 +1,35 @@
 ---
 title: About Gacela
-description: Understand Gacela’s module model and why explicit boundaries make PHP applications easier to change.
+description: Understand the problem Gacela solves, how its module boundaries work, and when the approach fits.
 next: false
 prev: false
 sidebar: false
-outline: false
 ---
 
 # About Gacela
 
-Gacela standardizes how PHP modules expose capabilities and obtain dependencies without dictating how you write domain logic.
+Gacela is a lightweight module framework for PHP 8.3+. It gives every module one public entry point and keeps construction, cross-module wiring, and configuration behind that boundary.
 
-**Vision:** Make communication between application modules simple and explicit.
+The goal is practical: make a large codebase easier to navigate and change without forcing domain code to depend on Gacela.
 
-**Mission:** Give every module one recognizable entry point while keeping business logic independent of framework wiring.
+## The problem it solves
 
-## Build modular applications
+Without an explicit boundary, one feature can reach into another feature's controllers, repositories, container IDs, or internal services. Those shortcuts make changes unpredictable because private implementation details become an accidental public API.
 
-Splitting an application into focused modules makes ownership, testing, and change easier—but only when the boundaries stay clear.
+Gacela replaces that ambiguity with four recognizable roles:
 
-Gacela keeps those boundaries predictable:
+| Role | One responsibility | Add it when |
+|---|---|---|
+| [Facade](/docs/facade) | Expose the module's public capabilities | The module has a caller |
+| [Factory](/docs/factory) | Construct services owned by the module | The Facade delegates work |
+| [Provider](/docs/provider) | Supply another module's Facade or infrastructure | A service crosses a boundary |
+| [Config](/docs/config) | Expose application settings through typed getters | Construction needs configuration |
 
-- Modules interact with each other via their **Facade**
-- The [**Facade**](/docs/facade) is the *entry point* of a module
-- The [**Factory**](/docs/factory) creates services inside the module
-- The [**Provider**](/docs/provider) supplies cross-module and infrastructure dependencies
-- The [**Config**](/docs/config) exposes application settings through typed getters
+A small module may need only a Facade and Factory. Provider and Config are optional, not ceremony to create in advance.
 
-### Think from the caller inward
+## Design from the caller inward
 
-Begin with the capability a controller, command, or another module needs. Express that capability on the Facade, delegate its implementation to a service built by the Factory, and introduce Provider or Config wiring only when the implementation requires it.
+Start with the operation a controller, command, script, or another module needs. Let that real use case determine the boundary:
 
 ```text
 caller → Facade → Factory → application/domain service
@@ -37,100 +37,79 @@ caller → Facade → Factory → application/domain service
                        Provider or Config
 ```
 
-This outside-in sequence makes the reasoning visible and prevents framework structure from driving the domain design.
+1. Write the call you want to make.
+2. Express it as a focused Facade method.
+3. Let the Factory build the service that fulfills it.
+4. Add Provider or Config wiring only when the service reveals that need.
 
-## Module structure
-
-```bash
-application-name
-├── gacela.php
-├── config
-│   └── ...
-│
-├── src
-│   ├── ModuleA
-│   │   ├── Domain
-│   │   │   └── ...
-│   │   ├── Application
-│   │   │   └── ...
-│   │   ├── Infrastructure
-│   │   │   └── ...
-│   │   │ # These are the 4 "gacela classes":
-│   │   ├── Facade.php
-│   │   ├── Factory.php
-│   │   ├── Provider.php
-│   │   └── Config.php
-│   │
-│   └── ModuleB
-│       └── ...
-│
-├── tests
-│   └── ...
-└── vendor
-    └── ...
-```
-
-## Gacela uses the Facade and Factory patterns
-
-### [**Facade**](/docs/facade)
-
-The Facade exposes a small API and hides implementation details. Its methods describe what the module can do.
-
-> The Facade is the entry point of your module.
-
-### [**Factory**](/docs/factory)
-
-The Factory creates the module's application and domain services with their dependencies. The Facade delegates work to those services.
-
-> It creates and wires services inside the module.
-
-### [**Provider**](/docs/provider)
-
-Modules communicate through Facades. Factories own internal construction; Providers make another module's Facade or an infrastructure service available at the boundary.
-
-> It supplies dependencies from outside the module.
-
-### [**Config**](/docs/config)
-
-Config gives the Factory typed access to application settings so business objects do not need to read files or environment variables.
-
-> It has access to the key-values from your config files.
+The [Quickstart](/docs/quickstart) builds a complete module in exactly this order.
 
 ## Why decoupling?
 
-Business logic should not depend directly on infrastructure details such as:
+Decoupling is useful when it makes change local and dependencies visible. It is not an instruction to wrap every class in an interface.
 
-- the framework that you are using
-- the connection to the database
-- the I/O system
+Consider a Billing module that sends an invoice. Billing should depend on a capability such as `CustomerFacadeInterface`, not on Customer's repository or database implementation:
 
-These concerns matter operationally, but they are not the rules of the business. Depending on abstractions lets domain code remain stable while infrastructure changes.
+```text
+Billing → Customer Facade → Customer internals
+```
 
-### A complete application consists of three major layers
+That boundary creates concrete benefits:
 
-- Domain
-- Application
-- Infrastructure
+- **Safer changes:** Customer can replace its storage or internal services without changing Billing.
+- **Focused tests:** Billing can replace the Facade interface with a small test double.
+- **Clear ownership:** a dependency on another module is visible in Billing's Provider.
+- **Faster navigation:** developers know where to enter a module and where to inspect its wiring.
+- **Framework independence:** domain and application services remain ordinary PHP objects.
 
-#### The Domain layer
+### What stays decoupled
 
-The domain layer contains the domain entities and stand-alone domain services.
-Any domain concepts (this includes domain services, but also repositories) that depend on external resources, are defined by **interfaces**.
+Gacela wiring belongs at the edges. Domain and application services do not need to extend Gacela classes or know about its container.
 
-#### The Application layer
+```php
+final readonly class SendInvoice
+{
+    public function __construct(
+        private InvoiceRepositoryInterface $invoices,
+        private CustomerFacadeInterface $customers,
+    ) {}
+}
+```
 
-The application layer contains the implementation of the application services.
-These services shouldn't have "business logic" in them, even though they orchestrate the steps required to fulfill the commands imposed by the client.
-The main difference between the domain and the application services is that domain services hold domain logic whereas application services don't.
+The Factory supplies module-owned collaborators. The Provider supplies `CustomerFacadeInterface`. The service remains explicit and testable.
 
-#### The Infrastructure layer
+### Boundaries are not layers
 
-The infrastructure layer **contains the implementation of the interfaces from the domain layer**.
-These implementations may introduce new non-domain dependencies that have to be provided to the application.
-Usually, the infrastructure layer is where all non-relevant-to-your-domain-details are placed.
+Gacela works with layered, hexagonal, vertical-slice, or other architectures. A module may contain Domain, Application, and Infrastructure directories, but Gacela does not require them. It standardizes communication **between modules**, not the internal design of each module.
 
-### Benefits
+## A typical module
 
-- **Focused tests:** replace interfaces with small test doubles without booting infrastructure.
-- **Safer change:** replace an implementation without changing the module's public API.
-- **Deferred decisions:** design business behavior first and select infrastructure at the boundary.
+```text
+src/Billing/
+├── Application/
+├── Domain/
+├── Infrastructure/
+├── BillingFacade.php
+├── BillingFactory.php
+├── BillingProvider.php   # only when external dependencies exist
+└── BillingConfig.php     # only when application settings exist
+```
+
+Names may use the shorter `Facade.php`, `Factory.php`, `Provider.php`, and `Config.php` convention shown in the [Quickstart](/docs/quickstart). Pick one project convention and keep it consistent.
+
+## When Gacela fits
+
+Gacela is a strong fit when:
+
+- a PHP application has several features or teams;
+- module internals change more often than their public capabilities;
+- cross-module dependencies are difficult to discover;
+- the project needs enforceable boundaries without replacing its framework.
+
+It may be unnecessary for a small script or a single cohesive component. Even there, the [single-file module pattern](/docs/extra) is available when a lightweight boundary still helps.
+
+## Continue
+
+- [Build the first module](/docs/quickstart)
+- [Choose a dependency mechanism](/docs/getting-dependencies)
+- [Explore production code from Phel](/used-in)

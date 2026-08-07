@@ -130,10 +130,10 @@ final class TestCommand extends Command
 `DocBlockResolverAwareTrait` no longer exists. Replace it with `ServiceResolverAwareTrait`; the API is otherwise unchanged. See [Upgrade to 2.0](/docs/upgrading).
 :::
 
-#### Why not simply instantiate the Facade?
+#### Direct construction or Service Map?
 
-Instantiating the Facade would be another alternative, but using `ServiceResolverAwareTrait` Gacela will use the Locator singleton to avoid duplicating the creation of the same Facade multiple times.
+Construct a Facade directly when your code owns the entry point, as in the Quickstart. Use `#[ServiceMap]` when another framework creates the controller or command and constructor injection is not practical. Service Map resolves through Gacela's Locator and reuses the registered Facade.
 
-#### How does this work?
+#### Resolution behavior
 
-The `ServiceResolverAwareTrait` resolves at runtime the type from `#[ServiceMap]` (or the DocBlock `@method`), so this trait is not limited to the Facade. You can use it to lazily load any Gacela-resolvable class without constructor injection. Gacela handles the autoloading of its dependencies.
+`ServiceResolverAwareTrait` maps the declared method to the class in `#[ServiceMap]` and resolves it lazily. It works for any Gacela-resolvable class, although cross-module calls should target a Facade.

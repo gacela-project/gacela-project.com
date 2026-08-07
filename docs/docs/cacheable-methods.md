@@ -7,7 +7,7 @@ description: Cache Facade method results with explicit TTLs, keys, storage, and 
 
 Cache the result of a facade method for a given TTL using the `#[Cacheable]` attribute.
 
-`CacheableTrait` is built into `AbstractFacade`. Any facade extending `AbstractFacade` can use `#[Cacheable]` and `$this->cached()` out of the box.
+`AbstractFacade` includes `CacheableTrait`, so Facades can use `#[Cacheable]` and `$this->cached()` directly.
 
 ## Quick start
 
@@ -37,7 +37,7 @@ Subsequent calls within the TTL return the cached value without invoking the cal
 2. Builds a cache key from the class, method, and arguments.
 3. Returns the cached value on hit, or runs the callback and stores the result on miss.
 
-The method name and arguments are inferred from the caller's stack frame via `debug_backtrace()` automatically. You can pass them explicitly for performance or when calling from a helper (see [Opting out of backtrace](#opting-out-of-backtrace)).
+By default, the method name and arguments are inferred from the caller's stack frame. Pass them explicitly for performance-sensitive paths or calls routed through a helper; see [Opting out of backtrace](#opting-out-of-backtrace).
 
 ::: tip Generic return type
 `cached()` is generic (`@template T`), so static analysis infers the return type from the callback without a call-site annotation or cast.
@@ -95,7 +95,7 @@ CatalogFacade::clearMethodCache();
 
 Custom key templates do not contain the normal `Class::method::` prefix, so `clearMethodCacheFor()` cannot find them. Invalidate those keys through the configured storage backend.
 
-`Gacela::resetCache()` clears only the default in-process method storage. In 2.0 it never clears an external backend registered through `CacheableConfig::setStorage()`; calling `clearMethodCache()` yourself still does.
+`Gacela::resetCache()` clears only the default in-process method storage. It does not clear an external backend registered through `CacheableConfig::setStorage()`; call `clearMethodCache()` when that is the intended scope.
 
 ## Pluggable storage backend
 

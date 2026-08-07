@@ -121,8 +121,8 @@ The diff is GitHub-flavored Markdown with a Mermaid diagram. An unchanged graph 
 
 Accurate module return types across `getFactory()`, `getConfig()` and `getProvidedDependency()` come from the `@template` annotations on Gacela's abstract classes plus the `@extends` on your concrete module classes — independent of this config.
 
-::: warning Changed in 2.0
-The fallback suppression for an undeclared `getFacade()`-style accessor is gone. Add `#[ServiceMap]` or a native `@method` annotation; otherwise PHPStan correctly reports an undefined method. Declaring the return type also lets analysis catch errors on everything called through the accessor.
+::: warning Declare every dynamic accessor
+Add `#[ServiceMap]` or a native `@method` annotation for each `getFacade()`-style accessor. Otherwise PHPStan reports an undefined method. A declared return type also enables analysis of every subsequent call.
 :::
 
 ## Psalm

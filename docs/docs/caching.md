@@ -18,7 +18,7 @@ Gacela caches at three different levels. Each solves a different problem. They c
 Gacela resolves classes by convention: `Facade` → `Factory` → `Provider` → `Config`. Those lookups walk namespaces and files, and the merged configuration is reassembled from every `config/*.php` file. All of it is memoised once per process, and can additionally be persisted to disk between runs.
 
 - **In-memory** (default): `InMemoryCache` holds resolved class names for the life of the process.
-- **On-disk**: `ClassNamePhpCache`, `CustomServicesPhpCache`, and `MergedConfigCache` persist the same data in project-scoped PHP files. In 2.0 every filename includes a hash of the application root, preventing two applications sharing the default cache directory from serving each other's data; merged config files are also scoped by `APP_ENV`.
+- **On-disk**: `ClassNamePhpCache`, `CustomServicesPhpCache`, and `MergedConfigCache` persist the same data in project-scoped PHP files. Filenames include an application-root hash, preventing applications that share a cache directory from serving each other's data; merged config files are also scoped by `APP_ENV`.
 
 Module containers are scopes of one application container in 2.0. They also share an in-process constructor-plan cache, so classes used by several modules are reflected once while bindings, tags, instances, and Provider registrations remain scoped. Persisting constructor plans was measured as a net loss and is not enabled automatically.
 

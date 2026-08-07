@@ -166,7 +166,7 @@ public function testFileCacheWrite(): void
 }
 ```
 
-## Tips
+## Test hygiene
 
 - Prefer `resetContainer()` in a `#[Before]` method over `setUp()`. It makes the intent explicit and works alongside other `setUp` logic.
 - For integration tests that need the full bootstrap, call `Gacela::bootstrap()` inside the test and `resetContainer()` in teardown.

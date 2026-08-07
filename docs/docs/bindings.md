@@ -37,13 +37,12 @@ return function (GacelaConfig $config) {
 
 In the example above, whenever `AbstractString` is found then `StringClass` will be resolved.
 
-### Using externalServices
+### Runtime values from bootstrap
 
 ```php
 addExternalService(string $key, $value);
 ```
 
-Add the external service using `addExternalService(string, string|object|callable)`.
 Use external services to share runtime objects between the bootstrap closure and `gacela.php`. For example:
 
 ```php
@@ -57,17 +56,16 @@ Gacela::bootstrap(__DIR__, function (GacelaConfig $config) use ($instance) {
 });
 ```
 
-This way we can access the value of that key `'concreteClass'` in the `gacela.php` from `$config->getExternalService(string)`.
-For example:
+Read the same instance from `gacela.php`:
 ```php
 <?php # gacela.php
 
-return function (GacelaConfig $config) {
+return static function (GacelaConfig $config): void {
   $instance = $config->getExternalService('concreteInstance');
 
   $config->addBinding(AnInterface::class, $instance);
   $config->addBinding(AnotherInterface::class, $instance);
-}
+};
 ```
 
 In the example above, both `AnInterface` and `AnotherInterface` resolve to the same shared `$instance` pulled from `getExternalService('concreteInstance')`.

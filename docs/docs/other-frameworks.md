@@ -1,18 +1,11 @@
 ---
 title: Framework integration
-description: "Run Gacela inside an existing Laravel or Symfony app: bootstrap from your entry point, honor #[Inject] through Symfony's container with the bridge, and share host services like Doctrine's EntityManager."
-head:
-  - - meta
-    - property: og:title
-      content: "Using Gacela with Laravel and Symfony"
-  - - meta
-    - property: og:description
-      content: "Bootstrap Gacela inside Laravel or Symfony, wire #[Inject] through Symfony's container with the bridge, and share host services like Doctrine's EntityManager."
+description: Bootstrap Gacela inside Laravel or Symfony while keeping framework services at the module boundary.
 ---
 
 # Framework integration
 
-Gacela can run inside an existing Laravel or Symfony application. Bootstrap it beside the host framework, then bridge only the services that cross the boundary. Your Gacela [modules](/docs/quickstart) remain independent of the host framework.
+Gacela runs beside Laravel or Symfony rather than replacing them. The host framework owns HTTP, console, and lifecycle integration; Gacela owns module boundaries. Bridge only the services that cross between those responsibilities.
 
 ::: tip Where to bootstrap
 - **Symfony** — `public/index.php` and `bin/console`
@@ -21,32 +14,26 @@ Gacela can run inside an existing Laravel or Symfony application. Bootstrap it b
 
 ## Example projects
 
-Working, minimal integrations you can clone and run:
+Cloneable minimal integrations:
 
 - **Laravel** — [gacela-project/laravel-gacela-example](https://github.com/gacela-project/laravel-gacela-example)
 - **Symfony** — [gacela-project/symfony-gacela-example](https://github.com/gacela-project/symfony-gacela-example)
 
 ## Laravel
 
-Bootstrap Gacela in `bootstrap/app.php`, then call your modules' [Facades](/docs/facade) anywhere in the app. Interface-to-implementation wiring uses the same [bindings](/docs/bindings) as standalone Gacela — no Laravel-specific glue required. The [example project](https://github.com/gacela-project/laravel-gacela-example) shows a complete setup.
+Bootstrap Gacela in `bootstrap/app.php`, then call module [Facades](/docs/facade) from Laravel entry points. Keep Laravel services behind interfaces registered through [bindings](/docs/bindings). The [Laravel example](https://github.com/gacela-project/laravel-gacela-example) contains the complete setup.
 
 ## Symfony
 
-### Symfony bridge
+### Symfony bridge preview
 
-The `gacela-project/symfony-bridge` package ships a compiler pass that teaches Symfony's own container to honor Gacela's [`#[Inject]`](/docs/inject) attribute on **Symfony-managed** services — typically `Command` and `Controller` classes. Without it, Symfony's autowiring claims the constructor parameter first and Gacela never gets a chance to resolve it.
+The bridge teaches Symfony's container to honor Gacela's [`#[Inject]`](/docs/inject) attribute on Symfony-managed commands and controllers.
 
-::: warning Not yet on Packagist
-`gacela-project/symfony-bridge` is not published on Packagist yet — it currently lives inside the [gacela monorepo](https://github.com/gacela-project/gacela/tree/main/symfony-bridge). The `composer require` below will work once the package is released.
+::: warning Preview, not an installable release
+`gacela-project/symfony-bridge` currently lives in the [Gacela repository](https://github.com/gacela-project/gacela/tree/main/symfony-bridge) and is not published on Packagist. Do not add it to production Composer requirements yet. The stable approach is constructor injection with services explicitly shared between the two containers.
 :::
 
-Install the bridge:
-
-```bash
-composer require gacela-project/symfony-bridge
-```
-
-Register the compiler pass in your kernel or bundle:
+When evaluating the bridge from the monorepo, register its compiler pass in the kernel or bundle:
 
 ```php
 use Gacela\SymfonyBridge\GacelaInjectCompilerPass;
@@ -61,13 +48,13 @@ final class AppKernel extends Kernel
 }
 ```
 
-At compile time the pass walks every service definition and rewrites each constructor parameter annotated with `#[Inject]` so Symfony resolves that slot via Gacela's container (`[@gacela.container, 'get']`) instead of its own autowiring. If a parameter already has a Symfony argument configured, the build fails with a clear conflict message naming the service and parameter.
+At compile time, the pass rewrites `#[Inject]` constructor parameters to resolve through Gacela. It rejects parameters that already have an explicit Symfony argument, preventing ambiguous ownership.
 
 See the [Inject attribute](/docs/inject) page for the full `#[Inject]` reference.
 
 ### Share Symfony's Doctrine EntityManager
 
-Bind `EntityManagerInterface::class` to Symfony's `'doctrine.orm.entity_manager'` service, so your Gacela modules resolve the **same** managed entity manager the framework already configures:
+Bind `EntityManagerInterface::class` to Symfony's managed service so Gacela modules share the same connection and transactions:
 
 ```php
 <?php # public/index.php
@@ -86,4 +73,4 @@ Gacela::bootstrap($appRootDir, function (GacelaConfig $config) use ($kernel) {
 // ...
 ```
 
-Now any module that type-hints `EntityManagerInterface` receives Symfony's managed instance — its connection, transactions and configuration all stay under Symfony's control.
+Modules that type-hint `EntityManagerInterface` now receive Symfony's managed instance. Symfony remains responsible for its lifecycle and configuration.

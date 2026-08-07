@@ -64,7 +64,7 @@ export const docsGroups = [
 
 export const sitePages = [
   page('Gacela', '/', 'index.md', 'Build modular PHP applications with explicit, predictable boundaries.'),
-  page('About Gacela', '/about-gacela', 'about-gacela.md', 'Understand Gacela’s module model and the architectural problems it solves.'),
+  page('About Gacela', '/about-gacela', 'about-gacela.md', 'Understand the problem Gacela solves, how its module boundaries work, and when the approach fits.'),
   page('Used in production', '/used-in', 'used-in.md', 'Explore real Gacela architecture and code from the Phel language project.'),
   page('Team', '/team', 'team.md', 'Meet the maintainers of Gacela.'),
   page('License', '/license', 'license.md', 'Read the MIT license for Gacela and its documentation.'),
