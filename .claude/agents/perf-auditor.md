@@ -8,16 +8,26 @@ model: sonnet
 You keep gacela-project.com fast. The site is static HTML with no framework; the budget reflects that and is not
 negotiable without an explicit decision.
 
-## Budget, per page, uncompressed unless stated
+## Budget, per page
 
-| Resource                          | Budget |
-|-----------------------------------|--------|
-| HTML document                     | 60 KB  |
-| CSS, total                        | 40 KB  |
-| JavaScript, total                 | 15 KB  |
-| Fonts, total                      | 180 KB |
-| Requests to render above the fold | 6      |
-| Third-party requests              | 0      |
+Gzipped is what travels; raw is what the browser parses. Both matter, so both
+are budgeted. The figures below sit a little above what the site measures today,
+so an ordinary change has room and a careless one does not.
+
+| Resource                          | Raw    | Gzipped |
+|-----------------------------------|--------|---------|
+| HTML document                     | 60 KB  | 12 KB   |
+| CSS, total                        | 50 KB  | 10 KB   |
+| JavaScript, total                 | 15 KB  | 6 KB    |
+| Fonts, total                      | 180 KB | n/a     |
+| Search index (lazy, never on load)| 120 KB | 30 KB   |
+| Requests to render above the fold | 6      |         |
+| Third-party requests              | 0      | 0       |
+
+Two things already keep these numbers down, and both are easy to undo by
+accident: the CSS is stripped of comments at build time, and Shiki's inline
+token styles are rewritten to classes. If HTML or CSS jumps suddenly, check
+those first.
 
 Zero third-party requests is absolute. No CDN, no analytics beacon, no remote font, no external image. Everything is
 served from the origin.

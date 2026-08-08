@@ -1,7 +1,6 @@
 ---
 title: Facet styleguide
 description: The design system behind gacela-project.com, rendered from the same tokens the site itself uses.
-layout: wide
 unlisted: true
 ---
 

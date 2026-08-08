@@ -55,7 +55,7 @@ describe('code', () => {
 
     expect(html).toContain('class="code-block"')
     expect(html).toContain('<pre')
-    expect(html).toContain('--syn-token-')
+    expect(html).toContain('class="syn-keyword"')
   })
 
   it('shows the language of an unlabelled block', () => {
@@ -210,5 +210,28 @@ describe('heading anchors', () => {
     // up in the search index, in excerpts, and in anything a reader copies.
     expect(html).toContain('tabindex="-1"></a>')
     expect(html).not.toContain('>#</a>')
+  })
+})
+
+describe('syntax token classes', () => {
+  it('rewrites shiki inline styles into design system classes', () => {
+    const { html } = render('```php\n<?php final class A {}\n```')
+
+    expect(html).toContain('class="syn-keyword"')
+    expect(html).not.toContain('style="color:var(--syn-token-')
+  })
+
+  it('drops the redundant foreground style, which the block already sets', () => {
+    const { html } = render('```php\n<?php $a = 1;\n```')
+
+    expect(html).not.toContain('var(--syn-foreground)')
+  })
+})
+
+describe('syntax markup weight', () => {
+  it('unwraps spans left with no attributes', () => {
+    const { html } = render('```php\n<?php $a = 1;\n```')
+
+    expect(html).not.toContain('<span>')
   })
 })

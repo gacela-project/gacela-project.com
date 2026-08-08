@@ -4,6 +4,7 @@ import {
   fingerprint,
   fingerprintedPath,
   inlineImports,
+  minifyCss,
 } from '../../src/forge/assets/index.ts'
 
 const reader = (files: Record<string, string>) => async (path: string) => {
@@ -198,5 +199,50 @@ describe('bundleClientScripts', () => {
     ])
 
     expect(bundle).toContain('"export me"')
+  })
+})
+
+describe('minifyCss', () => {
+  it('removes comments', () => {
+    expect(minifyCss('/* a note */\nbody { color: red; }')).not.toContain('a note')
+  })
+
+  it('keeps the declarations intact', () => {
+    expect(minifyCss('/* x */ body { color: red; }')).toContain('color:red')
+  })
+
+  it('collapses whitespace between rules', () => {
+    expect(minifyCss('a {\n  color: red;\n}\n\n\nb {\n  color: blue;\n}')).toBe(
+      'a{color:red}b{color:blue}',
+    )
+  })
+
+  it('does not eat a url containing a slash and a star', () => {
+    expect(minifyCss("a { background: url('/img/*.png'); }")).toContain("url('/img/*.png')")
+  })
+
+  it('does not eat a quoted string containing comment markers', () => {
+    expect(minifyCss('a::before { content: "/* not a comment */"; }')).toContain(
+      '"/* not a comment */"',
+    )
+  })
+
+  it('keeps at-rules and layer declarations', () => {
+    expect(minifyCss('@layer a, b;\n@media (min-width: 40rem) { a { color: red } }')).toContain(
+      '@layer a,b;',
+    )
+  })
+
+  it('preserves the space in a media query feature test', () => {
+    expect(minifyCss('@media (min-width: 40rem) { a { color: red } }')).toContain('min-width:40rem')
+  })
+
+  it('keeps space-separated values readable to the parser', () => {
+    expect(minifyCss('a { margin: 0 auto; border: 1px solid red }')).toContain('margin:0 auto')
+  })
+
+  it('is idempotent', () => {
+    const once = minifyCss('a { color: red; }')
+    expect(minifyCss(once)).toBe(once)
   })
 })

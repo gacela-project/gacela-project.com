@@ -196,6 +196,26 @@
     outline-offset: -2px;
   }
 
+  /* Syntax tokens. Shiki's inline styles are rewritten to these classes at
+     build time, so the colours resolve through the same tokens as everything
+     else and each span costs a short class instead of a full declaration. */
+  .syn-keyword { color: var(--syn-token-keyword); }
+  .syn-string { color: var(--syn-token-string); }
+  .syn-string-expression { color: var(--syn-token-string-expression); }
+  .syn-function { color: var(--syn-token-function); }
+  .syn-constant { color: var(--syn-token-constant); }
+  .syn-parameter { color: var(--syn-token-parameter); }
+  .syn-punctuation { color: var(--syn-token-punctuation); }
+  .syn-comment { color: var(--syn-token-comment); }
+  .syn-link { color: var(--syn-token-link); }
+  .syn-inserted { color: var(--syn-token-inserted); }
+  .syn-deleted { color: var(--syn-token-deleted); }
+  .syn-changed { color: var(--syn-token-changed); }
+
+  .code-block pre.shiki {
+    color: var(--syn-foreground);
+  }
+
   /* Inline code inside prose. */
   :not(pre) > code {
     padding: 0.15em 0.4em;

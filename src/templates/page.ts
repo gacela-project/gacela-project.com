@@ -1,11 +1,9 @@
 import { html, raw, type Raw } from '../forge/render/index.ts'
 import type { RenderedPage } from '../forge/types.ts'
 
-/** A standalone page: about, team, used in, license, styleguide. */
+/** A standalone page: about, team, used in, licence, styleguide. */
 export function pageLayout(page: RenderedPage): Raw {
-  const wide = page.frontmatter.layout === 'wide'
-
-  return html`<div class="container ${wide ? 'container--wide' : 'container--prose'}">
+  return html`<div class="container container--prose">
     <article class="section">
       <div class="prose">${raw(page.html)}</div>
     </article>

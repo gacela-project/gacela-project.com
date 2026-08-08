@@ -60,6 +60,9 @@
   .search-dialog {
     inline-size: min(38rem, calc(100vw - var(--space-6)));
     max-block-size: min(30rem, calc(100svh - var(--space-8)));
+    /* The reset zeroes every margin, which also removes the auto margins a
+       modal dialog is centred by, so the inline centring is restored here. */
+    margin-inline: auto;
     margin-block-start: 12svh;
     padding: 0;
     border: 1px solid var(--border);

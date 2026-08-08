@@ -6,6 +6,7 @@ import {
   bundleCss,
   fingerprint,
   fingerprintedPath,
+  minifyCss,
 } from './assets/index.ts'
 import { loadPages } from './content/index.ts'
 import { createMarkdownRenderer } from './markdown/index.ts'
@@ -89,7 +90,9 @@ type BuiltAssets = {
 }
 
 async function buildAssets(root: string): Promise<BuiltAssets> {
-  const css = await bundleCss(join(root, 'src/design/index.css'))
+  // The design system is commented heavily on purpose. The comments belong in
+  // the repository, not in every visitor's download.
+  const css = minifyCss(await bundleCss(join(root, 'src/design/index.css')))
   const cssPath = fingerprintedPath('assets/facet.css', fingerprint(css))
 
   const scriptDir = join(root, 'src/client')
