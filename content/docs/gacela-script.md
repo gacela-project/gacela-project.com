@@ -223,14 +223,57 @@ vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic] [--minimal
 ```
 
 - `-s`, `--short-name`: drop the module prefix from the generated class names.
-- `-t`, `--template`: what to scaffold.
-  - `basic` (default): all four pillars, empty.
-  - `service`: the same, plus a Domain service the Facade already calls, so the module does something on the first run.
-  - `minimal`: Facade and Factory only, for a module that needs neither configuration nor cross-module dependencies.
+- `-t`, `--template`: which set of files to scaffold. See below.
 - `--minimal`: shorthand for `--template=minimal`.
-- `--with-tests`: also scaffold a Facade test. Applies to the `service` template only, since it is the one with behaviour worth asserting.
+- `--with-tests`: also scaffold a Facade test. The `service` template only, since it is the one with behaviour worth asserting.
+
+An unknown template name fails with the list of valid ones rather than scaffolding something unexpected.
+
+#### Templates
+
+| Template | Files |
+| --- | --- |
+| `basic` (default) | `Facade`, `Factory`, `Config`, `Provider`, all empty |
+| `service` | the same four, plus `Domain/<Module>Service`, wired together |
+| `minimal` | `Facade` and `Factory` only |
+
+**`basic`** gives you the four pillars with nothing in them. It is the right default when you already know what the module will do and want no generated code to delete.
+
+**`service`** is the one to reach for when starting something new, because the generated module already runs end to end: the Facade calls the Factory, the Factory builds the service, and the service returns a string.
+
+```bash
+vendor/bin/gacela make:module --template=service --with-tests App/Checkout
+```
+
+```php
+# src/App/Checkout/CheckoutFacade.php
+final class CheckoutFacade extends AbstractFacade
+{
+    public function execute(): string
+    {
+        return $this->getFactory()
+            ->createService()
+            ->execute();
+    }
+}
+```
+
+```php
+# src/App/Checkout/Domain/CheckoutService.php
+final class CheckoutService
+{
+    public function execute(): string
+    {
+        return 'Hello from CheckoutService!';
+    }
+}
+```
+
+Rename `execute()` to whatever the module actually does and the shape stays correct. With `--with-tests` you also get `Tests/CheckoutFacadeTest.php`, so the module arrives with a passing test.
+
+**`minimal`** scaffolds only the Facade and the Factory, for a module that needs neither configuration nor cross-module dependencies. Add [`Config`](/docs/config) or [`Provider`](/docs/provider) later with [`make:file`](#make-file) when it does.
 
 ```bash
 vendor/bin/gacela make:module -s App/TestModule
-vendor/bin/gacela make:module --template=service --with-tests App/Checkout
+vendor/bin/gacela make:module --minimal App/Slug
 ```

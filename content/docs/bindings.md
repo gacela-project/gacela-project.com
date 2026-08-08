@@ -251,9 +251,68 @@ Order matters. Sources are applied as declared and **after** the imperative regi
 
 The path is used as given: unlike [`enableFileCache()`](/docs/caching) it is not rebased under the application root, so write it with `__DIR__`. A missing or unparsable file throws rather than leaving the wiring half applied.
 
-YAML is deliberately unsupported, since neither the container nor Gacela will take a runtime dependency on a parser for it. Pass `Yaml::parseFile('services.yaml')` as the array instead.
+YAML is not read from a path, because that would mean a runtime dependency on a parser. Parse it yourself and pass the array:
 
-Like `addBinding()`, definitions loaded here apply app-wide. A module that wants definitions of its own calls `Container::load()` in its Provider.
+```php
+$config->loadDefinitions(Yaml::parseFile(__DIR__ . '/services.yaml'));
+```
+
+### The definition format
+
+A definition is either a class name, which binds the key to it, or a single-key array naming what to register. Five keys are recognised, and anything else is an error rather than a silent no-op:
+
+| Key | Registers | Equivalent to |
+| --- | --- | --- |
+| *(bare class name)* | an abstract to a concrete | [`addBinding()`](#addbinding) |
+| `singleton` | one shared instance, from a class-string, callable or object | `addBinding()` |
+| `factory` | a new instance on every resolve | [`addFactory()`](#factory-services) |
+| `value` | a scalar or object stored as-is | |
+| `alias` | a second name for an existing id | [`addAlias()`](#service-aliases) |
+| `tags` | the id under one or more labels | [`tag()`](#tagged-services) |
+
+```php
+[
+  LoggerInterface::class => FileLogger::class,
+  Database::class => ['singleton' => DatabasePool::class],
+  'db.dsn' => ['value' => 'pgsql://localhost/app'],
+  'logger' => ['alias' => LoggerInterface::class],
+  Metrics::class => ['singleton' => Metrics::class, 'tags' => ['reporters']],
+]
+```
+
+Use `['value' => ...]` for anything that is not a class. A bare string that is not a class name is an error, and the message says so.
+
+### Module-local definitions
+
+`loadDefinitions()` in `gacela.php` applies app-wide, reaching every module's container, which is how `addBinding()` already behaves. A module that wants definitions of **its own** calls `Container::load()` in its Provider instead, which keeps them in that module's container.
+
+```php
+<?php # src/Checkout/CheckoutProvider.php
+
+use Gacela\Framework\AbstractProvider;
+use Gacela\Framework\Container\Container;
+
+final class CheckoutProvider extends AbstractProvider
+{
+    public function provideModuleDependencies(Container $container): void
+    {
+        $container->load([
+            PaymentGateway::class => ['singleton' => StripeGateway::class],
+            'checkout.currency' => ['value' => 'EUR'],
+        ]);
+    }
+}
+```
+
+This is the same distinction the [Provider](/docs/provider) draws everywhere else: what belongs to one module stays in that module, and only what the whole application shares goes in `gacela.php`.
+
+`load()` returns the ids it registered, in definition order. That is the only reliable answer to "what did this source register", since reading the registries back afterwards catches bindings and values but misses aliases. It also takes an optional callback invoked per id, for a listener that wants them one at a time:
+
+```php
+$registered = $container->load($definitions, static fn(string $id) => $logger->debug("registered {$id}"));
+```
+
+`Container::loadFile()` does the same from a `.php` or `.json` path.
 
 ## After Resolving
 

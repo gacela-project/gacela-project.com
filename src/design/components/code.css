@@ -234,14 +234,19 @@
   /* Inline code inside prose. */
   /* Long signatures such as addExternalService(string, string|object|callable)
      are wider than a phone. They used to be nowrap, which pushed the whole
-     document sideways; now only a token that would overflow breaks. */
+     document sideways.
+
+     break-word, not anywhere: `anywhere` also lets min-content shrink below the
+     token, so a narrow table column would collapse and break short tokens like
+     addBinding() across two lines. break-word breaks only when the token would
+     otherwise overflow its line. */
   :not(pre) > code {
     padding: 0.15em 0.4em;
     border-radius: var(--radius-xs);
     background: var(--surface-sunken);
     border: 1px solid var(--border-subtle);
     color: var(--text-strong);
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   a :not(pre) > code,
