@@ -100,6 +100,10 @@
   }
 
   .hero__install-copy {
+    display: none;
+  }
+
+  :root[data-js] .hero__install-copy {
     display: grid;
     place-items: center;
     inline-size: 1.5rem;

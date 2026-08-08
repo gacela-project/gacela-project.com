@@ -116,9 +116,19 @@
     }
   }
 
-  /* The theme control is three radio inputs, so it works without JavaScript
-     and exposes its state to assistive technology for free. */
+  /* Three radio inputs rather than a two-state button, because "system" is a
+     real choice and it is the default.
+
+     Applying a choice means writing to storage and setting an attribute, so
+     this control genuinely needs script. It stays hidden until the document is
+     marked as scripted: without JavaScript the theme still follows the system
+     preference through light-dark(), and offering a switch that cannot switch
+     would be worse than offering none. */
   .theme-toggle {
+    display: none;
+  }
+
+  :root[data-js] .theme-toggle {
     display: inline-flex;
     align-items: center;
     padding: 2px;

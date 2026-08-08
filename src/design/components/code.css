@@ -59,7 +59,12 @@
     width: 100%;
   }
 
+  /* Inert without the clipboard API, so it is not offered without script. */
   .code-block__copy {
+    display: none;
+  }
+
+  :root[data-js] .code-block__copy {
     position: absolute;
     inset-block-start: var(--space-2);
     inset-inline-end: var(--space-2);
