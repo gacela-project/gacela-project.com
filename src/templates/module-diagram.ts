@@ -94,10 +94,16 @@ export function moduleDiagram(): Raw {
   </figure>`
 }
 
+/**
+ * The viewBox is cropped to the drawing rather than starting at the origin: the
+ * ink runs from y=66 to y=388, so a 0..420 box carried 98 units of empty space,
+ * which at render size left the hero's right column 159px taller than its left
+ * and opened a hole under the headline. Cropping moves no coordinate.
+ */
 function drawing(): Raw {
   return html`<svg
     class="diagram__svg"
-    viewBox="0 0 780 420"
+    viewBox="0 56 780 344"
     role="img"
     aria-label="A Gacela module drawn as a closed boundary. Three classes sit on the boundary itself: the Facade on the left, where every call from another module arrives; the Provider on the right, which resolves what the module needs from its neighbours; and the Config at the bottom, which reads the project configuration files. Inside the boundary the Factory builds the module's own services and domain classes, and nothing outside can reach them."
   >

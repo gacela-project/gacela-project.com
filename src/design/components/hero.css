@@ -7,8 +7,12 @@
  */
 
 @layer components {
+  /* Less room below than a section gets. Every other boundary on the page is
+     144px split around a hairline rule, and the rule is what keeps that from
+     reading as a void; the hero has no rule under it, so it gives back a third
+     of its share. */
   .hero {
-    padding-block: clamp(var(--space-7), 6vw, var(--space-9)) var(--section-gap);
+    padding-block: clamp(var(--space-7), 6vw, var(--space-9)) var(--space-7);
   }
 
   .hero__grid {
