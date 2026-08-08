@@ -110,8 +110,8 @@
     color: var(--selection-fg);
   }
 
-  /* One focus treatment for the whole site: a brass ring with a canvas gap so
-     it stays visible on every surface, including inside code blocks. */
+  /* One focus treatment for the whole site: an accent ring with a canvas gap
+     so it stays visible on every surface, including inside code blocks. */
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;

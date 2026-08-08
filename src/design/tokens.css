@@ -5,8 +5,9 @@
  * Everything else references these custom properties.
  *
  * Direction: a drafting table. Gacela's subject is structure you can inspect,
- * so the palette is the logo's own navy ink on cool paper, annotated in brass.
- * Brass is rare on purpose: when it appears, it means "this is the thing".
+ * so the palette is the logo's own navy ink on cool paper, marked in the
+ * project's blue. The accent is rare on purpose: when it appears, it means
+ * "this is the thing".
  *
  * Colour is authored in OKLCH so the two ramps are perceptually even, and the
  * themes are expressed with light-dark(). That means the system preference is
@@ -20,7 +21,11 @@
 
     /* ---------------------------------------------------------------------
      * Palette primitives. Never referenced outside this file.
-     * Navy hue 251 carries the brand ink; brass hue 75 carries the accent.
+     *
+     * Navy hue 251 carries the brand ink, and blue hue 267 carries the accent.
+     * They are neighbours, so the accent separates itself by chroma rather than
+     * by hue: the ink sits near 0.03 and the accent near 0.16. Anything that
+     * blurs that gap weakens every piece of signal on the site.
      * ------------------------------------------------------------------ */
 
     --navy-950: oklch(0.1700 0.028 250);
@@ -39,15 +44,21 @@
     --navy-25: oklch(0.9812 0.0034 248);
     --white: oklch(1 0 0);
 
-    --brass-700: oklch(0.4600 0.105 72);
-    --brass-600: oklch(0.5400 0.115 75);
-    --brass-500: oklch(0.6266 0.114 75);
-    --brass-400: oklch(0.7900 0.130 78);
-    --brass-300: oklch(0.8700 0.115 84);
-    --brass-100: oklch(0.9450 0.045 84);
+    /* The project's own blue. --blue-600 resolves to #3351b2 and --blue-400 to
+       #a7b1ff, which are the two brand values gacela-project.com has always
+       used, expressed in OKLCH so they sit on the same ramp as everything else. */
+    --blue-700: oklch(0.4000 0.150 267);
+    --blue-600: oklch(0.4699 0.158 267);
+    --blue-500: oklch(0.5751 0.144 269);
+    --blue-400: oklch(0.7829 0.112 278);
+    --blue-300: oklch(0.8700 0.080 278);
+    --blue-100: oklch(0.9450 0.030 272);
 
     --verdigris-600: oklch(0.5100 0.070 189);
     --verdigris-400: oklch(0.7400 0.075 185);
+
+    --violet-600: oklch(0.4700 0.150 300);
+    --violet-400: oklch(0.7900 0.110 300);
 
     --amber-600: oklch(0.5300 0.110 68);
     --amber-400: oklch(0.8000 0.120 80);
@@ -76,11 +87,11 @@
     --border: light-dark(var(--navy-150), var(--navy-600));
     --border-strong: light-dark(var(--navy-400), var(--navy-400));
 
-    --accent: light-dark(var(--brass-600), var(--brass-400));
-    --accent-hover: light-dark(var(--brass-700), var(--brass-300));
+    --accent: light-dark(var(--blue-600), var(--blue-400));
+    --accent-hover: light-dark(var(--blue-700), var(--blue-300));
     --accent-contrast: light-dark(var(--white), var(--navy-950));
-    --accent-wash: light-dark(var(--brass-100), oklch(0.7900 0.130 78 / 0.13));
-    --accent-line: light-dark(var(--brass-500), var(--brass-400));
+    --accent-wash: light-dark(var(--blue-100), oklch(0.7829 0.112 278 / 0.15));
+    --accent-line: light-dark(var(--blue-500), var(--blue-400));
 
     --info: light-dark(var(--verdigris-600), var(--verdigris-400));
     --warning: light-dark(var(--amber-600), var(--amber-400));
@@ -104,7 +115,7 @@
     --shadow-md: 0 1px 2px var(--shadow-tint-near), 0 4px 14px var(--shadow-tint-far);
     --shadow-lg: 0 2px 4px var(--shadow-tint-near), 0 14px 40px var(--shadow-tint-far);
 
-    --selection-bg: light-dark(var(--brass-100), oklch(0.7900 0.130 78 / 0.28));
+    --selection-bg: light-dark(var(--blue-100), oklch(0.7829 0.112 278 / 0.30));
     --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
 
     --code-bg: light-dark(var(--navy-50), var(--navy-950));
@@ -116,12 +127,16 @@
      * Shiki is driven by a CSS-variables theme, so the code palette is part of
      * the design system rather than a stock editor theme dropped on top of it.
      *
-     * Nothing here uses brass. Keywords did, on the reasoning that keywords are
-     * structure, but a documentation page holds around a hundred keywords and
-     * eight pieces of real UI signal, so the accent stopped meaning anything
-     * where it mattered. Keywords now lean on weight and the navy ramp, and
-     * brass is reserved for the active page, the active heading and the primary
-     * action.
+     * No token here comes near the accent. Keywords used to take it, on the
+     * reasoning that keywords are structure, but a documentation page holds
+     * around a hundred keywords and eight pieces of real UI signal, so the
+     * accent stopped meaning anything where it mattered.
+     *
+     * Since the accent is now blue, the whole 250 to 285 hue band is spoken
+     * for: functions moved from blue to violet for the same reason. Keywords
+     * lean on the navy ramp, strings on teal, functions on violet and
+     * constants on amber, so four kinds of token stay tellable apart and none
+     * of them can be mistaken for a link or an active item.
      * ------------------------------------------------------------------ */
 
     --syn-background: transparent;
@@ -129,12 +144,12 @@
     --syn-token-keyword: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
     --syn-token-string-expression: var(--syn-token-string);
-    --syn-token-function: light-dark(oklch(0.4800 0.130 262), oklch(0.7900 0.100 262));
-    --syn-token-constant: light-dark(oklch(0.4800 0.140 305), oklch(0.7900 0.095 305));
+    --syn-token-function: light-dark(var(--violet-600), var(--violet-400));
+    --syn-token-constant: light-dark(var(--amber-600), var(--amber-400));
     --syn-token-parameter: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-punctuation: light-dark(var(--navy-400), var(--navy-300));
     --syn-token-comment: light-dark(var(--navy-400), var(--navy-300));
-    --syn-token-link: light-dark(oklch(0.4800 0.130 262), oklch(0.7900 0.100 262));
+    --syn-token-link: light-dark(var(--violet-600), var(--violet-400));
     --syn-token-inserted: light-dark(oklch(0.4700 0.100 150), oklch(0.7900 0.090 150));
     --syn-token-deleted: light-dark(var(--rose-600), var(--rose-400));
     --syn-token-changed: light-dark(var(--amber-600), var(--amber-400));

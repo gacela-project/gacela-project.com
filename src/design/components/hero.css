@@ -55,8 +55,8 @@
     text-wrap: balance;
   }
 
-  /* The second line carries the whole idea, so it gets the accent and the
-     rest of the page leaves brass alone. */
+  /* The second line carries the whole idea, so it gets the accent and the rest
+     of the page leaves the accent alone. */
   .hero__title em {
     font-style: normal;
     color: var(--accent);

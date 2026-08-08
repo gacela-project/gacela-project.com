@@ -40,9 +40,13 @@ may contain a colour literal.
 
 ### Accent and semantics
 
-Brass is the only accent, and it is deliberately rare: it marks the one thing on a screen
-that matters most, and nothing else. If two brass elements compete in a viewport, one of
-them is wrong.
+The project's blue is the only accent, and it is deliberately rare: it marks the one thing
+on a screen that matters most, and nothing else. If two accent elements compete in a
+viewport, one of them is wrong.
+
+The accent and the ink are neighbouring hues, so the accent separates itself by chroma:
+the ink sits near 0.03 and the accent near 0.16. That gap is what makes an active
+sidebar item read as active.
 
 <div class="sg-grid">
   <div class="sg-swatch"><div class="sg-swatch__chip" style="background: var(--accent)"></div><span class="sg-swatch__name">--accent</span><span class="sg-swatch__use">Links, active state</span></div>
@@ -120,7 +124,9 @@ Written as `::: danger`. Used where a reader can break production.
 
 A framed block with a mono caption bar rather than a filled slab, so a page of
 documentation does not become a stack of grey rectangles. The syntax palette is part of
-the design system: keywords take the brass accent, because keywords are structure.
+the design system, and it deliberately avoids the accent: keywords sit on the navy ramp,
+strings on teal, functions on violet and constants on amber. A hundred accent-coloured
+keywords on a page would leave nothing for the eight marks that carry real signal.
 
 ```php [src/Checkout/Facade.php]
 namespace App\Checkout;

@@ -88,8 +88,8 @@
   }
 
   /* A linked mark inherits the link colour, which turned a third party's logo
-     into the largest brass object on the site while telling the reader nothing.
-     It takes the ink colour and picks up the accent on hover, like any link. */
+     into the largest accent object on the site while telling the reader
+     nothing. It takes the ink colour and picks up the accent on hover. */
   .prose a:has(> svg) {
     color: var(--text-strong);
     display: inline-block;
