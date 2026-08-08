@@ -1,5 +1,6 @@
 import { attrs, html, raw, type Raw } from '../forge/render/index.ts'
 import type { Heading, NavState, RenderedPage, SiteConfig } from '../forge/types.ts'
+import { icons } from './icons.ts'
 
 export type DocContext = {
   readonly site: SiteConfig
@@ -7,38 +8,12 @@ export type DocContext = {
   readonly nav: NavState
 }
 
-const CHEVRON = raw(
-  '<svg class="disclosure-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<path d="m6 9 6 6 6-6"/></svg>',
-)
-
-/**
- * The documentation sidebar as a disclosure, for viewports where the column is
- * hidden. It is a `details` element, so it opens, closes and announces itself
- * with no JavaScript, and it carries the same list the sidebar does rather than
- * a reduced version of it.
- */
-export function mobileDocsNav(nav: NavState): Raw {
-  const label = nav.current?.title ?? 'Documentation'
-
-  return html`<details class="mobile-nav">
-    <summary class="mobile-nav__summary">
-      ${CHEVRON}
-      <span>Documentation</span>
-      <span aria-hidden="true">/</span>
-      <span class="mobile-nav__current">${label}</span>
-    </summary>
-    <nav class="mobile-nav__panel" aria-label="Documentation">${sidebar(nav)}</nav>
-  </details>`
-}
-
 export function docLayout(context: DocContext): Raw {
   const { page, nav } = context
   const toc = page.headings.filter((heading) => heading.depth === 2 || heading.depth === 3)
 
   return html`<div class="docs">
-    <nav class="docs__nav" aria-label="Documentation">${sidebar(nav)}</nav>
+    <nav class="docs__nav" aria-label="Documentation">${docsSidebar(nav)}</nav>
 
     <div class="docs__body">
       <article class="docs__article">
@@ -62,7 +37,8 @@ export function docLayout(context: DocContext): Raw {
   </div>`
 }
 
-function sidebar(nav: NavState): Raw {
+/** The documentation sidebar. Also used inside the mobile disclosure. */
+export function docsSidebar(nav: NavState): Raw {
   return html`${nav.groups.map(
     (group) => html`<div class="sidebar__group">
       <p class="sidebar__group-title">${group.title}</p>
@@ -95,7 +71,7 @@ function tocList(headings: readonly Heading[]): Raw {
 
 function inlineToc(headings: readonly Heading[]): Raw {
   return html`<details class="toc-inline">
-    <summary class="toc-inline__summary">${CHEVRON}On this page</summary>
+    <summary class="toc-inline__summary">${icons.disclosure}On this page</summary>
     <div class="toc-inline__panel">${tocList(headings)}</div>
   </details>`
 }

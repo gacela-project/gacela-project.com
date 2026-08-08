@@ -28,6 +28,13 @@ export const icons = {
 
   chevronDown: stroke('<path d="m6 9 6 6 6-6"/>'),
 
+  /** The one disclosure affordance on the site; it rotates when its details opens. */
+  disclosure: raw(
+    '<svg class="disclosure-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="m6 9 6 6 6-6"/></svg>',
+  ),
+
   arrowRight: stroke('<path d="M4 12h15m-6-7 7 7-7 7"/>'),
 
   copy: stroke(

@@ -1,4 +1,4 @@
-import { docLayout, mobileDocsNav } from '../../templates/doc.ts'
+import { docLayout, docsSidebar } from '../../templates/doc.ts'
 import { homeLayout } from '../../templates/home.ts'
 import { notFoundLayout, pageLayout } from '../../templates/page.ts'
 import { documentShell, type ShellAssets } from '../../templates/shell.ts'
@@ -35,9 +35,9 @@ export function renderPage(context: PageContext): string {
     nav: context.nav,
     main: body(context),
     layout: page.frontmatter.layout ?? page.collection,
-    // Below the sidebar breakpoint the documentation needs its own navigation,
-    // and it belongs outside main so it reads as a band across the page.
-    ...(page.collection === 'docs' ? { beforeMain: mobileDocsNav(context.nav) } : {}),
+    // Below the sidebar breakpoint the shell folds this into its disclosure,
+    // which is the only navigation a documentation page has on a phone.
+    ...(page.collection === 'docs' ? { docsNav: docsSidebar(context.nav) } : {}),
   })
 }
 

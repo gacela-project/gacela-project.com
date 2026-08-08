@@ -34,8 +34,11 @@ export type ShellContext = {
   readonly title: string
   readonly description: string
   readonly nav: NavState
-  /** Rendered before the header, for layouts that need a full-width band. */
-  readonly beforeMain?: Raw
+  /**
+   * The documentation sidebar, when there is one. It is folded into the mobile
+   * disclosure below the breakpoint where the sidebar column disappears.
+   */
+  readonly docsNav?: Raw
   readonly main: Raw
   /**
    * Named on the body as a data attribute rather than a class. Layout names
@@ -98,12 +101,47 @@ export function documentShell(context: ShellContext): string {
   <body${attrs({ 'data-layout': context.layout })}>
     <a class="skip-link" href="#main">Skip to content</a>
     ${siteHeader(context)}
-    ${context.beforeMain ?? ''}
+    ${mobileNav(context)}
     <main id="main" class="page">${context.main}</main>
     ${siteFooter(context)}
     ${searchDialog()}
   </body>
 </html>`)}\n`
+}
+
+function mobileNav(context: ShellContext): Raw {
+  const isDocs = context.docsNav !== undefined
+
+  return html`<details class="mobile-nav">
+    <summary class="mobile-nav__summary">
+      ${icons.disclosure}
+      <span>${isDocs ? 'Documentation' : 'Menu'}</span>
+      ${isDocs && context.nav.current !== undefined
+        ? html`<span aria-hidden="true">/</span>
+            <span class="mobile-nav__current">${context.nav.current.title}</span>`
+        : ''}
+    </summary>
+
+    <div class="mobile-nav__panel">
+      <nav aria-label="Site">
+        <ul class="mobile-nav__primary" role="list">
+          ${context.site.headerLinks.map(
+            (link) => html`<li>
+              <a class="mobile-nav__link" href="${link.route}">${link.title}</a>
+            </li>`,
+          )}
+          <li><a class="mobile-nav__link" href="/team">Team</a></li>
+          <li>
+            <a class="mobile-nav__link" href="${context.site.repository}" rel="noreferrer">GitHub</a>
+          </li>
+        </ul>
+      </nav>
+
+      ${isDocs
+        ? html`<nav class="mobile-nav__docs" aria-label="Documentation">${context.docsNav}</nav>`
+        : ''}
+    </div>
+  </details>`
 }
 
 function siteHeader(context: ShellContext): Raw {
@@ -147,7 +185,14 @@ function siteHeader(context: ShellContext): Raw {
 }
 
 function searchTrigger(): Raw {
-  return html`<button type="button" class="search-trigger" data-search-trigger>
+  // The visible label collapses at narrow widths, so the accessible name is
+  // set explicitly rather than left to whichever text happens to survive.
+  return html`<button
+    type="button"
+    class="search-trigger"
+    data-search-trigger
+    aria-label="Search the documentation"
+  >
     ${icons.search}
     <span class="search-trigger__label">Search docs</span>
     <kbd class="search-trigger__hint">/</kbd>
@@ -193,7 +238,7 @@ function searchDialog(): Raw {
       <button type="submit" class="search-dialog__close" data-search-close>esc</button>
     </form>
     <p class="search-dialog__empty" data-search-empty hidden>No matches.</p>
-    <ul class="search-dialog__results" data-search-results></ul>
+    <ul class="search-dialog__results" role="list" data-search-results></ul>
     <p class="visually-hidden" role="status" aria-live="polite" data-search-status></p>
     <div class="search-dialog__footer">
       <span>&uarr;&darr; to navigate</span><span>&crarr; to open</span><span>esc to close</span>

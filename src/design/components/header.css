@@ -116,6 +116,24 @@
     }
   }
 
+  /* Reflow at 320px: the brand and the action cluster together overflowed the
+     viewport. The padding and gap tighten, and the header's GitHub link steps
+     aside because the footer and the mobile menu both still carry it. */
+  @media (max-width: 400px) {
+    .header__inner {
+      padding-inline: var(--space-3);
+      gap: var(--space-2);
+    }
+
+    .header__actions > .icon-button {
+      display: none;
+    }
+
+    .header__wordmark {
+      font-size: 1.125rem;
+    }
+  }
+
   /* Three radio inputs rather than a two-state button, because "system" is a
      real choice and it is the default.
 
@@ -177,8 +195,12 @@
   }
 
   /* ---------------------------------------------------------------------
-   * Mobile navigation: a details element, so it opens and closes with no
-   * JavaScript at all.
+   * Mobile navigation.
+   *
+   * The header drops its primary links below 900px, so every page carries this
+   * disclosure as their replacement, with the documentation sidebar folded in
+   * on documentation pages. A details element, so it opens and closes and
+   * announces its state with no JavaScript at all.
    * ------------------------------------------------------------------ */
 
   .mobile-nav {
@@ -223,6 +245,37 @@
       padding: 0 var(--space-5) var(--space-5);
       max-block-size: 70svh;
       overflow-y: auto;
+    }
+
+    .mobile-nav__primary {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 var(--space-5);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .mobile-nav__link {
+      display: block;
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      background: var(--surface);
+      color: var(--text-strong);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      text-decoration: none;
+    }
+
+    .mobile-nav__link:hover {
+      border-color: var(--accent-line);
+      color: var(--accent);
+    }
+
+    .mobile-nav__docs {
+      padding-block-start: var(--space-5);
+      border-block-start: 1px solid var(--border-subtle);
     }
   }
 }

@@ -172,9 +172,11 @@
     letter-spacing: var(--tracking-normal);
   }
 
+  /* The label is 11px, so it needs the full 4.5:1. --accent on --accent-wash
+     measures 4.39:1 in the light theme; --accent-hover measures 6.19:1. */
   .badge--accent {
     border-color: var(--accent-line);
     background: var(--accent-wash);
-    color: var(--accent);
+    color: var(--accent-hover);
   }
 }
