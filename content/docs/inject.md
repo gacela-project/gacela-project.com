@@ -10,7 +10,7 @@ Opt-in constructor injection with the `#[Inject]` attribute. Declare what a clas
 ## Quick start
 
 ```php
-use Gacela\Container\Attribute\Inject;
+use Gacela\Framework\Attribute\Inject;
 
 final class CatalogService
 {
@@ -23,6 +23,11 @@ final class CatalogService
 
 - A bare `#[Inject]` resolves the parameter by its type (same as autowiring, but explicit).
 - `#[Inject(RedisCache::class)]` forces a specific implementation regardless of the global binding.
+
+`Gacela\Container\Attribute\Inject` also works and needs no migration: the framework attribute
+subclasses it, and every attribute read passes `ReflectionAttribute::IS_INSTANCEOF`. Prefer the
+`Gacela\Framework` import in new code so your application does not reach into the container
+package directly.
 
 ## Resolution order
 

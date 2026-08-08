@@ -70,12 +70,11 @@ vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 Pre-resolve all module classes, write the persistent caches and (optionally) the merged configuration cache. Run this once per deploy in production.
 
 ```bash
-vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes] [-p|--parallel]
+vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes]
 ```
 
 - `-c`, `--clear`: clear existing cache before warming (same as running `cache:clear` first)
 - `-a`, `--attributes`: pre-scan and cache `#[ServiceMap]` attributes
-- `-p`, `--parallel`: warm modules in parallel via PHP 8.1 Fibers (up to 5× faster on large code bases)
 
 Under the hood `cache:warm` batches file writes via `AbstractPhpFileCache::beginBatch()` / `commitBatch()` and flushes with atomic `rename()`, so a single write replaces the previous _N modules × 4 resolvers_ full-file rewrites.
 
