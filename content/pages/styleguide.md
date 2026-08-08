@@ -174,6 +174,17 @@ final class Factory extends AbstractFactory
 
 Inline `code` sits in prose without breaking the line rhythm.
 
+### Copy confirmation
+
+Copy either block above, with the button or by selecting the text and using the keyboard.
+Two things answer two different questions: the block flashes, which says *what* reached
+the clipboard, and the button's icon becomes a tick, which says *whether it worked*.
+
+The motion runs for 280ms, inside the 300ms the system allows for UI feedback, but the
+tick then holds for 1.6 seconds. A confirmation that disappears as quickly as it arrived
+has not confirmed anything. Under `prefers-reduced-motion` the durations collapse and the
+state still changes, so the answer arrives without the movement.
+
 ## Prose
 
 ### Lists

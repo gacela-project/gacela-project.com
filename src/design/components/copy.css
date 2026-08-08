@@ -1,0 +1,95 @@
+/**
+ * Copy confirmation.
+ *
+ * Two things happen when code reaches the clipboard, and they say different
+ * things. The block flashes, which answers "what did I just take": the whole
+ * example, not the line under the cursor. The button's icon becomes a tick,
+ * which answers "did that work".
+ *
+ * The motion is under 300ms in both cases, per the project's rule for UI
+ * feedback, but the tick then holds for over a second: a confirmation that
+ * vanishes as fast as it arrived has not confirmed anything. Under
+ * prefers-reduced-motion the reset collapses the durations and the state still
+ * changes, so the answer is delivered without the movement.
+ *
+ * Both copy controls carry data-copy, so this styles them together rather than
+ * once per component.
+ */
+
+@layer components {
+  [data-copy] {
+    position: relative;
+  }
+
+  [data-copy] > svg {
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-spring);
+  }
+
+  /* The tick is drawn from two borders rather than shipped as a second icon,
+     so neither copy control needs extra markup to gain one. */
+  [data-copy]::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 0.55em;
+    block-size: 0.3em;
+    border-inline-start: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    border-end-start-radius: 1px;
+    transform: translate(-55%, -70%) rotate(-45deg) scale(0);
+    opacity: 0;
+    transition:
+      transform var(--duration-base) var(--ease-spring),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+
+  [data-copy][data-copied] > svg {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  [data-copy][data-copied]::after {
+    transform: translate(-55%, -70%) rotate(-45deg) scale(1);
+    opacity: 1;
+  }
+
+  /* The button is normally revealed on hover. A copy made from the keyboard has
+     no hover to reveal it, so confirming forces it visible.
+
+     Both selectors carry the :root[data-js] prefix their base rules use. Those
+     bases score (0,3,0), and a plain class-plus-attribute here would score
+     (0,2,0) and quietly lose. */
+  :root[data-js] .code-block__copy[data-copied] {
+    opacity: 1;
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+
+  :root[data-js] .hero__install-copy[data-copied] {
+    color: var(--accent);
+  }
+
+  /* --- the block ---------------------------------------------------------
+   * Fired by adding data-copied to the block itself, which the script removes
+   * and re-adds so a second copy replays the flash instead of sitting still.
+   * -------------------------------------------------------------------- */
+
+  .code-block[data-copied],
+  .code-group[data-copied] {
+    animation: copy-flash var(--duration-slow) var(--ease-out);
+  }
+
+  @keyframes copy-flash {
+    from {
+      background-color: var(--accent-wash);
+      border-color: var(--accent);
+    }
+  }
+
+  .hero__install[data-copied] {
+    animation: copy-flash var(--duration-slow) var(--ease-out);
+  }
+}
