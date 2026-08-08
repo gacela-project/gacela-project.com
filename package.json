@@ -1,0 +1,29 @@
+{
+  "name": "gacela-project.com",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "The gacela-project.com website: hand-rolled static site generator, zero-framework design system.",
+  "repository": "git@github.com:gacela-project/gacela-project.com.git",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "dev": "node src/forge/cli/dev.ts",
+    "build": "node src/forge/cli/build.ts",
+    "preview": "node src/forge/cli/preview.ts",
+    "lint:links": "node src/forge/cli/lint-links.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && vitest run && npm run build && npm run lint:links"
+  },
+  "dependencies": {
+    "markdown-it": "^15.0.0",
+    "shiki": "^4.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

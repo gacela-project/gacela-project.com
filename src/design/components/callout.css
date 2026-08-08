@@ -1,0 +1,54 @@
+/**
+ * Callouts. A tinted rail rather than a tinted box: the colour marks the edge,
+ * the content stays on the page surface and keeps reading like prose.
+ */
+
+@layer components {
+  .callout {
+    --callout-accent: var(--info);
+
+    margin-block: var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    border-inline-start: 2px solid var(--callout-accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: color-mix(in oklch, var(--callout-accent) 7%, transparent);
+    font-size: var(--text-md);
+  }
+
+  .callout > * + * {
+    margin-block-start: var(--space-3);
+  }
+
+  .callout__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-normal);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--callout-accent);
+    margin-block-end: var(--space-2);
+  }
+
+  .callout--tip {
+    --callout-accent: var(--accent);
+  }
+
+  .callout--info {
+    --callout-accent: var(--info);
+  }
+
+  .callout--warning {
+    --callout-accent: var(--warning);
+  }
+
+  .callout--danger {
+    --callout-accent: var(--danger);
+  }
+
+  .callout code {
+    background: var(--surface);
+  }
+}

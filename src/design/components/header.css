@@ -1,0 +1,218 @@
+@layer components {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    block-size: var(--height-header);
+    background: color-mix(in oklch, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(1.4);
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .header__inner {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    padding-inline: var(--space-5);
+    block-size: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-strong);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .header__brand:hover {
+    color: var(--text-strong);
+  }
+
+  .header__mark {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    color: var(--text-strong);
+  }
+
+  .header__brand:hover .header__mark {
+    color: var(--accent);
+    transition: color var(--duration-base) var(--ease-out);
+  }
+
+  .header__wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.01em;
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin-inline-start: var(--space-3);
+  }
+
+  .header__link {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-normal);
+    text-decoration: none;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out);
+  }
+
+  .header__link:hover {
+    color: var(--text-strong);
+    background: var(--surface-sunken);
+  }
+
+  .header__link[aria-current='page'],
+  .header__link[data-active] {
+    color: var(--accent);
+  }
+
+  .header__spacer {
+    margin-inline-start: auto;
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .header__version {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    text-decoration: none;
+  }
+
+  .header__version:hover {
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+
+  @media (max-width: 899px) {
+    .header__nav,
+    .header__version {
+      display: none;
+    }
+  }
+
+  /* The theme control is three radio inputs, so it works without JavaScript
+     and exposes its state to assistive technology for free. */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+  }
+
+  .theme-toggle__option {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .theme-toggle__option:hover {
+    color: var(--text-strong);
+  }
+
+  .theme-toggle__option svg {
+    inline-size: 0.9375rem;
+    block-size: 0.9375rem;
+  }
+
+  .theme-toggle__option[data-selected] {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .theme-toggle__option:has(:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .theme-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Mobile navigation: a details element, so it opens and closes with no
+   * JavaScript at all.
+   * ------------------------------------------------------------------ */
+
+  .mobile-nav {
+    display: none;
+  }
+
+  @media (max-width: 959px) {
+    .mobile-nav {
+      display: block;
+      border-block-end: 1px solid var(--border-subtle);
+      background: var(--surface-sunken);
+    }
+
+    .mobile-nav__summary {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      max-width: var(--width-wide);
+      margin-inline: auto;
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--text-strong);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .mobile-nav__summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .mobile-nav__current {
+      color: var(--accent);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mobile-nav__panel {
+      max-width: var(--width-wide);
+      margin-inline: auto;
+      padding: 0 var(--space-5) var(--space-5);
+      max-block-size: 70svh;
+      overflow-y: auto;
+    }
+  }
+}

@@ -1,0 +1,196 @@
+/**
+ * Long-form documentation body.
+ *
+ * Spacing here is doing structural work: more room above a heading than below
+ * it, so a heading reads as attached to what follows rather than floating
+ * between two blocks.
+ */
+
+@layer components {
+  .prose {
+    max-width: var(--measure-prose);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text);
+  }
+
+  .prose > * + * {
+    margin-block-start: var(--space-4);
+  }
+
+  .prose h1 {
+    font-size: var(--text-3xl);
+    margin-block-end: var(--space-2);
+  }
+
+  .prose > h2 {
+    margin-block-start: var(--space-8);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .prose > h3 {
+    margin-block-start: var(--space-7);
+  }
+
+  .prose > h4,
+  .prose > h5,
+  .prose > h6 {
+    margin-block-start: var(--space-6);
+  }
+
+  .prose h2 + *,
+  .prose h3 + *,
+  .prose h4 + * {
+    margin-block-start: var(--space-3);
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-inline-start: var(--space-5);
+  }
+
+  .prose li + li {
+    margin-block-start: var(--space-2);
+  }
+
+  .prose li > ul,
+  .prose li > ol {
+    margin-block-start: var(--space-2);
+  }
+
+  .prose li::marker {
+    color: var(--text-muted);
+  }
+
+  .prose blockquote {
+    padding-inline-start: var(--space-5);
+    border-inline-start: 2px solid var(--accent-line);
+    color: var(--text-strong);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+  }
+
+  .prose blockquote p + p {
+    margin-block-start: var(--space-3);
+  }
+
+  .prose img {
+    border-radius: var(--radius-md);
+  }
+
+  /* Heading anchors: present in the DOM for everyone, revealed on hover or
+     keyboard focus so they never add noise to a first read. */
+  .heading-anchor {
+    margin-inline-start: 0.35em;
+    color: var(--text-muted);
+    font-weight: var(--weight-normal);
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  :is(h1, h2, h3, h4, h5, h6):hover > .heading-anchor,
+  .heading-anchor:focus-visible {
+    opacity: 1;
+  }
+
+  .heading-anchor:hover {
+    color: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Tables. Hairline rules only: a filled header band would out-shout the
+   * headings around it.
+   * ------------------------------------------------------------------ */
+
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-md);
+    display: block;
+    overflow-x: auto;
+  }
+
+  .prose thead th {
+    padding: var(--space-2) var(--space-4) var(--space-2) 0;
+    border-block-end: 1px solid var(--border-strong);
+    color: var(--text-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--weight-normal);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  .prose tbody td {
+    padding: var(--space-3) var(--space-4) var(--space-3) 0;
+    border-block-end: 1px solid var(--border-subtle);
+    vertical-align: baseline;
+  }
+
+  .prose tbody tr:last-child td {
+    border-block-end: none;
+  }
+
+  /* ---------------------------------------------------------------------
+   * Article furniture.
+   * ------------------------------------------------------------------ */
+
+  .article__header {
+    margin-block-end: var(--space-6);
+  }
+
+  .article__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-end: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .article__breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .article__breadcrumb a:hover {
+    color: var(--accent);
+  }
+
+  .article__description {
+    margin-block-start: var(--space-4);
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+    text-wrap: pretty;
+  }
+
+  .article__footer {
+    margin-block-start: var(--space-7);
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--border-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+  }
+
+  .article__footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .article__footer a:hover {
+    color: var(--accent);
+  }
+}

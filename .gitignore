@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.cache/
+coverage/
+*.tsbuildinfo
+
+.DS_Store
+.idea/
+.vscode/
+
+# Playwright MCP scratch output
+.playwright-mcp/

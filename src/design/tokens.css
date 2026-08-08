@@ -1,0 +1,229 @@
+/**
+ * Facet design tokens.
+ *
+ * The only file in the design system allowed to contain colour literals.
+ * Everything else references these custom properties.
+ *
+ * Direction: a drafting table. Gacela's subject is structure you can inspect,
+ * so the palette is the logo's own navy ink on cool paper, annotated in brass.
+ * Brass is rare on purpose: when it appears, it means "this is the thing".
+ *
+ * Colour is authored in OKLCH so the two ramps are perceptually even, and the
+ * themes are expressed with light-dark(). That means the system preference is
+ * honoured with no JavaScript and no duplicated dark block, while an explicit
+ * choice still wins through data-theme on the root element.
+ */
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* ---------------------------------------------------------------------
+     * Palette primitives. Never referenced outside this file.
+     * Navy hue 251 carries the brand ink; brass hue 75 carries the accent.
+     * ------------------------------------------------------------------ */
+
+    --navy-950: oklch(0.1700 0.028 250);
+    --navy-900: oklch(0.2000 0.030 250);
+    --navy-850: oklch(0.2400 0.032 250);
+    --navy-800: oklch(0.2800 0.045 251);
+    --navy-700: oklch(0.3200 0.032 250);
+    --navy-600: oklch(0.3800 0.032 250);
+    --navy-500: oklch(0.4200 0.035 251);
+    --navy-400: oklch(0.5400 0.028 251);
+    --navy-300: oklch(0.6600 0.022 250);
+    --navy-200: oklch(0.8000 0.020 250);
+    --navy-150: oklch(0.8800 0.010 251);
+    --navy-100: oklch(0.9200 0.008 251);
+    --navy-50: oklch(0.9650 0.005 251);
+    --navy-25: oklch(0.9812 0.0034 248);
+    --white: oklch(1 0 0);
+
+    --brass-700: oklch(0.4600 0.105 72);
+    --brass-600: oklch(0.5400 0.115 75);
+    --brass-500: oklch(0.6266 0.114 75);
+    --brass-400: oklch(0.7900 0.130 78);
+    --brass-300: oklch(0.8700 0.115 84);
+    --brass-100: oklch(0.9450 0.045 84);
+
+    --verdigris-600: oklch(0.5100 0.070 189);
+    --verdigris-400: oklch(0.7400 0.075 185);
+
+    --amber-600: oklch(0.5300 0.110 68);
+    --amber-400: oklch(0.8000 0.120 80);
+    --rose-600: oklch(0.5200 0.170 25);
+    --rose-400: oklch(0.7400 0.140 25);
+
+    /* ---------------------------------------------------------------------
+     * Semantic surfaces and ink.
+     *
+     * In light the page is cool paper and cards lift to pure white; in dark
+     * the page is ink and elevation is surfaces getting lighter, never shadow.
+     * ------------------------------------------------------------------ */
+
+    --canvas: light-dark(var(--navy-25), var(--navy-900));
+    --surface: light-dark(var(--white), var(--navy-850));
+    --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
+    --surface-raised: light-dark(var(--white), var(--navy-700));
+    --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
+
+    --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
+    --text: light-dark(var(--navy-500), var(--navy-200));
+    --text-muted: light-dark(var(--navy-400), var(--navy-300));
+    --text-inverse: light-dark(var(--navy-25), var(--navy-800));
+
+    --border-subtle: light-dark(var(--navy-100), var(--navy-700));
+    --border: light-dark(var(--navy-150), var(--navy-600));
+    --border-strong: light-dark(var(--navy-400), var(--navy-400));
+
+    --accent: light-dark(var(--brass-600), var(--brass-400));
+    --accent-hover: light-dark(var(--brass-700), var(--brass-300));
+    --accent-contrast: light-dark(var(--white), var(--navy-950));
+    --accent-wash: light-dark(var(--brass-100), oklch(0.7900 0.130 78 / 0.13));
+    --accent-line: light-dark(var(--brass-500), var(--brass-400));
+
+    --info: light-dark(var(--verdigris-600), var(--verdigris-400));
+    --warning: light-dark(var(--amber-600), var(--amber-400));
+    --danger: light-dark(var(--rose-600), var(--rose-400));
+
+    /* Diagram semantics: what lives inside a module versus what crosses its
+       edge. These are load-bearing, not decorative, so they are named for the
+       idea they encode rather than for the colour they happen to be. */
+    --diagram-inside: light-dark(var(--navy-400), var(--navy-200));
+    --diagram-boundary: var(--accent);
+    --diagram-outside: light-dark(var(--verdigris-600), var(--verdigris-400));
+    --diagram-fill: light-dark(oklch(0.9650 0.005 251 / 0.8), oklch(0.2400 0.032 250 / 0.8));
+
+    /* light-dark() resolves one value, and a multi-layer shadow is several
+       comma-separated values, so the theme switch happens on the tint and the
+       shadows themselves are composed from it. */
+    --shadow-tint-near: light-dark(oklch(0.28 0.045 251 / 0.06), oklch(0 0 0 / 0.32));
+    --shadow-tint-far: light-dark(oklch(0.28 0.045 251 / 0.09), oklch(0 0 0 / 0.28));
+
+    --shadow-sm: 0 1px 2px var(--shadow-tint-near);
+    --shadow-md: 0 1px 2px var(--shadow-tint-near), 0 4px 14px var(--shadow-tint-far);
+    --shadow-lg: 0 2px 4px var(--shadow-tint-near), 0 14px 40px var(--shadow-tint-far);
+
+    --selection-bg: light-dark(var(--brass-100), oklch(0.7900 0.130 78 / 0.28));
+    --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
+
+    --code-bg: light-dark(var(--navy-50), var(--navy-950));
+    --code-border: light-dark(var(--navy-100), var(--navy-700));
+
+    /* ---------------------------------------------------------------------
+     * Syntax highlighting.
+     *
+     * Shiki is driven by a CSS-variables theme, so the code palette is part of
+     * the design system rather than a stock editor theme dropped on top of it.
+     * Keywords take the brass accent because keywords are the structure, which
+     * is what this site is about; strings take verdigris so literal data reads
+     * as a different kind of thing; everything else stays in the navy ramp.
+     * ------------------------------------------------------------------ */
+
+    --syn-background: transparent;
+    --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 250));
+    --syn-token-keyword: light-dark(var(--brass-700), var(--brass-400));
+    --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
+    --syn-token-string-expression: var(--syn-token-string);
+    --syn-token-function: light-dark(oklch(0.4800 0.130 262), oklch(0.7900 0.100 262));
+    --syn-token-constant: light-dark(oklch(0.4800 0.140 305), oklch(0.7900 0.095 305));
+    --syn-token-parameter: light-dark(var(--navy-500), var(--navy-200));
+    --syn-token-punctuation: light-dark(var(--navy-400), var(--navy-300));
+    --syn-token-comment: light-dark(var(--navy-400), var(--navy-300));
+    --syn-token-link: var(--accent);
+    --syn-token-inserted: light-dark(oklch(0.4700 0.100 150), oklch(0.7900 0.090 150));
+    --syn-token-deleted: light-dark(var(--rose-600), var(--rose-400));
+    --syn-token-changed: light-dark(var(--amber-600), var(--amber-400));
+
+    /* ---------------------------------------------------------------------
+     * Typography. Raleway sets the voice, Heebo carries the reading, and
+     * JetBrains Mono does every label, so the site annotates itself the way a
+     * drawing does.
+     * ------------------------------------------------------------------ */
+
+    --font-display: 'Raleway', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --text-2xs: 0.6875rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.8125rem;
+    --text-md: 0.9375rem;
+    --text-base: 1.0625rem;
+    --text-lg: 1.1875rem;
+    --text-xl: 1.375rem;
+    --text-2xl: clamp(1.5rem, 1.28rem + 0.9vw, 1.9375rem);
+    --text-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem);
+    --text-4xl: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);
+
+    --leading-tight: 1.1;
+    --leading-snug: 1.3;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.68;
+
+    --tracking-tight: -0.022em;
+    --tracking-snug: -0.011em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.06em;
+    --tracking-label: 0.11em;
+
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    /* ---------------------------------------------------------------------
+     * Space, on a 4px grid that opens up as it climbs.
+     * ------------------------------------------------------------------ */
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+    --space-9: 6rem;
+    --space-10: 8rem;
+
+    --section-gap: clamp(var(--space-8), 5vw, var(--space-10));
+
+    /* ---------------------------------------------------------------------
+     * Shape, measure and motion.
+     * ------------------------------------------------------------------ */
+
+    --radius-xs: 3px;
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-pill: 999px;
+
+    --measure-prose: 68ch;
+    --width-content: 1180px;
+    --width-wide: 1380px;
+    --width-sidebar: 16rem;
+    --width-toc: 14rem;
+    --height-header: 4rem;
+
+    --ease-out: cubic-bezier(0.33, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 280ms;
+
+    --z-sticky: 10;
+    --z-header: 40;
+    --z-overlay: 60;
+  }
+
+  /* An explicit choice overrides the system preference and switches every
+     light-dark() pair above in one move. */
+  :root[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+  }
+}

@@ -1,0 +1,81 @@
+name: Sync Gacela version
+
+# Keeps data/gacela.json, the version the site displays, aligned with the
+# latest gacela-project/gacela release. Runs weekly and can be triggered
+# manually. Never pushes to master directly: it opens a pull request so the
+# update goes through normal review, same as any other change.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # every Monday, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Get latest Gacela release
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag=$(gh api repos/gacela-project/gacela/releases/latest --jq '.tag_name')
+          # Releases in that repo are tagged without a "v" prefix (e.g.
+          # "2.0.0"), but strip one defensively in case that ever changes.
+          version="${tag#v}"
+          echo "Latest gacela-project/gacela release: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Compare with recorded version
+        id: current
+        run: |
+          set -euo pipefail
+          current=$(jq -r '.version' data/gacela.json)
+          echo "Recorded version: $current"
+          echo "version=$current" >> "$GITHUB_OUTPUT"
+
+      - name: Open pull request
+        if: steps.latest.outputs.version != steps.current.outputs.version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LATEST_VERSION: ${{ steps.latest.outputs.version }}
+        run: |
+          set -euo pipefail
+          branch="chore/sync-gacela-version-$LATEST_VERSION"
+
+          # Idempotent across reruns: if a PR for this exact version is
+          # already open (e.g. a previous run this week), do nothing rather
+          # than fail on a duplicate branch.
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "Branch $branch already exists, nothing to do."
+            exit 0
+          fi
+
+          jq --arg v "$LATEST_VERSION" '.version = $v' data/gacela.json > data/gacela.json.tmp
+          mv data/gacela.json.tmp data/gacela.json
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add data/gacela.json
+          git commit -m "chore: sync gacela version to $LATEST_VERSION"
+          git push origin "$branch"
+
+          # Note: a PR opened with the default GITHUB_TOKEN does not itself
+          # trigger other workflows (ci.yml's `pull_request` run), that is a
+          # GitHub anti-recursion rule, not a bug here. Push a commit or
+          # close/reopen the PR to get CI to run on it, or swap the token
+          # for a PAT if that manual step is unwanted.
+          gh pr create \
+            --base master \
+            --head "$branch" \
+            --title "chore: sync gacela version to $LATEST_VERSION" \
+            --body "Gacela [$LATEST_VERSION](https://github.com/gacela-project/gacela/releases/tag/$LATEST_VERSION) was released. Updates \`data/gacela.json\` to match.
+
+          Opened automatically by the \`sync-gacela-version\` workflow."

@@ -1,0 +1,59 @@
+name: Deploy
+
+# Publishes dist/ to GitHub Pages. master is production and there is no
+# staging environment (see CLAUDE.md), so this runs on every push to master,
+# plus workflow_dispatch for a manual re-deploy (e.g. to pick up a Pages
+# configuration change without a new commit).
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Least privilege for the standard GitHub Pages artifact flow: read the repo,
+# write the Pages deployment, and mint the OIDC token deploy-pages
+# authenticates with.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deployment should ever be in flight. Do not cancel one
+# that's already running, a half-applied deploy would leave the live site
+# broken; a new push just queues behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22.18.0" # matches the "engines" minimum in package.json
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  # A separate job that `needs: build`, so a failed build stops here and
+  # nothing gets published. Correctness (typecheck/tests/link-check) is
+  # ci.yml's job, gated on master via required status checks; this job's
+  # only responsibility is turning a green build into a live deployment.
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

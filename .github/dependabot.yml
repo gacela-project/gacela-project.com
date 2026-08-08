@@ -1,0 +1,25 @@
+version: 2
+updates:
+  # Keep pinned Actions majors (checkout, setup-node, the Pages actions,
+  # etc.) current. Grouped into one PR a week rather than one per action.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      # markdown-it and shiki are the two runtime dependencies (see the
+      # dependency budget rule in CLAUDE.md); keep any bump to them visible
+      # in its own PR rather than folded into a tooling group.
+      production-dependencies:
+        dependency-type: "production"
+      dev-dependencies:
+        dependency-type: "development"

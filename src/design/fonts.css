@@ -1,0 +1,30 @@
+/**
+ * Self-hosted variable fonts, latin subset, woff2 only.
+ * No external request ever leaves the origin.
+ */
+
+@layer tokens {
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 500 800;
+    font-display: swap;
+    src: url('/fonts/Raleway-Variable.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Heebo';
+    font-style: normal;
+    font-weight: 300 700;
+    font-display: swap;
+    src: url('/fonts/Heebo-Variable.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  }
+}

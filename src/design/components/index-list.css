@@ -1,0 +1,180 @@
+/**
+ * Index lists and cards: the repeating structures of the marketing pages.
+ *
+ * The index list is the workhorse. It is a table of contents rather than a
+ * grid of cards, because a framework's feature set is a reference, and a
+ * reference should be scannable in one column pass.
+ */
+
+@layer components {
+  .index-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-8);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  @media (max-width: 719px) {
+    .index-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .index-list__item {
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .index-list__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .index-list__title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-strong);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .index-list__summary {
+    display: block;
+    margin-block-start: var(--space-1);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+  }
+
+  .index-list__arrow {
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-spring);
+  }
+
+  .index-list__link:hover .index-list__title {
+    color: var(--accent);
+  }
+
+  .index-list__link:hover .index-list__arrow,
+  .index-list__link:focus-visible .index-list__arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The four classes, as an annotated definition list. Each entry names the
+   * file you will actually create, because that is how a reader meets them.
+   * ------------------------------------------------------------------ */
+
+  .class-list {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+
+  .class-card {
+    display: block;
+    padding: var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    text-decoration: none;
+    transition:
+      border-color var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-out);
+  }
+
+  .class-card:hover {
+    border-color: var(--accent-line);
+    transform: translateY(-2px);
+  }
+
+  .class-card__file {
+    display: inline-block;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-xs);
+    background: var(--accent-wash);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+  }
+
+  .class-card__name {
+    margin-block-start: var(--space-4);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--text-strong);
+  }
+
+  .class-card__text {
+    margin-block-start: var(--space-2);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Closing call to action.
+   * ------------------------------------------------------------------ */
+
+  .cta {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-5);
+    padding-block: var(--section-gap);
+  }
+
+  .cta__title {
+    font-size: var(--text-3xl);
+  }
+
+  .cta__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  /* A stack of related links at the foot of a page. */
+  .link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 2px var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .badge--accent {
+    border-color: var(--accent-line);
+    background: var(--accent-wash);
+    color: var(--accent);
+  }
+}
