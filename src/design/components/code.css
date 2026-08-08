@@ -47,6 +47,7 @@
     margin: 0;
     padding: var(--space-4) var(--space-5);
     overflow-x: auto;
+    scrollbar-width: thin;
     background: transparent;
     font-size: var(--text-sm);
     line-height: 1.7;
