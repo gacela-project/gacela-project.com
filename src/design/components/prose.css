@@ -18,6 +18,12 @@
     margin-block-start: var(--space-4);
   }
 
+  /* For a block that holds code rather than sentences, where the reading
+     measure only creates dead space to the right of it. */
+  .prose--code {
+    max-width: var(--measure-code);
+  }
+
   .prose h1 {
     font-size: var(--text-3xl);
     margin-block-end: var(--space-2);

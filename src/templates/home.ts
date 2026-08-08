@@ -115,7 +115,7 @@ function walkthrough(page: RenderedPage): Raw {
         </p>
       </div>
 
-      <div class="prose">${raw(page.html)}</div>
+      <div class="prose prose--code">${raw(page.html)}</div>
     </div>
   </section>`
 }

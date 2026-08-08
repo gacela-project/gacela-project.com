@@ -227,6 +227,10 @@
     --radius-button: var(--radius-md);
 
     --measure-prose: 68ch;
+    /* Code is not prose and does not want the reading measure. A code group's
+       tab strip is as wide as the filenames in it, and on the home page that is
+       wider than 68ch, so the strip was clipping its last tab. */
+    --measure-code: 52rem;
     --width-content: 1180px;
     --width-wide: 1380px;
     --width-sidebar: 16rem;
