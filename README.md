@@ -49,24 +49,30 @@ with no compile step.
 
 ```text
 content/            Markdown source
-  docs/               documentation pages (mirrored from gacela-project/gacela)
-  pages/              home, about, team, used-in, license
-public/             copied verbatim to the site root (fonts, favicon, logos)
+  docs/               documentation pages, carried over byte for byte
+  pages/              home, about, team, used-in, licence, styleguide, 404
+public/             copied verbatim to the site root (fonts, favicon, logos, CNAME)
+data/               gacela.json, the framework version a workflow keeps current
 src/
   forge/            the static site generator
-    cli/              build, dev, preview, lint-links entry points
-    content/          file loading, frontmatter, page model
-    markdown/         markdown-it pipeline, containers, code groups, anchors, toc
-    nav/              navigation tree, breadcrumbs, prev/next
-    render/           HTML rendering primitives and page assembly
+    cli/              build, dev, preview and lint-links entry points
+    content/          file loading, frontmatter, the page model
+    markdown/         markdown-it pipeline: containers, code groups, anchors, toc
+    nav/              sidebar model, prev/next, the active page
+    render/           escaping primitives and page assembly
     search/           search index construction
-    assets/           content-hashed asset pipeline
+    assets/           import inlining, minification, content hashing
+    audit/            internal link and anchor validation
+    pipeline.ts       composition: the only module that knows about the others
   design/           the Facet design system (CSS)
-  client/           progressive enhancement scripts
-  templates/        page layouts
+  client/           progressive enhancement: theme, search, copy, toc
+  templates/        page layouts and the document shell
 tests/              Vitest suites, mirroring src/forge
 site.config.ts      single source of truth for nav, metadata and redirects
 ```
+
+The design system documents itself at [`/styleguide`](https://gacela-project.com/styleguide),
+rendered from the same tokens the rest of the site uses.
 
 ## How the docs stay in sync
 
