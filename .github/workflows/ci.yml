@@ -28,7 +28,9 @@ jobs:
 
       - uses: actions/setup-node@v7
         with:
-          node-version: "22.18.0" # matches the "engines" minimum in package.json
+          # Latest 22.x, which satisfies the ">=22.18.0" engines floor without
+          # freezing CI on one patch release.
+          node-version: "22"
           cache: npm
 
       - run: npm ci
