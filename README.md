@@ -16,22 +16,20 @@
 
 ## What this is
 
-A static site built by **Forge**, a small purpose-built generator that lives in this
-repository, and styled by **Facet**, a hand-written design system with no CSS framework
-behind it.
+A static site built by **Forge**, a small purpose-built generator that lives in this repository, and styled by
+**Facet**, a hand-written design system with no CSS framework behind it.
 
-Two runtime dependencies, no bundler, no client framework. Pages are HTML that works
-before a single byte of JavaScript loads; the JavaScript that does load is a few
-kilobytes of progressive enhancement.
+Two runtime dependencies, no bundler, no client framework. Pages are HTML that works before a single byte of JavaScript
+loads; the JavaScript that does load is a few kilobytes of progressive enhancement.
 
-| | |
-|---|---|
-| **Generator** | `src/forge` — TypeScript, run directly by Node's type stripping |
-| **Design system** | `src/design` — CSS custom properties + `@layer`, light and dark |
-| **Content** | `content/` — Markdown, the docs kept in sync with the Gacela repo |
-| **Dependencies** | `markdown-it` (Markdown), `shiki` (syntax highlighting) |
-| **Tests** | `tests/` — Vitest, unit tests for every generator module |
-| **Deploy** | GitHub Actions → GitHub Pages, on every push to `master` |
+|                   |                                                                   |
+|-------------------|-------------------------------------------------------------------|
+| **Generator**     | `src/forge` — TypeScript, run directly by Node's type stripping   |
+| **Design system** | `src/design` — CSS custom properties + `@layer`, light and dark   |
+| **Content**       | `content/` — Markdown, the docs kept in sync with the Gacela repo |
+| **Dependencies**  | `markdown-it` (Markdown), `shiki` (syntax highlighting)           |
+| **Tests**         | `tests/` — Vitest, unit tests for every generator module          |
+| **Deploy**        | GitHub Actions → GitHub Pages, on every push to `master`          |
 
 ## Getting started
 
@@ -42,8 +40,7 @@ npm run build # production build into dist/
 npm run check # typecheck + tests + build + link check (what CI runs)
 ```
 
-Node **22.18+** is required: the generator is TypeScript executed directly by Node,
-with no compile step.
+Node **22.18+** is required: the generator is TypeScript executed directly by Node, with no compile step.
 
 ## Repository layout
 
@@ -71,26 +68,24 @@ tests/              Vitest suites, mirroring src/forge
 site.config.ts      single source of truth for nav, metadata and redirects
 ```
 
-The design system documents itself at [`/styleguide`](https://gacela-project.com/styleguide),
-rendered from the same tokens the rest of the site uses.
+The design system documents itself at [`/styleguide`](https://gacela-project.com/styleguide), rendered from the same
+tokens the rest of the site uses.
 
 ## How the docs stay in sync
 
-The documentation pages in `content/docs` are the canonical, human-edited source for
-gacela-project.com. The `sync-gacela-version` workflow keeps the displayed framework
-version aligned with the latest Gacela release, and `docs-drift-guard` flags public API
-that appears in release notes but nowhere in the docs.
+The documentation pages in `content/docs` are the canonical, human-edited source for gacela-project.com. The
+`sync-gacela-version` workflow keeps the displayed framework version aligned with the latest Gacela release, and
+`docs-drift-guard` flags public API that appears in release notes but nowhere in the docs.
 
 ## Deployment
 
-Merging to `master` runs `ci.yml` (typecheck, tests, build, link check) and then
-`deploy.yml`, which publishes `dist/` to GitHub Pages. Production is
-[gacela-project.com](https://gacela-project.com).
+Merging to `master` runs `ci.yml` (typecheck, tests, build, link check) and then `deploy.yml`, which publishes `dist/`
+to GitHub Pages. Production is [gacela-project.com](https://gacela-project.com).
 
 ## Contributing
 
-Issues and pull requests are welcome. Run `npm run check` before opening one: it is
-exactly what CI runs, so a green local check means a green pipeline.
+Issues and pull requests are welcome. Run `npm run check` before opening one: it is exactly what CI runs, so a green
+local check means a green pipeline.
 
 ## License
 
