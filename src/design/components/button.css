@@ -11,7 +11,7 @@
     background: var(--button-bg);
     color: var(--button-fg);
     border: 1px solid var(--button-border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-button);
     font-family: var(--font-display);
     font-size: var(--text-md);
     font-weight: var(--weight-semibold);
@@ -66,7 +66,7 @@
     place-items: center;
     inline-size: 2.25rem;
     block-size: 2.25rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-button);
     color: var(--text-muted);
     transition:
       background-color var(--duration-fast) var(--ease-out),

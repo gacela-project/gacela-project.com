@@ -220,6 +220,12 @@
     --radius-lg: 14px;
     --radius-pill: 999px;
 
+    /* Buttons round a step further than the surfaces around them, so a control
+       reads as pressable against a panel that does not. Named rather than used
+       directly, because the whole button family has to move together or the
+       header ends up with two radii in one row. */
+    --radius-button: var(--radius-md);
+
     --measure-prose: 68ch;
     --width-content: 1180px;
     --width-wide: 1380px;
