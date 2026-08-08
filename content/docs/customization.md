@@ -148,6 +148,46 @@ return function (GacelaConfig $config) {
 - CustomServicesPhpCacheCreatedEvent
 - CustomServicesInMemoryCacheCreatedEvent
 
+#### Gacela\Framework\Event\Bootstrap
+- GacelaBootstrapStartedEvent &mdash; `appRootDir()`
+- GacelaBootstrapFinishedEvent &mdash; `durationMs()`
+
+#### Gacela\Framework\Event\Config
+- ConfigInitializedEvent &mdash; `keyCount()`
+- ConfigKeyReadEvent &mdash; `key()`
+- ConfigKeyNotFoundEvent &mdash; `key()`
+
+#### Gacela\Framework\Event\Container
+- BindingRegisteredEvent &mdash; `id()`, dispatched when a binding is registered
+- ServiceResolvedEvent &mdash; `id()`, dispatched when the container resolves a service
+
+#### Gacela\Framework\Event\Provider
+- ProviderRegisteredEvent &mdash; `providerClass()`, `moduleName()`
+
+#### Gacela\Framework\Event\Cache
+- CacheClearedEvent &mdash; `cacheFile()`
+- CacheWarmedEvent &mdash; `moduleCount()`, `failedCount()`, `skippedCount()`
+
+::: tip
+`BindingRegisteredEvent` fires at **registration**, not at resolution. To act on an instance as it is resolved, use [`afterResolving()`](/docs/bindings#after-resolving) instead: a listener observes, while `afterResolving()` can call something on the object.
+:::
+
+### Turning events off
+
+```php
+disableEventListeners();
+```
+
+Stop dispatching every event in the application. Dispatch costs something on a hot path, and in production nothing is usually listening.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->disableEventListeners();
+};
+```
+
 ## Reset InMemoryCache
 
 ```php

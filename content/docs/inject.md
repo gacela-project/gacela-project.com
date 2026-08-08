@@ -29,6 +29,32 @@ subclasses it, and every attribute read passes `ReflectionAttribute::IS_INSTANCE
 `Gacela\Framework` import in new code so your application does not reach into the container
 package directly.
 
+## Where it can go
+
+Since `2.0.0` the attribute also applies to a **property** and to a **setter**, not only to a constructor parameter.
+
+```php
+use Gacela\Framework\Attribute\Inject;
+
+final class ReportController extends FrameworkBaseController
+{
+    #[Inject]
+    private LoggerInterface $logger;
+
+    #[Inject(RedisCache::class)]
+    public function setCache(CacheInterface $cache): void
+    {
+        $this->cache = $cache;
+    }
+}
+```
+
+::: warning
+Constructor injection stays the default. A property or a setter exists for classes whose constructor is not yours to change, such as a framework base class or legacy code, and not as an equal alternative. Neither is a way to model a cycle either: a cycle reached through any of the three still raises `CircularDependencyException`.
+:::
+
+A setter is the option a property cannot cover. It can validate or derive state, where writing the field cannot, and it can be declared on an interface, where a property cannot.
+
 ## Resolution order
 
 When a parameter carries `#[Inject]`, the container resolves it following this chain:

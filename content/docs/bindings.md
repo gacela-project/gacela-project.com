@@ -28,6 +28,22 @@ return function (GacelaConfig $config) {
 
 In the example above, whenever `AbstractString` is found then `StringClass` will be resolved.
 
+### addBindingIf
+
+```php
+addBindingIf(string $key, string|object|callable $value);
+```
+
+Bind a key **only if it is not already bound**. This is what a plugin uses to register a default: the application, or any binding registered earlier, keeps the last word.
+
+```php
+<?php # in a plugin
+
+$config->addBindingIf(LoggerInterface::class, NullLogger::class);
+```
+
+Use `addBinding()` when your wiring must win, and `addBindingIf()` when it is a fallback somebody else may reasonably want to replace.
+
 ### Using externalServices
 
 ```php
@@ -173,3 +189,134 @@ return function (GacelaConfig $config) {
 ```
 
 Contextual bindings win over the global `addBinding()` for the same interface. For a per-parameter alternative driven by an attribute, see [`#[Inject]`](/docs/inject).
+
+## Tagged Services
+
+```php
+tag(string|array $ids, string $tag);
+```
+
+Group service identifiers under a label, so a module can ask for "every service tagged X" without knowing who registered them. Resolve the group with `Container::tagged($tag)`, which instantiates each id lazily, in the order it was tagged.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->tag([EmailValidator::class, SmsValidator::class], 'validators');
+};
+```
+
+```php
+# in a Provider
+$container->set('validators', static fn(Container $c) => $c->tagged('validators'));
+```
+
+Declared in `gacela.php`, a tag reaches every module's container, so any module can consume it. A module that wants to **add** to a tag calls `Container::tag()` in its own Provider instead: that stays local to that module's container, which is what stops one module's contribution from leaking into a sibling's.
+
+Repeated calls add to a tag rather than replacing it, and an id tagged twice is still yielded once.
+
+::: info
+A tag and a [handler registry](/docs/extensions#handler-registry) solve neighbouring problems. A registry is keyed and answers "the handler for *this* key", which is what a command bus needs. A tag is unkeyed and answers "every implementation of this", which is what validators and listeners need.
+:::
+
+## Definitions
+
+```php
+loadDefinitions(string|array $definitions);
+```
+
+Register a whole set of bindings from **data** rather than from a sequence of method calls, so wiring that is generated, shared between environments, or reviewed as a diff does not have to be written as code.
+
+Pass the definitions inline, or the path of a `.php` file returning an array, or a `.json` file holding an object:
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->loadDefinitions([
+    LoggerInterface::class => FileLogger::class,
+    Database::class => ['singleton' => DatabasePool::class],
+    'db.dsn' => ['value' => 'pgsql://localhost/app'],
+  ]);
+
+  $config->loadDefinitions(__DIR__ . '/services.json');
+};
+```
+
+Every entry calls the registration method it stands for, so a definition behaves exactly like the imperative call it replaces.
+
+::: warning
+Order matters. Sources are applied as declared and **after** the imperative registrations, so a definitions file overrides `addBinding()`. That is what makes a per-environment override file useful, and what will surprise you if you expected the opposite. Tags accumulate rather than override.
+:::
+
+The path is used as given: unlike [`enableFileCache()`](/docs/caching) it is not rebased under the application root, so write it with `__DIR__`. A missing or unparsable file throws rather than leaving the wiring half applied.
+
+YAML is deliberately unsupported, since neither the container nor Gacela will take a runtime dependency on a parser for it. Pass `Yaml::parseFile('services.yaml')` as the array instead.
+
+Like `addBinding()`, definitions loaded here apply app-wide. A module that wants definitions of its own calls `Container::load()` in its Provider.
+
+## After Resolving
+
+```php
+afterResolving(string $id, Closure $callback);
+```
+
+Run a callback on an instance once the container has resolved it. The callback receives the instance and the container, and callbacks run in registration order.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->afterResolving(
+    LoggerAwareInterface::class,
+    static fn(LoggerAwareInterface $service) => $service->setLogger($logger),
+  );
+};
+```
+
+`$id` may name an **interface**, which is the point: the match is made against the resolved instance rather than by looking the requested id up in a map, so one registration covers every implementation. A concrete class name works too, and matches only that class.
+
+::: warning
+The hook fires **once per resolution, not once per instance**. A shared instance fetched three times runs the callback three times, on the same object, so the callback has to be idempotent. Setting a property is safe; appending to a collection, incrementing a counter or registering a listener will repeat.
+:::
+
+Hooks fire on container-level resolution: `get()`, `getOrFail()` and `make()`. A class the container autowires as a nested constructor dependency is not resolved at that level, so hooks do not fire for it. A callback that throws removes the instance from the container rather than leaving a half-wired one behind for the next caller.
+
+Three tools sit close together here, and they answer different questions:
+
+| Tool | What it does |
+| --- | --- |
+| `afterResolving()` | Calls something **on** the instance. The instance is unchanged. |
+| [`extendService()`](/docs/extensions#extend-service) | **Replaces** what comes out. Right for decoration. |
+| [Event listeners](/docs/customization#listening-to-internal-events) | **Observe** only. `BindingRegisteredEvent` fires at registration, not at resolution. |
+
+## Lifetime attributes
+
+The container reads three class-level attributes, so a class can declare its own lifetime instead of every consumer having to know it.
+
+```php
+use Gacela\Container\Attribute\Factory;
+use Gacela\Container\Attribute\Lazy;
+use Gacela\Container\Attribute\Singleton;
+
+#[Singleton]
+final class ConnectionPool {}
+
+#[Factory]
+final class RequestId {}
+
+#[Lazy]
+final class ReportRenderer {}
+```
+
+- `#[Singleton]`: the container caches one instance and reuses it.
+- `#[Factory]`: a new instance on every request. The attribute equivalent of [factory services](#factory-services).
+- `#[Lazy]`: construction is deferred until the instance is first used. The container returns a lazy ghost, a real instance of the right type whose constructor has not run; touching any property or method initialises it. Worth it for an expensive service a given request may never reach.
+
+::: warning
+`#[Lazy]` is not the attribute form of [`addLazy()`](#lazy-services), despite the name. `addLazy()` defers a closure out of bootstrap and returns a **new instance on every resolve**. `#[Lazy]` is about *when* a class is constructed, not how many times.
+:::
+
+::: info
+`#[Lazy]` needs PHP 8.4 for native lazy objects. On 8.3 the class is constructed eagerly instead, which is unobservable apart from the timing.
+:::
