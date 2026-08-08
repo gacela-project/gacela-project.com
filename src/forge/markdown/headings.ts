@@ -38,10 +38,16 @@ export function headingsPlugin(md: MarkdownIt): void {
   })
 }
 
+/**
+ * The link is empty and its "#" glyph comes from CSS.
+ *
+ * Putting the character in the markup would make it part of the heading's text
+ * for anything that reads the rendered HTML: the search index, an excerpt, a
+ * reader copying a heading. It is decoration, so it lives in the stylesheet.
+ */
 function anchorToken(state: StateCore, id: string): Token {
   const token = new state.Token('html_inline', '', 0)
-  token.content =
-    `<a class="heading-anchor" href="#${escapeHtml(id)}" aria-hidden="true" tabindex="-1">#</a>`
+  token.content = `<a class="heading-anchor" href="#${escapeHtml(id)}" aria-hidden="true" tabindex="-1"></a>`
 
   return token
 }

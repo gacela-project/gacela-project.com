@@ -90,6 +90,13 @@
     transition: opacity var(--duration-fast) var(--ease-out);
   }
 
+  /* The glyph is generated rather than written into the markup, so it never
+     becomes part of the heading's text for the search index or for a reader
+     copying the line. */
+  .heading-anchor::before {
+    content: '#';
+  }
+
   :is(h1, h2, h3, h4, h5, h6):hover > .heading-anchor,
   .heading-anchor:focus-visible {
     opacity: 1;
