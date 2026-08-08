@@ -45,12 +45,15 @@
 
   h3 {
     font-size: var(--text-xl);
-    font-weight: var(--weight-semibold);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-snug);
   }
 
+  /* h3 and h4 used to share a family, a weight and a colour, leaving 3px of
+     size to tell them apart against 1.35 elsewhere in the scale. h3 is now bold
+     and h4 semibold, so weight carries the distinction as well as size. */
   h4 {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-normal);
   }

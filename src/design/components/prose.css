@@ -45,6 +45,14 @@
     margin-block-start: var(--space-3);
   }
 
+  /* A code block bound to the sentence that introduces it. Without this the gap
+     before an example equals the gap after it, and a section of alternating
+     prose and code reads as one undifferentiated stack. */
+  .prose p + .code-block,
+  .prose p + .code-group {
+    margin-block-start: var(--space-3);
+  }
+
   .prose ul,
   .prose ol {
     padding-inline-start: var(--space-5);
@@ -77,6 +85,18 @@
 
   .prose img {
     border-radius: var(--radius-md);
+  }
+
+  /* A linked mark inherits the link colour, which turned a third party's logo
+     into the largest brass object on the site while telling the reader nothing.
+     It takes the ink colour and picks up the accent on hover, like any link. */
+  .prose a:has(> svg) {
+    color: var(--text-strong);
+    display: inline-block;
+  }
+
+  .prose a:has(> svg):hover {
+    color: var(--accent);
   }
 
   /* Heading anchors: present in the DOM for everyone, revealed on hover or
@@ -117,6 +137,7 @@
     font-size: var(--text-md);
     display: block;
     overflow-x: auto;
+    scrollbar-width: thin;
   }
 
   .prose thead th {

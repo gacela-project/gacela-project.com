@@ -131,6 +131,19 @@
     .diagram__legend {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    /* Scaled to fit a phone, the drawing's labels fall to about 4px. It keeps
+       a legible size and scrolls instead, with the scrollbar left visible so
+       there is something to say it can. */
+    .diagram__frame {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-inline: var(--space-3);
+    }
+
+    .diagram__svg {
+      min-inline-size: 34rem;
+    }
   }
 
   .diagram__choice {

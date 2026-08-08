@@ -29,6 +29,12 @@
     letter-spacing: var(--tracking-normal);
   }
 
+  /* Shown beside a filename, never on its own: a label that reads "PHP" above
+     every block on the page is noise, not information. */
+  .code-block__caption:not(:has(> span:not(.code-block__lang))) {
+    display: none;
+  }
+
   .code-block__lang {
     margin-inline-start: auto;
     text-transform: uppercase;
@@ -87,6 +93,13 @@
     opacity: 1;
   }
 
+  /* There is no hover on a touch screen, so the button simply stays. */
+  @media (hover: none) {
+    :root[data-js] .code-block__copy {
+      opacity: 1;
+    }
+  }
+
   .code-block__copy:hover {
     color: var(--accent);
   }
@@ -121,13 +134,9 @@
   .code-group__tabs {
     display: flex;
     overflow-x: auto;
-    scrollbar-width: none;
+    scrollbar-width: thin;
     background: var(--surface-sunken);
     border-block-end: 1px solid var(--code-border);
-  }
-
-  .code-group__tabs::-webkit-scrollbar {
-    display: none;
   }
 
   .code-group__tab {
@@ -222,13 +231,16 @@
   }
 
   /* Inline code inside prose. */
+  /* Long signatures such as addExternalService(string, string|object|callable)
+     are wider than a phone. They used to be nowrap, which pushed the whole
+     document sideways; now only a token that would overflow breaks. */
   :not(pre) > code {
     padding: 0.15em 0.4em;
     border-radius: var(--radius-xs);
     background: var(--surface-sunken);
     border: 1px solid var(--border-subtle);
     color: var(--text-strong);
-    white-space: nowrap;
+    overflow-wrap: anywhere;
   }
 
   a :not(pre) > code,

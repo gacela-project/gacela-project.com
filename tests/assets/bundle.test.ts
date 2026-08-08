@@ -207,10 +207,6 @@ describe('minifyCss', () => {
     expect(minifyCss('/* a note */\nbody { color: red; }')).not.toContain('a note')
   })
 
-  it('keeps the declarations intact', () => {
-    expect(minifyCss('/* x */ body { color: red; }')).toContain('color:red')
-  })
-
   it('collapses whitespace between rules', () => {
     expect(minifyCss('a {\n  color: red;\n}\n\n\nb {\n  color: blue;\n}')).toBe(
       'a{color:red}b{color:blue}',
@@ -227,22 +223,74 @@ describe('minifyCss', () => {
     )
   })
 
-  it('keeps at-rules and layer declarations', () => {
-    expect(minifyCss('@layer a, b;\n@media (min-width: 40rem) { a { color: red } }')).toContain(
-      '@layer a,b;',
-    )
-  })
-
-  it('preserves the space in a media query feature test', () => {
-    expect(minifyCss('@media (min-width: 40rem) { a { color: red } }')).toContain('min-width:40rem')
-  })
-
-  it('keeps space-separated values readable to the parser', () => {
-    expect(minifyCss('a { margin: 0 auto; border: 1px solid red }')).toContain('margin:0 auto')
-  })
-
   it('is idempotent', () => {
     const once = minifyCss('a { color: red; }')
     expect(minifyCss(once)).toBe(once)
+  })
+
+  // Everything below is a case where dropping a space changes meaning or
+  // produces something the parser rejects. Each one shipped broken once.
+
+  it('keeps the spaces around + inside a math function', () => {
+    expect(minifyCss('a { font-size: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem) }')).toContain(
+      'clamp(1.875rem,1.5rem + 1.6vw,2.625rem)',
+    )
+  })
+
+  it('keeps the spaces around - inside calc, where they are mandatory', () => {
+    expect(minifyCss('a { width: calc(100% - 2rem) }')).toContain('calc(100% - 2rem)')
+  })
+
+  it('keeps the descendant space before a pseudo class', () => {
+    // "a :not(pre)" is code inside a link; "a:not(pre)" is a link that is not a
+    // pre. Dropping the space silently changes which elements match.
+    expect(minifyCss('a :not(pre) > code { color: red }')).toContain('a :not(pre)')
+  })
+
+  it('keeps the descendant space before an attribute selector', () => {
+    expect(minifyCss('nav [data-active] { color: red }')).toContain('nav [data-active]')
+  })
+
+  it('keeps the space between a media query and its condition', () => {
+    expect(minifyCss('@media (min-width: 40rem) { a { color: red } }')).toContain('@media (min-width:40rem)')
+  })
+
+  it('keeps the space around "and" joining two media conditions', () => {
+    const out = minifyCss('@media (min-width: 40rem) and (max-width: 50rem) { a { color: red } }')
+
+    expect(out).toContain('(min-width:40rem) and (max-width:50rem)')
+  })
+
+  it('keeps space-separated values in a shorthand', () => {
+    expect(minifyCss('a { margin: 0 auto; border: 1px solid red }')).toContain('margin:0 auto')
+  })
+
+  it('keeps combinators usable, with or without the spaces it preserves', () => {
+    const out = minifyCss('a > b { color: red }\nc ~ d { color: blue }\ne + f { color: green }')
+
+    expect(out).toContain('a > b')
+    expect(out).toContain('c ~ d')
+    expect(out).toContain('e + f')
+  })
+
+  it('drops the space after a colon inside a declaration', () => {
+    expect(minifyCss('a { color: red }')).toContain('color:red')
+  })
+
+  it('keeps a layer declaration parseable', () => {
+    expect(minifyCss('@layer reset, tokens, base;')).toBe('@layer reset,tokens,base;')
+  })
+
+  it('produces css the browser accepts for the real type scale', () => {
+    const source = `
+      :root {
+        --text-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem);
+        --section-gap: clamp(var(--space-8), 5vw, var(--space-10));
+      }
+    `
+    const out = minifyCss(source)
+
+    expect(out).toContain('clamp(1.875rem,1.5rem + 1.6vw,2.625rem)')
+    expect(out).not.toMatch(/rem\+/)
   })
 })

@@ -115,14 +115,18 @@
      *
      * Shiki is driven by a CSS-variables theme, so the code palette is part of
      * the design system rather than a stock editor theme dropped on top of it.
-     * Keywords take the brass accent because keywords are the structure, which
-     * is what this site is about; strings take verdigris so literal data reads
-     * as a different kind of thing; everything else stays in the navy ramp.
+     *
+     * Nothing here uses brass. Keywords did, on the reasoning that keywords are
+     * structure, but a documentation page holds around a hundred keywords and
+     * eight pieces of real UI signal, so the accent stopped meaning anything
+     * where it mattered. Keywords now lean on weight and the navy ramp, and
+     * brass is reserved for the active page, the active heading and the primary
+     * action.
      * ------------------------------------------------------------------ */
 
     --syn-background: transparent;
     --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 250));
-    --syn-token-keyword: light-dark(var(--brass-700), var(--brass-400));
+    --syn-token-keyword: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
     --syn-token-string-expression: var(--syn-token-string);
     --syn-token-function: light-dark(oklch(0.4800 0.130 262), oklch(0.7900 0.100 262));
@@ -130,7 +134,7 @@
     --syn-token-parameter: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-punctuation: light-dark(var(--navy-400), var(--navy-300));
     --syn-token-comment: light-dark(var(--navy-400), var(--navy-300));
-    --syn-token-link: var(--accent);
+    --syn-token-link: light-dark(oklch(0.4800 0.130 262), oklch(0.7900 0.100 262));
     --syn-token-inserted: light-dark(oklch(0.4700 0.100 150), oklch(0.7900 0.090 150));
     --syn-token-deleted: light-dark(var(--rose-600), var(--rose-400));
     --syn-token-changed: light-dark(var(--amber-600), var(--amber-400));
@@ -151,7 +155,9 @@
     --text-md: 0.9375rem;
     --text-base: 1.0625rem;
     --text-lg: 1.1875rem;
-    --text-xl: 1.375rem;
+    /* Clamped so h3 tracks h2 down at narrow widths. Left static, the two
+       landed 2px apart on a phone and the nesting stopped reading. */
+    --text-xl: clamp(1.1875rem, 1.05rem + 0.55vw, 1.375rem);
     --text-2xl: clamp(1.5rem, 1.28rem + 0.9vw, 1.9375rem);
     --text-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem);
     --text-4xl: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);

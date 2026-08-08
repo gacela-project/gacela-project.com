@@ -84,6 +84,8 @@ export async function bundleCss(entryPath: string): Promise<string> {
 export function minifyCss(source: string): string {
   let output = ''
   let index = 0
+  let blockDepth = 0
+  let parenDepth = 0
 
   while (index < source.length) {
     const character = source[index]!
@@ -103,12 +105,17 @@ export function minifyCss(source: string): string {
 
     if (/\s/.test(character)) {
       const next = skipWhitespace(source, index)
-      // A single space survives only where it separates two values; around
-      // punctuation it never carries meaning.
-      if (needsSpace(output.at(-1), source[next])) output += ' '
+      if (!canDropSpace(output.at(-1), source[next], blockDepth > 0 || parenDepth > 0)) {
+        output += ' '
+      }
       index = next
       continue
     }
+
+    if (character === '{') blockDepth += 1
+    else if (character === '}') blockDepth = Math.max(0, blockDepth - 1)
+    else if (character === '(') parenDepth += 1
+    else if (character === ')') parenDepth = Math.max(0, parenDepth - 1)
 
     // The semicolon on the last declaration of a block is optional.
     if (character === '}' && output.endsWith(';')) output = output.slice(0, -1)
@@ -120,11 +127,30 @@ export function minifyCss(source: string): string {
   return output.trim()
 }
 
-const PUNCTUATION = new Set(['{', '}', ';', ':', ',', '>', '~', '+', '(', ')', undefined])
+/**
+ * Whitespace is only dropped where CSS can never need it.
+ *
+ * This is deliberately timid, because the failure mode is silent. Two rules
+ * earn their comment:
+ *
+ * `+`, `-`, `>` and `~` keep their spaces. They are combinators in a selector,
+ * where the space is optional, but they are also operators inside calc() and
+ * clamp(), where a space on both sides is mandatory. Telling the two apart
+ * needs a real parser; keeping the space is always valid and costs one byte.
+ *
+ * A space *before* `:` is never dropped: `a :not(pre)` matches code inside a
+ * link, `a:not(pre)` matches a link that is not a pre. A space *after* it is
+ * dropped only inside a declaration or a media feature, where no selector can
+ * follow.
+ */
+function canDropSpace(before: string | undefined, after: string | undefined, inValue: boolean): boolean {
+  if (before === undefined || after === undefined) return true
+  if (ALWAYS_TIGHT.has(before) || ALWAYS_TIGHT.has(after)) return true
 
-function needsSpace(before: string | undefined, after: string | undefined): boolean {
-  return !PUNCTUATION.has(before) && !PUNCTUATION.has(after)
+  return before === ':' && inValue
 }
+
+const ALWAYS_TIGHT = new Set(['{', '}', ';', ','])
 
 function skipWhitespace(source: string, from: number): number {
   let index = from
