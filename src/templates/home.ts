@@ -53,19 +53,14 @@ const CAPABILITIES = [
 ] as const
 
 export function homeLayout(context: HomeContext): Raw {
-  return html`${hero(context.site)} ${walkthrough(context.page)} ${capabilities()} ${closing()}`
+  return html`${hero()} ${walkthrough(context.page)} ${capabilities()} ${closing()}`
 }
 
-function hero(site: SiteConfig): Raw {
+function hero(): Raw {
   return html`<section class="hero">
     <div class="container container--wide">
       <div class="hero__grid">
         <div>
-          <a class="hero__eyebrow" href="${site.repository}" rel="noreferrer">
-            <span class="hero__eyebrow-dot"></span>
-            gacela-project/gacela
-          </a>
-
           <h1 class="hero__title">Every module has <em>one door</em>.</h1>
 
           <p class="hero__lede">
