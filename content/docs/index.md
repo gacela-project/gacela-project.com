@@ -1,6 +1,6 @@
 ---
 title: Documentation
-description: Choose the shortest path from installation to a production-ready Gacela 2.0 module.
+description: Choose the shortest path from installation to a production-ready Gacela 2.1 module.
 ---
 
 # Gacela documentation

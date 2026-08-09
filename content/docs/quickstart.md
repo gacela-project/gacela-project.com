@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Install Gacela 2.0 and build a complete, working module in a few minutes.
+description: Install Gacela 2.1 and build a complete, working module in a few minutes.
 ---
 
 # Quickstart
@@ -14,11 +14,11 @@ complete module you can run from the command line.
 
 ## Installation
 
-Gacela 2.0 requires **PHP 8.3 or newer**. Install it
+Gacela 2.1 requires **PHP 8.3 or newer**. Install it
 from [Packagist](https://packagist.org/packages/gacela-project/gacela):
 
 ```bash
-composer require gacela-project/gacela:^2.0
+composer require gacela-project/gacela:^2.1
 ```
 
 ## Start with the code you want to run
@@ -162,7 +162,7 @@ Factory, and the Facade reached the service.
 | `Class "Module\\Facade" not found` | Confirm the PSR-4 mapping, then run `composer dump-autoload` again                                                 |
 | Gacela cannot resolve `Factory`    | Confirm `Factory.php` is beside `Facade.php`, both use `namespace Module`, and the class name is exactly `Factory` |
 | `vendor/autoload.php` is missing   | Run `composer install` from the project root                                                                       |
-| Your PHP version is rejected       | Run `php -v`; Gacela 2.0 requires PHP 8.3+                                                                         |
+| Your PHP version is rejected       | Run `php -v`; Gacela 2.1 requires PHP 8.3+                                                                         |
 
 That is a complete Gacela module. Add a [Provider](/docs/provider) only when it needs another module or infrastructure
 service, and add a [Config](/docs/config) only when it needs application settings.
