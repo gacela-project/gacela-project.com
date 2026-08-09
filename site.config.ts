@@ -90,6 +90,7 @@ export const site: SiteConfig = {
   /* URLs the previous site published. They stay reachable. */
   redirects: {
     '/docs/index': '/docs',
+    '/styleguide': '/design-system',
     '/about-gacela': '/about',
     '/why-decoupling': '/about#why-decoupling',
   },

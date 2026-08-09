@@ -34,7 +34,7 @@ npm run preview     # serve dist/ as it will be served in production
 npm test            # vitest, watch mode
 npm run typecheck   # tsc --noEmit
 npm run lint:links  # validate every internal link and anchor in dist/
-npm run check       # typecheck + tests + build + link check — mirrors CI exactly
+npm run check       # typecheck + tests + build + link check: mirrors CI exactly
 ```
 
 Always run `npm run check` before declaring work finished. Do not report a task as complete on the strength of a passing
@@ -66,7 +66,7 @@ Rules that follow from that:
 
 ## Conventions
 
-- **TypeScript, ESM, `.ts` extensions in imports.** Node runs the source directly via type stripping — there is no build
+- **TypeScript, ESM, `.ts` extensions in imports.** Node runs the source directly via type stripping, so there is no build
   step for the generator. That means: no enums, no parameter properties, no namespaces, nothing that needs code
   generation. `erasableSyntaxOnly` is on and will tell you.
 - **`type` imports are explicit** (`verbatimModuleSyntax`).
@@ -78,20 +78,20 @@ Rules that follow from that:
 
 ## Content
 
-- `content/docs/*.md` — documentation. Frontmatter: `title`, optional `description`, optional `order`.
-- `content/pages/*.md` — standalone pages. Frontmatter adds `layout`.
+- `content/docs/*.md`: documentation. Frontmatter: `title`, optional `description`, optional `order`.
+- `content/pages/*.md`: standalone pages. Frontmatter adds `layout`.
 - Navigation is declared in `site.config.ts`, not inferred from the filesystem. A doc that is not in the nav is still
   built and reachable, but will be reported by `lint:links` as orphaned.
 - Internal links are written as absolute site paths (`/docs/facade`), without file extensions.
 
 ## Design system
 
-Facet is documented at `/styleguide` in the running site, which is generated from the same tokens the site uses. When
+Facet is documented at `/design-system` in the running site, which is generated from the same tokens the site uses. When
 adding a component:
 
 1. Add its tokens to `src/design/tokens.css` if it needs new ones.
 2. Add the component CSS to `src/design/components/`.
-3. Add it to the styleguide page so it stays visible and reviewable.
+3. Add it to the design system page so it stays visible and reviewable.
 
 Dark mode is a token swap, never a separate stylesheet. Both themes must be checked before shipping any visual change.
 

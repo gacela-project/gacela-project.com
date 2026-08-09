@@ -152,9 +152,9 @@ describe('llmsFullContext', () => {
       body: '# About\n',
     }),
     page({
-      route: '/styleguide',
-      frontmatter: { title: 'Styleguide', unlisted: true },
-      body: '# Styleguide\n',
+      route: '/design-system',
+      frontmatter: { title: 'Design system', unlisted: true },
+      body: '# Design system\n',
     }),
   ]
 
@@ -171,7 +171,7 @@ describe('llmsFullContext', () => {
   })
 
   it('leaves out unlisted pages', () => {
-    expect(llmsFullContext(site, pages)).not.toContain('# Styleguide')
+    expect(llmsFullContext(site, pages)).not.toContain('# Design system')
   })
 })
 

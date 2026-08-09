@@ -1,7 +1,7 @@
 import { html, raw, type Raw } from '../forge/render/index.ts'
 import type { RenderedPage } from '../forge/types.ts'
 
-/** A standalone page: about, team, used in, licence, styleguide. */
+/** A standalone page: about, team, used in, licence, design system. */
 export function pageLayout(page: RenderedPage): Raw {
   return html`<div class="container container--prose">
     <article class="section">
