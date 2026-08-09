@@ -1,3 +1,4 @@
+import { mirrorPathForRoute } from '../agents/index.ts'
 import { docLayout } from '../../templates/doc.ts'
 import { homeLayout } from '../../templates/home.ts'
 import { notFoundLayout, pageLayout } from '../../templates/page.ts'
@@ -32,6 +33,10 @@ export function renderPage(context: PageContext): string {
     route: page.route,
     title: documentTitle(context),
     description: page.frontmatter.description ?? site.description,
+    /* The same test the mirror writer uses, so the link and the file cannot
+       disagree about whether the page has one. */
+    markdownPath:
+      page.frontmatter.unlisted === true ? undefined : mirrorPathForRoute(page.route),
     main: body(context),
     layout: page.frontmatter.layout ?? page.collection,
   })

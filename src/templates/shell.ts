@@ -33,6 +33,12 @@ export type ShellContext = {
   readonly route: string
   readonly title: string
   readonly description: string
+  /**
+   * Where this page's Markdown mirror is published, absolute, or undefined for
+   * a page that has none. Advertised in the head so an agent holding the HTML
+   * can find the source without being told the convention.
+   */
+  readonly markdownPath: string | undefined
   readonly main: Raw
   /**
    * Named on the body as a data attribute rather than a class. Layout names
@@ -88,6 +94,11 @@ export function documentShell(context: ShellContext): string {
          page without this. It is opaque on purpose: a transparent icon is
          composited on black there. -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    ${context.markdownPath === undefined
+      ? ''
+      : raw(
+          `<link rel="alternate" type="text/markdown" href="${site.origin}${context.markdownPath}" />`,
+        )}
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <meta property="og:type" content="website" />
