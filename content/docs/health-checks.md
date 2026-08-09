@@ -5,7 +5,8 @@ description: Report module health through the doctor command, orchestration prob
 
 # Module health checks
 
-Report each module's operational status and aggregate them into a single system health view. Great for `/health` HTTP endpoints, container orchestrators and the `doctor` CLI.
+Report each module's operational status and aggregate them into a single system health view. Great for `/health` HTTP
+endpoints, container orchestrators and the `doctor` CLI.
 
 ## Quick start
 
@@ -35,7 +36,8 @@ final class DatabaseHealthCheck implements ModuleHealthCheckInterface
 
 ### 2. Register the check
 
-Register from `gacela.php` to have the Doctor command pick it up automatically, alongside cache-staleness, suffix-mismatch, and filename-mismatch checks:
+Register from `gacela.php` to have the Doctor command pick it up automatically, alongside cache-staleness,
+suffix-mismatch, and filename-mismatch checks:
 
 ```php
 <?php # gacela.php
@@ -65,15 +67,23 @@ $report = $checker->checkAll();
 vendor/bin/gacela doctor
 ```
 
-Pass an optional namespace filter to restrict module checks. In CI, use `vendor/bin/gacela doctor --strict` so warnings also produce a failing exit code.
+Pass an optional namespace filter to restrict module checks. In CI, use `vendor/bin/gacela doctor --strict` so warnings
+also produce a failing exit code.
+
+## Several checks per module
+
+More than one check may report under the same `getModuleName()`. Gacela combines them into a single module result whose
+level is the **worst** one reported, and keeps every individual status under that result's `health_checks` metadata. A
+later healthy check therefore cannot hide an earlier degraded or unhealthy one, which is what happened before 2.1: the
+results were keyed by module name, so the last check to run overwrote the ones before it.
 
 ## Status levels
 
-| Level       | When to use                                  |
-|-------------|----------------------------------------------|
-| `healthy`   | Everything works as expected                 |
-| `degraded`  | Works but slow or using fallbacks            |
-| `unhealthy` | Critical failure                             |
+| Level       | When to use                       |
+|-------------|-----------------------------------|
+| `healthy`   | Everything works as expected      |
+| `degraded`  | Works but slow or using fallbacks |
+| `unhealthy` | Critical failure                  |
 
 ```php
 HealthStatus::healthy('API responding in 50ms');
@@ -112,10 +122,10 @@ public function healthCheck(): Response
 ## Report API
 
 ```php
-$report->isHealthy();                              // bool
-$report->hasUnhealthyModules();                    // bool
-$report->getOverallLevel();                        // HealthLevel
-$report->getResults();                             // array<string, HealthStatus>
+$report->isHealthy();            // bool
+$report->hasUnhealthyModules();  // bool
+$report->getOverallLevel();      // HealthLevel
+$report->getResults();           // array<string, HealthStatus>
 $report->getResultsByLevel(HealthLevel::UNHEALTHY);
 $report->toArray();
 ```
@@ -124,7 +134,8 @@ $report->toArray();
 
 - **Be fast**: checks should complete in under a second. Prefer a quick ping (`SELECT 1`) over full queries.
 - **Include metadata**: latency, error codes, retry counts help diagnose issues.
-- **Let exceptions propagate**: `HealthChecker` converts any `Throwable` into an `unhealthy` result with exception, file, and line metadata.
+- **Let exceptions propagate**: `HealthChecker` converts any `Throwable` into an `unhealthy` result with exception,
+  file, and line metadata.
 - **Pick the right level**: reserve `unhealthy` for real outages; use `degraded` for slow-but-working.
 
 ## API reference

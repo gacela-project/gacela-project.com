@@ -37,10 +37,12 @@ Subsequent calls within the TTL return the cached value without invoking the cal
 2. Builds a cache key from the class, method, and arguments.
 3. Returns the cached value on hit, or runs the callback and stores the result on miss.
 
-By default, the method name and arguments are inferred from the caller's stack frame. Pass them explicitly for performance-sensitive paths or calls routed through a helper; see [Opting out of backtrace](#opting-out-of-backtrace).
+By default, the method name and arguments are inferred from the caller's stack frame. Pass them explicitly for
+performance-sensitive paths or calls routed through a helper; see [Opting out of backtrace](#opting-out-of-backtrace).
 
 ::: tip Generic return type
-`cached()` is generic (`@template T`), so static analysis infers the return type from the callback without a call-site annotation or cast.
+`cached()` is generic (`@template T`), so static analysis infers the return type from the callback without a call-site
+annotation or cast.
 :::
 
 ## Arguments shape the cache key
@@ -61,11 +63,13 @@ $facade->findUser(1); // cache hit
 $facade->findUser(2); // runs callback, separate entry
 ```
 
-Single `int` or `string` arguments become part of the key directly (`Facade::method::42`). Other types (arrays, objects, multiple args) fall back to `md5(serialize(...))`.
+Single `int` or `string` arguments become part of the key directly (`Facade::method::42`). Other types (arrays, objects,
+multiple args) fall back to `md5(serialize(...))`.
 
 ## Custom key templates
 
-Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key. Useful for shared keys across modules or for readable keys in an external cache.
+Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key. Useful for shared keys across
+modules or for readable keys in an external cache.
 
 ```php
 #[Cacheable(ttl: 3600, key: 'user:{0}')]
@@ -89,17 +93,22 @@ CatalogFacade::clearMethodCacheFor('getPopularProducts');
 CatalogFacade::clearMethodCache();
 ```
 
-`clearMethodCacheFor()` matches on the exact `Class::method::` prefix. Passing `'get'` does **not** clear every method whose name starts with `get`.
+`clearMethodCacheFor()` matches on the exact `Class::method::` prefix. Passing `'get'` does **not** clear every method
+whose name starts with `get`.
 
-`clearMethodCache()` calls `clear()` on the shared backend and is not scoped to the facade class. Prefer the method-specific operation unless clearing all application entries is intentional.
+`clearMethodCache()` calls `clear()` on the shared backend and is not scoped to the facade class. Prefer the
+method-specific operation unless clearing all application entries is intentional.
 
-Custom key templates do not contain the normal `Class::method::` prefix, so `clearMethodCacheFor()` cannot find them. Invalidate those keys through the configured storage backend.
+Custom key templates do not contain the normal `Class::method::` prefix, so `clearMethodCacheFor()` cannot find them.
+Invalidate those keys through the configured storage backend.
 
-`Gacela::resetCache()` clears only the default in-process method storage. It does not clear an external backend registered through `CacheableConfig::setStorage()`; call `clearMethodCache()` when that is the intended scope.
+`Gacela::resetCache()` clears only the default in-process method storage. It does not clear an external backend
+registered through `CacheableConfig::setStorage()`; call `clearMethodCache()` when that is the intended scope.
 
 ## Pluggable storage backend
 
-By default, cache lives in process memory via `InMemoryCacheStorage`. On PHP-FPM that means entries die with the request. Fine for batch jobs and long-running workers, but effectively a no-op for typical web traffic.
+By default, cache lives in process memory via `InMemoryCacheStorage`. On PHP-FPM that means entries die with the
+request. Fine for batch jobs and long-running workers, but effectively a no-op for typical web traffic.
 
 Swap in any backend that implements `CacheStorageInterface` (e.g. APCu, Redis, a PSR-16 adapter):
 
@@ -123,6 +132,18 @@ interface CacheStorageInterface
 
 Call `CacheableConfig::setStorage()` once at bootstrap. All facades using `CacheableTrait` share the same backend.
 
+### The TTL contract a backend must implement
+
+| `$ttl` | Meaning                                                          |
+|--------|------------------------------------------------------------------|
+| `> 0`  | The entry expires that many seconds from now                     |
+| `0`    | The entry is stored **without expiry**, not "expire immediately" |
+| `< 0`  | The entry is already expired when written, so no read returns it |
+
+Zero is the case worth reading twice. `FileCache` has always treated it as "no expiry" and its own default TTL is `0`,
+so a backend that computes `time() + $ttl` unconditionally will store an entry that is expired before `set()` returns.
+Both built-in backends follow the table above; `InMemoryCacheStorage` was corrected to match in 2.1.
+
 ## TTL overrides per method
 
 Override the TTL declared on the attribute without changing code. Useful for tuning hot paths per environment.
@@ -138,7 +159,8 @@ The override applies on the next `set()`; existing entries keep their original e
 
 ## Opting out of backtrace
 
-`cached()` calls `debug_backtrace()` (limit 2) to infer the method name and arguments. The cost is negligible next to typical "expensive" methods (DB, HTTP). Pass `$method` and `$args` explicitly when:
+`cached()` calls `debug_backtrace()` (limit 2) to infer the method name and arguments. The cost is negligible next to
+typical "expensive" methods (DB, HTTP). Pass `$method` and `$args` explicitly when:
 
 - The cached operation itself is very fast and the overhead matters.
 - The method takes very large arguments (frame-construction cost scales with arg count).
@@ -158,10 +180,14 @@ public function getUser(int $id): array
 
 ## Caching `null`
 
-A method that returns `null` is cached correctly. Repeated calls do **not** re-invoke the callback. `CacheableTrait` distinguishes "cached null" from "cache miss" via a sentinel, so `Optional`-style return types work as expected.
+A method that returns `null` is cached correctly. Repeated calls do **not** re-invoke the callback. `CacheableTrait`
+distinguishes "cached null" from "cache miss" via a sentinel, so `Optional`-style return types work as expected.
 
 ## Limitations
 
-- **Per-process by default.** Entries in `InMemoryCacheStorage` do not survive the request on PHP-FPM. Use a shared backend (APCu, Redis) if you need cross-request caching.
-- **Serialization.** The default key and miss detection rely on `serialize()` for non-scalar arguments. Arguments containing closures or resources cannot be serialized and will throw.
-- **Memoised attribute metadata.** The `#[Cacheable]` attribute is reflected once per `Class::method` and cached for the lifetime of the process. Changing the attribute at runtime has no effect; change the code and redeploy.
+- **Per-process by default.** Entries in `InMemoryCacheStorage` do not survive the request on PHP-FPM. Use a shared
+  backend (APCu, Redis) if you need cross-request caching.
+- **Serialization.** The default key and miss detection rely on `serialize()` for non-scalar arguments. Arguments
+  containing closures or resources cannot be serialized and will throw.
+- **Memoised attribute metadata.** The `#[Cacheable]` attribute is reflected once per `Class::method` and cached for the
+  lifetime of the process. Changing the attribute at runtime has no effect; change the code and redeploy.

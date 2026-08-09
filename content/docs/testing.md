@@ -5,11 +5,15 @@ description: Test Gacela applications with isolated container state, temporary d
 
 # Testing
 
-Gacela ships two PHPUnit helpers for tests: `GacelaTestCase`, the recommended base class for tests that bootstrap a Gacela app, and `ContainerFixture`, the lower-level trait it builds on. PHPUnit is a suggested development dependency, not a Gacela runtime dependency, so require it in your application when using these helpers.
+Gacela ships two PHPUnit helpers for tests: `GacelaTestCase`, the recommended base class for tests that bootstrap a
+Gacela app, and `ContainerFixture`, the lower-level trait it builds on. PHPUnit is a suggested development dependency,
+not a Gacela runtime dependency, so require it in your application when using these helpers.
 
 ## GacelaTestCase
 
-`GacelaTestCase` is the recommended base class for tests that bootstrap a Gacela app. It extends PHPUnit's `TestCase`, uses the [`ContainerFixture`](#containerfixture) trait internally, and takes care of teardown for you. Reach for `ContainerFixture` directly only when you can't extend this class.
+`GacelaTestCase` is the recommended base class for tests that bootstrap a Gacela app. It extends PHPUnit's `TestCase`,
+uses the [`ContainerFixture`](#containerfixture) trait internally, and takes care of teardown for you. Reach for
+`ContainerFixture` directly only when you can't extend this class.
 
 ### Setup
 
@@ -29,26 +33,32 @@ final class CheckoutTest extends GacelaTestCase
 }
 ```
 
-No `#[Before]` or `resetContainer()` call needed. `bootstrapGacela()` / `bootstrapGacelaWithConfig()` reset the in-memory cache before bootstrapping, and `tearDown()` resets the container and clears recorded events automatically, so state never leaks between tests.
+No `#[Before]` or `resetContainer()` call needed. `bootstrapGacela()` / `bootstrapGacelaWithConfig()` reset the
+in-memory cache before bootstrapping, and `tearDown()` resets the container and clears recorded events automatically, so
+state never leaks between tests.
 
 ### Available methods
 
-| Method | Description |
-|--------|-------------|
-| `bootstrapGacela(string $appRootDir, ?Closure $configFn = null)` | Bootstrap Gacela from a clean in-memory state and start recording lifecycle events dispatched from this point onward. Optional closure receives `GacelaConfig` for extra setup |
-| `bootstrapGacelaWithConfig(string $appRootDir, array $configKeyValues)` | Bootstrap with the given config key-values in one call (calls `addAppConfigKeyValues()` internally). The most common override in tests |
-| `recordedGacelaEvents()` | All `GacelaEventInterface` events recorded since the last bootstrap, in dispatch order |
-| `recordedGacelaEventsOf(string $eventClass)` | The recorded events of one type, in dispatch order |
-| `assertServiceResolved(string $serviceId)` | Assert the container instantiated the given service id since the last bootstrap |
-| `assertBindingRegistered(string $id)` | Assert a binding, alias or contextual binding was registered under the given id since the last bootstrap |
+| Method                                                                  | Description                                                                                                                                                                    |
+|-------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `bootstrapGacela(string $appRootDir, ?Closure $configFn = null)`        | Bootstrap Gacela from a clean in-memory state and start recording lifecycle events dispatched from this point onward. Optional closure receives `GacelaConfig` for extra setup |
+| `bootstrapGacelaWithConfig(string $appRootDir, array $configKeyValues)` | Bootstrap with the given config key-values in one call (calls `addAppConfigKeyValues()` internally). The most common override in tests                                         |
+| `recordedGacelaEvents()`                                                | All `GacelaEventInterface` events recorded since the last bootstrap, in dispatch order                                                                                         |
+| `recordedGacelaEventsOf(string $eventClass)`                            | The recorded events of one type, in dispatch order                                                                                                                             |
+| `assertServiceResolved(string $serviceId)`                              | Assert the container instantiated the given service id since the last bootstrap                                                                                                |
+| `assertBindingRegistered(string $id)`                                   | Assert a binding, alias or contextual binding was registered under the given id since the last bootstrap                                                                       |
 
 ::: tip Event-backed assertions
-`assertServiceResolved()` and `assertBindingRegistered()` read from Gacela's own lifecycle events (`ServiceResolvedEvent` and `BindingRegisteredEvent`), recorded automatically from `bootstrapGacela()` onward. See the [events catalog](/docs/events) for the full list, and fall back to `recordedGacelaEvents()` / `recordedGacelaEventsOf()` for anything the two helpers don't cover.
+`assertServiceResolved()` and `assertBindingRegistered()` read from Gacela's own lifecycle events
+(`ServiceResolvedEvent` and `BindingRegisteredEvent`), recorded automatically from `bootstrapGacela()` onward. See
+the [events catalog](/docs/events) for the full list, and fall back to `recordedGacelaEvents()` /
+`recordedGacelaEventsOf()` for anything the two helpers don't cover.
 :::
 
 ### Asserting on recorded events
 
-Use `recordedGacelaEventsOf()` for anything more specific than "was a service resolved" — counting events, or reading a payload off one:
+Use `recordedGacelaEventsOf()` for anything more specific than "was a service resolved" — counting events, or reading a
+payload off one:
 
 ```php
 use Gacela\Framework\Event\Config\ConfigKeyReadEvent;
@@ -123,16 +133,17 @@ final class MyTest extends TestCase
 
 ### Available methods
 
-| Method | Description |
-|--------|-------------|
-| `resetContainer()` | Wipe the container and all static caches. Clean slate for the next test |
-| `captureContainerState()` | Return a `ContainerSnapshot` of config values and the in-memory class-name cache (not resolved service instances) |
-| `restoreContainerState(ContainerSnapshot $snapshot)` | Restore a snapshot previously returned by `captureContainerState()` |
-| `containerTempDir()` | Return a per-test temporary directory, removed at process shutdown (or synchronously via `cleanupContainerTempDirs()`) |
+| Method                                               | Description                                                                                                                                          |
+|------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `resetContainer()`                                   | Wipe the container and all static caches. Clean slate for the next test                                                                              |
+| `captureContainerState()`                            | Return a `ContainerSnapshot` of config values, application root, cache directory and the in-memory class-name cache (not resolved service instances) |
+| `restoreContainerState(ContainerSnapshot $snapshot)` | Restore a snapshot previously returned by `captureContainerState()`                                                                                  |
+| `containerTempDir()`                                 | Return a per-test temporary directory, removed at process shutdown (or synchronously via `cleanupContainerTempDirs()`)                               |
 
 ### Snapshot and restore
 
-Use `captureContainerState()` / `restoreContainerState()` when a test mutates the container but subsequent assertions need the original state:
+Use `captureContainerState()` / `restoreContainerState()` when a test mutates the container but subsequent assertions
+need the original state:
 
 ```php
 public function testServiceOverride(): void
@@ -151,9 +162,15 @@ public function testServiceOverride(): void
 }
 ```
 
+`restoreContainerState()` puts back **every** field the snapshot captured: config values, application root and cache
+directory as well as the class-name cache. Until 2.1 it restored only the class-name cache, which left
+`Config::getInstance()` throwing after a restore. A snapshot taken before `Gacela::bootstrap()` restores nothing rather
+than inventing a config instance the test never had, and restoring constructs no service object.
+
 ### Temporary directories
 
-`containerTempDir()` returns a unique temporary directory for the current test. Use it for file-cache tests, artifact storage, or anything that writes to disk:
+`containerTempDir()` returns a unique temporary directory for the current test. Use it for file-cache tests, artifact
+storage, or anything that writes to disk:
 
 ```php
 public function testFileCacheWrite(): void
@@ -168,6 +185,9 @@ public function testFileCacheWrite(): void
 
 ## Test hygiene
 
-- Prefer `resetContainer()` in a `#[Before]` method over `setUp()`. It makes the intent explicit and works alongside other `setUp` logic.
-- For integration tests that need the full bootstrap, call `Gacela::bootstrap()` inside the test and `resetContainer()` in teardown.
-- `ContainerFixture` replaces the older pattern of calling `$config->resetInMemoryCache()` inside `gacela.php` for tests.
+- Prefer `resetContainer()` in a `#[Before]` method over `setUp()`. It makes the intent explicit and works alongside
+  other `setUp` logic.
+- For integration tests that need the full bootstrap, call `Gacela::bootstrap()` inside the test and `resetContainer()`
+  in teardown.
+- `ContainerFixture` replaces the older pattern of calling `$config->resetInMemoryCache()` inside `gacela.php` for
+  tests.
