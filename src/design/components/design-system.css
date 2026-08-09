@@ -4,12 +4,6 @@
  */
 
 @layer components {
-  .sg-section + .sg-section {
-    margin-block-start: var(--space-8);
-    padding-block-start: var(--space-6);
-    border-block-start: 1px solid var(--border-subtle);
-  }
-
   .sg-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
