@@ -1,11 +1,11 @@
 ---
 name: ship-it
-description: The pre-merge verification ritual for gacela-project.com. Use before opening a pull request or merging to master, since master deploys straight to production with no staging environment.
+description: The pre-merge verification ritual for gacela-project.com. Use before opening a pull request or merging to main, since main deploys straight to production with no staging environment.
 ---
 
 # Shipping to production
 
-`master` is production. A merge deploys. There is no staging environment and no manual gate, so verification happens
+`main` is production. A merge deploys. There is no staging environment and no manual gate, so verification happens
 before the merge or it does not happen.
 
 ## 1. The mechanical check
@@ -69,5 +69,5 @@ the workflow is green; it is done when you have seen the result in production.
 
 ## When something is wrong in production
 
-Revert first, investigate afterwards. `git revert` the merge commit, push to `master`, and let the deploy roll it back.
+Revert first, investigate afterwards. `git revert` the merge commit, push to `main`, and let the deploy roll it back.
 A revert is cheap; a broken documentation site while you debug is not.

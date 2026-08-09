@@ -97,7 +97,7 @@ Dark mode is a token swap, never a separate stylesheet. Both themes must be chec
 
 ## Deployment
 
-`master` is production. Push to `master` runs CI and, if green, deploys `dist/` to GitHub Pages at gacela-project.com.
+`main` is production. Push to `main` runs CI and, if green, deploys `dist/` to GitHub Pages at gacela-project.com.
 There is no staging environment, so do not merge anything that has not passed `npm run check` locally.
 
 ## Working style in this repo

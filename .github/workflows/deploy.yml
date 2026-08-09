@@ -1,12 +1,12 @@
 name: Deploy
 
-# Publishes dist/ to GitHub Pages. master is production and there is no
-# staging environment (see CLAUDE.md), so this runs on every push to master,
+# Publishes dist/ to GitHub Pages. main is production and there is no
+# staging environment (see CLAUDE.md), so this runs on every push to main,
 # plus workflow_dispatch for a manual re-deploy (e.g. to pick up a Pages
 # configuration change without a new commit).
 on:
   push:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 # Least privilege for the standard GitHub Pages artifact flow: read the repo,
@@ -39,7 +39,7 @@ jobs:
 
       - run: npm ci
 
-      # The same checks ci.yml runs. They are repeated here on purpose: master
+      # The same checks ci.yml runs. They are repeated here on purpose: main
       # deploys straight to production, and ci.yml runs in a separate workflow
       # that this one does not wait for. Without this, a merge whose tests fail
       # would still publish as long as the build itself succeeded, and the only

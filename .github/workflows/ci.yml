@@ -1,12 +1,12 @@
 name: CI
 
 # The same checks `npm run check` runs locally: on every pull request, and on
-# every push to master as a safety net (e.g. a direct push, or a merge that
+# every push to main as a safety net (e.g. a direct push, or a merge that
 # bypassed a stale required check).
 on:
   pull_request:
   push:
-    branches: [master]
+    branches: [ main ]
 
 # Read-only: this workflow only needs to check out the repo and run scripts,
 # it never writes anything back.
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 # A new push to the same ref (another commit on a PR, or a re-push to
-# master) supersedes the previous run, so cancel it instead of burning
+# main) supersedes the previous run, so cancel it instead of burning
 # minutes on a result nobody will look at.
 concurrency:
   group: ci-${{ github.ref }}

@@ -77,7 +77,7 @@ function inlineToc(headings: readonly Heading[]): Raw {
 }
 
 function articleFooter(context: DocContext): Raw {
-  const editUrl = `${context.site.siteRepository}/edit/master/content/${context.page.source}`
+  const editUrl = `${context.site.siteRepository}/edit/main/content/${context.page.source}`
 
   return html`<footer class="article__footer">
     <a href="${editUrl}" rel="noreferrer">Edit this page on GitHub</a>

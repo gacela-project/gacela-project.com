@@ -2,7 +2,7 @@ name: Sync Gacela version
 
 # Keeps data/gacela.json, the version the site displays, aligned with the
 # latest gacela-project/gacela release. Runs weekly and can be triggered
-# manually. Never pushes to master directly: it opens a pull request so the
+# manually. Never pushes to main directly: it opens a pull request so the
 # update goes through normal review, same as any other change.
 on:
   schedule:
@@ -73,7 +73,7 @@ jobs:
           # close/reopen the PR to get CI to run on it, or swap the token
           # for a PAT if that manual step is unwanted.
           gh pr create \
-            --base master \
+            --base main \
             --head "$branch" \
             --title "chore: sync gacela version to $LATEST_VERSION" \
             --body "Gacela [$LATEST_VERSION](https://github.com/gacela-project/gacela/releases/tag/$LATEST_VERSION) was released. Updates \`data/gacela.json\` to match.

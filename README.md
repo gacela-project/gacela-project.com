@@ -29,7 +29,7 @@ loads; the JavaScript that does load is a few kilobytes of progressive enhanceme
 | **Content**       | `content/` — Markdown, the docs kept in sync with the Gacela repo |
 | **Dependencies**  | `markdown-it` (Markdown), `shiki` (syntax highlighting)           |
 | **Tests**         | `tests/` — Vitest, unit tests for every generator module          |
-| **Deploy**        | GitHub Actions → GitHub Pages, on every push to `master`          |
+| **Deploy**        | GitHub Actions → GitHub Pages, on every push to `main`            |
 
 ## Getting started
 
@@ -79,7 +79,7 @@ The documentation pages in `content/docs` are the canonical, human-edited source
 
 ## Deployment
 
-Merging to `master` runs `ci.yml` (typecheck, tests, build, link check) and then `deploy.yml`, which publishes `dist/`
+Merging to `main` runs `ci.yml` (typecheck, tests, build, link check) and then `deploy.yml`, which publishes `dist/`
 to GitHub Pages. Production is [gacela-project.com](https://gacela-project.com).
 
 ## Contributing
