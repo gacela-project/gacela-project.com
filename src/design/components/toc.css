@@ -25,6 +25,9 @@
     font-size: var(--text-sm);
     line-height: var(--leading-snug);
     text-decoration: none;
+    /* Headings that are a single unbroken token, such as a fully qualified
+       class name, have no space to wrap at and would run past the column. */
+    overflow-wrap: anywhere;
     transition:
       color var(--duration-fast) var(--ease-out),
       border-color var(--duration-fast) var(--ease-out);
