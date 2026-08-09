@@ -91,13 +91,20 @@
     border-color: var(--accent-line);
   }
 
-  /* The bar's gap is measured between boxes, and the nav label to the left
-     carries 12px of its own padding, so that side read as 44 against the 16
-     on the other. Taking the padding back puts one bar gap between the
-     label's ink and this badge. Only in the bar: in the drawer the badge
-     opens a row, with no padded neighbour to discount. */
+  /* The nav labels sit 28px apart, ink to ink: 12px of padding on each of the
+     two, and the 4px gap between their boxes. This badge is the fifth item in
+     that run, so it takes the same 28 rather than the bar's 32, and the whole
+     row reads as one rhythm broken only by the rule after it.
+
+     The bar's gap is measured between boxes, though, and the label to the left
+     carries padding this badge does not: it draws a border, so its box edge is
+     its visible edge. The margin is what is left once that padding and the
+     difference between 32 and 28 are taken off the bar's gap.
+
+     Only in the bar. In the drawer the badge opens a centred row, with no
+     padded neighbour to discount. */
   .header__version {
-    margin-inline-start: calc(var(--space-3) * -1);
+    margin-inline-start: calc(var(--space-4) * -1);
   }
 
   .header__link {
@@ -284,14 +291,14 @@
     }
   }
 
-  /* The bar needs 1187px to hold the brand, the search box, four nav labels in
+  /* The bar needs 1183px to hold the brand, the search box, four nav labels in
      mono, the release badge and the action cluster with air around its rules.
      Below that the navigation moves into the disclosure, which appears at the
      same width, so the primary links are never in two visible places and never
      squeezed. Measured, not estimated: the release badge cost 59px and the gap
-     before it another 32, which is what moved this up from 1096. The bar
-     returns at 1200, so thirteen pixels are spare. Widening the bar's gap, the
-     search box or the air around the rules means moving this width again. */
+     before it another 28, which is what moved this up from 1096. The bar
+     returns at 1200, so seventeen pixels are spare. Widening the bar's gap,
+     the search box or the air around the rules means moving this again. */
   @media (max-width: 1199px) {
     .header__nav {
       display: none;
