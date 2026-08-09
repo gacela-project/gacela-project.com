@@ -15,11 +15,8 @@ description: Explore real Gacela architecture and code from the Phel language pr
   </a>
 </p>
 
-[Phel](https://phel-lang.org/) is a functional language that compiles to PHP. Its compiler, CLI, formatter, language server, REPL, filesystem, and tooling are organized as Gacela modules in one actively maintained codebase.
-
-::: info Version transparency
-Phel declares `gacela-project/gacela:^2.0` and requires PHP 8.4, so the code below is a 2.x application rather than a 1.x one read forward. Each excerpt is quoted from [Phel commit `f173cf5`](https://github.com/phel-lang/phel-lang/tree/f173cf522d1b492cf12fb5404fa56c6b4bd454a4).
-:::
+[Phel](https://phel-lang.org/) is a functional language that compiles to PHP. Its compiler, CLI, formatter, language
+server, REPL, filesystem, and tooling are organized as Gacela modules in one actively maintained codebase.
 
 <div class="stat-row">
   <div class="stat-row__stat"><strong>17+</strong><span>application modules</span></div>
@@ -29,7 +26,8 @@ Phel declares `gacela-project/gacela:^2.0` and requires PHP 8.4, so the code bel
 
 ## Why Gacela fits Phel
 
-Phel has many subsystems but needs one coherent application. Gacela gives each subsystem a recognizable public boundary and makes cross-module dependencies explicit:
+Phel has many subsystems but needs one coherent application. Gacela gives each subsystem a recognizable public boundary
+and makes cross-module dependencies explicit:
 
 - Callers enter through a Facade instead of depending on compiler internals.
 - Factories construct application and domain services inside their module.
@@ -39,7 +37,8 @@ Phel has many subsystems but needs one coherent application. Gacela gives each s
 
 ## Real code walkthrough
 
-The excerpts are shortened only where unrelated methods would obscure the pattern. Follow **Source** below each tab group for the complete production files.
+The excerpts are shortened only where unrelated methods would obscure the pattern. Follow **Source** below each tab
+group for the complete production files.
 
 ::: code-group
 
@@ -137,7 +136,8 @@ final readonly class BuildHealthCheck implements ModuleHealthCheckInterface
 
 :::
 
-**Sources:** [bootstrap](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Phel.php), [RunFacade](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFacade.php), [RunProvider](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunProvider.php), [CompileCommand](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/Infrastructure/Command/CompileCommand.php), and [BuildHealthCheck](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Build/Application/BuildHealthCheck.php).
+**Sources:** [bootstrap](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Phel.php), [RunFacade](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFacade.php), [RunProvider](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunProvider.php), [CompileCommand](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/Infrastructure/Command/CompileCommand.php),
+and [BuildHealthCheck](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Build/Application/BuildHealthCheck.php).
 
 ## What to copy into your project
 
@@ -149,7 +149,8 @@ entry point → Facade → Factory → application/domain service
                      Provider → another module's Facade interface
 ```
 
-Start a new module with the [Quickstart](/docs/quickstart), then use [Getting dependencies](/docs/getting-dependencies) when it needs to communicate with another boundary.
+Start a new module with the [Quickstart](/docs/quickstart), then use [Getting dependencies](/docs/getting-dependencies)
+when it needs to communicate with another boundary.
 
 ## Explore Phel
 

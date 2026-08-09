@@ -3,7 +3,7 @@
  *
  * Framed rather than filled: a hairline box with a mono caption bar, the way a
  * drawing labels a detail. The fill is barely there so a page of documentation
- * does not turn into a stack of grey slabs.
+ * does not turn into a stack of gray slabs.
  */
 
 @layer components {

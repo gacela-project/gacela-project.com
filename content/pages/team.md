@@ -6,8 +6,7 @@ description: Gacela is built and maintained by Jose Maria Valera Reales and Jesu
 # Team
 
 Gacela is built and maintained by two people, in the open, on
-[GitHub](https://github.com/gacela-project/gacela). Contributions are welcome: issues,
-ideas and pull requests all help.
+[GitHub](https://github.com/gacela-project/gacela). Contributions are welcome: issues, ideas and pull requests all help.
 
 <ul class="team" role="list">
   <li class="team__member">
@@ -44,6 +43,5 @@ The [contribution guide](https://github.com/gacela-project/gacela/blob/main/.git
 covers how to set up the framework locally and which tools the project uses.
 
 This website lives in its own repository,
-[gacela-project.com](https://github.com/gacela-project/gacela-project.com). Every documentation
-page carries an "Edit this page on GitHub" link at the foot, which is the fastest way to fix a typo
-or clarify a paragraph.
+[gacela-project.com](https://github.com/gacela-project/gacela-project.com). Every documentation page carries an "Edit
+this page on GitHub" link at the foot, which is the fastest way to fix a typo or clarify a paragraph.

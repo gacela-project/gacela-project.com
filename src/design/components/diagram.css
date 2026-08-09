@@ -113,7 +113,7 @@
     stroke-width: 1.5;
   }
 
-  /* Resting state is the drawing's own grey, the same one the boundary and the
+  /* Resting state is the drawing's own gray, the same one the boundary and the
      arrows are drawn in, so an unselected class reads as part of the linework. */
   .part__box {
     fill: var(--diagram-fill);
@@ -148,7 +148,7 @@
 
   /* The selection is carried by colour alone. Nothing is faded: the boxes stay
      opaque so the drawing behind them never shows through, and an unselected
-     class is grey rather than see-through. */
+     class is gray rather than see-through. */
   .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__box,
   .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__box,
   .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__box,
