@@ -13,6 +13,7 @@ const TYPES: Record<string, string> = {
   '.woff2': 'font/woff2',
   '.xml': 'application/xml; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8',
 }
 
 export type FileLookup = (path: string) => Promise<{ contents: string | Uint8Array } | undefined>

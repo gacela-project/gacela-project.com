@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
 
+import { agentDocsOutputs } from './agents/index.ts'
 import {
   bundleClientScripts,
   bundleCss,
@@ -70,6 +71,7 @@ export async function build(input: BuildInput): Promise<BuildResult> {
     outputs: [
       ...documents,
       ...assets.outputs,
+      ...agentDocsOutputs(site, rendered),
       ...redirectOutputs(site),
       ...(await publicOutputs(root)),
       { path: 'search-index.json', contents: searchIndex },

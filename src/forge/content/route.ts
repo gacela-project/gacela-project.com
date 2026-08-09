@@ -38,5 +38,7 @@ export function routeFor(relativePath: string): RouteInfo {
     return { collection, route: name === 'index' ? '/' : `/${name}` }
   }
 
-  return { collection, route: `/docs/${name}` }
+  // The docs index is the landing page of the collection, so it answers at
+  // /docs. Publishing it at /docs/index would leave /docs with nothing on it.
+  return { collection, route: name === 'index' ? '/docs' : `/docs/${name}` }
 }

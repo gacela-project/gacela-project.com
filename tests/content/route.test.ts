@@ -10,6 +10,10 @@ describe('routeFor', () => {
     expect(routeFor('pages/index.md')).toEqual({ collection: 'pages', route: '/' })
   })
 
+  it('maps the docs index to the collection root, not to /docs/index', () => {
+    expect(routeFor('docs/index.md')).toEqual({ collection: 'docs', route: '/docs' })
+  })
+
   it('maps a standalone page to a top level route', () => {
     expect(routeFor('pages/about.md')).toEqual({ collection: 'pages', route: '/about' })
   })

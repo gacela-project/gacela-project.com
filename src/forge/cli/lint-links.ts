@@ -2,6 +2,7 @@ import { readdir } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
 
 import { SHELL_ROUTES } from '../../templates/shell.ts'
+import { agentDocsRoutes } from '../agents/index.ts'
 import { auditLinks, findOrphans } from '../audit/index.ts'
 import { flattenSidebar } from '../nav/index.ts'
 import { build } from '../pipeline.ts'
@@ -15,9 +16,14 @@ const { pages } = await build({ site, root, version })
 
 const publicDir = join(root, 'public')
 const publicEntries = await readdir(publicDir, { recursive: true, withFileTypes: true })
-const knownRoutes = publicEntries
-  .filter((entry) => entry.isFile())
-  .map((entry) => `/${relative(publicDir, join(entry.parentPath, entry.name)).split(sep).join('/')}`)
+const knownRoutes = [
+  ...publicEntries
+    .filter((entry) => entry.isFile())
+    .map((entry) => `/${relative(publicDir, join(entry.parentPath, entry.name)).split(sep).join('/')}`),
+  // Real addresses that are not pages, so only the module that publishes them
+  // knows they exist.
+  ...agentDocsRoutes(pages),
+]
 
 const problems = auditLinks(pages, { redirects: site.redirects, knownRoutes })
 
