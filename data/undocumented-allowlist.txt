@@ -3,5 +3,13 @@
 # One per line, matched whole. Add a symbol here when the Gacela release notes
 # name it but the site is right not to document it: internals, things covered
 # under a different name, or API the site deliberately does not teach.
-#
-# Empty for now: every symbol in the 2.1.0 notes is documented.
+
+# Documented as `gacela.facadeInterfaceDrift`, which is what you suppress on and
+# what upstream's own static-analysis page calls it. The class is named only in
+# the shipped phpstan-gacela.neon, which registers the rule for you.
+FacadeInterfaceInSyncRule
+
+# PHP's own exception, not Gacela API. It appears in the 1.21 notes because
+# `profile:report --format=json` and `debug:config` began raising it instead of
+# printing an empty value. Upstream documents that nowhere either.
+JsonException
