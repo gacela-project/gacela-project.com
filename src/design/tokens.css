@@ -75,7 +75,12 @@
     --canvas: light-dark(var(--navy-25), var(--navy-900));
     --surface: light-dark(var(--white), var(--navy-850));
     --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
-    --surface-raised: light-dark(var(--white), var(--navy-700));
+    /* Raised sits one step above surface, not three. At navy-700 the dark
+       elevation ladder read 0.17 / 0.20 / 0.24 / 0.32, and that last jump put
+       --text-muted at 4.10:1 on the popovers that use this token: the only
+       ink-on-ground pair in either theme below 4.5. navy-800 keeps raised the
+       lightest ground in dark and carries muted text at 4.72:1. */
+    --surface-raised: light-dark(var(--white), var(--navy-800));
     --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
 
     --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
