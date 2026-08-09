@@ -1,50 +1,72 @@
 ---
 title: Quickstart
-description: "Install Gacela and build your first module: a Facade, a Factory, a service and one bootstrap call."
+description: Install Gacela 2.0 and build a complete, working module in a few minutes.
 ---
 
 # Quickstart
 
-**Gacela helps you to build modular applications.** Splitting your project into different modules help in terms of
-maintainability and scalability.
+Gacela gives PHP modules a predictable public boundary without imposing rules on your domain model. This guide creates a complete module you can run from the command line.
 
-Gacela encourages your modules to interact with each other in a unified way:
+**You will build:** one runnable entry point, one public module boundary, and one framework-independent service.
 
-- Modules interact with each other **only** via their **Facade**
-- The [**Facade**](/docs/facade) is the *entry point* of a module
-- The [**Factory**](/docs/factory) manages the *intra-dependencies* of the module
-- The [**Provider**](/docs/provider) resolves the *extra-dependencies* of the module
-- The [**Config**](/docs/config) has access to the project's *config files*
+**Before you start:** use PHP 8.3 or newer and have [Composer](https://getcomposer.org/) available.
 
 ## Installation
 
-Install Gacela as a vendor package from [Packagist](https://packagist.org/packages/gacela-project/gacela) using
-composer:
+Gacela 2.0 requires **PHP 8.3 or newer**. Install it from [Packagist](https://packagist.org/packages/gacela-project/gacela):
 
 ```bash
-composer require gacela-project/gacela
+composer require gacela-project/gacela:^2.0
 ```
 
-## Usage
+## Start with the code you want to run
 
-Once Gacela is installed, you're ready to get started.
-This is like a "Hello, World!" example with Gacela.
-First, create your first module directory:
+Write the caller first. It defines the only API this module needs to expose: `greet()`.
+
+```php [example.php]
+<?php
+
+declare(strict_types=1);
+
+use Gacela\Framework\Gacela;
+use Module\Facade;
+
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__);
+
+$facade = new Facade();
+
+echo $facade->greet('Alice');
+```
+
+The flow behind that call will be:
+
+```text
+example.php → Facade → Factory → Greeter
+```
+
+Create the directories for those classes:
 
 ```bash
-mkdir src/Module
+mkdir -p src/Module/Service
 ```
 
-Next, create a [Facade](/docs/facade) for your module:
+## 1. Expose the module through a Facade
 
-```php source
-# file: src/Module/Facade.php
+The [Facade](/docs/facade) is the module's public API. It delegates the request instead of containing business logic.
+
+```php [src/Module/Facade.php]
+<?php
+
+declare(strict_types=1);
+
 namespace Module;
 
 use Gacela\Framework\AbstractFacade;
 
 /**
- * @method Factory getFactory()
+ * @extends AbstractFacade<Factory>
  */
 final class Facade extends AbstractFacade
 {
@@ -56,10 +78,18 @@ final class Facade extends AbstractFacade
     }
 }
 ```
-The [Facade](/docs/facade) has an auto-resolver for the sibling [Factory](/docs/factory) of the module.
-Let's create it:
-```php source
-# file: src/Module/Factory.php
+
+Gacela resolves the sibling `Factory` automatically when `getFactory()` is called.
+
+## 2. Construct the service in a Factory
+
+The [Factory](/docs/factory) owns object construction inside the module. This keeps construction details out of the Facade and the service itself.
+
+```php [src/Module/Factory.php]
+<?php
+
+declare(strict_types=1);
+
 namespace Module;
 
 use Gacela\Framework\AbstractFactory;
@@ -69,65 +99,79 @@ final class Factory extends AbstractFactory
 {
     public function createGreeter(): Greeter
     {
-        return new Greeter(
-            // ... dependencies
-        );
+        return new Greeter();
     }
 }
 ```
 
-Create the application service that will be instantiated in the [Factory](/docs/factory):
+## 3. Add the application service
 
-```bash
-mkdir src/Module/Service
-```
+`Greeter` is ordinary PHP. It does not extend or import anything from Gacela.
 
-```php source
-# file: src/Module/Service/Greeter.php
+```php [src/Module/Service/Greeter.php]
+<?php
+
+declare(strict_types=1);
+
 namespace Module\Service;
 
 final class Greeter
 {
-    public function __construct(
-        // ... dependencies
-    ) {}
-
     public function greet(string $name): string
     {
-        return "Hi, $name!";
+        return "Hi, {$name}!";
     }
 }
 ```
 
-Finally, create an entry point, where you can instantiate the [Facade](/docs/facade) and use it.
-```php source
-# file: example.php
-use Gacela\Framework\Gacela;
-use Module\Facade;
+## 4. Run it
 
-require __DIR__ . '/vendor/autoload.php';
+Make sure Composer maps the `Module\\` namespace to `src/Module/`:
 
-# Gacela must be bootstrapped on the entry point of your application
-Gacela::bootstrap(__DIR__);
-
-$facade = new Facade();
-echo $facade->greet('Alice'); # Hi, Alice!
+```json [composer.json]
+{
+    "autoload": {
+        "psr-4": {
+            "Module\\": "src/Module/"
+        }
+    }
+}
 ```
 
-Additionally, the [Factory](/docs/factory) can access the [Config](/docs/config) and
-the [Provider](/docs/provider) classes of the module which provides a lot of
-potential for configuration and extension. I didn't add them in this example to keep it simple.
+Then rebuild the autoloader and run the entry point:
+
+```bash
+composer dump-autoload
+php example.php
+```
+
+```text
+Hi, Alice!
+```
+
+If you see that output, the complete resolution path works: Composer loaded the classes, Gacela found the module's Factory, and the Facade reached the service.
+
+### If it does not run
+
+| Error | Check |
+|---|---|
+| `Class "Module\\Facade" not found` | Confirm the PSR-4 mapping, then run `composer dump-autoload` again |
+| Gacela cannot resolve `Factory` | Confirm `Factory.php` is beside `Facade.php`, both use `namespace Module`, and the class name is exactly `Factory` |
+| `vendor/autoload.php` is missing | Run `composer install` from the project root |
+| Your PHP version is rejected | Run `php -v`; Gacela 2.0 requires PHP 8.3+ |
+
+That is a complete Gacela module. Add a [Provider](/docs/provider) only when it needs another module or infrastructure service, and add a [Config](/docs/config) only when it needs application settings.
+
+::: tip Optional CLI setup
+Applications using the optional CLI can install `symfony/console` 7 or 8 and run `vendor/bin/gacela init` to scaffold `gacela.php`. This example does not need that file.
+:::
 
 ## Next steps
 
-Dive deeper into the [documentation](/docs/bootstrap) to discover:
+Continue according to what the module needs next:
 
-- [Bindings](/docs/bindings): dependency injection, factory services, aliases, contextual bindings
-- [Extensions & Plugins](/docs/extensions): plugins, extendService, handler registry
-- [Module Customization](/docs/customization): suffix types, project namespaces, events
-- Each core concept in detail:
-    - [Facade](/docs/facade): the *entry point*
-    - [Factory](/docs/factory): manages the *intra-dependencies*
-    - [Provider](/docs/provider): resolves the *extra-dependencies*
-    - [Config](/docs/config): access the project's *config* key values
-- Want to go crazy? Check "[Gacela in a file](/docs/extra#gacela-in-a-file)" to see the flexibility of Gacela
+- [Getting dependencies](/docs/getting-dependencies) — choose the right wiring mechanism
+- [Provider](/docs/provider) — communicate with another module through its Facade
+- [Config](/docs/config) — expose application settings through typed getters
+- [Bindings and container services](/docs/bindings) — configure application-wide dependency policies
+- [Testing](/docs/testing) — bootstrap Gacela with isolated state in PHPUnit

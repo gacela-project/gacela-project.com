@@ -25,7 +25,7 @@ export const site: SiteConfig = {
   ],
 
   headerLinks: [
-    { title: 'Docs', route: '/docs/quickstart' },
+    { title: 'Docs', route: '/docs' },
     { title: 'About', route: '/about' },
     { title: 'Used in', route: '/used-in' },
   ],
@@ -34,8 +34,11 @@ export const site: SiteConfig = {
     {
       title: 'Getting started',
       items: [
+        { title: 'Documentation', route: '/docs' },
         { title: 'Quickstart', route: '/docs/quickstart' },
+        { title: 'Getting dependencies', route: '/docs/getting-dependencies' },
         { title: 'Bootstrap', route: '/docs/bootstrap' },
+        { title: 'Upgrade from 1.21', route: '/docs/upgrading' },
       ],
     },
     {
@@ -70,6 +73,7 @@ export const site: SiteConfig = {
       items: [
         { title: 'CLI commands', route: '/docs/gacela-script' },
         { title: 'Health checks', route: '/docs/health-checks' },
+        { title: 'Events', route: '/docs/events' },
         { title: 'Static analysis', route: '/docs/static-analysis' },
       ],
     },
@@ -85,8 +89,7 @@ export const site: SiteConfig = {
 
   /* URLs the previous site published. They stay reachable. */
   redirects: {
-    '/docs': '/docs/quickstart',
-    '/docs/index': '/docs/quickstart',
+    '/docs/index': '/docs',
     '/about-gacela': '/about',
     '/why-decoupling': '/about#why-decoupling',
   },

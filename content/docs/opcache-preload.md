@@ -1,13 +1,13 @@
 ---
 title: Opcache preload
-description: "Load Gacela's core files into shared memory at PHP startup for a production throughput boost."
+description: Generate and deploy an Opcache preload script for Gacela’s framework and application module classes.
 ---
 
 # Opcache preload
 
-Gacela ships a preload script that loads its core files into shared memory at PHP startup. In production this typically gives a 20–30% throughput boost and lower per-request memory.
+Gacela ships a preload script that loads its core files into shared memory at PHP startup, removing their per-request compilation cost and lowering per-request memory. Measure the benefit on your own workload.
 
-**Requires** PHP 8.1+ with opcache enabled.
+**Requires** PHP 8.3+ with opcache enabled.
 
 ## Setup
 
@@ -57,14 +57,14 @@ sudo systemctl restart php8.3-fpm
 
 ## When to use it
 
-- **Use it** for high-traffic production apps on PHP 8.1+.
+- **Use it** for high-traffic production apps on PHP 8.3+.
 - **Skip it** in local development (you'd need to restart after every change) or for very low-traffic sites.
 
 ## Troubleshooting
 
 | Symptom                 | Check                                                                  |
 |-------------------------|------------------------------------------------------------------------|
-| Files not preloading    | `php -v` ≥ 8.1, `php -i \| grep opcache.enable`, preload file readable |
+| Files not preloading    | `php -v` ≥ 8.3, `php -i \| grep opcache.enable`, preload file readable |
 | Permission denied       | `opcache.preload_user` must match the PHP-FPM user (`ps aux \| grep php-fpm`) |
 
 ## Docker

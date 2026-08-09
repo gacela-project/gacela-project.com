@@ -1,6 +1,6 @@
 ---
 title: Facade
-description: "The Facade is the entry point of a module, and the only class other modules are allowed to call."
+description: Expose a small, stable public API while keeping a module’s implementation private.
 ---
 
 # Facade
@@ -11,21 +11,44 @@ The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point*
 Other modules, controllers, and commands never reach into your module's internals. They call the Facade, which delegates to the [Factory](/docs/factory) to build the right objects and run the logic. This keeps your module's domain encapsulated and easy to refactor.
 :::
 
-## Defining a Facade
+## Start from the caller
 
-Extend `AbstractFacade` and use `getFactory()` to access the module's internal services.
+Write the call you want consumers to make before designing the implementation. The caller should know the Facade and nothing behind it.
 
-Full code snippet: [gacela-example/comment-spam-score/facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php)
+```php [app.php]
+<?php
 
-```php
-<?php # src/Comment/CommentFacade.php
+declare(strict_types=1);
+
+use App\Comment\CommentFacade;
+use Gacela\Framework\Gacela;
+
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__);
+
+$score = (new CommentFacade())->getSpamScore('Lorem ipsum!');
+
+echo "Spam score: {$score}" . PHP_EOL;
+```
+
+[View the complete entry point](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/app.php).
+
+## Define the boundary
+
+Turn the caller's desired operation into a Facade method. Extend `AbstractFacade` and delegate the implementation through `getFactory()`.
+
+```php [src/Comment/CommentFacade.php]
+<?php
+
+declare(strict_types=1);
 
 namespace App\Comment;
 
 use Gacela\Framework\AbstractFacade;
 
 /**
- * @method CommentFactory getFactory()
+ * @extends AbstractFacade<CommentFactory>
  */
 final class CommentFacade extends AbstractFacade
 {
@@ -38,25 +61,7 @@ final class CommentFacade extends AbstractFacade
 }
 ```
 
-## Using the Facade
-
-Instantiate the Facade and call its methods. No need to know about the Factory, services, or config behind it.
-
-Full code snippet: [gacela-example/comment-spam-score/entry-point](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/app.php)
-```php
-<?php
-require __DIR__ . '/vendor/autoload.php';
-
-use App\Comment\CommentFacade;
-use Gacela\Framework\Gacela;
-
-Gacela::bootstrap(__DIR__);
-
-$facade = new CommentFacade();
-$score = $facade->getSpamScore('Lorem ipsum!');
-
-echo sprintf('Spam Score: %d', $score) . PHP_EOL;
-```
+[View the complete Facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php). Keep this API small: add a method because a real caller needs the capability, not because an internal service happens to expose it.
 
 ## Accessing the Facade from controllers and commands
 
@@ -86,9 +91,9 @@ final class TestCommand extends Command
 
 `#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs. Full reference: [Service Map](/docs/service-map).
 
-### Alternative: DocBlock `@method`
+### Migration aid: DocBlock `@method`
 
-Still fully supported; useful on PHP versions where attributes are awkward, or when migrating a legacy code base.
+Keep a `@method` annotation alongside the attribute when your IDE needs it. Using a docblock as the **runtime** source still works in 2.0, but raises `E_USER_DEPRECATED` and will be removed in 3.0.
 
 ```php
 <?php
@@ -110,14 +115,25 @@ final class TestCommand extends Command
 }
 ```
 
-::: info Migration
-`DocBlockResolverAwareTrait` was renamed to `ServiceResolverAwareTrait` in `1.12.0`. The old trait name still works, but new code should use `ServiceResolverAwareTrait`.
+Add the attribute even when retaining the docblock:
+
+```php
+/** @method RunFacade getFacade() */
+#[ServiceMap(method: 'getFacade', className: RunFacade::class)]
+final class TestCommand extends Command
+{
+    use ServiceResolverAwareTrait;
+}
+```
+
+::: warning Removed in 2.0
+`DocBlockResolverAwareTrait` no longer exists. Replace it with `ServiceResolverAwareTrait`; the API is otherwise unchanged. See [Upgrade to 2.0](/docs/upgrading).
 :::
 
-#### Why not simply instantiate the Facade?
+#### Direct construction or Service Map?
 
-Instantiating the Facade would be another alternative, but using `ServiceResolverAwareTrait` Gacela will use the Locator singleton to avoid duplicating the creation of the same Facade multiple times.
+Construct a Facade directly when your code owns the entry point, as in the Quickstart. Use `#[ServiceMap]` when another framework creates the controller or command and constructor injection is not practical. Service Map resolves through Gacela's Locator and reuses the registered Facade.
 
-#### How does this work?
+#### Resolution behavior
 
-The `ServiceResolverAwareTrait` resolves at runtime the type from `#[ServiceMap]` (or the DocBlock `@method`), so this trait is not limited to the Facade. You can use it to lazily load any Gacela-resolvable class without constructor injection. Gacela handles the autoloading of its dependencies.
+`ServiceResolverAwareTrait` maps the declared method to the class in `#[ServiceMap]` and resolves it lazily. It works for any Gacela-resolvable class, although cross-module calls should target a Facade.

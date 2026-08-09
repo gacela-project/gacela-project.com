@@ -1,6 +1,6 @@
 ---
 title: Module health checks
-description: "Report each module's operational status and aggregate them into a single system health view."
+description: Report module health through the doctor command, orchestration probes, or application endpoints.
 ---
 
 # Module health checks
@@ -21,14 +21,9 @@ final class DatabaseHealthCheck implements ModuleHealthCheckInterface
 
     public function checkHealth(): HealthStatus
     {
-        try {
-            $this->pdo->query('SELECT 1');
-            return HealthStatus::healthy('Database operational');
-        } catch (\Throwable $e) {
-            return HealthStatus::unhealthy('Database unreachable', [
-                'error' => $e->getMessage(),
-            ]);
-        }
+        $this->pdo->query('SELECT 1');
+
+        return HealthStatus::healthy('Database operational');
     }
 
     public function getModuleName(): string
@@ -40,7 +35,7 @@ final class DatabaseHealthCheck implements ModuleHealthCheckInterface
 
 ### 2. Register the check
 
-Register from `gacela.php` to have the Doctor command pick it up automatically:
+Register from `gacela.php` to have the Doctor command pick it up automatically, alongside cache-staleness, suffix-mismatch, and filename-mismatch checks:
 
 ```php
 <?php # gacela.php
@@ -69,6 +64,8 @@ $report = $checker->checkAll();
 ```bash
 vendor/bin/gacela doctor
 ```
+
+Pass an optional namespace filter to restrict module checks. In CI, use `vendor/bin/gacela doctor --strict` so warnings also produce a failing exit code.
 
 ## Status levels
 
@@ -127,7 +124,7 @@ $report->toArray();
 
 - **Be fast**: checks should complete in under a second. Prefer a quick ping (`SELECT 1`) over full queries.
 - **Include metadata**: latency, error codes, retry counts help diagnose issues.
-- **Catch exceptions**: never let a failing check crash the health endpoint.
+- **Let exceptions propagate**: `HealthChecker` converts any `Throwable` into an `unhealthy` result with exception, file, and line metadata.
 - **Pick the right level**: reserve `unhealthy` for real outages; use `degraded` for slow-but-working.
 
 ## API reference

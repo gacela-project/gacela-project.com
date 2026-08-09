@@ -1,19 +1,17 @@
 ---
 title: Testing
-description: Isolate the container between tests with the ContainerFixture trait for PHPUnit.
+description: Test Gacela applications with isolated container state, temporary directories, and lifecycle-event assertions.
 ---
 
 # Testing
 
-Gacela ships two PHPUnit helpers: a `GacelaTestCase` base class for tests that bootstrap an
-application, and the `ContainerFixture` trait it is built on, for tests that already extend
-something else.
+Gacela ships two PHPUnit helpers for tests: `GacelaTestCase`, the recommended base class for tests that bootstrap a Gacela app, and `ContainerFixture`, the lower-level trait it builds on. PHPUnit is a suggested development dependency, not a Gacela runtime dependency, so require it in your application when using these helpers.
 
 ## GacelaTestCase
 
-Extend `GacelaTestCase` when a test needs a bootstrapped Gacela application. It removes the reset
-boilerplate: every bootstrap starts from clean in-memory state, and `tearDown()` drops the Gacela
-singletons so nothing leaks into the next test.
+`GacelaTestCase` is the recommended base class for tests that bootstrap a Gacela app. It extends PHPUnit's `TestCase`, uses the [`ContainerFixture`](#containerfixture) trait internally, and takes care of teardown for you. Reach for `ContainerFixture` directly only when you can't extend this class.
+
+### Setup
 
 ```php
 use Gacela\Framework\Testing\GacelaTestCase;
@@ -31,26 +29,78 @@ final class CheckoutTest extends GacelaTestCase
 }
 ```
 
-### Bootstrapping and assertions
+No `#[Before]` or `resetContainer()` call needed. `bootstrapGacela()` / `bootstrapGacelaWithConfig()` reset the in-memory cache before bootstrapping, and `tearDown()` resets the container and clears recorded events automatically, so state never leaks between tests.
+
+### Available methods
 
 | Method | Description |
 |--------|-------------|
-| `bootstrapGacela(string $appRootDir, ?Closure $configFn = null)` | Bootstrap from a root directory, optionally configuring it with a `GacelaConfig` closure |
-| `bootstrapGacelaWithConfig(string $appRootDir, array $configKeyValues)` | Bootstrap with config key-values, for the common case of a test that only needs a few settings |
-| `recordedGacelaEvents()` | Every framework event recorded since the bootstrap |
-| `recordedGacelaEventsOf(string $eventClass)` | Only the recorded events of one class |
-| `assertServiceResolved(string $serviceId)` | Assert the container resolved that service |
-| `assertBindingRegistered(string $id)` | Assert a binding was registered for that id |
+| `bootstrapGacela(string $appRootDir, ?Closure $configFn = null)` | Bootstrap Gacela from a clean in-memory state and start recording lifecycle events dispatched from this point onward. Optional closure receives `GacelaConfig` for extra setup |
+| `bootstrapGacelaWithConfig(string $appRootDir, array $configKeyValues)` | Bootstrap with the given config key-values in one call (calls `addAppConfigKeyValues()` internally). The most common override in tests |
+| `recordedGacelaEvents()` | All `GacelaEventInterface` events recorded since the last bootstrap, in dispatch order |
+| `recordedGacelaEventsOf(string $eventClass)` | The recorded events of one type, in dispatch order |
+| `assertServiceResolved(string $serviceId)` | Assert the container instantiated the given service id since the last bootstrap |
+| `assertBindingRegistered(string $id)` | Assert a binding, alias or contextual binding was registered under the given id since the last bootstrap |
 
-Every bootstrap records the framework [lifecycle events](/docs/customization#supported-events),
-which is what the two assertions read. That makes them assertions about what the container
-actually did, rather than about what it holds now.
+::: tip Event-backed assertions
+`assertServiceResolved()` and `assertBindingRegistered()` read from Gacela's own lifecycle events (`ServiceResolvedEvent` and `BindingRegisteredEvent`), recorded automatically from `bootstrapGacela()` onward. See the [events catalog](/docs/events) for the full list, and fall back to `recordedGacelaEvents()` / `recordedGacelaEventsOf()` for anything the two helpers don't cover.
+:::
 
-`GacelaTestCase` uses `ContainerFixture` internally, so everything below is available on it too.
+### Asserting on recorded events
+
+Use `recordedGacelaEventsOf()` for anything more specific than "was a service resolved" — counting events, or reading a payload off one:
+
+```php
+use Gacela\Framework\Event\Config\ConfigKeyReadEvent;
+use Gacela\Framework\Event\Container\ServiceResolvedEvent;
+use Gacela\Framework\Testing\GacelaTestCase;
+
+final class CheckoutEventsTest extends GacelaTestCase
+{
+    public function test_payment_gateway_is_resolved_once(): void
+    {
+        $this->bootstrapGacela(__DIR__);
+
+        (new CheckoutFacade())->pay();
+        (new CheckoutFacade())->pay();
+
+        self::assertCount(1, $this->recordedGacelaEventsOf(ServiceResolvedEvent::class));
+    }
+
+    public function test_retries_key_is_read_from_config(): void
+    {
+        $this->bootstrapGacelaWithConfig(__DIR__, ['retries' => 3]);
+
+        (new CheckoutFacade())->pay();
+
+        $events = $this->recordedGacelaEventsOf(ConfigKeyReadEvent::class);
+
+        self::assertSame('retries', $events[0]->key());
+    }
+}
+```
+
+### Asserting on bindings
+
+```php
+use Gacela\Framework\Testing\GacelaTestCase;
+
+final class LoggingBindingTest extends GacelaTestCase
+{
+    public function test_logger_binding_is_registered(): void
+    {
+        $this->bootstrapGacela(__DIR__, function (GacelaConfig $config) {
+            $config->addBinding(LoggerInterface::class, NullLogger::class);
+        });
+
+        $this->assertBindingRegistered(LoggerInterface::class);
+    }
+}
+```
 
 ## ContainerFixture
 
-The trait provides helpers to reset, snapshot and restore the container state so tests don't bleed into each other. Use it directly when a test already extends another base class and cannot extend `GacelaTestCase`.
+The trait provides helpers to reset, snapshot and restore the container state so tests don't bleed into each other.
 
 ### Setup
 
@@ -71,7 +121,7 @@ final class MyTest extends TestCase
 }
 ```
 
-### Isolation helpers
+### Available methods
 
 | Method | Description |
 |--------|-------------|
@@ -116,7 +166,7 @@ public function testFileCacheWrite(): void
 }
 ```
 
-## Tips
+## Test hygiene
 
 - Prefer `resetContainer()` in a `#[Before]` method over `setUp()`. It makes the intent explicit and works alongside other `setUp` logic.
 - For integration tests that need the full bootstrap, call `Gacela::bootstrap()` inside the test and `resetContainer()` in teardown.

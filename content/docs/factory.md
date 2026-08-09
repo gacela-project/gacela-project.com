@@ -1,6 +1,6 @@
 ---
 title: Factory
-description: "The Factory creates a module's internal objects and wires their intra-dependencies."
+description: Create a module’s internal services and wire configuration and provided dependencies into them.
 ---
 
 # Factory
@@ -13,38 +13,14 @@ The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming
 - Dependencies from other modules come through the [Provider](/docs/provider), not the Factory
 :::
 
-## Creating your objects
+## Start from the object you need
 
-The Factory is where you build your domain services, injecting whatever they need.
+After a Facade delegates an operation, design the application or domain service that will fulfill it. Its constructor makes the required collaborators explicit:
 
-Full code snippet: [gacela-example/comment-spam-score/factory](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFactory.php)
+```php [src/Comment/Domain/SpamChecker.php]
+<?php
 
-```php
-<?php # src/Comment/CommentFactory.php
-
-namespace App\Comment;
-
-use App\Comment\Domain\SpamChecker;
-use Gacela\Framework\AbstractFactory;
-use Symfony\Contracts\HttpClient\HttpClient;
-
-/**
- * @method CommentConfig getConfig()
- */
-final class CommentFactory extends AbstractFactory
-{
-    public function createSpamChecker(): SpamChecker
-    {
-        return new SpamChecker(
-            HttpClient::create(),
-            $this->getConfig()->getSpamCheckerEndpoint()
-        );
-    }    
-}
-```
-
-```php
-<?php # src/Comment/Domain/SpamChecker.php
+declare(strict_types=1);
 
 namespace App\Comment\Domain;
 
@@ -54,16 +30,48 @@ final class SpamChecker
 {
     public function __construct(
         private HttpClientInterface $client,
-        private string $endpoint
+        private string $endpoint,
     ) {}
 
     public function getSpamScore(string $comment): int
     {
-        // your business logic
-        return $x;
+        // Business logic using $this->client and $this->endpoint.
+        return 0;
     }
 }
 ```
+
+## Construct it in the Factory
+
+Now make the Factory satisfy that constructor. Configuration and wiring stay here instead of leaking into the service or Facade.
+
+```php [src/Comment/CommentFactory.php]
+<?php
+
+declare(strict_types=1);
+
+namespace App\Comment;
+
+use App\Comment\Domain\SpamChecker;
+use Gacela\Framework\AbstractFactory;
+use Symfony\Contracts\HttpClient\HttpClient;
+
+/**
+ * @extends AbstractFactory<CommentConfig>
+ */
+final class CommentFactory extends AbstractFactory
+{
+    public function createSpamChecker(): SpamChecker
+    {
+        return new SpamChecker(
+            HttpClient::create(),
+            $this->getConfig()->getSpamCheckerEndpoint(),
+        );
+    }
+}
+```
+
+[View the complete Factory](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFactory.php).
 
 ## Auto-wiring dependencies into the Factory
 
@@ -89,3 +97,36 @@ The difference between these two styles:
 Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
 
 For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject).
+
+## Sharing a single instance
+
+Plain `create...()` methods build a fresh object on every call. When a dependency should instead be built once and reused, use `singleton()`:
+
+```php
+protected function singleton(string $key, callable $creator): mixed;
+```
+
+It memoises the result of `$creator` under `$key` and returns the **same instance** on every later call within the module. The creator is lazy — it only runs on first access.
+
+```php
+<?php # src/Comment/CommentFactory.php
+
+final class CommentFactory extends AbstractFactory
+{
+    public function createSpamChecker(): SpamChecker
+    {
+        return $this->singleton(
+            SpamChecker::class,
+            fn (): SpamChecker => new SpamChecker(
+                HttpClient::create(),
+                $this->getConfig()->getSpamCheckerEndpoint(),
+            ),
+        );
+    }
+}
+```
+
+::: tip Key points
+- `create...()` methods build a new instance every call; `singleton()` builds once and reuses it
+- `singleton()` is generic (`@template T`, `@return T`), so its inferred return type matches `$creator` without a cast
+:::

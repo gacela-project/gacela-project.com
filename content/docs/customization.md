@@ -1,205 +1,96 @@
 ---
-title: Module Customization
-description: "Customize how Gacela discovers and resolves module classes: suffixes, project namespaces and events."
+title: Module customization
+description: Customize Gacela pillar suffixes, project namespaces, module paths, and discovery behavior.
 ---
 
-# Module Customization
+# Module customization
 
-Advanced configuration options for customizing how Gacela discovers and resolves module classes.
+These options change Gacela's naming and discovery conventions. Keep the defaults for new applications; customize them when integrating an established structure or overriding a vendor module.
 
-## Suffix Types
+## Custom pillar suffixes
 
-```php
-addSuffixTypeFacade(string $suffix);
-addSuffixTypeFactory(string $suffix);
-addSuffixTypeConfig(string $suffix);
-addSuffixTypeProvider(string $suffix);
-```
+The defaults are `Facade`, `Factory`, `Provider`, and `Config`. Register alternatives when the project already uses different names:
 
-Apart from the known Gacela suffix classes: `Factory`, `Config`, and `Provider`, you can define other suffixes to be
-resolved for your different modules. You can do this by adding custom gacela resolvable types.
+```php [gacela.php]
+use Gacela\Framework\Bootstrap\GacelaConfig;
 
-```php
-<?php # gacela.php
-
-return function (GacelaConfig $config) {
-  $config->addSuffixTypeFacade('EntryPoint');
-  $config->addSuffixTypeFactory('Creator');
-  $config->addSuffixTypeConfig('Conf');
-  $config->addSuffixTypeProvider('Binder');
+return static function (GacelaConfig $config): void {
+    $config
+        ->addSuffixTypeFacade('EntryPoint')
+        ->addSuffixTypeFactory('Creator')
+        ->addSuffixTypeProvider('Binder')
+        ->addSuffixTypeConfig('Settings');
 };
 ```
 
-In the example above, you'll be able to create a gacela module with these file names:
+Gacela will then recognize this module:
 
-```bash
-ExampleModule
-├── Domain
-│   └── YourLogicClass.php
-├── EntryPoint.php  # this is the `Facade`
-├── Creator.php     # this is the `Factory`
-├── Conf.php        # this is the `Config`
-└── Binder.php      # this is the `Provider` 
+```text
+ExampleModule/
+├── EntryPoint.php  # Facade role
+├── Creator.php     # Factory role
+├── Binder.php      # Provider role
+└── Settings.php    # Config role
 ```
 
-## Project Namespaces
+Custom suffixes are additive. Default suffixes continue to resolve.
 
-```php
-setProjectNamespaces(array $list);
-```
+## Project namespace priority
 
-You can add your project namespaces to be able to resolve gacela classes with priorities.
+`setProjectNamespaces()` gives application classes priority over matching vendor module classes.
 
-Gacela will start looking on your project namespaces when trying to resolve any gacela resolvable classes, eg:
-`Facade`, `Factory`, `Config`, or `Provider`.
-
-Let's visualize it with an example. Consider this structure:
-```
-├── gacela.php
-├── index.php # entry point
-├── src
-│   └── Main
-│       └── ModuleA
-│           └── Factory.php
-└── vendor
-    └── third-party
-        └── ModuleA
-            ├── Facade.php
-            └── Factory.php
-```
-
-```php
-<?php # gacela.php
-
-return function (GacelaConfig $config) {
-  $config->setProjectNamespaces(['Main']);
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->setProjectNamespaces(['App']);
 };
 ```
 
-Because you have defined `Main` as your project namespace, when you use the `ModuleA\Facade` from vendor, that Facade
-will load the Factory from `src/Main/ModuleA/Factory` and not `vendor/third-party/ModuleA/Factory` because `Main` has
-priority (over `third-party`, in this case).
+Given both files below, a vendor `ModuleA\Facade` resolves the application Factory because `App` has priority:
 
-**TL;DR**: You can override gacela resolvable classes by copying the directory structure from vendor modules in your
-project namespaces.
-
-## Listening to internal events
-
-```php
-registerGenericListener(callable $listener);
-registerSpecificListener(string $event, callable $listener);
+```text
+src/App/ModuleA/Factory.php
+vendor/acme/package/src/ModuleA/Factory.php
 ```
 
-Gacela has an internal event-listener system that dispatches a variety of events.
-These are read-only events interesting for tracing, debugging or act on them as you want.
+Use this for targeted vendor customization while preserving the vendor Facade API. Mirror only the module path and pillar being replaced.
 
-### Register a generic listener
+## Module scan paths
 
-```php
-<?php # gacela.php
+Restrict discovery when modules live under known directories:
 
-return function (GacelaConfig $config) {
-  $config->registerGenericListener(
-    function (GacelaEventInterface $event) {
-      echo $event->toString();
-    }
-  );
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->setAppModulePaths(['src']);
 };
 ```
 
-### Register a specific listener
+This speeds up `list:modules`, `debug:modules`, `cache:warm`, and `doctor` by excluding unrelated directories. Paths may be absolute or relative to the application root.
 
-```php
-<?php # gacela.php
+## Lifecycle listeners
 
-return function (GacelaConfig $config) {
-  $config->registerSpecificListener(
-    ResolvedClassCreatedEvent::class, 
-    function (GacelaEventInterface $event): void {
-      echo $event->toString();
-    }
-  );
+Use `registerGenericListener()` for all events or `registerSpecificListener()` for one event class. Listeners are best suited to tracing, profiling, and metrics; they should not contain business behavior.
+
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->registerSpecificListener(
+        ResolvedClassCreatedEvent::class,
+        static function (ResolvedClassCreatedEvent $event): void {
+            // Record resolution telemetry.
+        },
+    );
 };
 ```
 
-### Supported events
-
-#### Gacela\Framework\Event\ClassResolver\ClassNameFinder
-- ClassNameInvalidCandidateFoundEvent
-- ClassNameNotFoundEvent
-- ClassNameCachedFoundEvent
-- ClassNameValidCandidateFoundEvent
-
-#### Gacela\Framework\Event\ConfigReader
-- ReadPhpConfigEvent
-
-#### Gacela\Framework\Event\ClassResolver
-- AbstractGacelaClassResolverEvent
-- ResolvedClassCachedEvent
-- ResolvedClassCreatedEvent
-- ResolvedCreatedDefaultClassEvent
-- ResolvedClassTriedFromParentEvent
-
-#### Gacela\Framework\Event\ClassResolver\Cache
-- ClassNameCacheCachedEvent
-- ClassNamePhpCacheCreatedEvent
-- ClassNameInMemoryCacheCreatedEvent
-- CustomServicesCacheCachedEvent
-- CustomServicesPhpCacheCreatedEvent
-- CustomServicesInMemoryCacheCreatedEvent
-
-#### Gacela\Framework\Event\Bootstrap
-- GacelaBootstrapStartedEvent &mdash; `appRootDir()`
-- GacelaBootstrapFinishedEvent &mdash; `durationMs()`
-
-#### Gacela\Framework\Event\Config
-- ConfigInitializedEvent &mdash; `keyCount()`
-- ConfigKeyReadEvent &mdash; `key()`
-- ConfigKeyNotFoundEvent &mdash; `key()`
-
-#### Gacela\Framework\Event\Container
-- BindingRegisteredEvent &mdash; `id()`, dispatched when a binding is registered
-- ServiceResolvedEvent &mdash; `id()`, dispatched when the container resolves a service
-
-#### Gacela\Framework\Event\Provider
-- ProviderRegisteredEvent &mdash; `providerClass()`, `moduleName()`
-
-#### Gacela\Framework\Event\Cache
-- CacheClearedEvent &mdash; `cacheFile()`
-- CacheWarmedEvent &mdash; `moduleCount()`, `failedCount()`, `skippedCount()`
-
-::: tip
-`BindingRegisteredEvent` fires at **registration**, not at resolution. To act on an instance as it is resolved, use [`afterResolving()`](/docs/bindings#after-resolving) instead: a listener observes, while `afterResolving()` can call something on the object.
-:::
-
-### Turning events off
-
-```php
-disableEventListeners();
-```
-
-Stop dispatching every event in the application. Dispatch costs something on a hot path, and in production nothing is usually listening.
-
-```php
-<?php # gacela.php
-
-return function (GacelaConfig $config) {
-  $config->disableEventListeners();
-};
-```
+See [Events](/docs/events) for the event catalog and typed payloads.
 
 ## Reset InMemoryCache
 
-```php
-resetInMemoryCache();
-```
+`resetInMemoryCache()` clears state before bootstrap. Prefer [`GacelaTestCase`](/docs/testing#gacelatestcase) or `ContainerFixture` in tests because they also clean up after each test.
 
-If you are working with integration tests, this option can be helpful to avoid false-positives, as `Gacela` works as a global singleton pattern to store the resolved dependencies.
-
-```php
-<?php # gacela.php
-
-return function (GacelaConfig $config) {
-  $config->resetInMemoryCache();
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->resetInMemoryCache();
 };
 ```
+
+For long-running processes that must clear all runtime and file-backed resolution caches, use [`Gacela::resetCache()`](/docs/bootstrap#gacela-resetcache).
