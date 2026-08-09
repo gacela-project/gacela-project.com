@@ -154,14 +154,13 @@ function closing(): Raw {
         </button>
       </p>
 
-      <div class="cta__links">
-        <a class="button button--primary" href="/docs/quickstart">
-          Read the quickstart
-          <span class="button__arrow" aria-hidden="true">&rarr;</span>
-        </a>
-        <a class="button" href="/docs/upgrading">Upgrade from 1.21</a>
-        <a class="button" href="/used-in">See who uses Gacela</a>
-      </div>
+      <p class="cta__links">
+        <a href="/docs/quickstart">Read the quickstart</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/docs/upgrading">Upgrade from 1.21</a>
+        <span aria-hidden="true">&middot;</span>
+        <a href="/used-in">See who uses Gacela</a>
+      </p>
     </div>
   </section>`
 }

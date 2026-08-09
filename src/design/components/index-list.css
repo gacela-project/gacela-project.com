@@ -142,11 +142,22 @@
     font-size: var(--text-3xl);
   }
 
+  /* Three links in a line rather than three buttons. The section already asks
+     once, in the heading and the command above them; a row of buttons asked
+     three more times and gave the least likely of the three the same weight as
+     the quickstart. As prose they read as what they are: where to go next. */
   .cta__links {
     display: flex;
     flex-wrap: wrap;
+    align-items: baseline;
     justify-content: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
+    margin: 0;
+    font-size: smaller;
+  }
+
+  .cta__links > span {
+    color: var(--text-muted);
   }
 
   /* A stack of related links at the foot of a page. */
