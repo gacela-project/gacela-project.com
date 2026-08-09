@@ -18,6 +18,10 @@ Colour is authored in OKLCH and expressed with `light-dark()`, so the two themes
 palette at two lightness ranges rather than two stylesheets. Nothing outside `tokens.css`
 may contain a colour literal.
 
+The palette has one hue, 251, and it is the mark's own: `#123456`, the blue the gazelle is
+drawn in, measures `oklch(0.3192 0.0725 251)`. Every surface and every ink is that colour at
+another lightness, and `--navy-700` is the brand value itself to the last decimal.
+
 ### Surfaces
 
 <div class="sg-grid">
@@ -44,9 +48,9 @@ The project's blue is the only accent, and it is deliberately rare: it marks the
 on a screen that matters most, and nothing else. If two accent elements compete in a
 viewport, one of them is wrong.
 
-The accent and the ink are neighbouring hues, so the accent separates itself by chroma:
-the ink sits near 0.03 and the accent near 0.16. That gap is what makes an active
-sidebar item read as active.
+The accent shares the ink's hue exactly, so it has only chroma to separate itself with: the
+ink ramp stays under 0.045 and the accent runs 0.11 to 0.15. That gap is what makes an
+active sidebar item read as active, and it is the reason the ink is kept as grey as it is.
 
 <div class="sg-grid">
   <div class="sg-swatch"><div class="sg-swatch__chip" style="background: var(--accent)"></div><span class="sg-swatch__name">--accent</span><span class="sg-swatch__use">Links, active state</span></div>
