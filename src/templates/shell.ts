@@ -388,21 +388,22 @@ function siteFooter(context: ShellContext): Raw {
         <p class="footer__copyright">&copy; 2021&ndash;${year} ${site.title}. All rights reserved.</p>
       </div>
 
+      <!-- No heading. It read "Project" over the only list in the footer, so it
+           named a category with nothing to tell it apart from, and put an h2
+           into the outline for five words. The two links that stay on this site
+           come first, then the three that leave it. -->
       <div>
-        <h2 class="footer__group-title">Project</h2>
-        <!-- The two that stay on this site first, then the three that leave
-             it, and within those the source before what is built from it. -->
         <ul class="footer__list" role="list">
           <li><a class="footer__link" href="/team">Team</a></li>
           <li><a class="footer__link" href="/license">License</a></li>
           <li>
-            <a class="footer__link" href="${site.repository}" target="_blank" rel="noreferrer"
-              >GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
+            <a class="footer__link" href="${site.packagist}" target="_blank" rel="noreferrer"
+            >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </li>
           <li>
-            <a class="footer__link" href="${site.packagist}" target="_blank" rel="noreferrer"
-              >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
+            <a class="footer__link" href="${site.repository}" target="_blank" rel="noreferrer"
+              >GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </li>
           <li>
