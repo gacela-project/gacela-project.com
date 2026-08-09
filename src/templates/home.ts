@@ -73,11 +73,10 @@ function hero(): Raw {
           </p>
 
           <div class="hero__actions">
-            <a class="button button--primary" href="/docs/quickstart">
-              Build your first module
+            <a class="button button--primary" href="/docs">
+              Browse the documentation
               <span class="button__arrow" aria-hidden="true">&rarr;</span>
             </a>
-            <a class="button" href="/docs">Browse the docs</a>
             <a class="button" href="/used-in">See production code</a>
           </div>
         </div>
