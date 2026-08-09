@@ -86,7 +86,6 @@
     --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
     --text: light-dark(var(--navy-500), var(--navy-200));
     --text-muted: light-dark(var(--navy-400), var(--navy-300));
-    --text-inverse: light-dark(var(--navy-25), var(--navy-800));
 
     --border-subtle: light-dark(var(--navy-100), var(--navy-700));
     --border: light-dark(var(--navy-150), var(--navy-600));
@@ -157,7 +156,6 @@
      * of them can be mistaken for a link or an active item.
      * ------------------------------------------------------------------ */
 
-    --syn-background: transparent;
     --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 250));
     --syn-token-keyword: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
@@ -203,7 +201,6 @@
     --tracking-tight: -0.022em;
     --tracking-snug: -0.011em;
     --tracking-normal: 0;
-    --tracking-wide: 0.06em;
     --tracking-label: 0.11em;
 
     --weight-normal: 400;
@@ -261,7 +258,6 @@
     --duration-base: 200ms;
     --duration-slow: 280ms;
 
-    --z-sticky: 10;
     --z-header: 40;
     --z-overlay: 60;
   }

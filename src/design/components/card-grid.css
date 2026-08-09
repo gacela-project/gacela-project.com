@@ -2,11 +2,8 @@
  * Card grid: a short set of routes into the documentation, offered where a
  * reader has arrived without knowing what they want yet.
  *
- * It shares its surface, radius and hover with .class-card on the home page,
- * deliberately: two components that look different for no reason read as two
- * systems. What differs is the content model. A card here is a link with a
- * heading and a sentence, so it styles its own children rather than asking the
- * markup for a class on each one.
+ * A card is a link with a heading and a sentence, so it styles its own
+ * children rather than asking the markup for a class on each one.
  */
 
 @layer components {

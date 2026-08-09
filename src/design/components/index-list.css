@@ -1,5 +1,6 @@
 /**
- * Index lists and cards: the repeating structures of the marketing pages.
+ * Index lists, the closing call to action, and badges: the repeating
+ * structures of the marketing pages.
  *
  * The index list is the workhorse. It is a table of contents rather than a
  * grid of cards, because a framework's feature set is a reference, and a
@@ -74,59 +75,6 @@
   }
 
   /* ---------------------------------------------------------------------
-   * The four classes, as an annotated definition list. Each entry names the
-   * file you will actually create, because that is how a reader meets them.
-   * ------------------------------------------------------------------ */
-
-  .class-list {
-    display: grid;
-    gap: var(--space-5);
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-  }
-
-  .class-card {
-    display: block;
-    padding: var(--space-5);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    text-decoration: none;
-    transition:
-      border-color var(--duration-base) var(--ease-out),
-      transform var(--duration-base) var(--ease-out);
-  }
-
-  .class-card:hover {
-    border-color: var(--accent-line);
-    transform: translateY(-2px);
-  }
-
-  .class-card__file {
-    display: inline-block;
-    padding: 2px var(--space-2);
-    border-radius: var(--radius-xs);
-    background: var(--accent-wash);
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-  }
-
-  .class-card__name {
-    margin-block-start: var(--space-4);
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: var(--weight-semibold);
-    color: var(--text-strong);
-  }
-
-  .class-card__text {
-    margin-block-start: var(--space-2);
-    font-size: var(--text-md);
-    line-height: var(--leading-normal);
-    color: var(--text-muted);
-  }
-
-  /* ---------------------------------------------------------------------
    * Closing call to action.
    * ------------------------------------------------------------------ */
 
@@ -158,15 +106,6 @@
 
   .cta__links > span {
     color: var(--text-muted);
-  }
-
-  /* A stack of related links at the foot of a page. */
-  .link-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
   }
 
   .badge {
