@@ -78,8 +78,16 @@ export function documentShell(context: ShellContext): string {
     )}
     <link rel="stylesheet" href="${assets.css}" />
 
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" href="/gacela-logo.svg" type="image/svg+xml" />
+    <!-- The mark is drawn as an outline, and an outline does not survive being
+         16 pixels wide: its stroke lands at a tenth of a pixel and the tab shows
+         nothing at all. The icons are the same mark with its facets filled,
+         which still reads as an animal at 16. -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Saved to a home screen, iOS ignores the two above and screenshots the
+         page without this. It is opaque on purpose: a transparent icon is
+         composited on black there. -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <meta property="og:type" content="website" />
