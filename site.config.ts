@@ -25,9 +25,9 @@ export const site: SiteConfig = {
   ],
 
   headerLinks: [
-    { title: 'Docs', route: '/docs' },
+    { title: 'Get started', route: '/docs' },
     { title: 'About', route: '/about' },
-    { title: 'Used in', route: '/used-in' },
+    { title: 'Used in production', route: '/used-in' },
   ],
 
   sidebar: [

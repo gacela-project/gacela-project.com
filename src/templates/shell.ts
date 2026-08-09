@@ -161,11 +161,12 @@ function siteHeader(context: ShellContext): Raw {
       <nav class="header__nav" aria-label="Main">
         ${site.headerLinks.map(
           (link) => html`<a
-            class="header__link"
-            href="${link.route}"
-            ${raw(isActive(route, link.route) ? 'data-active' : '')}
-            >${link.title}</a
-          >`,
+              class="header__link"
+              href="${link.route}"
+              ${raw(isActive(route, link.route) ? 'data-active' : '')}
+              >${link.title}</a
+            >
+            ${link.route === '/docs' ? referenceMenu(site) : ''}`,
         )}
       </nav>
 
@@ -174,9 +175,44 @@ function siteHeader(context: ShellContext): Raw {
         <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
           >${icons.github}</a
         >
+        <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
+          >${icons.x}</a
+        >
       </div>
     </div>
   </header>`
+}
+
+/**
+ * The documentation tree, in the header.
+ *
+ * A details element, so it opens, closes and announces its state with no
+ * JavaScript at all. The first sidebar group is left out: the "Get started"
+ * link beside it already leads there, and repeating it inside would make the
+ * panel argue with its own neighbour.
+ */
+function referenceMenu(site: SiteConfig): Raw {
+  return html`<details class="header__menu" data-header-menu>
+    <summary class="header__link header__menu-summary">
+      <span>Reference</span>
+      ${icons.chevronDown}
+    </summary>
+
+    <div class="header__menu-panel">
+      ${site.sidebar.slice(1).map(
+        (group) => html`<div class="header__menu-group">
+          <p class="header__menu-title">${group.title}</p>
+          <ul class="header__menu-list" role="list">
+            ${group.items.map(
+              (item) => html`<li>
+                <a class="header__menu-link" href="${item.route}">${item.title}</a>
+              </li>`,
+            )}
+          </ul>
+        </div>`,
+      )}
+    </div>
+  </details>`
 }
 
 function searchTrigger(): Raw {
@@ -274,7 +310,7 @@ function siteFooter(context: ShellContext): Raw {
         <h2 class="footer__group-title">Project</h2>
         <ul class="footer__list" role="list">
           <li><a class="footer__link" href="/about">About Gacela</a></li>
-          <li><a class="footer__link" href="/used-in">Used in</a></li>
+          <li><a class="footer__link" href="/used-in">Used in production</a></li>
           <li><a class="footer__link" href="/team">Team</a></li>
           <li>
             <a class="footer__link" href="${site.packagist}" rel="noreferrer">Packagist</a>

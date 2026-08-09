@@ -64,6 +64,9 @@
     font-size: var(--text-sm);
     letter-spacing: var(--tracking-normal);
     text-decoration: none;
+    /* The bar is a fixed height, so a label that wraps breaks its alignment
+       rather than growing it. Multi-word labels stay on one line. */
+    white-space: nowrap;
     transition:
       color var(--duration-fast) var(--ease-out),
       background-color var(--duration-fast) var(--ease-out);
@@ -76,6 +79,103 @@
 
   .header__link[aria-current='page'],
   .header__link[data-active] {
+    color: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The Reference menu: the documentation tree, hanging off the header.
+   *
+   * A details element, so the platform supplies the open state, the keyboard
+   * behaviour and the announcement. Script only closes it on Escape and on a
+   * click elsewhere, neither of which a details element does by itself.
+   * ------------------------------------------------------------------ */
+
+  .header__menu {
+    position: relative;
+  }
+
+  .header__menu-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .header__menu-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .header__menu-summary svg {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
+
+  .header__menu[open] .header__menu-summary {
+    color: var(--text-strong);
+    background: var(--surface-sunken);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .header__menu-summary svg {
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+
+    .header__menu[open] .header__menu-summary svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .header__menu-panel {
+    position: absolute;
+    inset-block-start: calc(100% + var(--space-3));
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: var(--z-header);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(9rem, 1fr));
+    gap: var(--space-5) var(--space-6);
+    padding: var(--space-5);
+    max-inline-size: min(44rem, calc(100vw - var(--space-6)));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .header__menu-title {
+    margin-block-end: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .header__menu-list {
+    display: grid;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .header__menu-link {
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    margin-inline-start: calc(var(--space-2) * -1);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .header__menu-link:hover {
+    color: var(--accent);
+    background: var(--surface-sunken);
+  }
+
+  .header__menu-link[aria-current='page'] {
     color: var(--accent);
   }
 
@@ -92,7 +192,11 @@
     gap: var(--space-1);
   }
 
-  @media (max-width: 899px) {
+  /* The bar needs about 1060px to hold the brand, the search box, four nav
+     labels in mono and the action cluster. Below that the navigation moves
+     into the disclosure, which appears at the same width, so the primary links
+     are never in two visible places and never squeezed. */
+  @media (max-width: 1099px) {
     .header__nav {
       display: none;
     }
@@ -189,7 +293,7 @@
     display: none;
   }
 
-  @media (max-width: 959px) {
+  @media (max-width: 1099px) {
     .mobile-nav {
       display: block;
       border-block-end: 1px solid var(--border-subtle);
