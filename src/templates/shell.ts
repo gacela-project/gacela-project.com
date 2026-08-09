@@ -1,7 +1,6 @@
 import { attrs, html, raw, render, type Raw } from '../forge/render/index.ts'
 import type { SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
-import { gacelaMark } from './marks.ts'
 
 export type ShellAssets = {
   readonly css: string
@@ -84,10 +83,9 @@ export function documentShell(context: ShellContext): string {
     )}
     <link rel="stylesheet" href="${assets.css}" />
 
-    <!-- The mark is drawn as an outline, and an outline does not survive being
-         16 pixels wide: its stroke lands at a tenth of a pixel and the tab shows
-         nothing at all. The icons are the same mark with its facets filled,
-         which still reads as an animal at 16. -->
+    <!-- The tab is the one place the gazelle still appears. Its facets are
+         filled rather than outlined: at 16 pixels an outline lands at a tenth
+         of a pixel and the tab shows nothing at all. -->
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <!-- Saved to a home screen, iOS ignores the two above and screenshots the
@@ -161,7 +159,6 @@ function navDrawer(context: ShellContext): Raw {
     <div class="nav-drawer__panel">
       <div class="nav-drawer__bar">
         <a class="header__brand" href="/" aria-label="${site.title}, home">
-          ${gacelaMark({ className: 'header__mark' })}
           <span class="header__wordmark">${site.title}</span>
         </a>
 
@@ -235,7 +232,6 @@ function siteHeader(context: ShellContext): Raw {
   return html`<header class="header">
     <div class="header__inner">
       <a class="header__brand" href="/" aria-label="${site.title}, home">
-        ${gacelaMark({ className: 'header__mark' })}
         <span class="header__wordmark">${site.title}</span>
       </a>
 
@@ -391,7 +387,6 @@ function siteFooter(context: ShellContext): Raw {
     <div class="footer__inner">
       <div>
         <a class="footer__brand" href="/">
-          ${gacelaMark({ className: 'footer__mark' })}
           <span class="footer__wordmark">${site.title}</span>
         </a>
         <p class="footer__tagline">${site.tagline}</p>

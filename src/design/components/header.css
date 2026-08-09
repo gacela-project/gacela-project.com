@@ -34,9 +34,6 @@
   }
 
   .header__brand {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
     color: var(--text-strong);
     text-decoration: none;
     flex-shrink: 0;
@@ -44,17 +41,6 @@
 
   .header__brand:hover {
     color: var(--text-strong);
-  }
-
-  .header__mark {
-    inline-size: 1.75rem;
-    block-size: 1.75rem;
-    color: var(--text-strong);
-  }
-
-  .header__brand:hover .header__mark {
-    color: var(--accent);
-    transition: color var(--duration-base) var(--ease-out);
   }
 
   .header__wordmark {

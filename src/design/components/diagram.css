@@ -258,45 +258,4 @@
     opacity: 1;
     visibility: visible;
   }
-
-  /* --- the mark ----------------------------------------------------------
-   * The logo drawn facet by facet on first load. One orchestrated moment,
-   * and the only animation on the page that is longer than a transition.
-   * -------------------------------------------------------------------- */
-
-  .mark path {
-    fill: color-mix(in oklch, var(--text-strong) 5%, transparent);
-    stroke: currentColor;
-    stroke-width: 3;
-    stroke-linejoin: round;
-  }
-
-  .mark path[data-accent] {
-    fill: color-mix(in oklch, var(--accent) 30%, transparent);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .mark--animated path {
-      stroke-dasharray: 1;
-      animation:
-        mark-draw 0.85s var(--ease-out) both,
-        mark-fill 0.6s ease both;
-      animation-delay: calc(var(--facet) * 38ms), calc(560ms + var(--facet) * 24ms);
-    }
-  }
-
-  @keyframes mark-draw {
-    from {
-      stroke-dashoffset: 1;
-    }
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes mark-fill {
-    from {
-      fill: transparent;
-    }
-  }
 }
