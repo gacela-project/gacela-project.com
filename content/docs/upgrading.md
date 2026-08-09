@@ -1,14 +1,16 @@
 ---
-title: Upgrade from Gacela 1.21 to 2.0
-description: Update PHP and container requirements, replace removed APIs, declare service accessors, and verify the migration.
+title: Upgrading Gacela
+description: Move from 1.21 to 2.0, then on to 2.1: PHP and container requirements, removed APIs, declared service accessors, and what to verify.
 ---
 
-# Upgrade from Gacela 1.21 to 2.0
+# Upgrading Gacela
+
+## From 1.21 to 2.0
 
 Gacela 2.0 raises the PHP floor, moves to `gacela-project/container` 2.x, removes three deprecated aliases, and makes
 undeclared pillar accessors visible to static analysis. Version 1.21.0 is the final 1.x release.
 
-## Before upgrading
+### Before upgrading
 
 Prepare the application while it still runs on 1.21:
 
@@ -31,13 +33,13 @@ Then require the new major:
 composer require gacela-project/gacela:^2.0
 ```
 
-## Requirements
+### Requirements
 
 - PHP is now **8.3 or newer**, up from 8.1.
 - `gacela-project/container` is now `^2.0.2`.
 - Symfony development integrations support `^7.0 || ^8.0`; projects pinned to Symfony 6 must upgrade.
 
-## Removed APIs
+### Removed APIs
 
 | Removed in 2.0                        | Replacement                  |
 |---------------------------------------|------------------------------|
@@ -45,7 +47,7 @@ composer require gacela-project/gacela:^2.0
 | `GacelaConfig::addMappingInterface()` | `GacelaConfig::addBinding()` |
 | `DocBlockResolverAwareTrait`          | `ServiceResolverAwareTrait`  |
 
-### Rename dependency providers completely
+#### Rename dependency providers completely
 
 Change the class, parent, and filename:
 
@@ -62,7 +64,7 @@ resolving. Running `doctor` on 1.21 detects the mismatch before the old resolver
 `provideModuleDependencies()` remains the imperative registration method. `#[Provides]` remains the attribute-first
 alternative.
 
-### Rename bindings and the resolver trait
+#### Rename bindings and the resolver trait
 
 ```diff
 -$config->addMappingInterface(MyInterface::class, MyImplementation::class);
@@ -74,7 +76,7 @@ alternative.
 
 Both are mechanical renames with the same behavior.
 
-## Declare pillar accessors
+### Declare pillar accessors
 
 The PHPStan suppression for undeclared magic accessors is gone. Declare each accessor with `#[ServiceMap]`:
 
@@ -101,7 +103,7 @@ Psalm users must register the 2.0 plugin separately from the existing XInclude:
 </plugins>
 ```
 
-## Container compatibility
+### Container compatibility
 
 Gacela's container now decorates the final 2.x container and continues to implement `ContainerInterface`. Code
 type-hinting the concrete inner container should accept its interface instead:
@@ -114,7 +116,7 @@ type-hinting the concrete inner container should accept its interface instead:
 Module containers are now scopes of one application container. App-wide configuration is walked once per bootstrap,
 while Provider registrations and instances remain isolated per module scope.
 
-## Other targeted changes
+### Other targeted changes
 
 - `ConsoleFacade::getContainerStats()` and `ConsoleFactory::getContainerStats()` now return a final readonly
   `ContainerStats` object, not an array. Use properties such as `registeredServices` and `processMemoryBytes`, plus
@@ -125,7 +127,7 @@ while Provider registrations and instances remain isolated per module scope.
   time.
 - `Gacela::resetCache()` no longer clears a cache backend registered through `CacheableConfig::setStorage()`.
 
-## New in 2.0
+### New in 2.0
 
 - `GacelaConfig::loadDefinitions()` loads wiring from arrays, PHP files, or JSON files.
 - `GacelaConfig::afterResolving()` runs idempotent callbacks after top-level container resolution.

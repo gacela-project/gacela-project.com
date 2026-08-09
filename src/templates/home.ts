@@ -157,7 +157,7 @@ function closing(): Raw {
       <p class="cta__links">
         <a href="/docs/quickstart">Read the quickstart</a>
         <span aria-hidden="true">&middot;</span>
-        <a href="/docs/upgrading">Upgrade from 1.21</a>
+        <a href="/docs/upgrading#from-1-21-to-2-0">Upgrade from 1.21</a>
         <span aria-hidden="true">&middot;</span>
         <a href="/used-in">See who uses Gacela</a>
       </p>

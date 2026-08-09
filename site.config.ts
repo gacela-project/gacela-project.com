@@ -38,7 +38,7 @@ export const site: SiteConfig = {
         { title: 'Quickstart', route: '/docs/quickstart' },
         { title: 'Getting dependencies', route: '/docs/getting-dependencies' },
         { title: 'Bootstrap', route: '/docs/bootstrap' },
-        { title: 'Upgrade from 1.21', route: '/docs/upgrading' },
+        { title: 'Upgrading', route: '/docs/upgrading' },
       ],
     },
     {
