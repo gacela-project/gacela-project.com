@@ -3,6 +3,7 @@ import { join } from 'node:path'
 
 import { build } from '../pipeline.ts'
 import { loadSiteConfig, projectRoot, readVersion } from './context.ts'
+import { GENERATION_PATH, injectLiveReload } from './live-reload.ts'
 import { createStaticServer } from './serve.ts'
 
 /**
@@ -43,10 +44,18 @@ building = rebuild()
 const server = createStaticServer(async (path) => {
   await building
 
-  if (path === 'dev-generation') return { contents: String(generation) }
+  if (path === GENERATION_PATH) return { contents: String(generation) }
 
   const contents = outputs.get(path)
-  return contents === undefined ? undefined : { contents }
+  if (contents === undefined) return undefined
+
+  /* The watcher is added on the way out rather than built in, so what the
+     pipeline produced stays exactly what production will serve. */
+  if (path.endsWith('.html') && typeof contents === 'string') {
+    return { contents: injectLiveReload(contents) }
+  }
+
+  return { contents }
 })
 
 server.listen(port, () => {
