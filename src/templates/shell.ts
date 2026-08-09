@@ -83,15 +83,13 @@ export function documentShell(context: ShellContext): string {
     )}
     <link rel="stylesheet" href="${assets.css}" />
 
-    <!-- The tab is the one place the gazelle still appears. Its facets are
-         filled rather than outlined: at 16 pixels an outline lands at a tenth
-         of a pixel and the tab shows nothing at all. -->
-    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <!-- Saved to a home screen, iOS ignores the two above and screenshots the
-         page without this. It is opaque on purpose: a transparent icon is
-         composited on black there. -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <!-- The icon the site has always used, carried over unchanged from the old
+         gacela-project.com, and the only one declared, as it was there. It is a
+         single 16px bitmap, which is why nothing sits beside it: an SVG is
+         preferred wherever it is offered, so one here would mean this file
+         never reaches a tab, and an apple-touch icon large enough to be worth
+         having cannot be made from a 16px source. -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16" />
     ${context.markdownPath === undefined
       ? ''
       : raw(
