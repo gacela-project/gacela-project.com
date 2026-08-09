@@ -40,7 +40,7 @@
 
   .search-trigger__hint {
     margin-inline-start: auto;
-    padding: 1px var(--space-2);
+    padding: 2px var(--space-2);
     border: 1px solid var(--border);
     border-radius: var(--radius-xs);
     font-size: var(--text-2xs);
