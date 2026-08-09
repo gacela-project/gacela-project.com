@@ -91,6 +91,15 @@
     border-color: var(--accent-line);
   }
 
+  /* The bar's gap is measured between boxes, and the nav label to the left
+     carries 12px of its own padding, so that side read as 44 against the 16
+     on the other. Taking the padding back puts one bar gap between the
+     label's ink and this badge. Only in the bar: in the drawer the badge
+     opens a row, with no padded neighbour to discount. */
+  .header__version {
+    margin-inline-start: calc(var(--space-3) * -1);
+  }
+
   .header__link {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
@@ -255,12 +264,16 @@
     background: var(--border-subtle);
   }
 
-  /* Left of the first rule lie both the bar's gap and the nav link's trailing
-     padding, where every other side of a rule has only the cluster's gap. That
-     is what pinned it against the theme control. Both are taken back, so this
-     rule is centred on the same air as the next one. */
+  /* Left of the first rule lies the bar's gap, where every other side of a
+     rule has only the cluster's gap, so the difference is taken back and this
+     rule is centred on the same air as the next one.
+
+     The nav link's trailing padding used to be taken back here as well. The
+     release badge stands between the two now, and it draws a border, so its
+     box edge is its visible edge with no padding to discount. Subtracting it
+     anyway left four pixels between the badge and this rule. */
   .header__actions::before {
-    margin-inline-start: calc(var(--bar-rule-space) - var(--bar-gap) - var(--space-3));
+    margin-inline-start: calc(var(--bar-rule-space) - var(--bar-gap));
   }
 
   /* Below the width the navigation collapses at there is nothing to its left
