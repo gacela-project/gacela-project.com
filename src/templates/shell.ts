@@ -389,25 +389,20 @@ function siteFooter(context: ShellContext): Raw {
 
       <!-- No heading. It read "Project" over the only list in the footer, so it
            named a category with nothing to tell it apart from, and put an h2
-           into the outline for five words. The two links that stay on this site
-           come first, then the three that leave it. -->
+           into the outline for five words.
+
+           GitHub and X are not here either. The bar is sticky, so its two icons
+           are on screen at the moment this footer is being read, and a link
+           cannot be easier to reach than one that never left. What is left is
+           what the chrome does not already carry: the two pages on this site,
+           and the package. -->
       <div>
         <ul class="footer__list" role="list">
           <li><a class="footer__link" href="/team">Team</a></li>
           <li><a class="footer__link" href="/license">License</a></li>
           <li>
             <a class="footer__link" href="${site.packagist}" target="_blank" rel="noreferrer"
-            >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
-            >
-          </li>
-          <li>
-            <a class="footer__link" href="${site.repository}" target="_blank" rel="noreferrer"
-              >GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
-            >
-          </li>
-          <li>
-            <a class="footer__link" href="https://x.com/gacela_project" target="_blank" rel="noreferrer"
-              >X<span class="visually-hidden"> (opens in a new tab)</span></a
+              >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </li>
         </ul>
