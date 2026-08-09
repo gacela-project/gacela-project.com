@@ -18,7 +18,7 @@ description: Explore real Gacela architecture and code from the Phel language pr
 [Phel](https://phel-lang.org/) is a functional language that compiles to PHP. Its compiler, CLI, formatter, language server, REPL, filesystem, and tooling are organized as Gacela modules in one actively maintained codebase.
 
 ::: info Version transparency
-Phel currently declares `gacela-project/gacela:^1.21`. The architecture below is real and remains representative through Gacela 2.1, but the project has not yet published a 2.x migration. Each excerpt was verified against [Phel commit `f173cf5`](https://github.com/phel-lang/phel-lang/tree/f173cf522d1b492cf12fb5404fa56c6b4bd454a4).
+Phel declares `gacela-project/gacela:^2.0` and requires PHP 8.4, so the code below is a 2.x application rather than a 1.x one read forward. Each excerpt is quoted from [Phel commit `f173cf5`](https://github.com/phel-lang/phel-lang/tree/f173cf522d1b492cf12fb5404fa56c6b4bd454a4).
 :::
 
 <div class="stat-row">
