@@ -4,8 +4,15 @@
        the same row measured the same way, and the controls they share do not
        move when one replaces the other. */
     --bar-inline: var(--space-5);
-    --bar-gap: var(--space-5);
+    --bar-gap: var(--space-6);
     --bar-control: 2.25rem;
+
+    /* The right-hand cluster's own two metrics: the gap between the controls
+       it holds, and the air on either side of a rule dividing them. The rules
+       are centred against these two, so they are declared once here rather
+       than assumed at each use. */
+    --bar-cluster-gap: var(--space-1);
+    --bar-rule-space: var(--space-4);
 
     position: sticky;
     top: 0;
@@ -203,13 +210,13 @@
   .header__actions {
     display: flex;
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--bar-cluster-gap);
   }
 
   .header__socials {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
+    gap: var(--bar-cluster-gap);
   }
 
   /* Rules between the three kinds of thing in the right-hand cluster: the
@@ -221,8 +228,18 @@
     content: '';
     inline-size: 1px;
     block-size: var(--space-5);
-    margin-inline: var(--space-2);
+    /* The cluster's gap already stands between a rule and the control beside
+       it; the margin makes up the rest of the air the rule is owed. */
+    margin-inline: calc(var(--bar-rule-space) - var(--bar-cluster-gap));
     background: var(--border-subtle);
+  }
+
+  /* Left of the first rule lie both the bar's gap and the nav link's trailing
+     padding, where every other side of a rule has only the cluster's gap. That
+     is what pinned it against the theme control. Both are taken back, so this
+     rule is centred on the same air as the next one. */
+  .header__actions::before {
+    margin-inline-start: calc(var(--bar-rule-space) - var(--bar-gap) - var(--space-3));
   }
 
   /* Below the width the navigation collapses at there is nothing to its left
@@ -233,10 +250,12 @@
     }
   }
 
-  /* The bar needs about 1060px to hold the brand, the search box, four nav
-     labels in mono and the action cluster. Below that the navigation moves
-     into the disclosure, which appears at the same width, so the primary links
-     are never in two visible places and never squeezed. */
+  /* The bar needs 1096px to hold the brand, the search box, four nav labels in
+     mono and the action cluster with air around its rules. Below that the
+     navigation moves into the disclosure, which appears at the same width, so
+     the primary links are never in two visible places and never squeezed.
+     Which leaves four pixels: widening the bar's gap, the search box or the
+     air around the rules again means moving this width with it. */
   @media (max-width: 1099px) {
     .header__nav {
       display: none;

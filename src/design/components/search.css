@@ -12,8 +12,8 @@
     display: none;
     align-items: center;
     gap: var(--space-3);
-    padding: var(--space-2) var(--space-3);
-    min-inline-size: 13rem;
+    padding: var(--space-1) var(--space-3);
+    min-inline-size: 10rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background: var(--surface-sunken);
