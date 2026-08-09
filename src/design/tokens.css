@@ -44,7 +44,11 @@
     --navy-900: oklch(0.2000 0.030 251);
     --navy-850: oklch(0.2400 0.032 251);
     --navy-800: oklch(0.2800 0.045 251);
-    /* #123456 exactly. */
+    /* #123456 exactly. Its chroma is 0.0725, more than double the ink ramp's,
+       because it is the mark's own colour rather than a shade of ink. Anything
+       drawing a line or a surface wants --navy-750 instead: same lightness,
+       the ramp's chroma. Borders used to read blue in dark for want of it. */
+    --navy-750: oklch(0.3192 0.032 251);
     --navy-700: oklch(0.3192 0.0725 251);
     --navy-600: oklch(0.3800 0.032 251);
     --navy-500: oklch(0.4200 0.035 251);
@@ -85,7 +89,10 @@
      * ------------------------------------------------------------------ */
 
     --canvas: light-dark(var(--navy-25), var(--navy-900));
-    --surface: light-dark(var(--white), var(--navy-850));
+    /* Not pure white: --surface-raised is, and with both at 1 there was no
+       step between a card and a dialog in the light theme. This also takes the
+       one achromatic value out of a palette that is otherwise a single hue. */
+    --surface: light-dark(oklch(0.9950 0.002 251), var(--navy-850));
     --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
     /* Raised sits one step above surface, not three. At navy-700 the dark
        elevation ladder read 0.17 / 0.20 / 0.24 / 0.32, and that last jump put
@@ -99,7 +106,7 @@
     --text: light-dark(var(--navy-500), var(--navy-200));
     --text-muted: light-dark(var(--navy-400), var(--navy-300));
 
-    --border-subtle: light-dark(var(--navy-100), var(--navy-700));
+    --border-subtle: light-dark(var(--navy-100), var(--navy-750));
     --border: light-dark(var(--navy-150), var(--navy-600));
     --border-strong: light-dark(var(--navy-400), var(--navy-400));
 
@@ -154,7 +161,7 @@
     --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
 
     --code-bg: light-dark(var(--navy-50), var(--navy-950));
-    --code-border: light-dark(var(--navy-100), var(--navy-700));
+    --code-border: light-dark(var(--navy-100), var(--navy-750));
 
     /* ---------------------------------------------------------------------
      * Syntax highlighting.
