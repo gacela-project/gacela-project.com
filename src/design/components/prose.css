@@ -14,6 +14,38 @@
     color: var(--text);
   }
 
+  /* Two measures, but only on a page that has the room for them.
+   *
+   * A standalone page carries no sidebar and no table of contents, so holding
+   * its whole body to the reading measure spent the rest of the screen on
+   * nothing: the code on /used-in and the people on /team were as narrow as a
+   * paragraph. Sentences still take 68 characters, because they get no better
+   * for being given more; the blocks that are not sentences take the column.
+   * Both are centred, so the two share an axis.
+   *
+   * Scoped to that container on purpose. In the documentation the article is
+   * 756px and every child already fills it, so the same rules would buy a code
+   * block 52px on each side and cost it the left edge it shares with the
+   * prose beside it. */
+  .container--prose .prose {
+    max-width: var(--measure-code);
+  }
+
+  .container--prose .prose > * {
+    max-width: var(--measure-prose);
+    margin-inline: auto;
+  }
+
+  .container--prose .prose > table,
+  .container--prose .prose > figure,
+  .container--prose .prose > .code-block,
+  .container--prose .prose > .code-group,
+  .container--prose .prose > .stat-row,
+  .container--prose .prose > .card-grid,
+  .container--prose .prose > .team {
+    max-width: none;
+  }
+
   .prose > * + * {
     margin-block-start: var(--space-4);
   }

@@ -15,8 +15,13 @@
     max-width: var(--width-wide);
   }
 
+  /* Sized to the wider of the body's two measures. A standalone page has no
+     sidebar and no table of contents, so holding the whole column to the
+     reading measure spent the rest of the screen on nothing: the code samples
+     on /used-in and the people on /team were as narrow as a paragraph. The
+     paragraphs themselves are unchanged, still 68 characters. */
   .container--prose {
-    max-width: calc(var(--measure-prose) + var(--space-6) * 2);
+    max-width: calc(var(--measure-code) + var(--space-6) * 2);
   }
 
   .page {
