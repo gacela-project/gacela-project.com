@@ -170,10 +170,20 @@ function navDrawer(context: ShellContext): Raw {
       </div>
 
       <div class="nav-drawer__socials">
-        <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
+        <a
+          class="icon-button"
+          href="${site.repository}"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Gacela on GitHub (opens in a new tab)"
           >${icons.github}</a
         >
-        <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
+        <a
+          class="icon-button"
+          href="https://x.com/gacela_project"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Gacela on X (opens in a new tab)"
           >${icons.x}</a
         >
       </div>
@@ -210,10 +220,20 @@ function siteHeader(context: ShellContext): Raw {
       <div class="header__actions">
         ${themeToggle()}
         <span class="header__socials">
-          <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
+          <a
+            class="icon-button"
+            href="${site.repository}"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Gacela on GitHub (opens in a new tab)"
             >${icons.github}</a
           >
-          <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
+          <a
+            class="icon-button"
+            href="https://x.com/gacela_project"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Gacela on X (opens in a new tab)"
             >${icons.x}</a
           >
         </span>
@@ -358,7 +378,9 @@ function siteFooter(context: ShellContext): Raw {
           <li><a class="footer__link" href="/used-in">Used in production</a></li>
           <li><a class="footer__link" href="/team">Team</a></li>
           <li>
-            <a class="footer__link" href="${site.packagist}" rel="noreferrer">Packagist</a>
+            <a class="footer__link" href="${site.packagist}" target="_blank" rel="noreferrer"
+              >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
+            >
           </li>
         </ul>
       </div>

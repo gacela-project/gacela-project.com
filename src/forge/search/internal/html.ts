@@ -22,6 +22,15 @@ export type Section = {
 /** Elements whose content is not prose and never belongs in the index. */
 const OPAQUE = /<(script|style|svg)\b[^>]*>[\s\S]*?<\/\1\s*>/gi
 
+/**
+ * Text carried for a screen reader alone, such as the "opens in a new tab"
+ * after an external link. It is part of the page's meaning but not of its
+ * prose: indexing it would put those words in an excerpt, where a reader who
+ * cannot see the page has already been told and a reader who can never needed
+ * telling. Whatever is hidden from sight is hidden from search with it.
+ */
+const HIDDEN = /<span\b[^>]*\bclass="[^"]*\bvisually-hidden\b[^"]*"[^>]*>[\s\S]*?<\/span\s*>/gi
+
 const COMMENT = /<!--[\s\S]*?-->/g
 
 const TAG = /<\/?([a-z][a-z0-9-]*)\b[^>]*>/gi
@@ -54,7 +63,7 @@ const NAMED_ENTITIES: Readonly<Record<string, string>> = {
   ldquo: '“',
   lsquo: '‘',
   lt: '<',
-  mdash: '—',
+  mdash: '\u2014',
   middot: '·',
   minus: '−',
   nbsp: ' ',
@@ -89,12 +98,12 @@ export function collapse(value: string): string {
 }
 
 /**
- * HTML to the plain text a reader would see: opaque elements dropped whole,
- * block tags turned into a space, inline tags removed, entities decoded last so
- * that an escaped "&lt;?php" in a code block never looks like a tag.
+ * HTML to the plain text a reader would see: opaque and hidden elements dropped
+ * whole, block tags turned into a space, inline tags removed, entities decoded
+ * last so that an escaped "&lt;?php" in a code block never looks like a tag.
  */
 export function stripMarkup(html: string): string {
-  const withoutOpaque = html.replace(COMMENT, '').replace(OPAQUE, ' ')
+  const withoutOpaque = html.replace(COMMENT, '').replace(OPAQUE, ' ').replace(HIDDEN, '')
   const withoutTags = withoutOpaque.replace(TAG, (_whole: string, name: string) =>
     BLOCK.has(name.toLowerCase()) ? ' ' : '',
   )

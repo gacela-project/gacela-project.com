@@ -169,10 +169,35 @@ describe('links', () => {
     expect(html).toContain('rel="noreferrer"')
   })
 
+  it('sends external links to a new tab', () => {
+    const { html } = render('[X](https://example.com)')
+
+    expect(html).toContain('target="_blank"')
+  })
+
+  it('says so, for a reader who cannot see the tab open', () => {
+    const { html } = render('[X](https://example.com)')
+
+    expect(html).toContain('<span class="visually-hidden"> (opens in a new tab)</span></a>')
+  })
+
+  it('keeps that hint out of the indexed text', () => {
+    const { text } = render('[X](https://example.com)')
+
+    expect(text).not.toContain('opens in a new tab')
+  })
+
   it('leaves internal links untouched', () => {
     const { html } = render('[Factory](/docs/factory)')
 
     expect(html).toContain('<a href="/docs/factory">')
+  })
+
+  it('keeps anchors and relative links in the same tab, and unannounced', () => {
+    const { html } = render('[Provides](/docs/provider#provides) and [top](#top)')
+
+    expect(html).not.toContain('target="_blank"')
+    expect(html).not.toContain('opens in a new tab')
   })
 })
 

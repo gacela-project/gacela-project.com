@@ -80,8 +80,12 @@ function articleFooter(context: DocContext): Raw {
   const editUrl = `${context.site.siteRepository}/edit/main/content/${context.page.source}`
 
   return html`<footer class="article__footer">
-    <a href="${editUrl}" rel="noreferrer">Edit this page on GitHub</a>
-    <a href="${context.site.repository}/issues/new" rel="noreferrer">Report a problem</a>
+    <a href="${editUrl}" target="_blank" rel="noreferrer"
+      >Edit this page on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
+    >
+    <a href="${context.site.repository}/issues/new" target="_blank" rel="noreferrer"
+      >Report a problem<span class="visually-hidden"> (opens in a new tab)</span></a
+    >
   </footer>`
 }
 

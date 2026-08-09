@@ -55,6 +55,18 @@ describe('buildSearchIndex', () => {
     expect(docs[0]?.text).toBe('alpha beta gamma')
   })
 
+  it('leaves out text that is there only for a screen reader', () => {
+    const docs = buildSearchIndex([
+      makePage({
+        html:
+          '<p>The <a href="https://example.com" target="_blank" rel="noreferrer">Facade' +
+          '<span class="visually-hidden"> (opens in a new tab)</span></a> is the entry point.</p>',
+      }),
+    ])
+
+    expect(docs[0]?.text).toBe('The Facade is the entry point.')
+  })
+
   it('keeps inline elements glued to the words around them', () => {
     const docs = buildSearchIndex([
       makePage({ html: '<p>Call <code>Facade</code>::method() on it.</p>' }),
