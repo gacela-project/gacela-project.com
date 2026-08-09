@@ -98,19 +98,56 @@ export function collapse(value: string): string {
 }
 
 /**
- * Drops comments and opaque elements, repeatedly, because removing one can
- * leave another behind: "<!" and "--" on either side of a comment become a
- * comment opener once the text between them goes, and a single pass has
- * already walked past the join. Each round can only shorten the string, so
- * this settles.
+ * Removing one comment can leave another behind: "<!" and "--" on either side
+ * of a comment become an opener once the text between them goes, and a single
+ * pass has already walked past the join. Each round can only shorten the
+ * string, so this settles.
  */
+function removeComments(value: string): string {
+  let current = value
+  let previous: string
+
+  do {
+    previous = current
+    current = current.replace(COMMENT, '')
+  } while (current !== previous)
+
+  return current
+}
+
+/** Same hazard, same answer: a removal can join what is left into a new tag. */
+function removeOpaque(value: string): string {
+  let current = value
+  let previous: string
+
+  do {
+    previous = current
+    current = current.replace(OPAQUE, ' ')
+  } while (current !== previous)
+
+  return current
+}
+
+function removeHidden(value: string): string {
+  let current = value
+  let previous: string
+
+  do {
+    previous = current
+    current = current.replace(HIDDEN, '')
+  } while (current !== previous)
+
+  return current
+}
+
+/** And once more around, since dropping a script can expose a comment. */
 function removeUntilStable(html: string): string {
   let current = html
   let previous: string
 
   do {
     previous = current
-    current = current.replace(COMMENT, '').replace(OPAQUE, ' ').replace(HIDDEN, '')
+    current = removeHidden(removeOpaque(removeComments(current)))
   } while (current !== previous)
 
   return current
