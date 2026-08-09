@@ -34,8 +34,12 @@ export function containerPlugin(md: MarkdownIt): void {
     const declared = (token?.meta as { title?: string } | undefined)?.title
     const title = declared !== undefined && declared !== '' ? declared : (CALLOUTS[name] ?? name)
 
+    /* The title names the landmark as well as heading it. An aside is a
+       complementary landmark, and a page carrying several of them offers a
+       screen reader several entries all called "complementary", which is a
+       list of doors with no labels on them. */
     return (
-      `<aside class="callout callout--${escapeHtml(name)}">` +
+      `<aside class="callout callout--${escapeHtml(name)}" aria-label="${escapeHtml(title)}">` +
       `<p class="callout__title">${escapeHtml(title)}</p>`
     )
   }

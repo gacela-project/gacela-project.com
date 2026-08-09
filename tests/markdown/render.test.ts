@@ -143,6 +143,22 @@ describe('containers', () => {
     expect(html).toContain('href="/docs/factory"')
   })
 
+  /* An aside is a complementary landmark, and a page with several of them
+     offers a screen reader several entries all called "complementary". The
+     title is the one thing that tells them apart, so it names the landmark
+     as well as heading it. */
+  it('names the landmark after the callout title', () => {
+    expect(render('::: tip\nx\n:::').html).toContain('aria-label="Tip"')
+    expect(render('::: warning Careful\nx\n:::').html).toContain('aria-label="Careful"')
+  })
+
+  it('escapes a title before putting it in the label', () => {
+    const { html } = render('::: tip "Quoted" & <sharp>\nx\n:::')
+
+    expect(html).toContain('aria-label="&quot;Quoted&quot; &amp; &lt;sharp&gt;"')
+    expect(html).not.toContain('aria-label=""Quoted"')
+  })
+
   it('turns a code group into tabs with one radio per file', () => {
     const { html } = render(
       '::: code-group\n```php [Facade.php]\n<?php\n```\n\n```php [Factory.php]\n<?php\n```\n:::',
