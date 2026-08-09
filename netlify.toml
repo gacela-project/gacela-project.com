@@ -1,0 +1,32 @@
+# Netlify serves gacela-project.com: the apex record points at Netlify's load
+# balancer, and the repository has no GitHub Pages site. Without this file
+# Netlify falls back to the dashboard's build settings, which still name the
+# VitePress script this rewrite removed, so every deploy fails and the last
+# successful one keeps serving.
+
+[build.environment]
+# The generator runs TypeScript through Node's type stripping, which package.json
+# pins at >=22.18.0. Node 20 cannot execute src/ at all.
+NODE_VERSION = "22"
+
+[build]
+command = "npm run build"
+publish = "dist"
+
+# The agent-facing copies of each page are served as markdown rather than
+# downloaded. Both shapes exist in the build: /about.md at the root and
+# /docs/facade.md a level down.
+[[headers]]
+for = "/*.md"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+for = "/docs/*.md"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"
+
+[[headers]]
+for = "/llms*.txt"
+  [headers.values]
+  Content-Type = "text/markdown; charset=utf-8"

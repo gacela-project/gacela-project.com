@@ -97,8 +97,11 @@ Dark mode is a token swap, never a separate stylesheet. Both themes must be chec
 
 ## Deployment
 
-`main` is production. Push to `main` runs CI and, if green, deploys `dist/` to GitHub Pages at gacela-project.com.
-There is no staging environment, so do not merge anything that has not passed `npm run check` locally.
+`main` is production. Netlify builds it from `netlify.toml`, running `npm run build` and publishing `dist/` to
+gacela-project.com; the apex record points at Netlify and the repository has no GitHub Pages site. Netlify keeps
+serving the last successful deploy, so a failed build shows up as a site that has quietly stopped updating rather
+than as an error. There is no staging environment, so do not merge anything that has not passed `npm run check`
+locally.
 
 ## Working style in this repo
 
