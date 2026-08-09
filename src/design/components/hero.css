@@ -36,11 +36,15 @@
     text-wrap: balance;
   }
 
-  /* The second line carries the whole idea, so it gets the accent and the rest
-     of the page leaves the accent alone. */
+  /* Emphasis, not signal. This word had the accent, and at 64px it carried
+     more accent area than everything else above the fold put together: the
+     primary button, the diagram's selected class and the note's link were all
+     competing with it, four carriers where the design system allows one. The
+     weight and the size already do the emphasising, so it takes the strong ink
+     and gives the accent back to the one thing asking to be clicked. */
   .hero__title em {
     font-style: normal;
-    color: var(--accent);
+    color: var(--text-strong);
   }
 
   .hero__lede {

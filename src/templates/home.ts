@@ -94,7 +94,7 @@ function hero(): Raw {
  */
 function walkthrough(page: RenderedPage): Raw {
   return html`<section class="section">
-    <div class="container">
+    <div class="container container--wide">
       <div class="section__head">
         <p class="eyebrow">Quickstart</p>
         <h2 class="section__title">A module in three files</h2>
@@ -112,7 +112,7 @@ function walkthrough(page: RenderedPage): Raw {
 
 function capabilities(): Raw {
   return html`<section class="section">
-    <div class="container">
+    <div class="container container--wide">
       <div class="section__head">
         <p class="eyebrow">Features</p>
         <h2 class="section__title">Beyond the basics</h2>
@@ -137,7 +137,7 @@ function capabilities(): Raw {
 
 function closing(): Raw {
   return html`<section class="section">
-    <div class="container cta">
+    <div class="container container--wide cta">
       <p class="eyebrow">Get started</p>
       <h2 class="cta__title">Start your first module</h2>
 
