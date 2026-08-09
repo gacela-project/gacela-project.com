@@ -59,11 +59,6 @@
     margin-block-start: var(--space-3);
   }
 
-  .prose ul,
-  .prose ol {
-    padding-inline-start: var(--space-5);
-  }
-
   .prose li + li {
     margin-block-start: var(--space-2);
   }
