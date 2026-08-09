@@ -70,6 +70,27 @@
     gap: var(--space-1);
   }
 
+  /* The release the site documents, sitting after the last nav label and
+     before the rule that opens the action cluster. It wears the badge rather
+     than the nav label's type: it names a thing rather than a destination on
+     this site, and the nav's four mono labels are a set a fifth would join by
+     mistake. It hides with the nav, and the drawer carries it below that.
+     Both copies are styled together so the two cannot drift. */
+  .header__version,
+  .nav-drawer__version {
+    flex-shrink: 0;
+    text-decoration: none;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .header__version:hover,
+  .nav-drawer__version:hover {
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+
   .header__link {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
@@ -244,20 +265,31 @@
 
   /* Below the width the navigation collapses at there is nothing to its left
      to divide it from. */
-  @media (max-width: 1099px) {
+  @media (max-width: 1199px) {
     .header__actions::before {
       display: none;
     }
   }
 
-  /* The bar needs 1096px to hold the brand, the search box, four nav labels in
-     mono and the action cluster with air around its rules. Below that the
-     navigation moves into the disclosure, which appears at the same width, so
-     the primary links are never in two visible places and never squeezed.
-     Which leaves four pixels: widening the bar's gap, the search box or the
-     air around the rules again means moving this width with it. */
-  @media (max-width: 1099px) {
+  /* The bar needs 1187px to hold the brand, the search box, four nav labels in
+     mono, the release badge and the action cluster with air around its rules.
+     Below that the navigation moves into the disclosure, which appears at the
+     same width, so the primary links are never in two visible places and never
+     squeezed. Measured, not estimated: the release badge cost 59px and the gap
+     before it another 32, which is what moved this up from 1096. The bar
+     returns at 1200, so thirteen pixels are spare. Widening the bar's gap, the
+     search box or the air around the rules means moving this width again. */
+  @media (max-width: 1199px) {
     .header__nav {
+      display: none;
+    }
+
+    /* Compounded with .badge on purpose. The badge supplies this element's
+       display, it is defined in index-list.css, and that file is imported
+       after this one into the same layer, so a bare .header__version loses the
+       tie on source order and the badge stays visible with no nav beside it.
+       Layers settle conflicts between layers, not within one. */
+    .header__version.badge {
       display: none;
     }
   }
@@ -550,7 +582,7 @@
    * the bar carries is inside the drawer, so nothing is offered twice.
    * ------------------------------------------------------------------ */
 
-  @media (max-width: 1099px) {
+  @media (max-width: 1199px) {
     .nav-drawer {
       display: block;
     }

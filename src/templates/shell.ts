@@ -111,6 +111,26 @@ export function documentShell(context: ShellContext): string {
 }
 
 /**
+ * The release the site documents, linking to its notes on GitHub.
+ *
+ * The number alone is a poor accessible name, so the hidden half of the label
+ * says what it is a version of and where the link goes. The href is built from
+ * the same value the badge prints, which is the one in data/gacela.json, so the
+ * link cannot point at a release the site does not claim to document.
+ */
+function versionLink(context: ShellContext, className: string): Raw {
+  const { site, version } = context
+
+  return html`<a
+    class="badge ${className}"
+    href="${site.repository}/releases/tag/${version}"
+    target="_blank"
+    rel="noreferrer"
+    >${version}<span class="visually-hidden"> release notes (opens in a new tab)</span></a
+  >`
+}
+
+/**
  * The navigation, for a screen too narrow to hold it in the bar.
  *
  * A details element again, so it opens, closes and announces itself without
@@ -178,6 +198,7 @@ function navDrawer(context: ShellContext): Raw {
       </div>
 
       <div class="nav-drawer__socials">
+        ${versionLink(context, 'nav-drawer__version')}
         <a
           class="icon-button"
           href="${site.repository}"
@@ -224,6 +245,8 @@ function siteHeader(context: ShellContext): Raw {
             ${link.route === '/docs' ? referenceMenu(site) : ''}`,
         )}
       </nav>
+
+      ${versionLink(context, 'header__version')}
 
       <div class="header__actions">
         ${themeToggle()}
