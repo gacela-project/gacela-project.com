@@ -11,13 +11,73 @@ import { html, raw, type Raw } from '../forge/render/index.ts'
  * it rather than an adjective does.
  *
  * Selecting a class is a radio group, which means this works with the keyboard,
- * works with no JavaScript, and needs no state management to speak of.
+ * works with no JavaScript, and needs no state management to speak of. What you
+ * click is the box itself: each one wears an HTML label, laid over the drawing
+ * and driving the radio underneath. There is no legend under the diagram,
+ * because a list of the same four names is a second place to look at the moment
+ * the reader is already looking at the first.
  */
 
+export type Box = {
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
+}
+
+/**
+ * The drawing's own coordinate space, cropped to the ink. Both the rects and
+ * the labels over them are expressed in it, so neither can drift from the
+ * other.
+ */
+export const VIEW_BOX = { x: 0, y: 56, width: 780, height: 344 } as const
+
+/**
+ * The mark that says a box can be chosen: hollow on the three you can pick,
+ * filled on the one you are reading about.
+ *
+ * A drawing gives a reader no reason to think it can be touched, and the hint
+ * under it only speaks to whoever reads it. This says the same thing in the
+ * shape everyone already knows, and it is not a metaphor: these boxes really
+ * are a radio group, so the drawing now looks like what it is.
+ *
+ * The dot takes a column at the leading edge of the box and the label centres
+ * in what is left, so the two are placed from one set of numbers rather than
+ * nudged until they look right.
+ */
+const DOT_INSET = 14
+const DOT_RADIUS = 4.5
+const DOT_COLUMN = 22
+
+/** Where each class sits. Read by the drawing and by the label over it. */
+export const CLASS_BOXES = {
+  facade: { x: 126, y: 142, width: 104, height: 50 },
+  factory: { x: 290, y: 142, width: 104, height: 50 },
+  provider: { x: 548, y: 250, width: 124, height: 50 },
+  config: { x: 272, y: 306, width: 104, height: 48 },
+} as const satisfies Record<string, Box>
+
+/**
+ * A box as percentages of the viewBox, handed to CSS as custom properties.
+ *
+ * The SVG scales with its container, so a label pinned in percentages of the
+ * same box stays over its rect at every width, with no measuring at runtime and
+ * nothing to recompute when the drawing is rescaled.
+ */
+export function overlayVars(box: Box): string {
+  const pct = (value: number): string => `${Number((value * 100).toFixed(4))}%`
+
+  return [
+    `--x:${pct((box.x - VIEW_BOX.x) / VIEW_BOX.width)}`,
+    `--y:${pct((box.y - VIEW_BOX.y) / VIEW_BOX.height)}`,
+    `--w:${pct(box.width / VIEW_BOX.width)}`,
+    `--h:${pct(box.height / VIEW_BOX.height)}`,
+  ].join(';')
+}
+
 type Part = {
-  readonly id: string
+  readonly id: keyof typeof CLASS_BOXES
   readonly name: string
-  readonly file: string
   readonly route: string
   readonly note: Raw
 }
@@ -26,7 +86,6 @@ const PARTS: readonly Part[] = [
   {
     id: 'facade',
     name: 'Facade',
-    file: 'Facade.php',
     route: '/docs/facade',
     note: html`<strong>The only door.</strong> Every other module in your application talks to this
       module through its Facade, and through nothing else. Change what is behind it freely: nobody
@@ -35,7 +94,6 @@ const PARTS: readonly Part[] = [
   {
     id: 'factory',
     name: 'Factory',
-    file: 'Factory.php',
     route: '/docs/factory',
     note: html`<strong>Wires the inside.</strong> The Factory builds this module's own services and
       hands them their dependencies. It is where object construction lives, so your domain classes
@@ -44,7 +102,6 @@ const PARTS: readonly Part[] = [
   {
     id: 'provider',
     name: 'Provider',
-    file: 'Provider.php',
     route: '/docs/provider',
     note: html`<strong>Reaches outside.</strong> When the module needs something another module
       owns, the Provider resolves it. Extra-dependencies enter here and nowhere else, which keeps
@@ -53,7 +110,6 @@ const PARTS: readonly Part[] = [
   {
     id: 'config',
     name: 'Config',
-    file: 'Config.php',
     route: '/docs/config',
     note: html`<strong>Reads the settings.</strong> The Config gives the Factory typed access to the
       project's configuration files, so a value can change per environment without any class inside
@@ -69,19 +125,22 @@ export function moduleDiagram(): Raw {
         name="module-part"
         id="part-${part.id}"
         ${raw(index === 0 ? 'checked' : '')}
-        aria-label="Show the ${part.name}"
       />`,
     )}
 
-    <div class="diagram__frame">${drawing()}</div>
-
-    <div class="diagram__legend" role="group" aria-label="The four classes of a module">
-      ${PARTS.map(
-        (part) => html`<label class="diagram__choice" for="part-${part.id}">
-          <span class="diagram__choice-name">${part.name}</span>
-          <span class="diagram__choice-file">${part.file}</span>
-        </label>`,
-      )}
+    <div class="diagram__frame">
+      <div class="diagram__stage" role="group" aria-label="The four classes of a module">
+        ${drawing()}
+        ${PARTS.map(
+          (part) => html`<label
+            class="diagram__hit"
+            data-part="${part.id}"
+            for="part-${part.id}"
+            style="${overlayVars(CLASS_BOXES[part.id])}"
+            ><span class="visually-hidden">${part.name}</span></label
+          >`,
+        )}
+      </div>
     </div>
 
     <figcaption class="diagram__caption">
@@ -92,6 +151,41 @@ export function moduleDiagram(): Raw {
       )}
     </figcaption>
   </figure>`
+}
+
+/**
+ * One class, drawn in its box.
+ *
+ * The label is the class rather than its file. Every one of these lives in a
+ * .php file, so the extension told the reader nothing that separated one box
+ * from another, and four repetitions of it cost enough width to push the type
+ * down a size. Where the code sits is already on the sheet: the boundary is
+ * labelled src/Checkout and the Config reads config/*.php.
+ *
+ * The box and the label both come from the one set of coordinates, so the text
+ * cannot drift out of the rectangle it names.
+ */
+function classPart(id: keyof typeof CLASS_BOXES): Raw {
+  const box = CLASS_BOXES[id]
+  const part = PARTS.find((candidate) => candidate.id === id)
+
+  if (part === undefined) throw new Error(`The drawing has a box for "${id}" but no class.`)
+
+  const middle = box.y + box.height / 2
+
+  return html`<g class="part part--class part--${id}">
+    <rect
+      class="part__box"
+      x="${box.x}"
+      y="${box.y}"
+      width="${box.width}"
+      height="${box.height}"
+    />
+    <circle class="part__dot" cx="${box.x + DOT_INSET}" cy="${middle}" r="${DOT_RADIUS}" />
+    <text class="part__name" x="${box.x + (DOT_COLUMN + box.width) / 2}" y="${middle + 1}">
+      ${part.name}
+    </text>
+  </g>`
 }
 
 /**
@@ -131,17 +225,11 @@ function drawing(): Raw {
     <text class="diagram__label" x="26" y="146">any module</text>
     <path class="diagram__flow" d="M26,168 H120" marker-end="url(#diagram-arrow)" />
 
-    <g class="part part--class part--facade">
-      <rect class="part__box" x="126" y="142" width="104" height="50" />
-      <text class="part__name" x="178" y="168">Facade</text>
-    </g>
+    ${classPart('facade')}
 
     <path class="diagram__flow" d="M232,167 H284" marker-end="url(#diagram-arrow)" />
 
-    <g class="part part--class part--factory">
-      <rect class="part__box" x="290" y="142" width="104" height="50" />
-      <text class="part__name" x="342" y="168">Factory</text>
-    </g>
+    ${classPart('factory')}
 
     <path class="diagram__flow" d="M396,167 H444" marker-end="url(#diagram-arrow)" />
 
@@ -153,20 +241,14 @@ function drawing(): Raw {
 
     <path class="diagram__flow" d="M324,304 V198" marker-end="url(#diagram-arrow)" />
 
-    <g class="part part--class part--config">
-      <rect class="part__box" x="272" y="306" width="104" height="48" />
-      <text class="part__name" x="324" y="331">Config</text>
-    </g>
+    ${classPart('config')}
 
     <text class="diagram__label" x="272" y="384">config/*.php</text>
     <path class="diagram__flow" d="M324,372 V358" marker-end="url(#diagram-arrow)" />
 
     <path class="diagram__flow" d="M566,248 L370,198" marker-end="url(#diagram-arrow)" />
 
-    <g class="part part--class part--provider">
-      <rect class="part__box" x="548" y="250" width="124" height="50" />
-      <text class="part__name" x="610" y="276">Provider</text>
-    </g>
+    ${classPart('provider')}
 
     <text class="diagram__label" x="678" y="258">other modules</text>
     <path class="diagram__flow" d="M676,275 H762" marker-end="url(#diagram-arrow)" />

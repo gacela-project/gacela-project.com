@@ -23,10 +23,38 @@
     box-shadow: var(--shadow-md);
   }
 
+  /* Holds the drawing and the labels laid over it in one coordinate space, so
+     a label pinned in percentages sits on its box at every width. */
+  .diagram__stage {
+    position: relative;
+  }
+
   .diagram__svg {
+    display: block;
     inline-size: 100%;
     block-size: auto;
     overflow: visible;
+  }
+
+  /* --- the boxes are the control -----------------------------------------
+   * Each class box wears a label, positioned from the same numbers that drew
+   * the rect underneath it. It is a label rather than a button so the radio
+   * behind it still does the work, which is what keeps the whole diagram
+   * working with the keyboard and with no script at all.
+   * -------------------------------------------------------------------- */
+
+  .diagram__hit {
+    position: absolute;
+    /* Six pixels of slack on every side. The drawn box is the target, and a
+       little more than the drawn box is easier to hit: scaled down to a phone
+       the shortest of them measures 41px, which this carries past the 44px a
+       finger wants. */
+    inset-block-start: calc(var(--y) - 6px);
+    inset-inline-start: calc(var(--x) - 6px);
+    inline-size: calc(var(--w) + 12px);
+    block-size: calc(var(--h) + 12px);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
   }
 
   .diagram > input {
@@ -68,10 +96,21 @@
      fading as a whole. A transition on the group would not reach them: each sets
      its own fill, so each has to animate its own. */
   .part__box,
-  .part__name {
+  .part__name,
+  .part__dot {
     transition:
       fill var(--duration-slow) var(--ease-out),
       stroke var(--duration-slow) var(--ease-out);
+  }
+
+  /* Hollow while the class is one of the choices, filled once it is the one
+     being read about. The whole point is that it is legible before anything is
+     hovered or read, so it rests in the drawing's ink rather than being dimmed
+     to the point of decoration. */
+  .part__dot {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
   }
 
   /* Resting state is the drawing's own grey, the same one the boundary and the
@@ -83,6 +122,8 @@
     rx: 5;
   }
 
+  /* Larger than the annotations around them: these four are what the drawing is
+     about, and the labels outside it are notes on the margin. */
   .part__name {
     fill: var(--text-muted);
     font-family: var(--font-mono);
@@ -124,77 +165,68 @@
     fill: var(--text-strong);
   }
 
-  .diagram__legend {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-2);
+  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__dot,
+  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__dot,
+  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__dot,
+  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__dot {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+
+  /* Hovering a label answers on the box under it, so the drawing responds
+     rather than a rectangle floating above it. The labels are painted over the
+     drawing and so come after it, which no sibling combinator can reach
+     backwards from: the stage is asked instead which label is hovered. */
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__box,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__box,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__box,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__box {
+    stroke: var(--accent);
+    fill: var(--diagram-fill-hover);
+  }
+
+  /* The middle of the ink ramp, which is what --text already is: one step up
+     from the muted label a resting box wears, one step short of the selected
+     one. The box the reader has chosen outranks all of this, so hovering it
+     does not walk its colour back. */
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__name,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__name,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__name,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__name {
+    fill: var(--text);
+  }
+
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__dot,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__dot,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__dot,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__dot {
+    stroke: var(--accent);
+  }
+
+  /* The radios are off-screen, so the ring is drawn on the label that stands in
+     for them, which is exactly the size of the box it covers. */
+  .diagram > input:nth-of-type(1):focus-visible ~ .diagram__frame [data-part='facade'],
+  .diagram > input:nth-of-type(2):focus-visible ~ .diagram__frame [data-part='factory'],
+  .diagram > input:nth-of-type(3):focus-visible ~ .diagram__frame [data-part='provider'],
+  .diagram > input:nth-of-type(4):focus-visible ~ .diagram__frame [data-part='config'] {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   @media (max-width: 559px) {
-    .diagram__legend {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     /* Scaled to fit a phone, the drawing's labels fall to about 4px. It keeps
        a legible size and scrolls instead, with the scrollbar left visible so
-       there is something to say it can. */
+       there is something to say it can. The stage holds the width rather than
+       the svg, so the labels over it scroll with the drawing. */
     .diagram__frame {
       overflow-x: auto;
       scrollbar-width: thin;
       padding-inline: var(--space-3);
     }
 
-    .diagram__svg {
+    .diagram__stage {
       min-inline-size: 34rem;
     }
-  }
-
-  .diagram__choice {
-    display: block;
-    padding: var(--space-3);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    cursor: pointer;
-    transition:
-      border-color var(--duration-base) var(--ease-out),
-      background-color var(--duration-base) var(--ease-out);
-  }
-
-  .diagram__choice:hover {
-    border-color: var(--border-strong);
-  }
-
-  .diagram__choice-name {
-    display: block;
-    font-family: var(--font-display);
-    font-size: var(--text-md);
-    font-weight: var(--weight-semibold);
-    color: var(--text-strong);
-  }
-
-  .diagram__choice-file {
-    display: block;
-    margin-block-start: 2px;
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    color: var(--text-muted);
-  }
-
-  .diagram > input:nth-of-type(1):checked ~ .diagram__legend > :nth-child(1),
-  .diagram > input:nth-of-type(2):checked ~ .diagram__legend > :nth-child(2),
-  .diagram > input:nth-of-type(3):checked ~ .diagram__legend > :nth-child(3),
-  .diagram > input:nth-of-type(4):checked ~ .diagram__legend > :nth-child(4) {
-    border-color: var(--accent);
-    background: var(--accent-wash);
-  }
-
-  .diagram > input:nth-of-type(1):focus-visible ~ .diagram__legend > :nth-child(1),
-  .diagram > input:nth-of-type(2):focus-visible ~ .diagram__legend > :nth-child(2),
-  .diagram > input:nth-of-type(3):focus-visible ~ .diagram__legend > :nth-child(3),
-  .diagram > input:nth-of-type(4):focus-visible ~ .diagram__legend > :nth-child(4) {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
   }
 
   /* The caption stacks all four explanations and reveals the selected one, so
@@ -217,6 +249,7 @@
   .diagram__note strong {
     color: var(--text-strong);
   }
+
 
   .diagram > input:nth-of-type(1):checked ~ .diagram__caption > :nth-child(1),
   .diagram > input:nth-of-type(2):checked ~ .diagram__caption > :nth-child(2),

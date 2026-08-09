@@ -113,6 +113,11 @@
       color-mix(in oklch, var(--blue-400) 15%, var(--navy-850))
     );
 
+    /* Hovering a class is halfway to choosing it, so the colour is halfway too.
+       Mixed from the two ends rather than picked, which keeps it in the middle
+       if either end is ever changed. */
+    --diagram-fill-hover: color-mix(in oklch, var(--diagram-fill-active) 50%, var(--diagram-fill));
+
     /* light-dark() resolves one value, and a multi-layer shadow is several
        comma-separated values, so the theme switch happens on the tint and the
        shadows themselves are composed from it. */
