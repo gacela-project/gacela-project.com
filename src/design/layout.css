@@ -28,6 +28,17 @@
     flex: 1;
   }
 
+  /* The 404 is one short block, and left at the top of a full-height main it
+     sat in the upper third with the footer stranded 300px below. Centring it
+     here rather than on the block itself, because this is the element that
+     knows the height: main takes what a sticky header and a real footer leave,
+     and a percentage min-height on its child does not resolve against a
+     flex-sized parent. The layout name is on the body for this. */
+  body[data-layout='not-found'] .page {
+    display: grid;
+    align-content: center;
+  }
+
   .skip-link {
     position: absolute;
     inset-inline-start: var(--space-4);
