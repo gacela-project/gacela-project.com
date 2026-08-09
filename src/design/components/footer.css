@@ -10,7 +10,11 @@
     margin-inline: auto;
     padding: var(--space-7) var(--space-5);
     display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    /* One column per thing in the footer. It declared three while holding two,
+       so the row ended a third of the way short of the edge it is measured
+       against. The link list is sized to its content and the brand takes the
+       rest, which keeps the two ends of the row on the page's own margins. */
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: var(--space-6);
   }
 
@@ -47,11 +51,12 @@
     color: var(--text-muted);
   }
 
-  .footer__meta {
+  /* Fine print, and printed as fine. Unstyled it inherited body ink, which put
+     the legal line above the tagline it sits under in the reading order. */
+  .footer__copyright {
     margin-block-start: var(--space-4);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--text-muted);
   }
 
   .footer__group-title {
@@ -79,33 +84,5 @@
 
   .footer__link:hover {
     color: var(--accent);
-  }
-
-  .footer__legal {
-    max-width: var(--width-wide);
-    margin-inline: auto;
-    padding: var(--space-4) var(--space-5) var(--space-6);
-    border-block-start: 1px solid var(--border-subtle);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    justify-content: space-between;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-  }
-
-  .footer__legal a {
-    color: var(--text-muted);
-    text-decoration: none;
-  }
-
-  .footer__legal a:hover {
-    color: var(--accent);
-  }
-
-  .footer__socials {
-    display: flex;
-    gap: var(--space-1);
   }
 }

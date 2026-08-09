@@ -374,7 +374,7 @@ function searchDialog(): Raw {
 }
 
 function siteFooter(context: ShellContext): Raw {
-  const { site, version } = context
+  const { site } = context
   const year = new Date().getFullYear()
 
   return html`<footer class="footer">
@@ -385,41 +385,33 @@ function siteFooter(context: ShellContext): Raw {
           <span class="footer__wordmark">${site.title}</span>
         </a>
         <p class="footer__tagline">${site.description}</p>
-        <p class="footer__meta">
-          <span class="badge">PHP 8.3+</span>
-          <span class="badge">MIT</span>
-          <span class="badge badge--accent">v${version}</span>
-        </p>
-      </div>
-
-      <div>
-        <h2 class="footer__group-title">Documentation</h2>
-        <ul class="footer__list" role="list">
-          <li><a class="footer__link" href="/docs/quickstart">Quickstart</a></li>
-          <li><a class="footer__link" href="/docs/facade">Core concepts</a></li>
-          <li><a class="footer__link" href="/docs/bindings">Configuration</a></li>
-          <li><a class="footer__link" href="/docs/gacela-script">CLI commands</a></li>
-        </ul>
+        <p class="footer__copyright">&copy; 2021&ndash;${year} ${site.title}. All rights reserved.</p>
       </div>
 
       <div>
         <h2 class="footer__group-title">Project</h2>
+        <!-- The two that stay on this site first, then the three that leave
+             it, and within those the source before what is built from it. -->
         <ul class="footer__list" role="list">
-          <li><a class="footer__link" href="/about">About Gacela</a></li>
-          <li><a class="footer__link" href="/used-in">Used in production</a></li>
           <li><a class="footer__link" href="/team">Team</a></li>
+          <li><a class="footer__link" href="/license">License</a></li>
+          <li>
+            <a class="footer__link" href="${site.repository}" target="_blank" rel="noreferrer"
+              >GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
+            >
+          </li>
           <li>
             <a class="footer__link" href="${site.packagist}" target="_blank" rel="noreferrer"
               >Packagist<span class="visually-hidden"> (opens in a new tab)</span></a
             >
           </li>
+          <li>
+            <a class="footer__link" href="https://x.com/gacela_project" target="_blank" rel="noreferrer"
+              >X<span class="visually-hidden"> (opens in a new tab)</span></a
+            >
+          </li>
         </ul>
       </div>
-    </div>
-
-    <div class="footer__legal">
-      <span>&copy; 2021&ndash;${year}</span>
-      <a href="/license">MIT License</a>
     </div>
   </footer>`
 }
