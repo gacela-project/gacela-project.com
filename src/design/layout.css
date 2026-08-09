@@ -15,13 +15,21 @@
     max-width: var(--width-wide);
   }
 
-  /* Sized to the wider of the body's two measures. A standalone page has no
-     sidebar and no table of contents, so holding the whole column to the
-     reading measure spent the rest of the screen on nothing: the code samples
-     on /used-in and the people on /team were as narrow as a paragraph. The
-     paragraphs themselves are unchanged, still 68 characters. */
+  /* A standalone page has no sidebar and no table of contents, so holding its
+     whole column to the reading measure spent the rest of the screen on
+     nothing: the code samples on /used-in and the people on /team were as
+     narrow as a paragraph. Every child takes this width, text included.
+
+     What that costs, measured rather than assumed: a paragraph here runs 104
+     to 116 characters at 1440, against 77 to 84 in the documentation column.
+     Both are past the 45-to-75 band, and this one is well past it. Narrowing
+     --measure-code pulls every block in together and is the knob for it.
+
+     The padding is --space-5 because that is what .container applies; adding
+     --space-6 here instead left the inner box 16px wider than the measure and
+     the column 8px off its own centre. */
   .container--prose {
-    max-width: calc(var(--measure-code) + var(--space-6) * 2);
+    max-width: calc(var(--measure-code) + var(--space-5) * 2);
   }
 
   .page {

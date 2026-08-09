@@ -259,11 +259,15 @@
        header ends up with two radii in one row. */
     --radius-button: var(--radius-md);
 
-    /* 68 characters of body text, which at --text-base measures 40.605rem.
-       Written in rem rather than ch because ch resolves against the font of
+    /* The reading measure: 40.6rem, which renders 77 to 84 characters of body
+       text. It was written as 68ch and converted at the width of a zero, but a
+       zero is wider than the average letter, so the ch figure never described
+       what landed on the page. Counted from real line boxes instead.
+
+       Kept in rem rather than ch because ch resolves against the font of
        whatever element reads the token: on a heading at --text-3xl the same
-       68ch is 1753px, so a measure meant to hold every block to one column
-       let the headings run three times as wide as the paragraphs under them. */
+       68ch came out 1753px, so a measure meant to hold every block to one
+       column let headings run three times as wide as the text beneath them. */
     --measure-prose: 40.6rem;
     /* Code is not prose and does not want the reading measure. A code group's
        tab strip is as wide as the filenames in it, and on the home page that is
