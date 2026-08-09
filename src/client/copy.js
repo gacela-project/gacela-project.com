@@ -1,18 +1,21 @@
 /**
- * Copy buttons, and confirmation for any copy taken from a code block.
+ * Copy buttons, and confirmation for the copy they take.
  *
  * The buttons are rendered server side but only become useful here, so they
  * stay hidden until the document is marked as scripted.
  *
- * Two paths lead to the clipboard and both are confirmed. Pressing the button
- * writes through the clipboard API, which fires no copy event of its own.
- * Selecting code and pressing the platform's copy shortcut fires a real copy
- * event that this file does not interfere with, only observes.
+ * The confirmation is the button's own: its icon becomes a tick. The block is
+ * left alone. Nothing else on the page moves when a reader takes a copy, and a
+ * copy is the one thing they are certain of having asked for, so lighting up
+ * the whole block to report it is louder than the event deserves.
+ *
+ * That leaves the keyboard alone as well. Selecting code and pressing the
+ * platform's copy shortcut is answered by the platform.
  */
 
 const CONFIRM_MS = 1600
 
-/** Blocks currently showing a confirmation, so a repeat copy can restart it. */
+/** Buttons currently showing a tick, so a repeat copy can restart it. */
 const pending = new WeakMap()
 
 document.addEventListener('click', async (event) => {
@@ -31,25 +34,6 @@ document.addEventListener('click', async (event) => {
   }
 
   confirmOn(button)
-
-  const block = button.closest('.code-block, .code-group, .hero__install')
-  if (block) flash(block)
-})
-
-/**
- * A copy the reader made themselves, by selecting text and using the keyboard.
- * The block still flashes, because the question "what did I just take" is the
- * same one either way.
- */
-document.addEventListener('copy', () => {
-  const selection = window.getSelection()
-  if (!selection || selection.isCollapsed) return
-
-  const anchor = selection.anchorNode
-  const element = anchor?.nodeType === Node.ELEMENT_NODE ? anchor : anchor?.parentElement
-  const block = element?.closest?.('.code-block, .code-group')
-
-  if (block) flash(block)
 })
 
 function confirmOn(button) {
@@ -63,24 +47,6 @@ function confirmOn(button) {
       button.removeAttribute('data-copied')
       button.setAttribute('aria-label', defaultLabel(button))
     }, CONFIRM_MS),
-  )
-}
-
-/**
- * Restarts the flash rather than leaving it mid-run. Removing the attribute is
- * not enough on its own: the browser coalesces the removal and the re-add into
- * one style recalculation and the animation never restarts, so the pending
- * change is flushed in between.
- */
-function flash(block) {
-  block.removeAttribute('data-copied')
-  void block.offsetWidth
-  block.setAttribute('data-copied', '')
-
-  clearTimeout(pending.get(block))
-  pending.set(
-    block,
-    setTimeout(() => block.removeAttribute('data-copied'), CONFIRM_MS),
   )
 }
 

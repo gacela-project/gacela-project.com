@@ -1,16 +1,17 @@
 /**
  * Copy confirmation.
  *
- * Two things happen when code reaches the clipboard, and they say different
- * things. The block flashes, which answers "what did I just take": the whole
- * example, not the line under the cursor. The button's icon becomes a tick,
- * which answers "did that work".
+ * The button's icon becomes a tick, and nothing else moves. The block itself is
+ * not marked: a copy is the one thing a reader is certain of having asked for,
+ * and answering it by lighting up the whole example is louder than the event
+ * deserves. The tick is on the control they pressed, which is where they are
+ * already looking.
  *
- * The motion is under 300ms in both cases, per the project's rule for UI
- * feedback, but the tick then holds for over a second: a confirmation that
- * vanishes as fast as it arrived has not confirmed anything. Under
- * prefers-reduced-motion the reset collapses the durations and the state still
- * changes, so the answer is delivered without the movement.
+ * The motion is under 300ms, per the project's rule for UI feedback, but the
+ * tick then holds for over a second: a confirmation that vanishes as fast as it
+ * arrived has not confirmed anything. Under prefers-reduced-motion the reset
+ * collapses the durations and the state still changes, so the answer is
+ * delivered without the movement.
  *
  * Both copy controls carry data-copy, so this styles them together rather than
  * once per component.
@@ -72,24 +73,4 @@
     color: var(--accent);
   }
 
-  /* --- the block ---------------------------------------------------------
-   * Fired by adding data-copied to the block itself, which the script removes
-   * and re-adds so a second copy replays the flash instead of sitting still.
-   * -------------------------------------------------------------------- */
-
-  .code-block[data-copied],
-  .code-group[data-copied] {
-    animation: copy-flash var(--duration-slow) var(--ease-out);
-  }
-
-  @keyframes copy-flash {
-    from {
-      background-color: var(--accent-wash);
-      border-color: var(--accent);
-    }
-  }
-
-  .hero__install[data-copied] {
-    animation: copy-flash var(--duration-slow) var(--ease-out);
-  }
 }
