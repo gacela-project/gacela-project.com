@@ -69,10 +69,16 @@ function tocList(headings: readonly Heading[]): Raw {
     </ul>`
 }
 
+/**
+ * The same contents as the sidebar's, for the widths where the sidebar is
+ * gone. It carries the navigation landmark the sidebar version has: the two
+ * are mutually exclusive at 1180px, so only one is ever in the tree, and
+ * without this a narrow viewport lost a landmark that a wide one offers.
+ */
 function inlineToc(headings: readonly Heading[]): Raw {
   return html`<details class="toc-inline">
     <summary class="toc-inline__summary">${icons.disclosure}On this page</summary>
-    <div class="toc-inline__panel">${tocList(headings)}</div>
+    <nav class="toc-inline__panel" aria-label="On this page">${tocList(headings)}</nav>
   </details>`
 }
 

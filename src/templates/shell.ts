@@ -139,7 +139,7 @@ function versionLink(context: ShellContext, className: string): Raw {
  * why it is one control that changes glyph rather than two.
  */
 function navDrawer(context: ShellContext): Raw {
-  const { site } = context
+  const { site, route } = context
 
   return html`<details class="nav-drawer" data-nav-drawer>
     <summary class="nav-drawer__toggle" aria-label="Menu">
@@ -162,7 +162,7 @@ function navDrawer(context: ShellContext): Raw {
           ${site.headerLinks.map((link) =>
             link.route === '/docs'
               ? html`<li>
-                    <a class="nav-drawer__link" href="${link.route}">${link.title}</a>
+                    <a class="nav-drawer__link" href="${link.route}"${attrs({ 'aria-current': link.route === route ? 'page' : null })}>${link.title}</a>
                   </li>
                   <li>
                     <details class="nav-drawer__group">
@@ -176,9 +176,7 @@ function navDrawer(context: ShellContext): Raw {
                           <ul class="nav-drawer__sublist" role="list">
                             ${group.items.map(
                               (item) => html`<li>
-                                <a class="nav-drawer__sublink" href="${item.route}"
-                                  >${item.title}</a
-                                >
+                                <a class="nav-drawer__sublink" href="${item.route}"${attrs({ 'aria-current': item.route === route ? 'page' : null })}>${item.title}</a>
                               </li>`,
                             )}
                           </ul>
@@ -186,9 +184,9 @@ function navDrawer(context: ShellContext): Raw {
                       )}
                     </details>
                   </li>`
-              : html`<li><a class="nav-drawer__link" href="${link.route}">${link.title}</a></li>`,
+              : html`<li><a class="nav-drawer__link" href="${link.route}"${attrs({ 'aria-current': link.route === route ? 'page' : null })}>${link.title}</a></li>`,
           )}
-          <li><a class="nav-drawer__link" href="/team">Team</a></li>
+          <li><a class="nav-drawer__link" href="/team"${attrs({ 'aria-current': route === '/team' ? 'page' : null })}>Team</a></li>
         </ul>
       </nav>
 
@@ -240,9 +238,10 @@ function siteHeader(context: ShellContext): Raw {
               class="header__link"
               href="${link.route}"
               ${raw(isActive(route, link.route) ? 'data-active' : '')}
+              ${attrs({ 'aria-current': link.route === route ? 'page' : null })}
               >${link.title}</a
             >
-            ${link.route === '/docs' ? referenceMenu(site) : ''}`,
+            ${link.route === '/docs' ? referenceMenu(site, route) : ''}`,
         )}
       </nav>
 
@@ -283,7 +282,7 @@ function siteHeader(context: ShellContext): Raw {
  * link beside it already leads there, and repeating it inside would make the
  * panel argue with its own neighbour.
  */
-function referenceMenu(site: SiteConfig): Raw {
+function referenceMenu(site: SiteConfig, route: string): Raw {
   return html`<details class="header__menu" data-header-menu>
     <summary class="header__link header__menu-summary">
       <span>Reference</span>
@@ -297,7 +296,7 @@ function referenceMenu(site: SiteConfig): Raw {
           <ul class="header__menu-list" role="list">
             ${group.items.map(
               (item) => html`<li>
-                <a class="header__menu-link" href="${item.route}">${item.title}</a>
+                <a class="header__menu-link" href="${item.route}"${attrs({ 'aria-current': item.route === route ? 'page' : null })}>${item.title}</a>
               </li>`,
             )}
           </ul>

@@ -15,10 +15,10 @@ Gacela is built and maintained by two people, in the open, on
       <p class="team__name">Jose Maria Valera Reales</p>
       <p class="team__handle">Chemaclass</p>
       <p class="team__links">
-        <a href="https://chemaclass.com/" target="_blank" rel="noreferrer">Website<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://github.com/Chemaclass/" target="_blank" rel="noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://x.com/Chemaclass/" target="_blank" rel="noreferrer">X<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://www.linkedin.com/in/jose-maria-valera-reales/" target="_blank" rel="noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
+        <a href="https://chemaclass.com/" target="_blank" rel="noreferrer">Website<span class="visually-hidden"> of Jose Maria Valera Reales (opens in a new tab)</span></a>
+        <a href="https://github.com/Chemaclass/" target="_blank" rel="noreferrer">GitHub<span class="visually-hidden"> of Jose Maria Valera Reales (opens in a new tab)</span></a>
+        <a href="https://x.com/Chemaclass/" target="_blank" rel="noreferrer">X<span class="visually-hidden"> of Jose Maria Valera Reales (opens in a new tab)</span></a>
+        <a href="https://www.linkedin.com/in/jose-maria-valera-reales/" target="_blank" rel="noreferrer">LinkedIn<span class="visually-hidden"> of Jose Maria Valera Reales (opens in a new tab)</span></a>
       </p>
     </div>
   </li>
@@ -28,10 +28,10 @@ Gacela is built and maintained by two people, in the open, on
       <p class="team__name">Jesús Valera Reales</p>
       <p class="team__handle">JesusValeraDev</p>
       <p class="team__links">
-        <a href="https://jesusvalera.dev/" target="_blank" rel="noreferrer">Website<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://github.com/JesusValeraDev/" target="_blank" rel="noreferrer">GitHub<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://x.com/JesusValeraDev/" target="_blank" rel="noreferrer">X<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <a href="https://www.linkedin.com/in/jesus-valera-reales/" target="_blank" rel="noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
+        <a href="https://jesusvalera.dev/" target="_blank" rel="noreferrer">Website<span class="visually-hidden"> of Jesús Valera Reales (opens in a new tab)</span></a>
+        <a href="https://github.com/JesusValeraDev/" target="_blank" rel="noreferrer">GitHub<span class="visually-hidden"> of Jesús Valera Reales (opens in a new tab)</span></a>
+        <a href="https://x.com/JesusValeraDev/" target="_blank" rel="noreferrer">X<span class="visually-hidden"> of Jesús Valera Reales (opens in a new tab)</span></a>
+        <a href="https://www.linkedin.com/in/jesus-valera-reales/" target="_blank" rel="noreferrer">LinkedIn<span class="visually-hidden"> of Jesús Valera Reales (opens in a new tab)</span></a>
       </p>
     </div>
   </li>
