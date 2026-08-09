@@ -64,22 +64,27 @@
     fill: var(--border-strong);
   }
 
-  .part {
+  /* The box and the name carry the selection themselves rather than the group
+     fading as a whole. A transition on the group would not reach them: each sets
+     its own fill, so each has to animate its own. */
+  .part__box,
+  .part__name {
     transition:
-      opacity var(--duration-slow) var(--ease-out),
-      stroke var(--duration-slow) var(--ease-out),
-      fill var(--duration-slow) var(--ease-out);
+      fill var(--duration-slow) var(--ease-out),
+      stroke var(--duration-slow) var(--ease-out);
   }
 
+  /* Resting state is the drawing's own grey, the same one the boundary and the
+     arrows are drawn in, so an unselected class reads as part of the linework. */
   .part__box {
     fill: var(--diagram-fill);
-    stroke: var(--diagram-inside);
+    stroke: var(--border-strong);
     stroke-width: 1.5;
     rx: 5;
   }
 
   .part__name {
-    fill: var(--text-strong);
+    fill: var(--text-muted);
     font-family: var(--font-mono);
     font-size: 14px;
     text-anchor: middle;
@@ -92,7 +97,6 @@
   }
 
   .part--outside .part__name {
-    fill: var(--text-muted);
     font-size: 12px;
   }
 
@@ -101,24 +105,23 @@
    * drawing, the legend and the caption from a single :checked state.
    * -------------------------------------------------------------------- */
 
-  .diagram > input:checked ~ .diagram__frame .part--class {
-    opacity: 0.52;
-  }
-
-  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade,
-  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory,
-  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider,
-  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config {
-    opacity: 1;
-  }
-
+  /* The selection is carried by colour alone. Nothing is faded: the boxes stay
+     opaque so the drawing behind them never shows through, and an unselected
+     class is grey rather than see-through. */
   .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__box,
   .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__box,
   .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__box,
   .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__box {
     stroke: var(--diagram-boundary);
     stroke-width: 2;
-    fill: var(--accent-wash);
+    fill: var(--diagram-fill-active);
+  }
+
+  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__name,
+  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__name,
+  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__name,
+  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__name {
+    fill: var(--text-strong);
   }
 
   .diagram__legend {

@@ -100,10 +100,18 @@
     /* Diagram semantics: what lives inside a module versus what crosses its
        edge. These are load-bearing, not decorative, so they are named for the
        idea they encode rather than for the colour they happen to be. */
-    --diagram-inside: light-dark(var(--navy-400), var(--navy-200));
     --diagram-boundary: var(--accent);
     --diagram-outside: light-dark(var(--verdigris-600), var(--verdigris-400));
-    --diagram-fill: light-dark(oklch(0.9650 0.005 251 / 0.8), oklch(0.2400 0.032 250 / 0.8));
+
+    /* Opaque, both of them. The module's boundary and the arrows between the
+       classes are drawn underneath the boxes, and a box you can read a line
+       through does not look like a box sitting on the boundary, it looks like a
+       mistake. */
+    --diagram-fill: light-dark(var(--navy-25), var(--navy-850));
+    --diagram-fill-active: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 15%, var(--navy-850))
+    );
 
     /* light-dark() resolves one value, and a multi-layer shadow is several
        comma-separated values, so the theme switch happens on the tint and the
