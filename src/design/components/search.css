@@ -46,9 +46,18 @@
     font-size: var(--text-2xs);
   }
 
+  /* On a phone the trigger is one glyph, and a box drawn around a single glyph
+     reads as a button that lost its label rather than as a search field. */
   @media (max-width: 719px) {
     .search-trigger {
       min-inline-size: auto;
+      border-color: transparent;
+      background: none;
+    }
+
+    .search-trigger:hover {
+      border-color: transparent;
+      color: var(--accent);
     }
 
     .search-trigger__label,

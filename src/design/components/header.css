@@ -1,5 +1,12 @@
 @layer components {
   .header {
+    /* The bar's own metrics. The drawer's bar reads them too, so the two are
+       the same row measured the same way, and the controls they share do not
+       move when one replaces the other. */
+    --bar-inline: var(--space-5);
+    --bar-gap: var(--space-5);
+    --bar-control: 2.25rem;
+
     position: sticky;
     top: 0;
     z-index: var(--z-header);
@@ -12,11 +19,11 @@
   .header__inner {
     max-width: var(--width-wide);
     margin-inline: auto;
-    padding-inline: var(--space-5);
+    padding-inline: var(--bar-inline);
     block-size: 100%;
     display: flex;
     align-items: center;
-    gap: var(--space-5);
+    gap: var(--bar-gap);
   }
 
   .header__brand {
@@ -199,6 +206,33 @@
     gap: var(--space-1);
   }
 
+  .header__socials {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  /* Rules between the three kinds of thing in the right-hand cluster: the
+     navigation, the theme control, and the links off the site. Drawn as the
+     first flex item of the group they precede, so the gap on either side is
+     the one the cluster already uses. */
+  .header__actions::before,
+  .header__socials::before {
+    content: '';
+    inline-size: 1px;
+    block-size: var(--space-5);
+    margin-inline: var(--space-2);
+    background: var(--border-subtle);
+  }
+
+  /* Below the width the navigation collapses at there is nothing to its left
+     to divide it from. */
+  @media (max-width: 1099px) {
+    .header__actions::before {
+      display: none;
+    }
+  }
+
   /* The bar needs about 1060px to hold the brand, the search box, four nav
      labels in mono and the action cluster. Below that the navigation moves
      into the disclosure, which appears at the same width, so the primary links
@@ -209,17 +243,22 @@
     }
   }
 
-  /* Reflow at 320px: the brand and the action cluster together overflowed the
-     viewport. The padding and gap tighten, and the header's GitHub link steps
-     aside because the footer and the mobile menu both still carry it. */
-  @media (max-width: 400px) {
-    .header__inner {
-      padding-inline: var(--space-3);
-      gap: var(--space-2);
-    }
-
-    .header__actions > .icon-button {
+  /* The bar needs 436px to hold the brand, the search button, the theme
+     control and both social links with their rule between. Below that the
+     social links step aside, because the footer and the mobile menu both
+     still carry them. */
+  @media (max-width: 439px) {
+    .header__socials {
       display: none;
+    }
+  }
+
+  /* Reflow at 320px: the brand and the action cluster together overflowed the
+     viewport. The padding and gap tighten. */
+  @media (max-width: 400px) {
+    .header {
+      --bar-inline: var(--space-3);
+      --bar-gap: var(--space-2);
     }
 
     .header__wordmark {
@@ -288,87 +327,255 @@
   }
 
   /* ---------------------------------------------------------------------
-   * Mobile navigation.
+   * The navigation drawer.
    *
-   * The header drops its primary links below 900px, so every page carries this
-   * disclosure as their replacement, with the documentation sidebar folded in
-   * on documentation pages. A details element, so it opens and closes and
-   * announces its state with no JavaScript at all.
+   * Below the width the bar can hold its links, they move behind one button.
+   * A details element, so it opens, closes and announces itself with no
+   * script, and the panel covers the viewport rather than pushing the page
+   * down. The button stays on top of the panel and becomes the way out, which
+   * is why there is one control wearing two glyphs rather than two controls.
    * ------------------------------------------------------------------ */
 
-  .mobile-nav {
+  .nav-drawer {
     display: none;
   }
 
+  .nav-drawer__toggle {
+    display: grid;
+    place-items: center;
+    inline-size: var(--bar-control);
+    block-size: var(--bar-control);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .nav-drawer__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-drawer__toggle:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__toggle svg {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+  }
+
+  /* One button, two glyphs: whichever matches the current state is the one
+     that occupies the box. */
+  .nav-drawer__glyph {
+    display: grid;
+  }
+
+  .nav-drawer__glyph--close,
+  .nav-drawer[open] .nav-drawer__glyph--open {
+    display: none;
+  }
+
+  .nav-drawer[open] .nav-drawer__glyph--close {
+    display: grid;
+  }
+
+  /* Taking the button out of the flow would otherwise collapse the slot it
+     held and shuffle the rest of the bar along behind the panel. The slot is
+     kept, so the row underneath is the same row whether the drawer is open or
+     shut. */
+  .nav-drawer[open] {
+    inline-size: var(--bar-control);
+    block-size: var(--bar-control);
+  }
+
+  /* Lands exactly where it sat in the bar, so the glyph swaps in place. */
+  .nav-drawer[open] .nav-drawer__toggle {
+    position: fixed;
+    inset-block-start: calc((var(--height-header) - var(--bar-control)) / 2);
+    inset-inline-end: var(--bar-inline);
+    z-index: calc(var(--z-header) + 2);
+    color: var(--text-strong);
+  }
+
+  .nav-drawer__panel {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-header) + 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--canvas);
+  }
+
+  /* Repeats the brand rather than showing the bar underneath, so the panel is
+     whole on its own and does not depend on where the page happens to be
+     scrolled to. */
+  /* Laid out like the bar it covers: the brand, then the search control where
+     that bar puts it at this width. */
+  .nav-drawer__bar {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--bar-gap);
+    block-size: var(--height-header);
+    padding-inline: var(--bar-inline);
+    border-block-end: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .nav-drawer__nav {
+    padding: var(--space-5) var(--space-5) 0;
+  }
+
+  .nav-drawer__list,
+  .nav-drawer__sublist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-drawer__list > li + li {
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .nav-drawer__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    color: var(--text-strong);
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+  }
+
+  .nav-drawer__link:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__group-summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .nav-drawer__group-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-drawer__group-summary svg {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* The plus loses its upright and reads as a minus once the group is open. */
+  .nav-drawer__group[open] .plus-glyph__bar {
+    opacity: 0;
+  }
+
+  .nav-drawer__subgroup {
+    padding-block-end: var(--space-4);
+  }
+
+  .nav-drawer__subtitle {
+    margin-block-end: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .nav-drawer__sublink {
+    display: block;
+    padding-block: var(--space-2);
+    padding-inline-start: var(--space-4);
+    color: var(--text);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .nav-drawer__sublink:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__appearance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin: var(--space-6) var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    font-size: var(--text-md);
+    color: var(--text-strong);
+  }
+
+  .nav-drawer__socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The narrow bar: brand, search, and the drawer button. Everything else
+   * the bar carries is inside the drawer, so nothing is offered twice.
+   * ------------------------------------------------------------------ */
+
   @media (max-width: 1099px) {
-    .mobile-nav {
+    .nav-drawer {
       display: block;
-      border-block-end: 1px solid var(--border-subtle);
-      background: var(--surface-sunken);
     }
 
-    .mobile-nav__summary {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: var(--space-3) var(--space-5);
-      max-width: var(--width-wide);
-      margin-inline: auto;
-      font-family: var(--font-mono);
-      font-size: var(--text-sm);
-      color: var(--text-strong);
-      cursor: pointer;
-      list-style: none;
-    }
-
-    .mobile-nav__summary::-webkit-details-marker {
+    .header__actions {
       display: none;
     }
 
-    .mobile-nav__current {
-      color: var(--accent);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    /* A fixed panel is positioned against the viewport only while no ancestor
+       filters, and this one blurs what is behind it. */
+    .header {
+      background: var(--canvas);
+      backdrop-filter: none;
+    }
+  }
+
+  /* Sticky is worth a row of pixels on a laptop; on a phone it is a row of
+     pixels out of very few, and the drawer is reached from the top anyway. */
+  @media (max-width: 719px) {
+    .header {
+      position: static;
     }
 
-    .mobile-nav__panel {
-      max-width: var(--width-wide);
-      margin-inline: auto;
-      padding: 0 var(--space-5) var(--space-5);
-      max-block-size: 70svh;
-      overflow-y: auto;
+    /* Once the trigger is a glyph rather than a field it belongs with the
+       other glyph, on the thumb side, leaving the brand the whole left. The
+       two are reordered rather than moved, so the tab order still runs from
+       the brand rightwards. */
+    .header__inner > .search-trigger {
+      order: 1;
     }
 
-    .mobile-nav__primary {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 var(--space-5);
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-2);
+    .nav-drawer {
+      order: 2;
     }
 
-    .mobile-nav__link {
-      display: block;
-      padding: var(--space-2) var(--space-4);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-pill);
-      background: var(--surface);
-      color: var(--text-strong);
-      font-family: var(--font-mono);
-      font-size: var(--text-sm);
-      text-decoration: none;
+    /* The drawer's bar follows suit, and holds open the space the close button
+       would take if it were still in the flow. That is what stops the search
+       control sliding across as the drawer opens. */
+    .nav-drawer__bar {
+      justify-content: space-between;
     }
 
-    .mobile-nav__link:hover {
-      border-color: var(--accent-line);
-      color: var(--accent);
-    }
-
-    .mobile-nav__docs {
-      padding-block-start: var(--space-5);
-      border-block-start: 1px solid var(--border-subtle);
+    .nav-drawer__search {
+      margin-inline-end: calc(var(--bar-control) + var(--bar-gap));
     }
   }
 }

@@ -28,6 +28,17 @@ export const icons = {
 
   chevronDown: stroke('<path d="m6 9 6 6 6-6"/>'),
 
+  menu: stroke('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+
+  close: stroke('<path d="M6 6l12 12M18 6L6 18"/>'),
+
+  /** Turns into a minus when its details opens, so one glyph shows both states. */
+  plus: raw(
+    '<svg class="plus-glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="1.75" stroke-linecap="round" aria-hidden="true">' +
+      '<path d="M4 12h16"/><path class="plus-glyph__bar" d="M12 4v16"/></svg>',
+  ),
+
   /** The one disclosure affordance on the site; it rotates when its details opens. */
   disclosure: raw(
     '<svg class="disclosure-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +

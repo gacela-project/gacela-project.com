@@ -1,5 +1,5 @@
 import { attrs, html, raw, render, type Raw } from '../forge/render/index.ts'
-import type { NavState, SiteConfig } from '../forge/types.ts'
+import type { SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
 import { gacelaMark } from './marks.ts'
 
@@ -33,12 +33,6 @@ export type ShellContext = {
   readonly route: string
   readonly title: string
   readonly description: string
-  readonly nav: NavState
-  /**
-   * The documentation sidebar, when there is one. It is folded into the mobile
-   * disclosure below the breakpoint where the sidebar column disappears.
-   */
-  readonly docsNav?: Raw
   readonly main: Raw
   /**
    * Named on the body as a data attribute rather than a class. Layout names
@@ -101,7 +95,6 @@ export function documentShell(context: ShellContext): string {
   <body${attrs({ 'data-layout': context.layout })}>
     <a class="skip-link" href="#main">Skip to content</a>
     ${siteHeader(context)}
-    ${mobileNav(context)}
     <main id="main" class="page">${context.main}</main>
     ${siteFooter(context)}
     ${searchDialog()}
@@ -109,37 +102,81 @@ export function documentShell(context: ShellContext): string {
 </html>`)}\n`
 }
 
-function mobileNav(context: ShellContext): Raw {
-  const isDocs = context.docsNav !== undefined
+/**
+ * The navigation, for a screen too narrow to hold it in the bar.
+ *
+ * A details element again, so it opens, closes and announces itself without
+ * script. The panel covers the viewport rather than pushing the page down,
+ * and the button that opened it stays on top as the way back out, which is
+ * why it is one control that changes glyph rather than two.
+ */
+function navDrawer(context: ShellContext): Raw {
+  const { site } = context
 
-  return html`<details class="mobile-nav">
-    <summary class="mobile-nav__summary">
-      ${icons.disclosure}
-      <span>${isDocs ? 'Documentation' : 'Menu'}</span>
-      ${isDocs && context.nav.current !== undefined
-        ? html`<span aria-hidden="true">/</span>
-            <span class="mobile-nav__current">${context.nav.current.title}</span>`
-        : ''}
+  return html`<details class="nav-drawer" data-nav-drawer>
+    <summary class="nav-drawer__toggle" aria-label="Menu">
+      <span class="nav-drawer__glyph nav-drawer__glyph--open">${icons.menu}</span>
+      <span class="nav-drawer__glyph nav-drawer__glyph--close">${icons.close}</span>
     </summary>
 
-    <div class="mobile-nav__panel">
-      <nav aria-label="Site">
-        <ul class="mobile-nav__primary" role="list">
-          ${context.site.headerLinks.map(
-            (link) => html`<li>
-              <a class="mobile-nav__link" href="${link.route}">${link.title}</a>
-            </li>`,
+    <div class="nav-drawer__panel">
+      <div class="nav-drawer__bar">
+        <a class="header__brand" href="/" aria-label="${site.title}, home">
+          ${gacelaMark({ className: 'header__mark' })}
+          <span class="header__wordmark">${site.title}</span>
+        </a>
+
+        ${searchTrigger({ className: 'nav-drawer__search' })}
+      </div>
+
+      <nav class="nav-drawer__nav" aria-label="Site">
+        <ul class="nav-drawer__list" role="list">
+          ${site.headerLinks.map((link) =>
+            link.route === '/docs'
+              ? html`<li>
+                    <a class="nav-drawer__link" href="${link.route}">${link.title}</a>
+                  </li>
+                  <li>
+                    <details class="nav-drawer__group">
+                      <summary class="nav-drawer__link nav-drawer__group-summary">
+                        <span>Reference</span>
+                        ${icons.plus}
+                      </summary>
+                      ${site.sidebar.slice(1).map(
+                        (group) => html`<div class="nav-drawer__subgroup">
+                          <p class="nav-drawer__subtitle">${group.title}</p>
+                          <ul class="nav-drawer__sublist" role="list">
+                            ${group.items.map(
+                              (item) => html`<li>
+                                <a class="nav-drawer__sublink" href="${item.route}"
+                                  >${item.title}</a
+                                >
+                              </li>`,
+                            )}
+                          </ul>
+                        </div>`,
+                      )}
+                    </details>
+                  </li>`
+              : html`<li><a class="nav-drawer__link" href="${link.route}">${link.title}</a></li>`,
           )}
-          <li><a class="mobile-nav__link" href="/team">Team</a></li>
-          <li>
-            <a class="mobile-nav__link" href="${context.site.repository}" rel="noreferrer">GitHub</a>
-          </li>
+          <li><a class="nav-drawer__link" href="/team">Team</a></li>
         </ul>
       </nav>
 
-      ${isDocs
-        ? html`<nav class="mobile-nav__docs" aria-label="Documentation">${context.docsNav}</nav>`
-        : ''}
+      <div class="nav-drawer__appearance">
+        <span>Appearance</span>
+        ${themeToggle()}
+      </div>
+
+      <div class="nav-drawer__socials">
+        <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
+          >${icons.github}</a
+        >
+        <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
+          >${icons.x}</a
+        >
+      </div>
     </div>
   </details>`
 }
@@ -172,13 +209,17 @@ function siteHeader(context: ShellContext): Raw {
 
       <div class="header__actions">
         ${themeToggle()}
-        <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
-          >${icons.github}</a
-        >
-        <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
-          >${icons.x}</a
-        >
+        <span class="header__socials">
+          <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
+            >${icons.github}</a
+          >
+          <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="Gacela on X"
+            >${icons.x}</a
+          >
+        </span>
       </div>
+
+      ${navDrawer(context)}
     </div>
   </header>`
 }
@@ -215,12 +256,16 @@ function referenceMenu(site: SiteConfig): Raw {
   </details>`
 }
 
-function searchTrigger(): Raw {
+/**
+ * The same control wherever it appears, so the bar and the drawer's bar draw
+ * it identically and it does not move when one gives way to the other.
+ */
+function searchTrigger(options: { readonly className?: string } = {}): Raw {
   // The visible label collapses at narrow widths, so the accessible name is
   // set explicitly rather than left to whichever text happens to survive.
   return html`<button
     type="button"
-    class="search-trigger"
+    class="search-trigger ${options.className ?? ''}"
     data-search-trigger
     aria-label="Search the documentation"
   >
