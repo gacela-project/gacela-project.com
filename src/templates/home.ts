@@ -68,8 +68,8 @@ function hero(): Raw {
           <h1 class="hero__title">Build <em>modular</em> PHP applications.</h1>
 
           <p class="hero__lede">
-            Gacela 2.0 &middot; PHP 8.3+. Split your application into modules that talk through one
-            door. Everything behind it stays private.
+            Split your application into modules that talk through one door.
+            Everything behind it stays private.
           </p>
 
           <div class="hero__actions">

@@ -387,15 +387,7 @@ function siteFooter(context: ShellContext): Raw {
     </div>
 
     <div class="footer__legal">
-      <span>&copy; 2021&ndash;${year} Jose Maria Valera Reales and Jesus Valera Reales</span>
-      <span class="footer__socials">
-        <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="GitHub"
-          >${icons.github}</a
-        >
-        <a class="icon-button" href="https://x.com/gacela_project" rel="noreferrer" aria-label="X"
-          >${icons.x}</a
-        >
-      </span>
+      <span>&copy; 2021&ndash;${year}</span>
       <a href="/license">MIT License</a>
     </div>
   </footer>`
