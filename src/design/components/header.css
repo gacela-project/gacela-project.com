@@ -70,12 +70,9 @@
     gap: var(--space-1);
   }
 
-  /* The release the site documents, sitting after the last nav label and
-     before the rule that opens the action cluster. It wears the badge rather
-     than the nav label's type: it names a thing rather than a destination on
-     this site, and the nav's four mono labels are a set a fifth would join by
-     mistake. It hides with the nav, and the drawer carries it below that.
-     Both copies are styled together so the two cannot drift. */
+  /* The release the site documents. It wears the badge rather than the nav
+     label's type: it names a thing, not a destination, and the nav's four mono
+     labels are a set a fifth would join by mistake. */
   .header__version,
   .nav-drawer__version {
     flex-shrink: 0;
@@ -91,18 +88,11 @@
     border-color: var(--accent-line);
   }
 
-  /* The nav labels sit 28px apart, ink to ink: 12px of padding on each of the
-     two, and the 4px gap between their boxes. This badge is the fifth item in
-     that run, so it takes the same 28 rather than the bar's 32, and the whole
-     row reads as one rhythm broken only by the rule after it.
-
-     The bar's gap is measured between boxes, though, and the label to the left
-     carries padding this badge does not: it draws a border, so its box edge is
-     its visible edge. The margin is what is left once that padding and the
-     difference between 32 and 28 are taken off the bar's gap.
-
-     Only in the bar. In the drawer the badge opens a centred row, with no
-     padded neighbour to discount. */
+  /* The nav labels sit 28px apart ink to ink, and this badge is the fifth item
+     in that run. The bar's gap is measured between boxes and the label to the
+     left carries padding this badge does not, so the margin takes back that
+     padding and the difference between the bar's 32 and the nav's 28. Only in
+     the bar: the drawer's copy opens a centred row. */
   .header__version {
     margin-inline-start: calc(var(--space-4) * -1);
   }
@@ -271,14 +261,9 @@
     background: var(--border-subtle);
   }
 
-  /* Left of the first rule lies the bar's gap, where every other side of a
-     rule has only the cluster's gap, so the difference is taken back and this
-     rule is centred on the same air as the next one.
-
-     The nav link's trailing padding used to be taken back here as well. The
-     release badge stands between the two now, and it draws a border, so its
-     box edge is its visible edge with no padding to discount. Subtracting it
-     anyway left four pixels between the badge and this rule. */
+  /* Left of this rule lies the bar's gap where every other side has only the
+     cluster's, so the difference is taken back and both rules end up centred
+     on the same air. */
   .header__actions::before {
     margin-inline-start: calc(var(--bar-rule-space) - var(--bar-gap));
   }
@@ -291,24 +276,19 @@
     }
   }
 
-  /* The bar needs 1183px to hold the brand, the search box, four nav labels in
-     mono, the release badge and the action cluster with air around its rules.
-     Below that the navigation moves into the disclosure, which appears at the
-     same width, so the primary links are never in two visible places and never
-     squeezed. Measured, not estimated: the release badge cost 59px and the gap
-     before it another 28, which is what moved this up from 1096. The bar
-     returns at 1200, so seventeen pixels are spare. Widening the bar's gap,
-     the search box or the air around the rules means moving this again. */
+  /* The bar needs 1183px for the brand, the search box, four nav labels, the
+     release badge and the action cluster. Below that the navigation moves into
+     the disclosure, which appears at the same width, so the links are never in
+     two places and never squeezed. Seventeen pixels spare: widening the bar's
+     gap, the search box or the air around the rules moves this too. */
   @media (max-width: 1199px) {
     .header__nav {
       display: none;
     }
 
-    /* Compounded with .badge on purpose. The badge supplies this element's
-       display, it is defined in index-list.css, and that file is imported
-       after this one into the same layer, so a bare .header__version loses the
-       tie on source order and the badge stays visible with no nav beside it.
-       Layers settle conflicts between layers, not within one. */
+    /* Compounded with .badge on purpose: .badge supplies the display and is
+       imported after this file into the same layer, so a bare class loses the
+       tie on source order. Layers settle conflicts between layers, not in one. */
     .header__version.badge {
       display: none;
     }

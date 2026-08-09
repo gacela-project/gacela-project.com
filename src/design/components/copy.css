@@ -1,20 +1,11 @@
 /**
- * Copy confirmation.
+ * Copy confirmation: the icon becomes a tick and nothing else moves. Marking
+ * the whole block would be louder than the event deserves, and the reader is
+ * already looking at the control they pressed.
  *
- * The button's icon becomes a tick, and nothing else moves. The block itself is
- * not marked: a copy is the one thing a reader is certain of having asked for,
- * and answering it by lighting up the whole example is louder than the event
- * deserves. The tick is on the control they pressed, which is where they are
- * already looking.
- *
- * The motion is under 300ms, per the project's rule for UI feedback, but the
- * tick then holds for over a second: a confirmation that vanishes as fast as it
- * arrived has not confirmed anything. Under prefers-reduced-motion the reset
- * collapses the durations and the state still changes, so the answer is
- * delivered without the movement.
- *
- * Both copy controls carry data-copy, so this styles them together rather than
- * once per component.
+ * The motion is under 300ms but the tick holds for over a second: a
+ * confirmation that vanishes as fast as it arrived has not confirmed anything.
+ * Both copy controls carry data-copy, so they are styled together.
  */
 
 @layer components {

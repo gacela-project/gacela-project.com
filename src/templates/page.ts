@@ -11,18 +11,12 @@ export function pageLayout(page: RenderedPage): Raw {
 }
 
 /**
- * The page for an address that answers nothing.
+ * The page for an address that answers nothing. It does not claim the page
+ * moved, because a 404 is usually a typo or somebody else's stale link.
  *
- * It does not say the page moved, because usually nothing did: a 404 is a
- * typo, or somebody else's stale link, far more often than it is a page that
- * went somewhere. Claiming otherwise sent readers looking for a redirect that
- * was never written.
- *
- * The way out is three plain links rather than two buttons. A button is a
- * recommendation, and offering two competing ones from a dead end recommends
- * nothing; the same row on the home page gave its buttons up for the same
- * reason. Search goes unmentioned as a control and named as a place, because
- * the bar is sticky and its search box is already on screen.
+ * Three plain links rather than two buttons, which from a dead end would be two
+ * recommendations and so none. Search is named as a place, not offered again:
+ * the bar is sticky and already carries it.
  */
 export function notFoundLayout(): Raw {
   return html`<div class="container cta">

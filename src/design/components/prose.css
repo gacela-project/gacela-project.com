@@ -14,23 +14,10 @@
     color: var(--text);
   }
 
-  /* Two widths, one left edge.
-   *
-   * These pages carry no sidebar and no table of contents, so the reading
-   * measure alone spent the rest of the screen on nothing: the code on
-   * /used-in and the people on /team were as narrow as a paragraph. Letting
-   * every child take the column instead put paragraphs at 104 to 116
-   * characters, half again past the readable ceiling, with the licence's
-   * all-caps warranty the worst of it.
-   *
-   * So sentences take the reading measure and blocks that are not sentences
-   * take the column. What the earlier version got wrong was centring them:
-   * that gave the body two left edges and nothing to hang either on. Both
-   * start at the same edge now, and only the right side varies, which is the
-   * side a reader is not returning to.
-   *
-   * Scoped to this container. The documentation article is already the reading
-   * measure, so the same rules would change nothing there. */
+  /* Two widths, one left edge. A standalone page has no sidebar to spend its
+     width on, so blocks that are not sentences take the column while sentences
+     keep the reading measure. Both start at the same edge; only the right side
+     varies, which is the side a reader is not returning to. */
   .container--prose .prose {
     max-width: var(--measure-code);
   }

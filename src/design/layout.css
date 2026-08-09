@@ -15,16 +15,9 @@
     max-width: var(--width-wide);
   }
 
-  /* Wide enough for the blocks that are not sentences. A standalone page has
-     no sidebar and no table of contents, so holding its whole column to the
-     reading measure spent the rest of the screen on nothing: the code samples
-     on /used-in and the people on /team were as narrow as a paragraph. What
-     takes this width and what stays at the reading measure is decided in
-     prose.css, on one left edge.
-
-     The padding is --space-5 because that is what .container applies; adding
-     --space-6 here instead left the inner box 16px wider than the measure and
-     the column 8px off its own centre. */
+  /* Wide enough for the blocks that are not sentences; prose.css decides which
+     take it. The padding matches .container's, or the inner box comes out
+     wider than the measure and the column sits off its own centre. */
   .container--prose {
     max-width: calc(var(--measure-code) + var(--space-5) * 2);
   }
@@ -33,12 +26,9 @@
     flex: 1;
   }
 
-  /* The 404 is one short block, and left at the top of a full-height main it
-     sat in the upper third with the footer stranded 300px below. Centring it
-     here rather than on the block itself, because this is the element that
-     knows the height: main takes what a sticky header and a real footer leave,
-     and a percentage min-height on its child does not resolve against a
-     flex-sized parent. The layout name is on the body for this. */
+  /* Centred from main rather than from the block, because main is the element
+     that knows the height: a percentage min-height on its child does not
+     resolve against a flex-sized parent. */
   body[data-layout='not-found'] .page {
     display: grid;
     align-content: center;
@@ -104,14 +94,9 @@
     min-width: 0;
   }
 
-  /* The furniture takes the same measure as the body it frames. The breadcrumb,
-     the edit links and the prev/next cards were sized by the column instead, so
-     at 1440 they ran to 1114 while every paragraph, callout and code block
-     stopped at 1008: two right edges on a page whose whole claim is one
-     column, and the wider one belonged to the least important elements.
-
-     Below 960 the article is fluid and the same rule keeps the furniture from
-     stretching 261px past the text it sits with. */
+  /* The breadcrumb, the edit links and the pager take the same measure as the
+     body they frame, or the page ends up with two right edges and the wider
+     one belongs to the least important elements. */
   .docs__article > * {
     max-width: var(--measure-prose);
   }

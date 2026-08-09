@@ -68,34 +68,25 @@ function init() {
 }
 
 /**
- * The mobile drawer.
+ * The mobile drawer. It covers the viewport when open, which the platform does
+ * not account for: Escape does not close it, and Tab walks out of the panel
+ * onto the page behind it.
  *
- * It is a details element too, but unlike the Reference menu it covers the
- * whole viewport when open. That makes two things the platform does not give
- * it: Escape does not close it, and Tab walks straight out of the panel onto
- * the page underneath, which is still there and now invisible behind an opaque
- * surface. A reader tabbing through the drawer fell out of it into links they
- * could not see.
- *
- * Everything outside the panel is marked inert while it is open, so the
- * browser's own focus order skips it. Driven by the details element's toggle
- * event, which fires for both directions, so the flag cannot be left on.
+ * Everything outside is inert while it is open, driven by the toggle event so
+ * the flag cannot be left behind.
  */
 function initDrawer() {
   const drawer = document.querySelector('[data-nav-drawer]')
   const bar = drawer?.closest('.header__inner')
   const header = drawer?.closest('header')
 
-  /* Nothing rather than something wrong. Without the two ancestors the filters
-     below would keep the header in the list, and inerting the header inerts
-     the drawer inside it: the panel would open and refuse every key. */
+  /* Without both ancestors the filters below would inert the header, and with
+     it the drawer inside: the panel would open and refuse every key. */
   if (drawer === null || bar === undefined || header === undefined) return
 
   const outside = () => [
-    /* The search dialog is left out. It is display:none until it opens, and
-       when it does open showModal() makes the rest of the page inert by
-       itself, so marking it here would only break the search button the
-       drawer itself offers. */
+    /* Not the dialog: showModal() handles its own inertness, and marking it
+       here would break the search button the drawer offers. */
     ...Array.from(document.body.children).filter(
       (element) => element !== header && element.tagName !== 'DIALOG',
     ),

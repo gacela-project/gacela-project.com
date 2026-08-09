@@ -1,19 +1,12 @@
 /**
- * Facet design tokens.
+ * Facet design tokens. The only file allowed to contain a colour literal.
  *
- * The only file in the design system allowed to contain colour literals.
- * Everything else references these custom properties.
+ * One hue, 251, the mark's own: #123456 at every lightness the site needs.
+ * Ink and paper come from its desaturated end, signal from its saturated one,
+ * and the accent is rare on purpose.
  *
- * Direction: a drafting table. Gacela's subject is structure you can inspect,
- * so the palette is the mark's own blue, #123456, at every lightness the site
- * needs: ink and paper from its desaturated end, signal from its saturated
- * one. The accent is rare on purpose: when it appears, it means "this is the
- * thing".
- *
- * Colour is authored in OKLCH so the two ramps are perceptually even, and the
- * themes are expressed with light-dark(). That means the system preference is
- * honoured with no JavaScript and no duplicated dark block, while an explicit
- * choice still wins through data-theme on the root element.
+ * Authored in OKLCH and expressed with light-dark(), so the system preference
+ * needs no JavaScript and no duplicated dark block, and data-theme still wins.
  */
 
 @layer tokens {
@@ -23,31 +16,21 @@
     /* ---------------------------------------------------------------------
      * Palette primitives. Never referenced outside this file.
      *
-     * One hue: 251, the mark's own. #123456 is the blue the gazelle is drawn
-     * in, and it measures oklch(0.3192 0.0725 251), so the whole palette is
-     * that colour at other lightnesses rather than a family assembled around
-     * it. --navy-700 is the brand value itself, to the last decimal.
+     * Ink and accent share hue 251 and separate by chroma: ink stays under
+     * 0.045, the accent runs 0.11 to 0.15. That gap is what makes an active
+     * item read as active, so narrowing it weakens every signal on the site.
      *
-     * Ink and accent share the hue and separate by chroma: the ink ramp stays
-     * under 0.045 so text reads as ink, the accent runs 0.11 to 0.15 so it
-     * reads as signal. That gap is the only thing making an active sidebar
-     * item look active, and anything that narrows it weakens every piece of
-     * signal on the site.
-     *
-     * Chroma on the accent sits at 92% of what hue 251 can hold at each
-     * lightness, which is why the numbers are not round: the ceiling varies
-     * from 0.09 at the dark end to 0.19 in the middle, and the last 8% is
-     * left as headroom against displays that clip.
+     * Accent chroma sits at 92% of what hue 251 holds at each lightness, which
+     * is why the numbers are not round; the last 8% is headroom against
+     * displays that clip.
      * ------------------------------------------------------------------ */
 
     --navy-950: oklch(0.1700 0.028 251);
     --navy-900: oklch(0.2000 0.030 251);
     --navy-850: oklch(0.2400 0.032 251);
     --navy-800: oklch(0.2800 0.045 251);
-    /* #123456 exactly. Its chroma is 0.0725, more than double the ink ramp's,
-       because it is the mark's own colour rather than a shade of ink. Anything
-       drawing a line or a surface wants --navy-750 instead: same lightness,
-       the ramp's chroma. Borders used to read blue in dark for want of it. */
+    /* #123456 exactly, at more than double the ink ramp's chroma. A line or a
+       surface wants --navy-750: same lightness, the ramp's chroma. */
     --navy-750: oklch(0.3192 0.032 251);
     --navy-700: oklch(0.3192 0.0725 251);
     --navy-600: oklch(0.3800 0.032 251);
@@ -89,16 +72,12 @@
      * ------------------------------------------------------------------ */
 
     --canvas: light-dark(var(--navy-25), var(--navy-900));
-    /* Not pure white: --surface-raised is, and with both at 1 there was no
-       step between a card and a dialog in the light theme. This also takes the
-       one achromatic value out of a palette that is otherwise a single hue. */
+    /* Not pure white; --surface-raised is, and the two need a step between
+       them. */
     --surface: light-dark(oklch(0.9950 0.002 251), var(--navy-850));
     --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
-    /* Raised sits one step above surface, not three. At navy-700 the dark
-       elevation ladder read 0.17 / 0.20 / 0.24 / 0.32, and that last jump put
-       --text-muted at 4.10:1 on the popovers that use this token: the only
-       ink-on-ground pair in either theme below 4.5. navy-800 keeps raised the
-       lightest ground in dark and carries muted text at 4.72:1. */
+    /* One step above surface, not three: it must stay the lightest ground in
+       dark and still carry --text-muted at 4.5:1. */
     --surface-raised: light-dark(var(--white), var(--navy-800));
     --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
 
@@ -123,30 +102,24 @@
     --warning: light-dark(var(--amber-600), var(--amber-400));
     --danger: light-dark(var(--rose-600), var(--rose-400));
 
-    /* Diagram semantics: what lives inside a module versus what crosses its
-       edge. These are load-bearing, not decorative, so they are named for the
-       idea they encode rather than for the colour they happen to be. */
+    /* Named for what they encode, not the colour they happen to be. */
     --diagram-boundary: var(--accent);
     --diagram-outside: light-dark(var(--verdigris-600), var(--verdigris-400));
 
-    /* Opaque, both of them. The module's boundary and the arrows between the
-       classes are drawn underneath the boxes, and a box you can read a line
-       through does not look like a box sitting on the boundary, it looks like a
-       mistake. */
+    /* Opaque: the boundary and the arrows are drawn underneath the boxes, and
+       a box you can read a line through looks like a mistake. */
     --diagram-fill: light-dark(var(--navy-25), var(--navy-850));
     --diagram-fill-active: light-dark(
       var(--blue-100),
       color-mix(in oklch, var(--blue-400) 15%, var(--navy-850))
     );
 
-    /* Hovering a class is halfway to choosing it, so the colour is halfway too.
-       Mixed from the two ends rather than picked, which keeps it in the middle
-       if either end is ever changed. */
+    /* Halfway to chosen, so halfway in colour. Mixed rather than picked, so it
+       stays in the middle if either end changes. */
     --diagram-fill-hover: color-mix(in oklch, var(--diagram-fill-active) 50%, var(--diagram-fill));
 
-    /* light-dark() resolves one value, and a multi-layer shadow is several
-       comma-separated values, so the theme switch happens on the tint and the
-       shadows themselves are composed from it. */
+    /* light-dark() resolves one value and a shadow is several, so the theme
+       switch happens on the tint and the shadows compose from it. */
     --shadow-tint-near: light-dark(oklch(0.28 0.045 251 / 0.06), oklch(0 0 0 / 0.32));
     --shadow-tint-far: light-dark(oklch(0.28 0.045 251 / 0.09), oklch(0 0 0 / 0.28));
 
@@ -164,21 +137,14 @@
     --code-border: light-dark(var(--navy-100), var(--navy-750));
 
     /* ---------------------------------------------------------------------
-     * Syntax highlighting.
+     * Syntax highlighting. Shiki reads a CSS-variables theme, so the code
+     * palette belongs to the design system rather than to an editor theme.
      *
-     * Shiki is driven by a CSS-variables theme, so the code palette is part of
-     * the design system rather than a stock editor theme dropped on top of it.
-     *
-     * No token here comes near the accent. Keywords used to take it, on the
-     * reasoning that keywords are structure, but a documentation page holds
-     * around a hundred keywords and eight pieces of real UI signal, so the
-     * accent stopped meaning anything where it mattered.
-     *
-     * Since the accent is now blue, the whole 250 to 285 hue band is spoken
-     * for: functions moved from blue to violet for the same reason. Keywords
-     * lean on the navy ramp, strings on teal, functions on violet and
-     * constants on amber, so four kinds of token stay tellable apart and none
-     * of them can be mistaken for a link or an active item.
+     * Nothing here comes near the accent, and nothing uses the 250-285 band it
+     * owns: a page holds a hundred keywords and eight pieces of real signal, so
+     * an accent-coloured keyword spends the accent where it does not matter.
+     * Keywords take the navy ramp, strings teal, functions violet, constants
+     * amber, none of which can be mistaken for a link.
      * ------------------------------------------------------------------ */
 
     --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 251));
@@ -266,15 +232,9 @@
        header ends up with two radii in one row. */
     --radius-button: var(--radius-md);
 
-    /* The reading measure: 40.6rem, which renders 77 to 84 characters of body
-       text. It was written as 68ch and converted at the width of a zero, but a
-       zero is wider than the average letter, so the ch figure never described
-       what landed on the page. Counted from real line boxes instead.
-
-       Kept in rem rather than ch because ch resolves against the font of
-       whatever element reads the token: on a heading at --text-3xl the same
-       68ch came out 1753px, so a measure meant to hold every block to one
-       column let headings run three times as wide as the text beneath them. */
+    /* The reading measure: 77 to 84 characters, counted from real line boxes.
+       In rem rather than ch, because ch resolves against the font of whatever
+       reads it, and a heading would take three times the width of the text. */
     --measure-prose: 40.6rem;
     /* Code is not prose and does not want the reading measure. A code group's
        tab strip is as wide as the filenames in it, and on the home page that is

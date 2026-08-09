@@ -1,35 +1,21 @@
 /**
- * Browser reload for the development server, and nowhere else.
+ * Browser reload for the development server, and nowhere else. It lives in cli/
+ * so the pipeline never emits it and a built page cannot carry it to production.
  *
- * The dev server already rebuilds the whole site on every change; this is the
- * other half, the part that tells the page sitting in the browser that a newer
- * one exists. It lives in cli/ because it is a property of running the site
- * locally, not of the site: the pipeline never emits it, so a built page cannot
- * carry it into production by accident.
- *
- * The page asks rather than being told. A push would need the response held
- * open, and the server that holds it is the same one that serves the built site
- * in preview, which is deliberately no more than a static host. Asking costs a
- * request every fifth of a second against a number already in memory, and keeps
- * that server exactly as plain as production's.
+ * The page polls rather than being pushed to: a push needs the response held
+ * open, and the same server serves the built site in preview, where it is meant
+ * to be no more than a static host.
  */
 
-/**
- * Where the running generation is served. It carries an extension because the
- * static server reads an extensionless URL as a page and would look for
- * "dev-generation.html" instead.
- */
+/** Extensioned, or the static server reads it as a page and looks for .html. */
 export const GENERATION_PATH = 'dev-generation.txt'
 
 const POLL_MS = 200
 
 /**
- * The reload watcher.
- *
- * It remembers the generation it first saw and reloads when the server reports
- * a different one. A failed request means the server is restarting, so it keeps
- * asking: when the server returns its generation starts over, which reads as a
- * change and reloads the page onto the new build.
+ * Remembers the generation it first saw and reloads when the server reports
+ * another. A failed request means the server is restarting, so it keeps asking:
+ * the generation starts over on return, which reads as a change.
  */
 const SCRIPT = `<script>
 (() => {

@@ -1,21 +1,13 @@
 import { html, raw, type Raw } from '../forge/render/index.ts'
 
 /**
- * One Gacela module, drawn as what it actually is.
+ * One Gacela module, drawn as what it actually is: three classes sit on the
+ * boundary and only the Factory is interior. That is the argument for the
+ * framework, so the drawing makes it rather than an adjective.
  *
- * The boundary is a closed box, and three of the four classes sit on it: the
- * Facade where calls come in, the Provider where the module reaches sideways to
- * its neighbours, and the Config where it reads the project's settings. Only
- * the Factory, and everything it builds, is interior and unreachable from
- * outside. That is the entire argument for the framework, so the drawing makes
- * it rather than an adjective does.
- *
- * Selecting a class is a radio group, which means this works with the keyboard,
- * works with no JavaScript, and needs no state management to speak of. What you
- * click is the box itself: each one wears an HTML label, laid over the drawing
- * and driving the radio underneath. There is no legend under the diagram,
- * because a list of the same four names is a second place to look at the moment
- * the reader is already looking at the first.
+ * Selecting a class is a radio group, so it works from the keyboard, works
+ * without JavaScript and needs no state. Each box wears a label laid over the
+ * drawing, driving the radio underneath.
  */
 
 export type Box = {
@@ -34,16 +26,11 @@ export const VIEW_BOX = { x: 0, y: 56, width: 780, height: 344 } as const
 
 /**
  * The mark that says a box can be chosen: hollow on the three you can pick,
- * filled on the one you are reading about.
+ * filled on the one you are reading about. Not a metaphor, since these boxes
+ * really are a radio group.
  *
- * A drawing gives a reader no reason to think it can be touched, and the hint
- * under it only speaks to whoever reads it. This says the same thing in the
- * shape everyone already knows, and it is not a metaphor: these boxes really
- * are a radio group, so the drawing now looks like what it is.
- *
- * The dot takes a column at the leading edge of the box and the label centres
- * in what is left, so the two are placed from one set of numbers rather than
- * nudged until they look right.
+ * The dot takes a column at the leading edge and the label centres in what is
+ * left, so both are placed from one set of numbers.
  */
 const DOT_INSET = 14
 const DOT_RADIUS = 4.5
