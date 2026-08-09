@@ -56,17 +56,11 @@
 
   @media (prefers-reduced-motion: no-preference) {
     .card-grid__card {
-      transition:
-        border-color var(--duration-base) var(--ease-out),
-        transform var(--duration-base) var(--ease-out);
+      transition: border-color var(--duration-base) var(--ease-out);
     }
 
     .card-grid__card strong {
       transition: color var(--duration-base) var(--ease-out);
-    }
-
-    .card-grid__card:hover {
-      transform: translateY(-2px);
     }
   }
 }

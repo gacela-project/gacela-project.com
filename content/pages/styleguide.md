@@ -137,7 +137,7 @@ the documentation column and on a full-width page.
   </a>
   <a class="card-grid__card" href="/styleguide">
     <strong>A second card</strong>
-    <span>Hover and focus both move the border to the accent; only hover lifts it.</span>
+    <span>Hover moves the border to the accent and the heading with it; focus draws a ring.</span>
   </a>
   <a class="card-grid__card" href="/styleguide">
     <strong>A card with a longer heading that wraps onto two lines</strong>
