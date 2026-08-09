@@ -74,12 +74,17 @@
     padding-inline: var(--space-5);
   }
 
+  /* The column scrolls on its own when the tree is taller than the viewport,
+     and chains to the page when it reaches either end. It used to contain the
+     chain, which read as the page seizing up: at the foot of a long document
+     the tree is already at its top, so scrolling up with the pointer over it
+     did nothing at all until the pointer moved onto the prose. A column that
+     eats the gesture is worse than one that scrolls the page underneath it. */
   .docs__nav {
     position: sticky;
     top: var(--height-header);
     max-height: calc(100svh - var(--height-header));
     overflow-y: auto;
-    overscroll-behavior: contain;
     padding-block: var(--space-6) var(--space-8);
     padding-inline-end: var(--space-4);
     border-inline-end: 1px solid var(--border-subtle);
@@ -116,7 +121,6 @@
       top: calc(var(--height-header) + var(--space-6));
       max-height: calc(100svh - var(--height-header) - var(--space-8));
       overflow-y: auto;
-      overscroll-behavior: contain;
       grid-row: 1;
       grid-column: 2;
     }
