@@ -1,14 +1,9 @@
 ---
-title: Used in
-description: Projects built with Gacela, including Phel, a functional Lisp dialect that compiles to PHP.
+title: Used in production
+description: Explore real Gacela architecture and code from the Phel language project.
 ---
 
-# Used in
-
-Projects that build on Gacela. If you ship something with it,
-[open a pull request](https://github.com/gacela-project/gacela-project.com) and add yourself.
-
-## Phel Lang
+# Gacela in production: Phel
 
 <p>
   <a href="https://phel-lang.org/" rel="noreferrer" aria-label="Phel Lang">
@@ -20,20 +15,144 @@ Projects that build on Gacela. If you ship something with it,
   </a>
 </p>
 
-Phel is a functional programming language that compiles to PHP. It is a dialect of Lisp inspired by
-Clojure and Janet, and it uses Gacela to keep its compiler, REPL and runtime in separate modules.
+[Phel](https://phel-lang.org/) is a functional language that compiles to PHP. Its compiler, CLI, formatter, language server, REPL, filesystem, and tooling are organized as Gacela modules in one actively maintained codebase.
 
-**What it offers**
+::: info Version transparency
+Phel currently declares `gacela-project/gacela:^1.21`. The architecture below is real and remains representative of Gacela 2.0, but the project has not yet published a 2.0 migration. Each excerpt was verified against [Phel commit `f173cf5`](https://github.com/phel-lang/phel-lang/tree/f173cf522d1b492cf12fb5404fa56c6b4bd454a4).
+:::
 
-- Persistent data structures: lists, vectors, maps and sets
-- Macros, a REPL, and error reporting that points at the right form
-- The whole of PHP's ecosystem, reachable from Lisp
+<div class="stat-row">
+  <div class="stat-row__stat"><strong>17+</strong><span>application modules</span></div>
+  <div class="stat-row__stat"><strong>PHP 8.4</strong><span>declared platform</span></div>
+  <div class="stat-row__stat"><strong>MIT</strong><span>open-source license</span></div>
+</div>
 
-**Why it exists**
+## Why Gacela fits Phel
 
-- Functional programming without leaving the PHP runtime
-- It runs anywhere PHP runs, including cheap shared hosting
-- Small enough to read, which makes it pleasant to debug
+Phel has many subsystems but needs one coherent application. Gacela gives each subsystem a recognizable public boundary and makes cross-module dependencies explicit:
 
-Read [the story of its first release](https://chemaclass.com/blog/phel-first-release/), or go
-straight to [phel-lang.org](https://phel-lang.org/).
+- Callers enter through a Facade instead of depending on compiler internals.
+- Factories construct application and domain services inside their module.
+- Providers translate concrete Facades into the interfaces another module expects.
+- Framework-created Symfony commands can still resolve typed Gacela services.
+- Module health checks can be collected into operational diagnostics.
+
+## Real code walkthrough
+
+The excerpts are shortened only where unrelated methods would obscure the pattern. Follow **Source** below each tab group for the complete production files.
+
+::: code-group
+
+```php [Bootstrap]
+use Gacela\Framework\Gacela;
+use Phel\Run\RunFacade;
+
+public static function bootstrap(string $projectRootDir): void
+{
+    Gacela::bootstrap(
+        $projectRootDir,
+        self::configFn(self::readAppModulePaths($configPath)),
+    );
+}
+
+public static function run(string $projectRootDir, string $namespace): void
+{
+    self::bootstrap($projectRootDir);
+    (new RunFacade())->runNamespace($namespace);
+}
+```
+
+```php [Facade]
+final class RunFacade extends AbstractFacade implements RunFacadeInterface
+{
+    public function runNamespace(string $namespace): void
+    {
+        $this->getFactory()
+            ->createNamespaceRunner()
+            ->run($namespace);
+    }
+
+    public function getNamespaceFromFile(string $path): NamespaceInformation
+    {
+        return $this->getFactory()
+            ->getBuildFacade()
+            ->getNamespaceFromFile($path);
+    }
+}
+```
+
+```php [Provider]
+final class RunProvider extends AbstractProvider
+{
+    #[Provides(BuildFacadeInterface::class)]
+    public function buildFacade(Container $container): BuildFacadeInterface
+    {
+        return $container->getLocator()->getRequired(BuildFacade::class);
+    }
+
+    #[Provides(FilesystemFacadeInterface::class)]
+    public function filesystemFacade(Container $container): FilesystemFacadeInterface
+    {
+        return $container->getLocator()->getRequired(FilesystemFacade::class);
+    }
+}
+```
+
+```php [Symfony command]
+#[ServiceMap(method: 'getFacade', className: RunFacade::class)]
+#[ServiceMap(method: 'getFactory', className: RunFactory::class)]
+final class CompileCommand extends Command
+{
+    use ServiceResolverAwareTrait;
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->getFacade()->loadPhelNamespaces();
+
+        $ok = $this->getFactory()
+            ->createCompileExecutor()
+            ->execute($source, $writeOutput, $writeError);
+
+        return $ok ? self::SUCCESS : self::FAILURE;
+    }
+}
+```
+
+```php [Health check]
+final readonly class BuildHealthCheck implements ModuleHealthCheckInterface
+{
+    public function checkHealth(): HealthStatus
+    {
+        if (is_dir($this->cacheDir) && !is_writable($this->cacheDir)) {
+            return HealthStatus::unhealthy(
+                sprintf('Cache dir not writable: %s', $this->cacheDir),
+                ['path' => $this->cacheDir],
+            );
+        }
+
+        return HealthStatus::healthy('Build directories are ready');
+    }
+}
+```
+
+:::
+
+**Sources:** [bootstrap](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Phel.php), [RunFacade](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFacade.php), [RunProvider](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunProvider.php), [CompileCommand](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/Infrastructure/Command/CompileCommand.php), and [BuildHealthCheck](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Build/Application/BuildHealthCheck.php).
+
+## What to copy into your project
+
+The useful pattern is the direction of dependencies, not Phel's exact filenames:
+
+```text
+entry point → Facade → Factory → application/domain service
+                         ↓
+                     Provider → another module's Facade interface
+```
+
+Start a new module with the [Quickstart](/docs/quickstart), then use [Getting dependencies](/docs/getting-dependencies) when it needs to communicate with another boundary.
+
+## Explore Phel
+
+- [Phel website](https://phel-lang.org/)
+- [Source repository](https://github.com/phel-lang/phel-lang)
+- [Phel on Packagist](https://packagist.org/packages/phel-lang/phel-lang)

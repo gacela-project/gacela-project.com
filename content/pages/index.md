@@ -6,7 +6,19 @@ layout: home
 
 ::: code-group
 
-```php [src/Module/Facade.php]
+```php [example.php]
+use Gacela\Framework\Gacela;
+use Module\Facade;
+
+require __DIR__ . '/vendor/autoload.php';
+
+Gacela::bootstrap(__DIR__);
+
+$facade = new Facade();
+echo $facade->greet('Alice'); # Hi, Alice!
+```
+
+```php [Facade.php]
 namespace Module;
 
 use Gacela\Framework\AbstractFacade;
@@ -25,7 +37,7 @@ final class Facade extends AbstractFacade
 }
 ```
 
-```php [src/Module/Factory.php]
+```php [Factory.php]
 namespace Module;
 
 use Gacela\Framework\AbstractFactory;
@@ -40,7 +52,7 @@ final class Factory extends AbstractFactory
 }
 ```
 
-```php [src/Module/Service/Greeter.php]
+```php [Greeter.php]
 namespace Module\Service;
 
 final class Greeter
@@ -50,19 +62,6 @@ final class Greeter
         return "Hi, $name!";
     }
 }
-```
-
-```php [example.php]
-use Gacela\Framework\Gacela;
-use Module\Facade;
-
-require __DIR__ . '/vendor/autoload.php';
-
-# Gacela must be bootstrapped on the entry point of your application
-Gacela::bootstrap(__DIR__);
-
-$facade = new Facade();
-echo $facade->greet('Alice'); # Hi, Alice!
 ```
 
 :::
