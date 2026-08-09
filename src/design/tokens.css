@@ -5,9 +5,10 @@
  * Everything else references these custom properties.
  *
  * Direction: a drafting table. Gacela's subject is structure you can inspect,
- * so the palette is the logo's own navy ink on cool paper, marked in the
- * project's blue. The accent is rare on purpose: when it appears, it means
- * "this is the thing".
+ * so the palette is the mark's own blue, #123456, at every lightness the site
+ * needs: ink and paper from its desaturated end, signal from its saturated
+ * one. The accent is rare on purpose: when it appears, it means "this is the
+ * thing".
  *
  * Colour is authored in OKLCH so the two ramps are perceptually even, and the
  * themes are expressed with light-dark(). That means the system preference is
@@ -22,37 +23,48 @@
     /* ---------------------------------------------------------------------
      * Palette primitives. Never referenced outside this file.
      *
-     * Navy hue 251 carries the brand ink, and blue hue 267 carries the accent.
-     * They are neighbours, so the accent separates itself by chroma rather than
-     * by hue: the ink sits near 0.03 and the accent near 0.16. Anything that
-     * blurs that gap weakens every piece of signal on the site.
+     * One hue: 251, the mark's own. #123456 is the blue the gazelle is drawn
+     * in, and it measures oklch(0.3192 0.0725 251), so the whole palette is
+     * that colour at other lightnesses rather than a family assembled around
+     * it. --navy-700 is the brand value itself, to the last decimal.
+     *
+     * Ink and accent share the hue and separate by chroma: the ink ramp stays
+     * under 0.045 so text reads as ink, the accent runs 0.11 to 0.15 so it
+     * reads as signal. That gap is the only thing making an active sidebar
+     * item look active, and anything that narrows it weakens every piece of
+     * signal on the site.
+     *
+     * Chroma on the accent sits at 92% of what hue 251 can hold at each
+     * lightness, which is why the numbers are not round: the ceiling varies
+     * from 0.09 at the dark end to 0.19 in the middle, and the last 8% is
+     * left as headroom against displays that clip.
      * ------------------------------------------------------------------ */
 
-    --navy-950: oklch(0.1700 0.028 250);
-    --navy-900: oklch(0.2000 0.030 250);
-    --navy-850: oklch(0.2400 0.032 250);
+    --navy-950: oklch(0.1700 0.028 251);
+    --navy-900: oklch(0.2000 0.030 251);
+    --navy-850: oklch(0.2400 0.032 251);
     --navy-800: oklch(0.2800 0.045 251);
-    --navy-700: oklch(0.3200 0.032 250);
-    --navy-600: oklch(0.3800 0.032 250);
+    /* #123456 exactly. */
+    --navy-700: oklch(0.3192 0.0725 251);
+    --navy-600: oklch(0.3800 0.032 251);
     --navy-500: oklch(0.4200 0.035 251);
     --navy-400: oklch(0.5400 0.028 251);
-    --navy-300: oklch(0.6600 0.022 250);
-    --navy-200: oklch(0.8000 0.020 250);
+    --navy-300: oklch(0.6600 0.022 251);
+    --navy-200: oklch(0.8000 0.020 251);
     --navy-150: oklch(0.8800 0.010 251);
     --navy-100: oklch(0.9200 0.008 251);
     --navy-50: oklch(0.9650 0.005 251);
-    --navy-25: oklch(0.9812 0.0034 248);
+    --navy-25: oklch(0.9812 0.0034 251);
     --white: oklch(1 0 0);
 
-    /* The project's own blue. --blue-600 resolves to #3351b2 and --blue-400 to
-       #a7b1ff, which are the two brand values gacela-project.com has always
-       used, expressed in OKLCH so they sit on the same ramp as everything else. */
-    --blue-700: oklch(0.4000 0.150 267);
-    --blue-600: oklch(0.4699 0.158 267);
-    --blue-500: oklch(0.5751 0.144 269);
-    --blue-400: oklch(0.7829 0.112 278);
-    --blue-300: oklch(0.8700 0.080 278);
-    --blue-100: oklch(0.9450 0.030 272);
+    /* The same blue, saturated, for everything that has to be noticed.
+       --blue-600 resolves to #125d9e and --blue-400 to #85bdfa. */
+    --blue-700: oklch(0.4000 0.1081 251);
+    --blue-600: oklch(0.4700 0.1265 251);
+    --blue-500: oklch(0.5751 0.1544 251);
+    --blue-400: oklch(0.7829 0.1050 251);
+    --blue-300: oklch(0.8700 0.0608 251);
+    --blue-100: oklch(0.9450 0.0250 251);
 
     --verdigris-600: oklch(0.5100 0.070 189);
     --verdigris-400: oklch(0.7400 0.075 185);
@@ -83,7 +95,7 @@
     --surface-raised: light-dark(var(--white), var(--navy-800));
     --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
 
-    --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
+    --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
     --text: light-dark(var(--navy-500), var(--navy-200));
     --text-muted: light-dark(var(--navy-400), var(--navy-300));
 
@@ -94,7 +106,10 @@
     --accent: light-dark(var(--blue-600), var(--blue-400));
     --accent-hover: light-dark(var(--blue-700), var(--blue-300));
     --accent-contrast: light-dark(var(--white), var(--navy-950));
-    --accent-wash: light-dark(var(--blue-100), oklch(0.7829 0.112 278 / 0.15));
+    --accent-wash: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 15%, transparent)
+    );
     --accent-line: light-dark(var(--blue-500), var(--blue-400));
 
     --info: light-dark(var(--verdigris-600), var(--verdigris-400));
@@ -132,8 +147,11 @@
     --shadow-md: 0 1px 2px var(--shadow-tint-near), 0 4px 14px var(--shadow-tint-far);
     --shadow-lg: 0 2px 4px var(--shadow-tint-near), 0 14px 40px var(--shadow-tint-far);
 
-    --selection-bg: light-dark(var(--blue-100), oklch(0.7829 0.112 278 / 0.30));
-    --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 250));
+    --selection-bg: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 30%, transparent)
+    );
+    --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
 
     --code-bg: light-dark(var(--navy-50), var(--navy-950));
     --code-border: light-dark(var(--navy-100), var(--navy-700));
@@ -156,7 +174,7 @@
      * of them can be mistaken for a link or an active item.
      * ------------------------------------------------------------------ */
 
-    --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 250));
+    --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 251));
     --syn-token-keyword: light-dark(var(--navy-500), var(--navy-200));
     --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
     --syn-token-string-expression: var(--syn-token-string);

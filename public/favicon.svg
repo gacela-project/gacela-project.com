@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 480">
     <style>
         /* Chrome and Safari draw this on the tab strip, which is dark in a
-           dark browser theme. Navy on dark is the same disappearing act the
-           outline mark used to do, so the silhouette lightens to the brand
-           blue there. */
+           dark browser theme. #123456 on dark is the same disappearing act the
+           outline mark used to do, so the silhouette lightens to the same blue
+           the site uses as its dark-theme accent, --blue-400. */
         @media (prefers-color-scheme: dark) {
-            g { fill: #a7b1ff; stroke: #a7b1ff; }
+            g { fill: #85bdfa; stroke: #85bdfa; }
         }
     </style>
     <g fill="#123456" stroke="#123456" stroke-width="6" stroke-linejoin="round">
