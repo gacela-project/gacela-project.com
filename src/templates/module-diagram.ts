@@ -47,7 +47,10 @@ export const VIEW_BOX = { x: 0, y: 56, width: 780, height: 344 } as const
  */
 const DOT_INSET = 14
 const DOT_RADIUS = 4.5
-const DOT_COLUMN = 22
+/* Half of what the label gives up here lands between it and the dot, so the
+   column is what sets the space between the two. Kept close enough that they
+   read as one mark and one word rather than as two things sharing a box. */
+const DOT_COLUMN = 12
 
 /** Where each class sits. Read by the drawing and by the label over it. */
 export const CLASS_BOXES = {
