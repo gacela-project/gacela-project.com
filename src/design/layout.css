@@ -15,15 +15,12 @@
     max-width: var(--width-wide);
   }
 
-  /* A standalone page has no sidebar and no table of contents, so holding its
-     whole column to the reading measure spent the rest of the screen on
-     nothing: the code samples on /used-in and the people on /team were as
-     narrow as a paragraph. Every child takes this width, text included.
-
-     What that costs, measured rather than assumed: a paragraph here runs 104
-     to 116 characters at 1440, against 77 to 84 in the documentation column.
-     Both are past the 45-to-75 band, and this one is well past it. Narrowing
-     --measure-code pulls every block in together and is the knob for it.
+  /* Wide enough for the blocks that are not sentences. A standalone page has
+     no sidebar and no table of contents, so holding its whole column to the
+     reading measure spent the rest of the screen on nothing: the code samples
+     on /used-in and the people on /team were as narrow as a paragraph. What
+     takes this width and what stays at the reading measure is decided in
+     prose.css, on one left edge.
 
      The padding is --space-5 because that is what .container applies; adding
      --space-6 here instead left the inner box 16px wider than the measure and
@@ -105,6 +102,18 @@
     gap: var(--space-7);
     padding-block: var(--space-6) var(--space-9);
     min-width: 0;
+  }
+
+  /* The furniture takes the same measure as the body it frames. The breadcrumb,
+     the edit links and the prev/next cards were sized by the column instead, so
+     at 1440 they ran to 1114 while every paragraph, callout and code block
+     stopped at 1008: two right edges on a page whose whole claim is one
+     column, and the wider one belonged to the least important elements.
+
+     Below 960 the article is fluid and the same rule keeps the furniture from
+     stretching 261px past the text it sits with. */
+  .docs__article > * {
+    max-width: var(--measure-prose);
   }
 
   .docs__toc {
