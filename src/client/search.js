@@ -1,7 +1,7 @@
 /**
  * Search. The <dialog> gives us focus trapping, Escape and the backdrop, and results
- * are links, so what is left here is scoring, excerpts and arrow keys. The index is
- * fetched when the dialog first opens, never on page load.
+ * are links, so what is left here is scoring, excerpts, arrow keys and dismissing on
+ * a backdrop click. The index is fetched when the dialog first opens, never on page load.
  */
 
 const INDEX_URL = '/search-index.json'
@@ -151,8 +151,19 @@ function init() {
   part('close')?.addEventListener('click', () => dialog.close())
   input.addEventListener('input', update)
 
-  /* Escape and the backdrop are the dialog's own doing. Enter inside a form is not. */
+  /* Escape is the dialog's own doing. Enter inside a form is not. */
   dialog.addEventListener('submit', (event) => event.preventDefault())
+
+  /* The backdrop is not: a click on it targets the dialog element, which nothing
+     else can do since the dialog has no padding of its own. Both ends of the click
+     must land there, or selecting text in the input and releasing outside closes it. */
+  let fromBackdrop = false
+  dialog.addEventListener('mousedown', (event) => {
+    fromBackdrop = event.target === dialog
+  })
+  dialog.addEventListener('click', (event) => {
+    if (fromBackdrop && event.target === dialog) dialog.close()
+  })
 
   document.addEventListener('keydown', (event) => {
     if (event.defaultPrevented) return
