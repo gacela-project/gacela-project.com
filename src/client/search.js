@@ -103,6 +103,11 @@ function init() {
   /* A search box that cannot search must not look like one. */
   document.documentElement.dataset.js = ''
 
+  /* The trigger is rendered with the Apple shortcut, since the platform is only
+     knowable here. Both modifiers open the dialog either way; this is the label. */
+  const hint = document.querySelector('[data-search-hint]')
+  if (hint && !/mac|iphone|ipad|ipod/i.test(navigator.userAgent)) hint.textContent = 'Ctrl K'
+
   /* Held as a promise, so opening twice mid-flight does not fetch twice. */
   const load = () =>
     (pending ??= fetch(INDEX_URL)

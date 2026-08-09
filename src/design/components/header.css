@@ -54,7 +54,6 @@
     display: flex;
     align-items: center;
     gap: var(--space-1);
-    margin-inline-start: var(--space-3);
   }
 
   .header__link {
@@ -80,6 +79,9 @@
     color: var(--accent);
   }
 
+  /* Splits the bar in two: the brand and its search box on one side, the
+     navigation and its controls on the other. An element rather than an auto
+     margin on the nav, which stops being a divider the moment the nav hides. */
   .header__spacer {
     margin-inline-start: auto;
   }
@@ -90,28 +92,8 @@
     gap: var(--space-1);
   }
 
-  .header__version {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-1) var(--space-3);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-pill);
-    background: var(--surface-sunken);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    text-decoration: none;
-  }
-
-  .header__version:hover {
-    color: var(--accent);
-    border-color: var(--accent-line);
-  }
-
   @media (max-width: 899px) {
-    .header__nav,
-    .header__version {
+    .header__nav {
       display: none;
     }
   }

@@ -145,7 +145,7 @@ function mobileNav(context: ShellContext): Raw {
 }
 
 function siteHeader(context: ShellContext): Raw {
-  const { site, version, route } = context
+  const { site, route } = context
 
   return html`<header class="header">
     <div class="header__inner">
@@ -153,6 +153,10 @@ function siteHeader(context: ShellContext): Raw {
         ${gacelaMark({ className: 'header__mark' })}
         <span class="header__wordmark">${site.title}</span>
       </a>
+
+      ${searchTrigger()}
+
+      <div class="header__spacer"></div>
 
       <nav class="header__nav" aria-label="Main">
         ${site.headerLinks.map(
@@ -165,16 +169,7 @@ function siteHeader(context: ShellContext): Raw {
         )}
       </nav>
 
-      <div class="header__spacer"></div>
-
       <div class="header__actions">
-        ${searchTrigger()}
-        <a
-          class="header__version"
-          href="${site.repository}/releases/tag/${version}"
-          rel="noreferrer"
-          >v${version}</a
-        >
         ${themeToggle()}
         <a class="icon-button" href="${site.repository}" rel="noreferrer" aria-label="Gacela on GitHub"
           >${icons.github}</a
@@ -195,7 +190,7 @@ function searchTrigger(): Raw {
   >
     ${icons.search}
     <span class="search-trigger__label">Search docs</span>
-    <kbd class="search-trigger__hint">/</kbd>
+    <kbd class="search-trigger__hint" data-search-hint>&#8984;K</kbd>
   </button>`
 }
 
