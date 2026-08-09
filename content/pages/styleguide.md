@@ -120,6 +120,27 @@ Written as `::: warning`. Used where a reader can lose work or time.
 Written as `::: danger`. Used where a reader can break production.
 :::
 
+## Card grid
+
+Routes into a section, for a reader who has arrived without a destination. Cards take a
+column each while they fit and fall to one when they do not, so the same markup works in
+the documentation column and on a full-width page.
+
+<div class="card-grid">
+  <a class="card-grid__card" href="/styleguide">
+    <strong>A card</strong>
+    <span>A heading and one sentence. Anything longer belongs in an index list.</span>
+  </a>
+  <a class="card-grid__card" href="/styleguide">
+    <strong>A second card</strong>
+    <span>Hover and focus both move the border to the accent; only hover lifts it.</span>
+  </a>
+  <a class="card-grid__card" href="/styleguide">
+    <strong>A card with a longer heading that wraps onto two lines</strong>
+    <span>Cards in a row match the tallest, so an uneven set stays aligned.</span>
+  </a>
+</div>
+
 ## Code
 
 A framed block with a mono caption bar rather than a filled slab, so a page of
