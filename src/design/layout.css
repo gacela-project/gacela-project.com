@@ -127,6 +127,9 @@
     padding-block: var(--section-gap);
   }
 
+  /* The hero is not a .section, so the first of these boundaries needs saying
+     separately. Every section is divided from the one above it. */
+  .hero + .section,
   .section + .section {
     border-block-start: 1px solid var(--border-subtle);
   }
