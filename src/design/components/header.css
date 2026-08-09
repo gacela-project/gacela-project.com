@@ -67,14 +67,11 @@
     /* The bar is a fixed height, so a label that wraps breaks its alignment
        rather than growing it. Multi-word labels stay on one line. */
     white-space: nowrap;
-    transition:
-      color var(--duration-fast) var(--ease-out),
-      background-color var(--duration-fast) var(--ease-out);
+    transition: color var(--duration-fast) var(--ease-out);
   }
 
   .header__link:hover {
-    color: var(--text-strong);
-    background: var(--surface-sunken);
+    color: var(--accent);
   }
 
   .header__link[aria-current='page'],
@@ -112,8 +109,7 @@
   }
 
   .header__menu[open] .header__menu-summary {
-    color: var(--text-strong);
-    background: var(--surface-sunken);
+    color: var(--accent);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -141,6 +137,17 @@
     border-radius: var(--radius-lg);
     background: var(--surface-raised);
     box-shadow: var(--shadow-lg);
+  }
+
+  /* The panel hangs a little below the summary, and that gap belongs to
+     neither of them. Without something spanning it, a pointer travelling from
+     one to the other leaves the menu and closes it halfway. */
+  .header__menu-panel::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: var(--space-3);
   }
 
   .header__menu-title {
