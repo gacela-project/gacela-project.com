@@ -51,13 +51,25 @@ export function codePlugin(md: MarkdownIt, highlighter: Highlighter): void {
   }
 }
 
-function renderCodeBlock(token: Token, highlighter: Highlighter): string {
+/**
+ * A block, with a caption bar only when there is something to put in it.
+ *
+ * A bar reading nothing but the language over every block on the page is noise,
+ * and inside a group the tab has already named the file. Both cases leave the
+ * bar out rather than hiding it: a hidden bar still answers :has(), and the
+ * copy button sits below the bar by asking whether there is one, so a bar that
+ * is present but invisible pushes the button down the face of the code.
+ */
+function renderCodeBlock(token: Token, highlighter: Highlighter, captioned = true): string {
   const { language, caption } = parseFenceInfo(token.info)
-  const highlighted = highlighter.highlight(token.content, language)
+
+  /* A fence keeps the newline that ended it, which the highlighter reads as one
+     more line and draws as a blank one under the code. */
+  const highlighted = highlighter.highlight(token.content.replace(/\n+$/, ''), language)
 
   const heading =
-    caption === undefined
-      ? `<div class="code-block__caption"><span class="code-block__lang">${escapeHtml(language)}</span></div>`
+    caption === undefined || !captioned
+      ? ''
       : `<div class="code-block__caption"><span>${escapeHtml(caption)}</span>` +
         `<span class="code-block__lang">${escapeHtml(language)}</span></div>`
 
@@ -92,7 +104,10 @@ function renderCodeGroup(fences: readonly Token[], highlighter: Highlighter, id:
     .join('')
 
   const panels = fences
-    .map((fence) => `<div class="code-group__panel">${renderCodeBlock(fence, highlighter)}</div>`)
+    .map(
+      (fence) =>
+        `<div class="code-group__panel">${renderCodeBlock(fence, highlighter, false)}</div>`,
+    )
     .join('')
 
   return (

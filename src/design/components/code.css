@@ -29,12 +29,9 @@
     letter-spacing: var(--tracking-normal);
   }
 
-  /* Shown beside a filename, never on its own: a label that reads "PHP" above
-     every block on the page is noise, not information. */
-  .code-block__caption:not(:has(> span:not(.code-block__lang))) {
-    display: none;
-  }
-
+  /* Shown beside a filename, never on its own: a label reading "PHP" above every
+     block on the page is noise, not information. The renderer leaves the bar out
+     in that case, so there is nothing to hide here. */
   .code-block__lang {
     margin-inline-start: auto;
     text-transform: uppercase;
@@ -176,10 +173,6 @@
     margin: 0;
     border: none;
     border-radius: 0;
-  }
-
-  .code-group__panel .code-block__caption {
-    display: none;
   }
 
   .code-group > input:nth-of-type(1):checked ~ .code-group__tabs > :nth-child(1),

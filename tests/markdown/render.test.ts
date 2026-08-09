@@ -58,11 +58,27 @@ describe('code', () => {
     expect(html).toContain('class="syn-keyword"')
   })
 
-  it('shows the language of an unlabelled block', () => {
+  /* A caption bar carrying nothing but "BASH" over every block is noise, so an
+     unlabelled block has no bar. It is left out rather than hidden: a hidden
+     one still answers :has(), and the copy button is placed by asking whether
+     there is a bar to clear. */
+  it('leaves an unlabelled block without a caption bar', () => {
     const { html } = render('```bash\ncomposer require gacela-project/gacela\n```')
 
-    expect(html).toContain('class="code-block__lang"')
-    expect(html).toContain('bash')
+    expect(html).not.toContain('class="code-block__caption"')
+  })
+
+  it('ends a block on its last line of code, not on a blank one', () => {
+    const { html } = render('```bash\nls\n```')
+
+    expect(html).not.toContain('<span class="line"></span>')
+    expect(html.match(/class="line"/g)).toHaveLength(1)
+  })
+
+  it('keeps the lines a block really has', () => {
+    const { html } = render('```bash\nls\ncd /tmp\n```')
+
+    expect(html.match(/class="line"/g)).toHaveLength(2)
   })
 
   it('uses a bracketed filename as the caption', () => {
@@ -137,6 +153,16 @@ describe('containers', () => {
     expect(html).toContain('Factory.php')
     expect(html.match(/type="radio"/g)).toHaveLength(2)
     expect(html).toContain('checked')
+  })
+
+  /* The tab already names the file, so a caption inside the panel would say it
+     twice. Left out rather than hidden, for the same reason as an unlabelled
+     block: the copy button is placed by asking whether a bar is there. */
+  it('does not repeat the filename inside the panel', () => {
+    const { html } = render('::: code-group\n```php [Facade.php]\n<?php\n```\n:::')
+
+    expect(html).not.toContain('class="code-block__caption"')
+    expect(html).toContain('Facade.php')
   })
 
   it('gives each code group on a page a distinct radio group name', () => {
