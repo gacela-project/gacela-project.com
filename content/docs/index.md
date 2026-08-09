@@ -5,10 +5,13 @@ description: Choose the shortest path from installation to a production-ready Ga
 
 # Gacela documentation
 
-Build modular PHP applications with a small, predictable vocabulary: a **Facade** exposes a module, a **Factory** creates its internal services, a **Provider** supplies external dependencies, and a **Config** reads application settings.
+Build modular PHP applications with a small, predictable vocabulary: a **Facade** exposes a module, a **Factory**
+creates its internal services, a **Provider** supplies external dependencies, and a **Config** reads application
+settings.
 
 ::: tip New to Gacela?
-Start with the [Quickstart](/docs/quickstart). It takes you from installation to a working module, then points to the next concept only when you need it.
+Start with the [Quickstart](/docs/quickstart). It takes you from installation to a working module, then points to the
+next concept only when you need it.
 :::
 
 ## Choose your path
@@ -37,25 +40,30 @@ Start with the [Quickstart](/docs/quickstart). It takes you from installation to
 Follow this sequence once; use search and the task index after that:
 
 1. **Get a working result:** complete the [Quickstart](/docs/quickstart) and run `example.php`.
-2. **Understand the boundary:** read [Facade](/docs/facade) and [Factory](/docs/factory) while following the call inward.
-3. **Add real dependencies:** use the [dependency decision guide](/docs/getting-dependencies), then add Provider or Config only when required.
-4. **Make it production-ready:** add [tests](/docs/testing), [static analysis](/docs/static-analysis), and [health checks](/docs/health-checks).
+2. **Understand the boundary:** read [Facade](/docs/facade) and [Factory](/docs/factory) while following the call
+   inward.
+3. **Add real dependencies:** use the [dependency decision guide](/docs/getting-dependencies), then add Provider or
+   Config only when required.
+4. **Make it production-ready:** add [tests](/docs/testing), [static analysis](/docs/static-analysis),
+   and [health checks](/docs/health-checks).
 5. **Inspect a real system:** compare the result with the [Phel production case study](/used-in).
 
 ::: tip Find an answer quickly
-Press <kbd>⌘ K</kbd> on macOS or <kbd>Ctrl K</kbd> on Windows/Linux to search every page. For wiring questions, start with [Getting dependencies](/docs/getting-dependencies) instead of browsing individual APIs.
+Press <kbd>⌘ K</kbd> on macOS or <kbd>Ctrl K</kbd> on Windows/Linux to search every page.
+For wiring questions, start with [Getting dependencies](/docs/getting-dependencies) instead of browsing individual APIs.
 :::
 
 ## The module boundary
 
-| Class | Responsibility | Called by |
-|---|---|---|
-| [Facade](/docs/facade) | The module's public API | Other modules and entry points |
-| [Factory](/docs/factory) | Internal object construction | The module's Facade and services |
-| [Provider](/docs/provider) | Cross-module and infrastructure dependencies | The module's Factory |
-| [Config](/docs/config) | Typed application settings | The module's Factory |
+| Class                      | Responsibility                               | Called by                        |
+|----------------------------|----------------------------------------------|----------------------------------|
+| [Facade](/docs/facade)     | The module's public API                      | Other modules and entry points   |
+| [Factory](/docs/factory)   | Internal object construction                 | The module's Facade and services |
+| [Provider](/docs/provider) | Cross-module and infrastructure dependencies | The module's Factory             |
+| [Config](/docs/config)     | Typed application settings                   | The module's Factory             |
 
-You do not need all four classes in every module. Start with a Facade and Factory; add a Provider when the module crosses a boundary, and a Config when it needs application settings.
+You do not need all four classes in every module. Start with a Facade and Factory; add a Provider when the module
+crosses a boundary, and a Config when it needs application settings.
 
 ## Design outside-in
 
@@ -66,7 +74,8 @@ Gacela works best when you follow the request from the caller into the module:
 3. Let the Factory construct the service that fulfills it.
 4. Add a Provider or Config only when that service needs something outside the module.
 
-This keeps the public API driven by real use cases instead of exposing internal classes speculatively. The [Quickstart](/docs/quickstart) demonstrates the complete flow.
+This keeps the public API driven by real use cases instead of exposing internal classes speculatively.
+The [Quickstart](/docs/quickstart) demonstrates the complete flow.
 
 ## Common tasks
 
@@ -86,4 +95,5 @@ Machine-readable entry points are available:
 - [`/llms-full.txt`](/llms-full.txt) — the complete documentation in one context file
 - Append `.md` to a page URL — for example, [`/docs/bootstrap.md`](/docs/bootstrap.md)
 
-When prompting an agent, give it `https://gacela-project.com/llms.txt` for discovery or `https://gacela-project.com/llms-full.txt` when the entire documentation fits the task's context budget.
+When prompting an agent, give it `https://gacela-project.com/llms.txt` for discovery or
+`https://gacela-project.com/llms-full.txt` when the entire documentation fits the task's context budget.

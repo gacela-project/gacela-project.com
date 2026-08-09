@@ -5,7 +5,8 @@ description: Choose the right mechanism for internal collaborators, cross-module
 
 # Getting dependencies
 
-Choose wiring only after the caller and service reveal a dependency. Start with the relationship: **who needs what, and who owns it?** Gacela has several resolution tools because those relationships need different boundaries.
+Choose wiring only after the caller and service reveal a dependency. Start with the relationship: **who needs what, and
+who owns it?** Gacela has several resolution tools because those relationships need different boundaries.
 
 Ask these questions in order:
 
@@ -16,17 +17,18 @@ Ask these questions in order:
 
 Then use this table as the concise decision guide.
 
-| Intent | Recommended path |
-|---|---|
-| Reach another module | From an entry point, `ServiceResolverAwareTrait` + `#[ServiceMap]`; from a Factory, expose the other module's Facade through the Provider |
-| Build a collaborator inside the same module | A `create*()` Factory method, or `AbstractFactory::make()` for pure autowiring |
-| Obtain infrastructure | `#[Provides]` in the Provider, or app-wide `addBinding()` for an interface |
-| Collect several implementations | `tag()` for an unkeyed iterable; `addHandlerRegistry()` for keyed lookup |
-| Read application configuration | Typed getters on the module Config |
+| Intent                                      | Recommended path                                                                                                                          |
+|---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| Reach another module                        | From an entry point, `ServiceResolverAwareTrait` + `#[ServiceMap]`; from a Factory, expose the other module's Facade through the Provider |
+| Build a collaborator inside the same module | A `create*()` Factory method, or `AbstractFactory::make()` for pure autowiring                                                            |
+| Obtain infrastructure                       | `#[Provides]` in the Provider, or app-wide `addBinding()` for an interface                                                                |
+| Collect several implementations             | `tag()` for an unkeyed iterable; `addHandlerRegistry()` for keyed lookup                                                                  |
+| Read application configuration              | Typed getters on the module Config                                                                                                        |
 
 ## Reach another module
 
-An entry-point class such as a controller or command declares the target Facade with `#[ServiceMap]` and supplies the magic accessor with `ServiceResolverAwareTrait`:
+An entry-point class such as a controller or command declares the target Facade with `#[ServiceMap]` and supplies the
+magic accessor with `ServiceResolverAwareTrait`:
 
 ```php
 use Gacela\Framework\ServiceResolver\ServiceMap;
@@ -89,7 +91,8 @@ public function createInvoiceSender(): InvoiceSender
 }
 ```
 
-`make()` honors bindings, contextual bindings, `#[Inject]`, `#[Singleton]`, `#[Factory]`, and `#[Lazy]`. Runtime overrides can be passed by constructor parameter name: `$this->make(Service::class, ['currency' => 'EUR'])`.
+`make()` honors bindings, contextual bindings, `#[Inject]`, `#[Singleton]`, `#[Factory]`, and `#[Lazy]`. Runtime
+overrides can be passed by constructor parameter name: `$this->make(Service::class, ['currency' => 'EUR'])`.
 
 ## Obtain infrastructure
 
@@ -129,7 +132,8 @@ $config->tag(
 );
 ```
 
-Resolve the group in a Provider with `$container->tagged('validators')`. An app-wide tag reaches every module scope; a tag added from one module's Provider stays local to that module.
+Resolve the group in a Provider with `$container->tagged('validators')`. An app-wide tag reaches every module scope; a
+tag added from one module's Provider stays local to that module.
 
 Use `addHandlerRegistry()` when the consumer selects one handler by key:
 
@@ -140,7 +144,8 @@ $config->addHandlerRegistry(HandlerRegistry::class, [
 ]);
 ```
 
-A registry answers “which handler matches this key?” and throws on a miss. A tag answers “give me all implementations” and has no key.
+A registry answers “which handler matches this key?” and throws on a miss. A tag answers “give me all implementations”
+and has no key.
 
 ## Read configuration
 
@@ -162,17 +167,17 @@ Available protected getters are `getString()`, `getInt()`, `getFloat()`, `getBoo
 
 These APIs remain supported; use them when their more specific behavior is what you need:
 
-| Tool | Use it when |
-|---|---|
-| `addBindingIf()` | A plugin supplies a default the application may override |
-| `addFactory()` | Every resolution needs a new instance |
-| `addProtected()` | The value itself is a closure and must not be invoked |
-| `addAlias()` | One service needs another identifier |
-| `addLazy()` / `#[Lazy]` | Construction is expensive and the service may remain unused |
-| `extendService()` | Resolution must return a decorated or replaced service |
-| `afterResolving()` | A resolved object needs an idempotent setter or similar hook |
-| `when()->needs()->give()` | One consumer needs a contextual implementation or scalar |
-| `loadDefinitions()` | Wiring is generated, shared, or environment-specific |
-| `addExternalService()` | Bootstrap must hand a framework-owned object to Gacela |
+| Tool                      | Use it when                                                  |
+|---------------------------|--------------------------------------------------------------|
+| `addBindingIf()`          | A plugin supplies a default the application may override     |
+| `addFactory()`            | Every resolution needs a new instance                        |
+| `addProtected()`          | The value itself is a closure and must not be invoked        |
+| `addAlias()`              | One service needs another identifier                         |
+| `addLazy()` / `#[Lazy]`   | Construction is expensive and the service may remain unused  |
+| `extendService()`         | Resolution must return a decorated or replaced service       |
+| `afterResolving()`        | A resolved object needs an idempotent setter or similar hook |
+| `when()->needs()->give()` | One consumer needs a contextual implementation or scalar     |
+| `loadDefinitions()`       | Wiring is generated, shared, or environment-specific         |
+| `addExternalService()`    | Bootstrap must hand a framework-owned object to Gacela       |
 
 See [Bindings](/docs/bindings), [Provider](/docs/provider), and [Service Map](/docs/service-map) for the complete APIs.

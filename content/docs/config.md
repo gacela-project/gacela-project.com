@@ -5,15 +5,18 @@ description: Read typed application configuration inside a module without coupli
 
 # Config
 
-Config turns application key-values into typed module settings. The [Factory](/docs/factory) uses those settings while constructing services, keeping file and environment access out of domain code.
+Config turns application key-values into typed module settings. The [Factory](/docs/factory) uses those settings while
+constructing services, keeping file and environment access out of domain code.
 
 ::: info
-The examples below use PHP config files by default (`config/*.php`). See [Bootstrap > Application Config](/docs/bootstrap#application-config) for other formats and custom readers.
+The examples below use PHP config files by default (`config/*.php`).
+See [Bootstrap > Application Config](/docs/bootstrap#application-config) for other formats and custom readers.
 :::
 
 ## The config file
 
 Define the application values:
+
 ```php
 <?php # config/default.php
 
@@ -25,6 +28,7 @@ return [
 ## Expose typed module settings
 
 Wrap raw keys in methods named for their meaning inside the module:
+
 ```php
 <?php # src/Comment/CommentConfig.php
 
@@ -46,13 +50,13 @@ final class CommentConfig extends AbstractConfig
 
 `AbstractConfig` provides typed accessors with validation and static-analysis-friendly return types:
 
-| Method | Returns |
-| --- | --- |
+| Method                                            | Returns  |
+|---------------------------------------------------|----------|
 | `getString(string $key, ?string $default = null)` | `string` |
-| `getInt(string $key, ?int $default = null)` | `int` |
-| `getFloat(string $key, ?float $default = null)` | `float` |
-| `getBool(string $key, ?bool $default = null)` | `bool` |
-| `getArray(string $key, ?array $default = null)` | `array` |
+| `getInt(string $key, ?int $default = null)`       | `int`    |
+| `getFloat(string $key, ?float $default = null)`   | `float`  |
+| `getBool(string $key, ?bool $default = null)`     | `bool`   |
+| `getArray(string $key, ?array $default = null)`   | `array`  |
 
 ```php
 <?php # src/Comment/CommentConfig.php
@@ -74,16 +78,19 @@ final class CommentConfig extends AbstractConfig
 ```
 
 ::: info
-`$default` is `null` by default, which makes the key **required**: a missing key throws immediately instead of failing silently later on. Pass a non-null `$default` to make the key optional — it's returned whenever the key is absent.
+`$default` is `null` by default, which makes the key **required**: a missing key throws immediately instead of failing
+silently later on. Pass a non-null `$default` to make the key optional — it's returned whenever the key is absent.
 :::
 
 ::: tip Fail fast on the wrong type
-Unlike a cast, typed accessors throw when a value has the wrong type. `getFloat()` also accepts integers. The generic `get()` remains available for other value shapes.
+Unlike a cast, typed accessors throw when a value has the wrong type. `getFloat()` also accepts integers. The generic
+`get()` remains available for other value shapes.
 :::
 
 ## Use Config from the Factory
 
 The Factory passes typed settings into ordinary PHP services:
+
 ```php
 <?php # src/Comment/CommentFactory.php
 
@@ -132,6 +139,7 @@ final class CommentFacade extends AbstractFacade
 ## Config files for different environments
 
 Gacela loads a file suffixed with the current `APP_ENV` after the default source:
+
 ```php
 <?php
 Gacela::bootstrap($appRootDir, function (GacelaConfig $config): void {
@@ -156,9 +164,12 @@ return [
 ```
 
 The resolved value for `'AKISMET-KEY'` depends on the environment:
+
 - No `APP_ENV` set → `default-akismet-key`
 - `APP_ENV=prod` → `production-akismet-key` (overrides the default)
 
 ## Inspecting the merged config
 
-`Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every `config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/gacela-script#debug-config) command prints the same data as a table.
+`Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every
+`config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/gacela-script#debug-config)
+command prints the same data as a table.

@@ -5,10 +5,12 @@ description: Observe bootstrap, configuration, container, cache, and module life
 
 # Events
 
-Gacela dispatches **read-only lifecycle events** as it boots, resolves services, reads config and manages caches. Listen to them for tracing, profiling, debugging or metrics — without touching your module code.
+Gacela dispatches **read-only lifecycle events** as it boots, resolves services, reads config and manages caches. Listen
+to them for tracing, profiling, debugging or metrics — without touching your module code.
 
 ::: tip Zero-cost when nobody listens
-Event dispatch is free when nothing listens. Every dispatch site first checks `hasListeners()` and skips building the event entirely when there are no listeners.
+Event dispatch is free when nothing listens. Every dispatch site first checks `hasListeners()` and skips building the
+event entirely when there are no listeners.
 :::
 
 ## Registering listeners
@@ -56,7 +58,8 @@ return function (GacelaConfig $config) {
 };
 ```
 
-Every event implements `GacelaEventInterface`, which exposes `toString(): string` for logging. Concrete events add typed accessors — see the catalog below.
+Every event implements `GacelaEventInterface`, which exposes `toString(): string` for logging. Concrete events add typed
+accessors — see the catalog below.
 
 ## Lifecycle event catalog
 
@@ -64,40 +67,41 @@ The high-level events dispatched over a bootstrap, in the order you meet them.
 
 ### `Gacela\Framework\Event\Bootstrap`
 
-| Event | Dispatched when | Accessors |
-|---|---|---|
-| `GacelaBootstrapStartedEvent` | `Gacela::bootstrap()` begins | `appRootDir(): string` |
-| `GacelaBootstrapFinishedEvent` | bootstrap has finished | `durationMs(): float` |
+| Event                          | Dispatched when              | Accessors              |
+|--------------------------------|------------------------------|------------------------|
+| `GacelaBootstrapStartedEvent`  | `Gacela::bootstrap()` begins | `appRootDir(): string` |
+| `GacelaBootstrapFinishedEvent` | bootstrap has finished       | `durationMs(): float`  |
 
 ### `Gacela\Framework\Event\Config`
 
-| Event | Dispatched when | Accessors |
-|---|---|---|
+| Event                    | Dispatched when                       | Accessors         |
+|--------------------------|---------------------------------------|-------------------|
 | `ConfigInitializedEvent` | the merged configuration is assembled | `keyCount(): int` |
-| `ConfigKeyReadEvent` | a config key is read | `key(): string` |
-| `ConfigKeyNotFoundEvent` | a requested config key is missing | `key(): string` |
+| `ConfigKeyReadEvent`     | a config key is read                  | `key(): string`   |
+| `ConfigKeyNotFoundEvent` | a requested config key is missing     | `key(): string`   |
 
 ### `Gacela\Framework\Event\Container`
 
-| Event | Dispatched when | Accessors |
-|---|---|---|
+| Event                    | Dispatched when                                      | Accessors      |
+|--------------------------|------------------------------------------------------|----------------|
 | `BindingRegisteredEvent` | a binding, alias or contextual binding is registered | `id(): string` |
-| `ServiceResolvedEvent` | a service id is instantiated (once per id) | `id(): string` |
+| `ServiceResolvedEvent`   | a service id is instantiated (once per id)           | `id(): string` |
 
 ### `Gacela\Framework\Event\Provider`
 
-| Event | Dispatched when | Accessors |
-|---|---|---|
+| Event                     | Dispatched when                   | Accessors                                         |
+|---------------------------|-----------------------------------|---------------------------------------------------|
 | `ProviderRegisteredEvent` | a module's Provider is registered | `providerClass(): string`, `moduleName(): string` |
 
 ### `Gacela\Framework\Event\Cache`
 
-| Event | Dispatched when | Accessors |
-|---|---|---|
-| `CacheClearedEvent` | a cache file is removed (`cache:clear`) | `cacheFile(): string` |
-| `CacheWarmedEvent` | `cache:warm` finishes | `moduleCount(): int`, `failedCount(): int`, `skippedCount(): int` |
+| Event               | Dispatched when                         | Accessors                                                         |
+|---------------------|-----------------------------------------|-------------------------------------------------------------------|
+| `CacheClearedEvent` | a cache file is removed (`cache:clear`) | `cacheFile(): string`                                             |
+| `CacheWarmedEvent`  | `cache:warm` finishes                   | `moduleCount(): int`, `failedCount(): int`, `skippedCount(): int` |
 
-`failedCount()` counts pillar classes found but not resolved. `skippedCount()` counts pillars a module does not contain, which is a valid module shape. Alert on failures, not skips.
+`failedCount()` counts pillar classes found but not resolved. `skippedCount()` counts pillars a module does not contain,
+which is a valid module shape. Alert on failures, not skips.
 
 ## Recipes
 
@@ -150,9 +154,12 @@ return function (GacelaConfig $config) {
 
 ## Lower-level resolver & cache events
 
-Beyond the lifecycle events above, Gacela dispatches fine-grained events during class resolution and cache bookkeeping. Reach for these when tracing *why* a class resolved the way it did. The class-resolution events share the `AbstractGacelaClassResolverEvent` base, so a single `instanceof` catches them all.
+Beyond the lifecycle events above, Gacela dispatches fine-grained events during class resolution and cache bookkeeping.
+Reach for these when tracing *why* a class resolved the way it did. The class-resolution events share the
+`AbstractGacelaClassResolverEvent` base, so a single `instanceof` catches them all.
 
 #### `Gacela\Framework\Event\ClassResolver`
+
 - `AbstractGacelaClassResolverEvent` (base type)
 - `ResolvedClassCreatedEvent`
 - `ResolvedClassCachedEvent`
@@ -160,12 +167,14 @@ Beyond the lifecycle events above, Gacela dispatches fine-grained events during 
 - `ResolvedClassTriedFromParentEvent`
 
 #### `Gacela\Framework\Event\ClassResolver\ClassNameFinder`
+
 - `ClassNameValidCandidateFoundEvent`
 - `ClassNameInvalidCandidateFoundEvent`
 - `ClassNameCachedFoundEvent`
 - `ClassNameNotFoundEvent`
 
 #### `Gacela\Framework\Event\ClassResolver\Cache`
+
 - `ClassNameCacheCachedEvent`
 - `ClassNamePhpCacheCreatedEvent`
 - `ClassNameInMemoryCacheCreatedEvent`
@@ -174,6 +183,7 @@ Beyond the lifecycle events above, Gacela dispatches fine-grained events during 
 - `CustomServicesInMemoryCacheCreatedEvent`
 
 #### `Gacela\Framework\Event\ConfigReader`
+
 - `ReadPhpConfigEvent`
 
 ## Disabling events
@@ -188,7 +198,8 @@ return function (GacelaConfig $config) {
 };
 ```
 
-This setting wins over registrations: listeners remain configured but silently do not run. Check `disableEventListeners()` first when a production listener appears inactive.
+This setting wins over registrations: listeners remain configured but silently do not run. Check
+`disableEventListeners()` first when a production listener appears inactive.
 
 ## Custom dispatcher
 
@@ -207,6 +218,8 @@ interface EventDispatcherInterface
 
 ## See also
 
-- [Testing](/docs/testing) — `GacelaTestCase` records these events and turns them into assertions (`assertServiceResolved()`, `assertBindingRegistered()`).
-- [Module Customization](/docs/customization#lifecycle-listeners) — where listeners fit among the other `gacela.php` hooks.
+- [Testing](/docs/testing) — `GacelaTestCase` records these events and turns them into assertions
+  (`assertServiceResolved()`, `assertBindingRegistered()`).
+- [Module Customization](/docs/customization#lifecycle-listeners) — where listeners fit among the other `gacela.php`
+  hooks.
 - [Bootstrap](/docs/bootstrap) — the full `GacelaConfig` surface.

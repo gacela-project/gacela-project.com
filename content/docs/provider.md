@@ -5,7 +5,8 @@ description: Declare the cross-module and infrastructure services a module is al
 
 # Provider
 
-The Provider handles **cross-module dependencies**. When your module needs something from another module, the Provider is where you wire that connection, always through the other module's [Facade](/docs/facade).
+The Provider handles **cross-module dependencies**. When your module needs something from another module, the Provider
+is where you wire that connection, always through the other module's [Facade](/docs/facade).
 
 ::: tip Factory vs Provider
 - **Factory** → creates objects *inside* your module (intra-module)
@@ -13,12 +14,14 @@ The Provider handles **cross-module dependencies**. When your module needs somet
 :::
 
 ::: warning `register()` is final
-Do not override `AbstractProvider::register()`. Register services through `#[Provides]` or `provideModuleDependencies()`.
+Do not override `AbstractProvider::register()`. Register services through `#[Provides]` or
+`provideModuleDependencies()`.
 :::
 
 ## Start from the consuming service
 
-Let the service constructor show that the Sales module needs the Comment module. The Factory asks for the other module's Facade interface; it does not decide how to locate it.
+Let the service constructor show that the Sales module needs the Comment module. The Factory asks for the other module's
+Facade interface; it does not decide how to locate it.
 
 ```php [src/Sales/SalesFactory.php]
 <?php
@@ -43,7 +46,8 @@ final class SalesFactory extends AbstractFactory
 
 ## Satisfy the boundary in the Provider
 
-Now connect that interface to the Comment module's Facade. `#[Provides]` keeps the dependency local to the Sales module and resolves it lazily.
+Now connect that interface to the Comment module's Facade. `#[Provides]` keeps the dependency local to the Sales module
+and resolves it lazily.
 
 ```php [src/Sales/SalesProvider.php]
 <?php
@@ -70,7 +74,8 @@ final class SalesProvider extends AbstractProvider
 
 ## Complete call path
 
-The caller still sees only the Sales Facade. The dependency becomes visible only when following the implementation inward: **Facade → Factory → Provider → Comment Facade**.
+The caller still sees only the Sales Facade. The dependency becomes visible only when following the implementation
+inward: **Facade → Factory → Provider → Comment Facade**.
 
 ```php
 <?php # src/Sales/SalesFacade.php
@@ -95,7 +100,8 @@ final class SalesFacade extends AbstractFacade
 
 ## More `#[Provides]` patterns
 
-`#[Provides]` also accepts string IDs and non-Facade services. Each method is wrapped in a lazy closure and receives `Container` automatically when declared in the signature.
+`#[Provides]` also accepts string IDs and non-Facade services. Each method is wrapped in a lazy closure and receives
+`Container` automatically when declared in the signature.
 
 ```php
 <?php # src/Sales/SalesProvider.php
@@ -120,11 +126,13 @@ final class SalesProvider extends AbstractProvider
 }
 ```
 
-With `#[Provides]`, `provideModuleDependencies()` becomes non-abstract. Providers can go attribute-only or mix both styles.
+With `#[Provides]`, `provideModuleDependencies()` becomes non-abstract. Providers can go attribute-only or mix both
+styles.
 
 ### Mixing with `provideModuleDependencies()`
 
-You can use attributes alongside the traditional method. Attribute-registered services are resolved first, then `provideModuleDependencies()` runs as before:
+You can use attributes alongside the traditional method. Attribute-registered services are resolved first, then
+`provideModuleDependencies()` runs as before:
 
 ```php
 final class SalesProvider extends AbstractProvider

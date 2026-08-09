@@ -5,7 +5,9 @@ description: Create a module’s internal services and wire configuration and pr
 
 # Factory
 
-The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is responsible for **creating the internal objects** of your module and wiring their dependencies, pulling values from [Config](/docs/config) and services from the [Provider](/docs/provider).
+The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)) is responsible for **creating the
+internal objects** of your module and wiring their dependencies, pulling values from [Config](/docs/config) and services
+from the [Provider](/docs/provider).
 
 ::: tip Key points
 - The Factory creates and assembles the classes inside your module
@@ -15,7 +17,8 @@ The [Factory](https://en.wikipedia.org/wiki/Factory_(object-oriented_programming
 
 ## Start from the object you need
 
-After a Facade delegates an operation, design the application or domain service that will fulfill it. Its constructor makes the required collaborators explicit:
+After a Facade delegates an operation, design the application or domain service that will fulfill it. Its constructor
+makes the required collaborators explicit:
 
 ```php [src/Comment/Domain/SpamChecker.php]
 <?php
@@ -43,7 +46,8 @@ final class SpamChecker
 
 ## Construct it in the Factory
 
-Now make the Factory satisfy that constructor. Configuration and wiring stay here instead of leaking into the service or Facade.
+Now make the Factory satisfy that constructor. Configuration and wiring stay here instead of leaking into the service or
+Facade.
 
 ```php [src/Comment/CommentFactory.php]
 <?php
@@ -75,7 +79,9 @@ final class CommentFactory extends AbstractFactory
 
 ## Auto-wiring dependencies into the Factory
 
-Gacela auto-wires Factory constructor dependencies. Concrete classes are instantiated automatically (recursively resolving their own dependencies). For interfaces, you need to tell Gacela which implementation to use by defining a [binding](/docs/bindings):
+Gacela auto-wires Factory constructor dependencies. Concrete classes are instantiated automatically (recursively
+resolving their own dependencies). For interfaces, you need to tell Gacela which implementation to use by defining
+a [binding](/docs/bindings):
 
 ```php
 <?php # gacela.php
@@ -91,22 +97,27 @@ return function (GacelaConfig $config) {
 
 The difference between these two styles:
 
-- **Class binding** (`Concrete::class`): Gacela creates a new instance on the fly, auto-wiring its constructor dependencies recursively
-- **Callable binding** (`fn() => ...`): You control instantiation. The closure is lazy-loaded, it only runs when the dependency is needed
+- **Class binding** (`Concrete::class`): Gacela creates a new instance on the fly, auto-wiring its constructor
+  dependencies recursively
+- **Callable binding** (`fn() => ...`): You control instantiation. The closure is lazy-loaded, it only runs when the
+  dependency is needed
 
-Real example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
+Real
+example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
 
 For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject).
 
 ## Sharing a single instance
 
-Plain `create...()` methods build a fresh object on every call. When a dependency should instead be built once and reused, use `singleton()`:
+Plain `create...()` methods build a fresh object on every call. When a dependency should instead be built once and
+reused, use `singleton()`:
 
 ```php
 protected function singleton(string $key, callable $creator): mixed;
 ```
 
-It memoises the result of `$creator` under `$key` and returns the **same instance** on every later call within the module. The creator is lazy — it only runs on first access.
+It memoises the result of `$creator` under `$key` and returns the **same instance** on every later call within the
+module. The creator is lazy — it only runs on first access.
 
 ```php
 <?php # src/Comment/CommentFactory.php

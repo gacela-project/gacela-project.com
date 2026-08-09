@@ -7,12 +7,12 @@ description: Run post-bootstrap logic, decorate services, extend configuration, 
 
 Use the narrowest extension point that matches the job:
 
-| Need | Extension point |
-|---|---|
-| Run setup after bootstrap | Plugin |
-| Decorate or alter one service | `extendService()` |
+| Need                                | Extension point        |
+|-------------------------------------|------------------------|
+| Run setup after bootstrap           | Plugin                 |
+| Decorate or alter one service       | `extendService()`      |
 | Add a reusable configuration bundle | `extendGacelaConfig()` |
-| Resolve keyed domain handlers | Handler registry |
+| Resolve keyed domain handlers       | Handler registry       |
 
 ## Plugins
 
@@ -39,9 +39,11 @@ Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
 });
 ```
 
-The class must be invokable, and it has autoload capabilities: all dependencies will be resolved automatically as soon as you have defined them using [bindings](/docs/bindings). The same applies to the callable arguments above.
+The class must be invokable, and it has autoload capabilities: all dependencies will be resolved automatically as soon
+as you have defined them using [bindings](/docs/bindings). The same applies to the callable arguments above.
 
 For example, having this other class `ApiRoutesPlugin` somewhere else:
+
 ```php
 <?php # ApiRoutesPlugin.php
 
@@ -62,13 +64,15 @@ final class ApiRoutesPlugin
 extendService(string $id, Closure $service);
 ```
 
-Extend any service functionality. The `extendService()` receives the service name that will be defined in any `Provider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
+Extend any service functionality. The `extendService()` receives the service name that will be defined in any
+`Provider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
 
 ### An example
 
 Consider we have a module with these `Provider`, `Factory` and `Facade`.
 
-The `Provider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see `Module/Provider.php`)
+The `Provider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see
+`Module/Provider.php`)
 
 We "extend" that service `'ARRAY_OBJ'` and appending `3` (see `gacela.php`)
 
@@ -168,7 +172,9 @@ final class RouterConfig
 addHandlerRegistry(string $registryKey, array<string|int,class-string> $handlers);
 ```
 
-Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a `HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after boot. There is no runtime `register()` method.
+Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a
+`HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after
+boot. There is no runtime `register()` method.
 
 ```php
 <?php # gacela.php
@@ -187,7 +193,8 @@ return function (GacelaConfig $config) {
 addHealthCheck(class-string|ModuleHealthCheckInterface $check);
 ```
 
-Register a per-module health check. All registered checks are aggregated by the `doctor` command and the `HealthChecker`. See the full [Module health checks](/docs/health-checks) page.
+Register a per-module health check. All registered checks are aggregated by the `doctor` command and the
+`HealthChecker`. See the full [Module health checks](/docs/health-checks) page.
 
 ```php
 <?php # gacela.php
