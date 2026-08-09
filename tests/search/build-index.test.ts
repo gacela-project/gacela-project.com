@@ -319,6 +319,19 @@ describe('buildSearchIndex', () => {
     expect(docs[0]?.text).toBe('Visible.')
   })
 
+  /* Removing a comment can join what sits either side of it into a new one:
+     "<!" followed by "--" is a comment opener once the text between them goes.
+     A single pass walks past the join and leaves the comment it just made. */
+  it('ignores a comment formed by removing another one', () => {
+    const docs = buildSearchIndex([
+      makePage({ html: '<p>Visible.<!<!---->-- swallowed --></p>' }),
+    ])
+
+    expect(docs[0]?.text).toBe('Visible.')
+    expect(docs[0]?.text).not.toContain('swallowed')
+    expect(docs[0]?.text).not.toContain('<!--')
+  })
+
   it('falls back to the h1 when there is no frontmatter title', () => {
     const docs = buildSearchIndex([
       makePage({ frontmatter: {}, html: '<h1>The <em>Facade</em></h1><p>Body.</p>' }),

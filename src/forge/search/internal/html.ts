@@ -98,12 +98,31 @@ export function collapse(value: string): string {
 }
 
 /**
+ * Drops comments and opaque elements, repeatedly, because removing one can
+ * leave another behind: "<!" and "--" on either side of a comment become a
+ * comment opener once the text between them goes, and a single pass has
+ * already walked past the join. Each round can only shorten the string, so
+ * this settles.
+ */
+function removeUntilStable(html: string): string {
+  let current = html
+  let previous: string
+
+  do {
+    previous = current
+    current = current.replace(COMMENT, '').replace(OPAQUE, ' ').replace(HIDDEN, '')
+  } while (current !== previous)
+
+  return current
+}
+
+/**
  * HTML to the plain text a reader would see: opaque and hidden elements dropped
  * whole, block tags turned into a space, inline tags removed, entities decoded
  * last so that an escaped "&lt;?php" in a code block never looks like a tag.
  */
 export function stripMarkup(html: string): string {
-  const withoutOpaque = html.replace(COMMENT, '').replace(OPAQUE, ' ').replace(HIDDEN, '')
+  const withoutOpaque = removeUntilStable(html)
   const withoutTags = withoutOpaque.replace(TAG, (_whole: string, name: string) =>
     BLOCK.has(name.toLowerCase()) ? ' ' : '',
   )
