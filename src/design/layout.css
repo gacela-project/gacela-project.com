@@ -1,0 +1,196 @@
+/**
+ * Page scaffolding: the containers and the two page shapes the site uses,
+ * a marketing shell and a three-column documentation shell.
+ */
+
+@layer layout {
+  .container {
+    width: 100%;
+    max-width: var(--width-content);
+    margin-inline: auto;
+    padding-inline: var(--space-5);
+  }
+
+  .container--wide {
+    max-width: var(--width-wide);
+  }
+
+  /* Wide enough for the blocks that are not sentences; prose.css decides which
+     take it. The padding matches .container's, or the inner box comes out
+     wider than the measure and the column sits off its own centre. */
+  .container--prose {
+    max-width: calc(var(--measure-code) + var(--space-5) * 2);
+  }
+
+  .page {
+    flex: 1;
+  }
+
+  /* Centred from main rather than from the block, because main is the element
+     that knows the height: a percentage min-height on its child does not
+     resolve against a flex-sized parent. */
+  body[data-layout='not-found'] .page {
+    display: grid;
+    align-content: center;
+  }
+
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--space-4);
+    inset-block-start: var(--space-4);
+    z-index: calc(var(--z-overlay) + 1);
+    padding: var(--space-2) var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-sm);
+    color: var(--text-strong);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transform: translateY(calc(-100% - var(--space-5)));
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Documentation shell.
+   *
+   * Three columns on wide screens: navigation, prose, contents. The prose
+   * column is the only one that is allowed to grow, so the measure stays
+   * honest at every width.
+   * ------------------------------------------------------------------ */
+
+  .docs {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: var(--width-sidebar) minmax(0, 1fr);
+    align-items: start;
+    gap: 0 var(--space-7);
+    padding-inline: var(--space-5);
+  }
+
+  /* The column scrolls on its own when the tree is taller than the viewport,
+     and chains to the page when it reaches either end. It used to contain the
+     chain, which read as the page seizing up: at the foot of a long document
+     the tree is already at its top, so scrolling up with the pointer over it
+     did nothing at all until the pointer moved onto the prose. A column that
+     eats the gesture is worse than one that scrolls the page underneath it. */
+  .docs__nav {
+    position: sticky;
+    top: var(--height-header);
+    max-height: calc(100svh - var(--height-header));
+    overflow-y: auto;
+    padding-block: var(--space-6) var(--space-8);
+    padding-inline-end: var(--space-4);
+    border-inline-end: 1px solid var(--border-subtle);
+    scrollbar-width: thin;
+  }
+
+  .docs__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+    padding-block: var(--space-6) var(--space-9);
+    min-width: 0;
+  }
+
+  /* The breadcrumb, the edit links and the pager take the same measure as the
+     body they frame, or the page ends up with two right edges and the wider
+     one belongs to the least important elements. */
+  .docs__article > * {
+    max-width: var(--measure-prose);
+  }
+
+  .docs__toc {
+    display: none;
+  }
+
+  @media (min-width: 1180px) {
+    .docs__body {
+      grid-template-columns: minmax(0, 1fr) var(--width-toc);
+    }
+
+    .docs__toc {
+      display: block;
+      position: sticky;
+      top: calc(var(--height-header) + var(--space-6));
+      max-height: calc(100svh - var(--height-header) - var(--space-8));
+      overflow-y: auto;
+      grid-row: 1;
+      grid-column: 2;
+    }
+
+    .docs__article {
+      grid-row: 1;
+      grid-column: 1;
+    }
+  }
+
+  @media (max-width: 959px) {
+    .docs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .docs__nav {
+      display: none;
+    }
+  }
+
+  /* ---------------------------------------------------------------------
+   * Marketing sections.
+   * ------------------------------------------------------------------ */
+
+  .section {
+    padding-block: var(--section-gap);
+  }
+
+  /* The hero is not a .section, so the first of these boundaries needs saying
+     separately. Every section is divided from the one above it. */
+  .hero + .section,
+  .section + .section {
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  /* Centred, like the call to action that closes the page. These headings are
+     capped near 46rem for the lede's sake, and against a container of 1332 a
+     left-aligned block of that width leaves 650px of nothing beside it: the
+     section reads as though it had lost its right-hand column. */
+  .section__head {
+    max-width: 46rem;
+    margin-inline: auto;
+    margin-block-end: var(--space-7);
+    text-align: center;
+  }
+
+  .section__title {
+    font-size: var(--text-3xl);
+    margin-block-start: var(--space-3);
+  }
+
+  .section__lede {
+    margin-block-start: var(--space-4);
+    margin-inline: auto;
+    max-width: 42rem;
+    font-size: var(--text-lg);
+    color: var(--text);
+    line-height: var(--leading-normal);
+    text-wrap: pretty;
+  }
+
+  /* Small mono label above a heading. It names the kind of thing that
+     follows, the way a drawing labels a view. */
+  .eyebrow {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-normal);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+}

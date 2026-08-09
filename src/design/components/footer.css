@@ -1,0 +1,94 @@
+@layer components {
+  .footer {
+    margin-block-start: var(--space-8);
+    border-block-start: 1px solid var(--border-subtle);
+    background: var(--surface-sunken);
+  }
+
+  .footer__inner {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-5);
+    display: grid;
+    /* One column per thing in the footer. It declared three while holding two,
+       so the row ended a third of the way short of the edge it is measured
+       against. The link list is sized to its content and the brand takes the
+       rest, which keeps the two ends of the row on the page's own margins. */
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-6);
+  }
+
+  @media (max-width: 719px) {
+    .footer__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .footer__brand {
+    color: var(--text-strong);
+    text-decoration: none;
+  }
+
+  .footer__wordmark {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--text-lg);
+  }
+
+  .footer__tagline {
+    margin-block-start: var(--space-3);
+    max-width: 24rem;
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+  }
+
+  /* Fine print, and printed as fine. Unstyled it inherited body ink, which put
+     the legal line above the tagline it sits under in the reading order. */
+  .footer__copyright {
+    margin-block-start: var(--space-4);
+    text-align: end;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  /* A row, not a column. Five one-word links stacked made a 66px column five
+     deep beside a brand block three lines tall, with 782px of nothing between
+     them. On one line they read as what they are: a short list of places to
+     go, sitting on the same baseline as the wordmark. */
+  .footer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-2) var(--space-5);
+  }
+
+  .footer__link {
+    color: var(--text);
+    font-size: var(--text-md);
+    text-decoration: none;
+  }
+
+  .footer__link:hover {
+    color: var(--accent);
+  }
+
+  /* Stacked, the links sit under the brand rather than opposite it, so they
+     take the column's own edge instead of the far one. Declared after the row
+     above rather than beside the grid: both rules carry one class, so the
+     later one wins and an override written earlier would never apply. */
+  @media (max-width: 719px) {
+    .footer__list {
+      justify-content: flex-start;
+    }
+
+    /* And the copyright with them. Stacked there is no right-hand column for
+       either to sit against, only the one edge everything above them uses. */
+    .footer__copyright {
+      text-align: start;
+    }
+  }
+}

@@ -1,0 +1,261 @@
+/**
+ * The module diagram: this site's signature element.
+ *
+ * A single Gacela module drawn as what it actually is, a sealed boundary with
+ * one door. Selecting a class in the legend lights up its part of the drawing
+ * and dims the rest. The selection is a radio group, so the whole thing works
+ * with the keyboard, works with no JavaScript, and announces itself correctly.
+ */
+
+@layer components {
+  .diagram {
+    margin: 0;
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .diagram__frame {
+    position: relative;
+    padding: var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Holds the drawing and the labels laid over it in one coordinate space, so
+     a label pinned in percentages sits on its box at every width. */
+  .diagram__stage {
+    position: relative;
+  }
+
+  .diagram__svg {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    overflow: visible;
+  }
+
+  /* --- the boxes are the control -----------------------------------------
+   * Each class box wears a label, positioned from the same numbers that drew
+   * the rect underneath it. It is a label rather than a button so the radio
+   * behind it still does the work, which is what keeps the whole diagram
+   * working with the keyboard and with no script at all.
+   * -------------------------------------------------------------------- */
+
+  .diagram__hit {
+    position: absolute;
+    /* Six pixels of slack on every side. The drawn box is the target, and a
+       little more than the drawn box is easier to hit: scaled down to a phone
+       the shortest of them measures 41px, which this carries past the 44px a
+       finger wants. */
+    inset-block-start: calc(var(--y) - 6px);
+    inset-inline-start: calc(var(--x) - 6px);
+    inline-size: calc(var(--w) + 12px);
+    block-size: calc(var(--h) + 12px);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  .diagram > input {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* --- drawing primitives ------------------------------------------------ */
+
+  .diagram__boundary {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  .diagram__label {
+    fill: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .diagram__flow {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  /* A marker is rendered in its own context, so it cannot inherit the stroke of
+     the path that references it and needs its colour set here. */
+  .diagram__arrowhead {
+    fill: var(--border-strong);
+  }
+
+  /* The box and the name carry the selection themselves rather than the group
+     fading as a whole. A transition on the group would not reach them: each sets
+     its own fill, so each has to animate its own. */
+  .part__box,
+  .part__name,
+  .part__dot {
+    transition:
+      fill var(--duration-slow) var(--ease-out),
+      stroke var(--duration-slow) var(--ease-out);
+  }
+
+  /* Hollow while the class is one of the choices, filled once it is the one
+     being read about. The whole point is that it is legible before anything is
+     hovered or read, so it rests in the drawing's ink rather than being dimmed
+     to the point of decoration. */
+  .part__dot {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  /* Resting state is the drawing's own gray, the same one the boundary and the
+     arrows are drawn in, so an unselected class reads as part of the linework. */
+  .part__box {
+    fill: var(--diagram-fill);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+    rx: 5;
+  }
+
+  /* Larger than the annotations around them: these four are what the drawing is
+     about, and the labels outside it are notes on the margin. */
+  .part__name {
+    fill: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .part--outside .part__box {
+    stroke: var(--diagram-outside);
+    stroke-dasharray: 4 3;
+  }
+
+  .part--outside .part__name {
+    font-size: 12px;
+  }
+
+  /* --- selection ---------------------------------------------------------
+   * The four radios precede the frame, so a sibling combinator reaches the
+   * drawing, the legend and the caption from a single :checked state.
+   * -------------------------------------------------------------------- */
+
+  /* The selection is carried by colour alone. Nothing is faded: the boxes stay
+     opaque so the drawing behind them never shows through, and an unselected
+     class is gray rather than see-through. */
+  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__box,
+  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__box,
+  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__box,
+  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__box {
+    stroke: var(--diagram-boundary);
+    stroke-width: 2;
+    fill: var(--diagram-fill-active);
+  }
+
+  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__name,
+  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__name,
+  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__name,
+  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__name {
+    fill: var(--text-strong);
+  }
+
+  .diagram > input:nth-of-type(1):checked ~ .diagram__frame .part--facade .part__dot,
+  .diagram > input:nth-of-type(2):checked ~ .diagram__frame .part--factory .part__dot,
+  .diagram > input:nth-of-type(3):checked ~ .diagram__frame .part--provider .part__dot,
+  .diagram > input:nth-of-type(4):checked ~ .diagram__frame .part--config .part__dot {
+    fill: var(--accent);
+    stroke: var(--accent);
+  }
+
+  /* Hovering a label answers on the box under it, so the drawing responds
+     rather than a rectangle floating above it. The labels are painted over the
+     drawing and so come after it, which no sibling combinator can reach
+     backwards from: the stage is asked instead which label is hovered. */
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__box,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__box,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__box,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__box {
+    stroke: var(--accent);
+    fill: var(--diagram-fill-hover);
+  }
+
+  /* The middle of the ink ramp, which is what --text already is: one step up
+     from the muted label a resting box wears, one step short of the selected
+     one. The box the reader has chosen outranks all of this, so hovering it
+     does not walk its colour back. */
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__name,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__name,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__name,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__name {
+    fill: var(--text);
+  }
+
+  .diagram__stage:has([data-part='facade']:hover) .part--facade .part__dot,
+  .diagram__stage:has([data-part='factory']:hover) .part--factory .part__dot,
+  .diagram__stage:has([data-part='provider']:hover) .part--provider .part__dot,
+  .diagram__stage:has([data-part='config']:hover) .part--config .part__dot {
+    stroke: var(--accent);
+  }
+
+  /* The radios are off-screen, so the ring is drawn on the label that stands in
+     for them, which is exactly the size of the box it covers. */
+  .diagram > input:nth-of-type(1):focus-visible ~ .diagram__frame [data-part='facade'],
+  .diagram > input:nth-of-type(2):focus-visible ~ .diagram__frame [data-part='factory'],
+  .diagram > input:nth-of-type(3):focus-visible ~ .diagram__frame [data-part='provider'],
+  .diagram > input:nth-of-type(4):focus-visible ~ .diagram__frame [data-part='config'] {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 559px) {
+    /* Scaled to fit a phone, the drawing's labels fall to about 4px. It keeps
+       a legible size and scrolls instead, with the scrollbar left visible so
+       there is something to say it can. The stage holds the width rather than
+       the svg, so the labels over it scroll with the drawing. */
+    .diagram__frame {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      padding-inline: var(--space-3);
+    }
+
+    .diagram__stage {
+      min-inline-size: 34rem;
+    }
+  }
+
+  /* The caption stacks all four explanations and reveals the selected one, so
+     the box never changes height as the selection moves. */
+  .diagram__caption {
+    display: grid;
+    min-block-size: 3.5rem;
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text);
+  }
+
+  .diagram__note {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+
+  .diagram__note strong {
+    color: var(--text-strong);
+  }
+
+
+  .diagram > input:nth-of-type(1):checked ~ .diagram__caption > :nth-child(1),
+  .diagram > input:nth-of-type(2):checked ~ .diagram__caption > :nth-child(2),
+  .diagram > input:nth-of-type(3):checked ~ .diagram__caption > :nth-child(3),
+  .diagram > input:nth-of-type(4):checked ~ .diagram__caption > :nth-child(4) {
+    opacity: 1;
+    visibility: visible;
+  }
+}

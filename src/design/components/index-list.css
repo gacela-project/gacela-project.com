@@ -1,0 +1,132 @@
+/**
+ * Index lists, the closing call to action, and badges: the repeating
+ * structures of the marketing pages.
+ *
+ * The index list is the workhorse. It is a table of contents rather than a
+ * grid of cards, because a framework's feature set is a reference, and a
+ * reference should be scannable in one column pass.
+ */
+
+@layer components {
+  .index-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 var(--space-8);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  @media (max-width: 719px) {
+    .index-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .index-list__item {
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .index-list__link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .index-list__title {
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-strong);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .index-list__summary {
+    display: block;
+    margin-block-start: var(--space-1);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+  }
+
+  .index-list__arrow {
+    color: var(--text-muted);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity var(--duration-base) var(--ease-out),
+      transform var(--duration-base) var(--ease-spring);
+  }
+
+  .index-list__link:hover .index-list__title {
+    color: var(--accent);
+  }
+
+  .index-list__link:hover .index-list__arrow,
+  .index-list__link:focus-visible .index-list__arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * Closing call to action.
+   * ------------------------------------------------------------------ */
+
+  .cta {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: var(--space-5);
+    padding-block: var(--section-gap);
+  }
+
+  .cta__title {
+    font-size: var(--text-3xl);
+  }
+
+  /* Three links in a line rather than three buttons. The section already asks
+     once, in the heading and the command above them; a row of buttons asked
+     three more times and gave the least likely of the three the same weight as
+     the quickstart. As prose they read as what they are: where to go next. */
+  .cta__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: smaller;
+  }
+
+  .cta__links > span {
+    color: var(--text-muted);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 2px var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  /* The label is 11px, so it needs the full 4.5:1. --accent on --accent-wash
+     measures 4.39:1 in the light theme; --accent-hover measures 6.19:1. */
+  .badge--accent {
+    border-color: var(--accent-line);
+    background: var(--accent-wash);
+    color: var(--accent-hover);
+  }
+}

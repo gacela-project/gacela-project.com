@@ -1,0 +1,85 @@
+@layer components {
+  .button {
+    --button-bg: transparent;
+    --button-fg: var(--text-strong);
+    --button-border: var(--border);
+
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: var(--button-bg);
+    color: var(--button-fg);
+    border: 1px solid var(--button-border);
+    border-radius: var(--radius-button);
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-normal);
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .button:hover {
+    --button-border: var(--border-strong);
+    color: var(--button-fg);
+  }
+
+  .button--primary {
+    --button-bg: var(--accent);
+    --button-fg: var(--accent-contrast);
+    --button-border: var(--accent);
+  }
+
+  .button--primary:hover {
+    --button-bg: var(--accent-hover);
+    --button-border: var(--accent-hover);
+    --button-fg: var(--accent-contrast);
+  }
+
+  .button--ghost {
+    --button-border: transparent;
+    padding-inline: var(--space-3);
+  }
+
+  .button--ghost:hover {
+    --button-bg: var(--surface-sunken);
+    --button-border: transparent;
+  }
+
+  .button__arrow {
+    transition: transform var(--duration-base) var(--ease-spring);
+  }
+
+  .button:hover .button__arrow {
+    transform: translateX(2px);
+  }
+
+  /* Square control for icon-only actions in the header. */
+  .icon-button {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    border-radius: var(--radius-button);
+    color: var(--text-muted);
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .icon-button:hover {
+    background: var(--surface-sunken);
+    color: var(--text-strong);
+  }
+
+  .icon-button svg {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+}

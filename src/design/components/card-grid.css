@@ -1,0 +1,66 @@
+/**
+ * Card grid: a short set of routes into the documentation, offered where a
+ * reader has arrived without knowing what they want yet.
+ *
+ * A card is a link with a heading and a sentence, so it styles its own
+ * children rather than asking the markup for a class on each one.
+ */
+
+@layer components {
+  .card-grid {
+    display: grid;
+    gap: var(--space-4);
+    /* Cards get a column each while they fit, then fall to one. No breakpoint:
+       the content column is a different width on every layout that uses this. */
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    margin-block: var(--space-5);
+  }
+
+  .card-grid__card {
+    display: block;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    text-decoration: none;
+  }
+
+  .card-grid__card:hover {
+    border-color: var(--accent-line);
+  }
+
+  .card-grid__card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .card-grid__card strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    color: var(--text-strong);
+  }
+
+  .card-grid__card:hover strong {
+    color: var(--accent);
+  }
+
+  .card-grid__card span {
+    display: block;
+    margin-block-start: var(--space-2);
+    font-size: var(--text-md);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card-grid__card {
+      transition: border-color var(--duration-base) var(--ease-out);
+    }
+
+    .card-grid__card strong {
+      transition: color var(--duration-base) var(--ease-out);
+    }
+  }
+}

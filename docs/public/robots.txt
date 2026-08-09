@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://gacela-project.com/sitemap.xml

@@ -1,0 +1,50 @@
+name: CI
+
+# The same checks `npm run check` runs locally: on every pull request, and on
+# every push to main as a safety net (e.g. a direct push, or a merge that
+# bypassed a stale required check).
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+# Read-only: this workflow only needs to check out the repo and run scripts,
+# it never writes anything back.
+permissions:
+  contents: read
+
+# A new push to the same ref (another commit on a PR, or a re-push to
+# main) supersedes the previous run, so cancel it instead of burning
+# minutes on a result nobody will look at.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # Latest 22.x, which satisfies the ">=22.18.0" engines floor without
+          # freezing CI on one patch release.
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      # Mirrors `npm run check`, split into named steps so a failure points
+      # straight at the stage that broke instead of a single opaque log.
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npx vitest run
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint links
+        run: npm run lint:links

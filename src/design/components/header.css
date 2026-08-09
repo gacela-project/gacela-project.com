@@ -1,0 +1,618 @@
+@layer components {
+  .header {
+    /* The bar's own metrics. The drawer's bar reads them too, so the two are
+       the same row measured the same way, and the controls they share do not
+       move when one replaces the other. */
+    --bar-inline: var(--space-5);
+    --bar-gap: var(--space-6);
+    --bar-control: 2.25rem;
+
+    /* The right-hand cluster's own two metrics: the gap between the controls
+       it holds, and the air on either side of a rule dividing them. The rules
+       are centred against these two, so they are declared once here rather
+       than assumed at each use. */
+    --bar-cluster-gap: var(--space-1);
+    --bar-rule-space: var(--space-4);
+
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    block-size: var(--height-header);
+    background: color-mix(in oklch, var(--canvas) 88%, transparent);
+    backdrop-filter: blur(12px) saturate(1.4);
+    border-block-end: 1px solid var(--border-subtle);
+  }
+
+  .header__inner {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    padding-inline: var(--bar-inline);
+    block-size: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--bar-gap);
+  }
+
+  .header__brand {
+    color: var(--text-strong);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .header__brand:hover {
+    color: var(--text-strong);
+  }
+
+  .header__wordmark {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: var(--weight-bold);
+    letter-spacing: 0.01em;
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  /* The release the site documents. It wears the badge rather than the nav
+     label's type: it names a thing, not a destination, and the nav's four mono
+     labels are a set a fifth would join by mistake. */
+  .header__version,
+  .nav-drawer__version {
+    flex-shrink: 0;
+    text-decoration: none;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .header__version:hover,
+  .nav-drawer__version:hover {
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+
+  /* The nav labels sit 28px apart ink to ink, and this badge is the fifth item
+     in that run. The bar's gap is measured between boxes and the label to the
+     left carries padding this badge does not, so the margin takes back that
+     padding and the difference between the bar's 32 and the nav's 28. Only in
+     the bar: the drawer's copy opens a centred row. */
+  .header__version {
+    margin-inline-start: calc(var(--space-4) * -1);
+  }
+
+  .header__link {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-normal);
+    text-decoration: none;
+    /* The bar is a fixed height, so a label that wraps breaks its alignment
+       rather than growing it. Multi-word labels stay on one line. */
+    white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .header__link:hover {
+    color: var(--accent);
+  }
+
+  .header__link[aria-current='page'],
+  .header__link[data-active] {
+    color: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The Reference menu: the documentation tree, hanging off the header.
+   *
+   * A details element, so the platform supplies the open state, the keyboard
+   * behaviour and the announcement. Script only closes it on Escape and on a
+   * click elsewhere, neither of which a details element does by itself.
+   * ------------------------------------------------------------------ */
+
+  .header__menu {
+    position: relative;
+  }
+
+  .header__menu-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .header__menu-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .header__menu-summary svg {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
+
+  .header__menu[open] .header__menu-summary {
+    color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .header__menu-summary svg {
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+
+    .header__menu[open] .header__menu-summary svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .header__menu-panel {
+    position: absolute;
+    inset-block-start: calc(100% + var(--space-3));
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: var(--z-header);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(9rem, 1fr));
+    gap: var(--space-5) var(--space-6);
+    padding: var(--space-5);
+    max-inline-size: min(44rem, calc(100vw - var(--space-6)));
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* The panel hangs a little below the summary, and that gap belongs to
+     neither of them. Without something spanning it, a pointer travelling from
+     one to the other leaves the menu and closes it halfway. */
+  .header__menu-panel::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: var(--space-3);
+  }
+
+  .header__menu-title {
+    margin-block-end: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .header__menu-list {
+    display: grid;
+    gap: var(--space-1);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .header__menu-link {
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    margin-inline-start: calc(var(--space-2) * -1);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .header__menu-link:hover {
+    color: var(--accent);
+    background: var(--surface-sunken);
+  }
+
+  .header__menu-link[aria-current='page'] {
+    color: var(--accent);
+  }
+
+  /* Splits the bar in two: the brand and its search box on one side, the
+     navigation and its controls on the other. An element rather than an auto
+     margin on the nav, which stops being a divider the moment the nav hides. */
+  .header__spacer {
+    margin-inline-start: auto;
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--bar-cluster-gap);
+  }
+
+  .header__socials {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bar-cluster-gap);
+  }
+
+  /* Rules between the three kinds of thing in the right-hand cluster: the
+     navigation, the theme control, and the links off the site. Drawn as the
+     first flex item of the group they precede, so the gap on either side is
+     the one the cluster already uses. */
+  .header__actions::before,
+  .header__socials::before {
+    content: '';
+    inline-size: 1px;
+    block-size: var(--space-5);
+    /* The cluster's gap already stands between a rule and the control beside
+       it; the margin makes up the rest of the air the rule is owed. */
+    margin-inline: calc(var(--bar-rule-space) - var(--bar-cluster-gap));
+    background: var(--border-subtle);
+  }
+
+  /* Left of this rule lies the bar's gap where every other side has only the
+     cluster's, so the difference is taken back and both rules end up centred
+     on the same air. */
+  .header__actions::before {
+    margin-inline-start: calc(var(--bar-rule-space) - var(--bar-gap));
+  }
+
+  /* Below the width the navigation collapses at there is nothing to its left
+     to divide it from. */
+  @media (max-width: 1199px) {
+    .header__actions::before {
+      display: none;
+    }
+  }
+
+  /* The bar needs 1183px for the brand, the search box, four nav labels, the
+     release badge and the action cluster. Below that the navigation moves into
+     the disclosure, which appears at the same width, so the links are never in
+     two places and never squeezed. Seventeen pixels spare: widening the bar's
+     gap, the search box or the air around the rules moves this too. */
+  @media (max-width: 1199px) {
+    .header__nav {
+      display: none;
+    }
+
+    /* Compounded with .badge on purpose: .badge supplies the display and is
+       imported after this file into the same layer, so a bare class loses the
+       tie on source order. Layers settle conflicts between layers, not in one. */
+    .header__version.badge {
+      display: none;
+    }
+  }
+
+  /* The bar needs 436px to hold the brand, the search button, the theme
+     control and both social links with their rule between. Below that the
+     social links step aside, because the footer and the mobile menu both
+     still carry them. */
+  @media (max-width: 439px) {
+    .header__socials {
+      display: none;
+    }
+  }
+
+  /* Reflow at 320px: the brand and the action cluster together overflowed the
+     viewport. The padding and gap tighten. */
+  @media (max-width: 400px) {
+    .header {
+      --bar-inline: var(--space-3);
+      --bar-gap: var(--space-2);
+    }
+
+    .header__wordmark {
+      font-size: 1.125rem;
+    }
+  }
+
+  /* Three radio inputs rather than a two-state button, because "system" is a
+     real choice and it is the default.
+
+     Applying a choice means writing to storage and setting an attribute, so
+     this control genuinely needs script. It stays hidden until the document is
+     marked as scripted: without JavaScript the theme still follows the system
+     preference through light-dark(), and offering a switch that cannot switch
+     would be worse than offering none. */
+  .theme-toggle {
+    display: none;
+  }
+
+  :root[data-js] .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill);
+    background: var(--surface-sunken);
+  }
+
+  .theme-toggle__option {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    border-radius: var(--radius-pill);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .theme-toggle__option:hover {
+    color: var(--text-strong);
+  }
+
+  .theme-toggle__option svg {
+    inline-size: 0.9375rem;
+    block-size: 0.9375rem;
+  }
+
+  .theme-toggle__option[data-selected] {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .theme-toggle__option:has(:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .theme-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* ---------------------------------------------------------------------
+   * The navigation drawer.
+   *
+   * Below the width the bar can hold its links, they move behind one button.
+   * A details element, so it opens, closes and announces itself with no
+   * script, and the panel covers the viewport rather than pushing the page
+   * down. The button stays on top of the panel and becomes the way out, which
+   * is why there is one control wearing two glyphs rather than two controls.
+   * ------------------------------------------------------------------ */
+
+  .nav-drawer {
+    display: none;
+  }
+
+  .nav-drawer__toggle {
+    display: grid;
+    place-items: center;
+    inline-size: var(--bar-control);
+    block-size: var(--bar-control);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .nav-drawer__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-drawer__toggle:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__toggle svg {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+  }
+
+  /* One button, two glyphs: whichever matches the current state is the one
+     that occupies the box. */
+  .nav-drawer__glyph {
+    display: grid;
+  }
+
+  .nav-drawer__glyph--close,
+  .nav-drawer[open] .nav-drawer__glyph--open {
+    display: none;
+  }
+
+  .nav-drawer[open] .nav-drawer__glyph--close {
+    display: grid;
+  }
+
+  /* Taking the button out of the flow would otherwise collapse the slot it
+     held and shuffle the rest of the bar along behind the panel. The slot is
+     kept, so the row underneath is the same row whether the drawer is open or
+     shut. */
+  .nav-drawer[open] {
+    inline-size: var(--bar-control);
+    block-size: var(--bar-control);
+  }
+
+  /* Lands exactly where it sat in the bar, so the glyph swaps in place. */
+  .nav-drawer[open] .nav-drawer__toggle {
+    position: fixed;
+    inset-block-start: calc((var(--height-header) - var(--bar-control)) / 2);
+    inset-inline-end: var(--bar-inline);
+    z-index: calc(var(--z-header) + 2);
+    color: var(--text-strong);
+  }
+
+  .nav-drawer__panel {
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-header) + 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--canvas);
+  }
+
+  /* Repeats the brand rather than showing the bar underneath, so the panel is
+     whole on its own and does not depend on where the page happens to be
+     scrolled to. */
+  /* Laid out like the bar it covers: the brand, then the search control where
+     that bar puts it at this width. */
+  .nav-drawer__bar {
+    max-width: var(--width-wide);
+    margin-inline: auto;
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--bar-gap);
+    block-size: var(--height-header);
+    padding-inline: var(--bar-inline);
+    border-block-end: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .nav-drawer__nav {
+    padding: var(--space-5) var(--space-5) 0;
+  }
+
+  .nav-drawer__list,
+  .nav-drawer__sublist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-drawer__list > li + li {
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .nav-drawer__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    color: var(--text-strong);
+    font-family: var(--font-display);
+    font-size: var(--text-md);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+  }
+
+  .nav-drawer__link:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__group-summary {
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .nav-drawer__group-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav-drawer__group-summary svg {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  /* The plus loses its upright and reads as a minus once the group is open. */
+  .nav-drawer__group[open] .plus-glyph__bar {
+    opacity: 0;
+  }
+
+  .nav-drawer__subgroup {
+    padding-block-end: var(--space-4);
+  }
+
+  .nav-drawer__subtitle {
+    margin-block-end: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .nav-drawer__sublink {
+    display: block;
+    padding-block: var(--space-2);
+    padding-inline-start: var(--space-4);
+    color: var(--text);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .nav-drawer__sublink:hover {
+    color: var(--accent);
+  }
+
+  .nav-drawer__appearance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin: var(--space-6) var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    font-size: var(--text-md);
+    color: var(--text-strong);
+  }
+
+  .nav-drawer__socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  /* ---------------------------------------------------------------------
+   * The narrow bar: brand, search, and the drawer button. Everything else
+   * the bar carries is inside the drawer, so nothing is offered twice.
+   * ------------------------------------------------------------------ */
+
+  @media (max-width: 1199px) {
+    .nav-drawer {
+      display: block;
+    }
+
+    .header__actions {
+      display: none;
+    }
+
+    /* A fixed panel is positioned against the viewport only while no ancestor
+       filters, and this one blurs what is behind it. */
+    .header {
+      background: var(--canvas);
+      backdrop-filter: none;
+    }
+  }
+
+  /* Sticky is worth a row of pixels on a laptop; on a phone it is a row of
+     pixels out of very few, and the drawer is reached from the top anyway. */
+  @media (max-width: 719px) {
+    .header {
+      position: static;
+    }
+
+    /* Once the trigger is a glyph rather than a field it belongs with the
+       other glyph, on the thumb side, leaving the brand the whole left. The
+       two are reordered rather than moved, so the tab order still runs from
+       the brand rightwards. */
+    .header__inner > .search-trigger {
+      order: 1;
+    }
+
+    .nav-drawer {
+      order: 2;
+    }
+
+    /* The drawer's bar follows suit, and holds open the space the close button
+       would take if it were still in the flow. That is what stops the search
+       control sliding across as the drawer opens. */
+    .nav-drawer__bar {
+      justify-content: space-between;
+    }
+
+    .nav-drawer__search {
+      margin-inline-end: calc(var(--bar-control) + var(--bar-gap));
+    }
+  }
+}

@@ -1,0 +1,268 @@
+/**
+ * Facet design tokens. The only file allowed to contain a colour literal.
+ *
+ * One hue, 251, the mark's own: #123456 at every lightness the site needs.
+ * Ink and paper come from its desaturated end, signal from its saturated one,
+ * and the accent is rare on purpose.
+ *
+ * Authored in OKLCH and expressed with light-dark(), so the system preference
+ * needs no JavaScript and no duplicated dark block, and data-theme still wins.
+ */
+
+@layer tokens {
+  :root {
+    color-scheme: light dark;
+
+    /* ---------------------------------------------------------------------
+     * Palette primitives. Never referenced outside this file.
+     *
+     * Ink and accent share hue 251 and separate by chroma: ink stays under
+     * 0.045, the accent runs 0.11 to 0.15. That gap is what makes an active
+     * item read as active, so narrowing it weakens every signal on the site.
+     *
+     * Accent chroma sits at 92% of what hue 251 holds at each lightness, which
+     * is why the numbers are not round; the last 8% is headroom against
+     * displays that clip.
+     * ------------------------------------------------------------------ */
+
+    --navy-950: oklch(0.1700 0.028 251);
+    --navy-900: oklch(0.2000 0.030 251);
+    --navy-850: oklch(0.2400 0.032 251);
+    --navy-800: oklch(0.2800 0.045 251);
+    /* #123456 exactly, at more than double the ink ramp's chroma. A line or a
+       surface wants --navy-750: same lightness, the ramp's chroma. */
+    --navy-750: oklch(0.3192 0.032 251);
+    --navy-700: oklch(0.3192 0.0725 251);
+    --navy-600: oklch(0.3800 0.032 251);
+    --navy-500: oklch(0.4200 0.035 251);
+    --navy-400: oklch(0.5400 0.028 251);
+    --navy-300: oklch(0.6600 0.022 251);
+    --navy-200: oklch(0.8000 0.020 251);
+    --navy-150: oklch(0.8800 0.010 251);
+    --navy-100: oklch(0.9200 0.008 251);
+    --navy-50: oklch(0.9650 0.005 251);
+    --navy-25: oklch(0.9812 0.0034 251);
+    --white: oklch(1 0 0);
+
+    /* The same blue, saturated, for everything that has to be noticed.
+       --blue-600 resolves to #125d9e and --blue-400 to #85bdfa. */
+    --blue-700: oklch(0.4000 0.1081 251);
+    --blue-600: oklch(0.4700 0.1265 251);
+    --blue-500: oklch(0.5751 0.1544 251);
+    --blue-400: oklch(0.7829 0.1050 251);
+    --blue-300: oklch(0.8700 0.0608 251);
+    --blue-100: oklch(0.9450 0.0250 251);
+
+    --verdigris-600: oklch(0.5100 0.070 189);
+    --verdigris-400: oklch(0.7400 0.075 185);
+
+    --violet-600: oklch(0.4700 0.150 300);
+    --violet-400: oklch(0.7900 0.110 300);
+
+    --amber-600: oklch(0.5300 0.110 68);
+    --amber-400: oklch(0.8000 0.120 80);
+    --rose-600: oklch(0.5200 0.170 25);
+    --rose-400: oklch(0.7400 0.140 25);
+
+    /* ---------------------------------------------------------------------
+     * Semantic surfaces and ink.
+     *
+     * In light the page is cool paper and cards lift to pure white; in dark
+     * the page is ink and elevation is surfaces getting lighter, never shadow.
+     * ------------------------------------------------------------------ */
+
+    --canvas: light-dark(var(--navy-25), var(--navy-900));
+    /* Not pure white; --surface-raised is, and the two need a step between
+       them. */
+    --surface: light-dark(oklch(0.9950 0.002 251), var(--navy-850));
+    --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
+    /* One step above surface, not three: it must stay the lightest ground in
+       dark and still carry --text-muted at 4.5:1. */
+    --surface-raised: light-dark(var(--white), var(--navy-800));
+    --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
+
+    --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
+    --text: light-dark(var(--navy-500), var(--navy-200));
+    --text-muted: light-dark(var(--navy-400), var(--navy-300));
+
+    --border-subtle: light-dark(var(--navy-100), var(--navy-750));
+    --border: light-dark(var(--navy-150), var(--navy-600));
+    --border-strong: light-dark(var(--navy-400), var(--navy-400));
+
+    --accent: light-dark(var(--blue-600), var(--blue-400));
+    --accent-hover: light-dark(var(--blue-700), var(--blue-300));
+    --accent-contrast: light-dark(var(--white), var(--navy-950));
+    --accent-wash: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 15%, transparent)
+    );
+    --accent-line: light-dark(var(--blue-500), var(--blue-400));
+
+    --info: light-dark(var(--verdigris-600), var(--verdigris-400));
+    --warning: light-dark(var(--amber-600), var(--amber-400));
+    --danger: light-dark(var(--rose-600), var(--rose-400));
+
+    /* Named for what they encode, not the colour they happen to be. */
+    --diagram-boundary: var(--accent);
+    --diagram-outside: light-dark(var(--verdigris-600), var(--verdigris-400));
+
+    /* Opaque: the boundary and the arrows are drawn underneath the boxes, and
+       a box you can read a line through looks like a mistake. */
+    --diagram-fill: light-dark(var(--navy-25), var(--navy-850));
+    --diagram-fill-active: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 15%, var(--navy-850))
+    );
+
+    /* Halfway to chosen, so halfway in colour. Mixed rather than picked, so it
+       stays in the middle if either end changes. */
+    --diagram-fill-hover: color-mix(in oklch, var(--diagram-fill-active) 50%, var(--diagram-fill));
+
+    /* light-dark() resolves one value and a shadow is several, so the theme
+       switch happens on the tint and the shadows compose from it. */
+    --shadow-tint-near: light-dark(oklch(0.28 0.045 251 / 0.06), oklch(0 0 0 / 0.32));
+    --shadow-tint-far: light-dark(oklch(0.28 0.045 251 / 0.09), oklch(0 0 0 / 0.28));
+
+    --shadow-sm: 0 1px 2px var(--shadow-tint-near);
+    --shadow-md: 0 1px 2px var(--shadow-tint-near), 0 4px 14px var(--shadow-tint-far);
+    --shadow-lg: 0 2px 4px var(--shadow-tint-near), 0 14px 40px var(--shadow-tint-far);
+
+    --selection-bg: light-dark(
+      var(--blue-100),
+      color-mix(in oklch, var(--blue-400) 30%, transparent)
+    );
+    --selection-fg: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
+
+    --code-bg: light-dark(var(--navy-50), var(--navy-950));
+    --code-border: light-dark(var(--navy-100), var(--navy-750));
+
+    /* ---------------------------------------------------------------------
+     * Syntax highlighting. Shiki reads a CSS-variables theme, so the code
+     * palette belongs to the design system rather than to an editor theme.
+     *
+     * Nothing here comes near the accent, and nothing uses the 250-285 band it
+     * owns: a page holds a hundred keywords and eight pieces of real signal, so
+     * an accent-coloured keyword spends the accent where it does not matter.
+     * Keywords take the navy ramp, strings teal, functions violet, constants
+     * amber, none of which can be mistaken for a link.
+     * ------------------------------------------------------------------ */
+
+    --syn-foreground: light-dark(var(--navy-800), oklch(0.9000 0.015 251));
+    --syn-token-keyword: light-dark(var(--navy-500), var(--navy-200));
+    --syn-token-string: light-dark(oklch(0.4700 0.075 189), var(--verdigris-400));
+    --syn-token-string-expression: var(--syn-token-string);
+    --syn-token-function: light-dark(var(--violet-600), var(--violet-400));
+    --syn-token-constant: light-dark(var(--amber-600), var(--amber-400));
+    --syn-token-parameter: light-dark(var(--navy-500), var(--navy-200));
+    --syn-token-punctuation: light-dark(var(--navy-400), var(--navy-300));
+    --syn-token-comment: light-dark(var(--navy-400), var(--navy-300));
+    --syn-token-link: light-dark(var(--violet-600), var(--violet-400));
+    --syn-token-inserted: light-dark(oklch(0.4700 0.100 150), oklch(0.7900 0.090 150));
+    --syn-token-deleted: light-dark(var(--rose-600), var(--rose-400));
+    --syn-token-changed: light-dark(var(--amber-600), var(--amber-400));
+
+    /* ---------------------------------------------------------------------
+     * Typography. Raleway sets the voice, Heebo carries the reading, and
+     * JetBrains Mono does every label, so the site annotates itself the way a
+     * drawing does.
+     * ------------------------------------------------------------------ */
+
+    --font-display: 'Raleway', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --text-2xs: 0.6875rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.8125rem;
+    --text-md: 0.9375rem;
+    --text-base: 1.0625rem;
+    --text-lg: 1.1875rem;
+    /* Clamped so h3 tracks h2 down at narrow widths. Left static, the two
+       landed 2px apart on a phone and the nesting stopped reading. */
+    --text-xl: clamp(1.1875rem, 1.05rem + 0.55vw, 1.375rem);
+    --text-2xl: clamp(1.5rem, 1.28rem + 0.9vw, 1.9375rem);
+    --text-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem);
+    --text-4xl: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);
+
+    --leading-tight: 1.1;
+    --leading-snug: 1.3;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.68;
+
+    --tracking-tight: -0.022em;
+    --tracking-snug: -0.011em;
+    --tracking-normal: 0;
+    --tracking-label: 0.11em;
+
+    --weight-normal: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    /* ---------------------------------------------------------------------
+     * Space, on a 4px grid that opens up as it climbs.
+     * ------------------------------------------------------------------ */
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+    --space-9: 6rem;
+    --space-10: 8rem;
+
+    --section-gap: clamp(var(--space-8), 5vw, var(--space-10));
+
+    /* ---------------------------------------------------------------------
+     * Shape, measure and motion.
+     * ------------------------------------------------------------------ */
+
+    --radius-xs: 3px;
+    --radius-sm: 5px;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-pill: 999px;
+
+    /* Buttons round a step further than the surfaces around them, so a control
+       reads as pressable against a panel that does not. Named rather than used
+       directly, because the whole button family has to move together or the
+       header ends up with two radii in one row. */
+    --radius-button: var(--radius-md);
+
+    /* The reading measure: 77 to 84 characters, counted from real line boxes.
+       In rem rather than ch, because ch resolves against the font of whatever
+       reads it, and a heading would take three times the width of the text. */
+    --measure-prose: 40.6rem;
+    /* Code is not prose and does not want the reading measure. A code group's
+       tab strip is as wide as the filenames in it, and on the home page that is
+       wider than 68ch, so the strip was clipping its last tab. */
+    --measure-code: 52rem;
+    --width-content: 1180px;
+    --width-wide: 1380px;
+    --width-sidebar: 16rem;
+    --width-toc: 14rem;
+    --height-header: 4rem;
+
+    --ease-out: cubic-bezier(0.33, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.3, 0.64, 1);
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 280ms;
+
+    --z-header: 40;
+    --z-overlay: 60;
+  }
+
+  /* An explicit choice overrides the system preference and switches every
+     light-dark() pair above in one move. */
+  :root[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+  }
+}

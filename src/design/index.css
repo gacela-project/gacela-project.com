@@ -1,0 +1,37 @@
+/**
+ * Facet: the design system for gacela-project.com.
+ *
+ * The cascade layers below are the architecture. A rule lands in exactly one
+ * of them, and later layers win regardless of selector specificity, which is
+ * why nothing in this system needs !important or a selector chain.
+ *
+ * Imports are inlined at build time, so this file costs one request.
+ */
+
+@layer reset, tokens, base, layout, components, utilities;
+
+@import url('reset.css');
+@import url('tokens.css');
+@import url('fonts.css');
+@import url('base.css');
+@import url('layout.css');
+
+@import url('components/button.css');
+@import url('components/header.css');
+@import url('components/footer.css');
+@import url('components/sidebar.css');
+@import url('components/toc.css');
+@import url('components/prose.css');
+@import url('components/code.css');
+@import url('components/copy.css');
+@import url('components/callout.css');
+@import url('components/hero.css');
+@import url('components/diagram.css');
+@import url('components/index-list.css');
+@import url('components/card-grid.css');
+@import url('components/stat-row.css');
+@import url('components/search.css');
+@import url('components/team.css');
+@import url('components/design-system.css');
+
+@import url('utilities.css');

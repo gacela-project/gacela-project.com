@@ -1,0 +1,109 @@
+/**
+ * Home page hero.
+ *
+ * The thesis on the left, the module diagram on the right. The diagram is the
+ * argument, not an illustration of it, so it gets the larger half at desktop
+ * width and leads on mobile only after the sentence that explains it.
+ */
+
+@layer components {
+  /* Less room below than a section gets. Every other boundary on the page is
+     144px split around a hairline rule, and the rule is what keeps that from
+     reading as a void; the hero has no rule under it, so it gives back a third
+     of its share. */
+  .hero {
+    padding-block: clamp(var(--space-7), 6vw, var(--space-9)) var(--space-7);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    align-items: center;
+    gap: clamp(var(--space-6), 4vw, var(--space-8));
+  }
+
+  @media (max-width: 979px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .hero__title {
+    font-size: var(--text-4xl);
+    font-weight: var(--weight-bold);
+    line-height: 0.98;
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+
+  /* Emphasis, not signal. This word had the accent, and at 64px it carried
+     more accent area than everything else above the fold put together: the
+     primary button, the diagram's selected class and the note's link were all
+     competing with it, four carriers where the design system allows one. The
+     weight and the size already do the emphasising, so it takes the strong ink
+     and gives the accent back to the one thing asking to be clicked. */
+  .hero__title em {
+    font-style: normal;
+    color: var(--text-strong);
+  }
+
+  .hero__lede {
+    margin-block-start: var(--space-5);
+    max-width: 34rem;
+    font-size: var(--text-lg);
+    line-height: var(--leading-normal);
+    color: var(--text);
+    text-wrap: pretty;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+  }
+
+  .hero__install {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-block-start: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--surface-sunken);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--text-strong);
+    max-width: max-content;
+  }
+
+  .hero__install-prompt {
+    color: var(--accent);
+    user-select: none;
+  }
+
+  .hero__install-copy {
+    display: none;
+  }
+
+  :root[data-js] .hero__install-copy {
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin-inline-start: var(--space-2);
+    border-radius: var(--radius-xs);
+    color: var(--text-muted);
+  }
+
+  .hero__install-copy:hover {
+    color: var(--accent);
+  }
+
+  .hero__install-copy svg {
+    inline-size: 0.8125rem;
+    block-size: 0.8125rem;
+  }
+}

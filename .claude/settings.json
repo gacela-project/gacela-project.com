@@ -1,4 +1,30 @@
 {
-    "$schema": "https://json.schemastore.org/claude-code-settings.json",
-    "includeCoAuthoredBy": false
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run lint:links)",
+      "Bash(npm run check)",
+      "Bash(npx vitest run:*)",
+      "Bash(node src/forge/cli/*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-conventions.mjs\""
+          }
+        ]
+      }
+    ]
+  }
 }
