@@ -67,5 +67,57 @@ function init() {
   })
 }
 
+/**
+ * The mobile drawer.
+ *
+ * It is a details element too, but unlike the Reference menu it covers the
+ * whole viewport when open. That makes two things the platform does not give
+ * it: Escape does not close it, and Tab walks straight out of the panel onto
+ * the page underneath, which is still there and now invisible behind an opaque
+ * surface. A reader tabbing through the drawer fell out of it into links they
+ * could not see.
+ *
+ * Everything outside the panel is marked inert while it is open, so the
+ * browser's own focus order skips it. Driven by the details element's toggle
+ * event, which fires for both directions, so the flag cannot be left on.
+ */
+function initDrawer() {
+  const drawer = document.querySelector('[data-nav-drawer]')
+  const bar = drawer?.closest('.header__inner')
+  const header = drawer?.closest('header')
+
+  /* Nothing rather than something wrong. Without the two ancestors the filters
+     below would keep the header in the list, and inerting the header inerts
+     the drawer inside it: the panel would open and refuse every key. */
+  if (drawer === null || bar === undefined || header === undefined) return
+
+  const outside = () => [
+    /* The search dialog is left out. It is display:none until it opens, and
+       when it does open showModal() makes the rest of the page inert by
+       itself, so marking it here would only break the search button the
+       drawer itself offers. */
+    ...Array.from(document.body.children).filter(
+      (element) => element !== header && element.tagName !== 'DIALOG',
+    ),
+    ...Array.from(bar.children).filter((element) => element !== drawer),
+  ]
+
+  drawer.addEventListener('toggle', () => {
+    for (const element of outside()) element.inert = drawer.open
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !drawer.open) return
+
+    drawer.open = false
+    for (const element of outside()) element.inert = false
+    /* Focus would otherwise be left on an element that is now hidden. */
+    drawer.querySelector('summary')?.focus()
+  })
+}
+
 /* Module scripts are deferred, so the markup this needs is already parsed. */
-if (typeof document !== 'undefined') init()
+if (typeof document !== 'undefined') {
+  init()
+  initDrawer()
+}
