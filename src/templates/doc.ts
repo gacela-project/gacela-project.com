@@ -1,3 +1,4 @@
+import { mirrorPathForRoute } from '../forge/agents/index.ts'
 import { attrs, html, raw, type Raw } from '../forge/render/index.ts'
 import type { Heading, NavState, RenderedPage, SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
@@ -89,6 +90,12 @@ function articleFooter(context: DocContext): Raw {
     <a href="${editUrl}" target="_blank" rel="noreferrer"
       >Edit this page on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
     >
+    <!-- The head advertises the same file to machines, and the docs index
+         explains the convention, but neither helps a reader who is on the page
+         and wants its source. This is that, and it is a plain link: fetching
+         and copying it would need script for something the browser already
+         does. -->
+    <a href="${mirrorPathForRoute(context.page.route)}">View as Markdown</a>
     <a href="${context.site.repository}/issues/new" target="_blank" rel="noreferrer"
       >Report a problem<span class="visually-hidden"> (opens in a new tab)</span></a
     >
