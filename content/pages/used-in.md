@@ -6,7 +6,7 @@ description: Explore real Gacela architecture and code from the Phel language pr
 # Gacela in production: Phel
 
 <p>
-  <a href="https://phel-lang.org/" rel="noreferrer" aria-label="Phel Lang">
+  <a href="https://phel-lang.org/" target="_blank" rel="noreferrer" aria-label="Phel Lang (opens in a new tab)">
     <svg width="150" height="128" viewBox="0 0 200 170" fill="none" stroke="currentColor" stroke-width="4" aria-hidden="true">
       <path d="M6 66l95 96h36V93l-36-74H42L6 56v106h36l24-35"/>
       <path d="M137 93l58-3-12-58-32-26h-34l-16 13-23 9-12 22 46 52z"/>
