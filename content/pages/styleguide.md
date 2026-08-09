@@ -141,6 +141,33 @@ the documentation column and on a full-width page.
   </a>
 </div>
 
+## Index list
+
+The workhorse of the marketing pages. A table of contents rather than a grid of cards, because
+a framework's feature set is a reference, and a reference should be scannable in one column
+pass. The arrow appears on hover and on focus; only the title takes the accent.
+
+<ul class="index-list" role="list">
+  <li class="index-list__item">
+    <a class="index-list__link" href="/styleguide">
+      <span>
+        <span class="index-list__title">An entry</span>
+        <span class="index-list__summary">One line of summary, long enough to say what the page covers</span>
+      </span>
+      <span class="index-list__arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </li>
+  <li class="index-list__item">
+    <a class="index-list__link" href="/styleguide">
+      <span>
+        <span class="index-list__title">A second entry</span>
+        <span class="index-list__summary">Two columns while they fit, one when they do not</span>
+      </span>
+      <span class="index-list__arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </li>
+</ul>
+
 ## Stat row
 
 A few figures that establish scale before the prose about them starts. Three or four
@@ -231,8 +258,41 @@ Hairline rules only. A filled header band would out-shout the headings around it
 
 > The Facade is the entry point of your module.
 
+## Documentation furniture
+
+Two components every documentation page carries. The pager closes the page with its
+neighbours in reading order; the inline table of contents is the same list as the sidebar
+TOC, folded into a disclosure for the widths where the sidebar is gone.
+
+The disclosure below is therefore only visible under 1180px, which is the point the sidebar
+TOC takes over. Narrow the window to review it.
+
+<nav class="pager" aria-label="Styleguide example">
+  <a class="pager__link pager__link--previous" href="/styleguide" rel="prev">
+    <span class="pager__direction">Previous</span>
+    <span class="pager__title">The page before</span>
+  </a>
+  <a class="pager__link pager__link--next" href="/styleguide" rel="next">
+    <span class="pager__direction">Next</span>
+    <span class="pager__title">The page after</span>
+  </a>
+</nav>
+
+<details class="toc-inline">
+  <summary class="toc-inline__summary"><svg class="disclosure-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>On this page</summary>
+  <div class="toc-inline__panel">
+    <p class="toc__title">On this page</p>
+    <ul class="toc__list" role="list">
+      <li class="toc__item toc__item--2"><a class="toc__link" href="#colour">A second-level heading</a></li>
+      <li class="toc__item toc__item--3"><a class="toc__link" href="#surfaces">A third-level heading, indented</a></li>
+    </ul>
+  </div>
+</details>
+
 ## Links
 
 Internal links such as [the Factory](/docs/factory) sit in the accent colour. External
 links such as [Packagist](https://packagist.org/packages/gacela-project/gacela) look the
-same but carry `rel="noreferrer"`.
+same, but they open in a new tab and say so: they carry `target="_blank"`,
+`rel="noreferrer"`, and a visually hidden "(opens in a new tab)" so the announcement is not
+left to sighted users alone.
