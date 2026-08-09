@@ -14,36 +14,20 @@
     color: var(--text);
   }
 
-  /* Two measures, but only on a page that has the room for them.
+  /* One measure per page, and on a standalone page it is the wider one.
    *
-   * A standalone page carries no sidebar and no table of contents, so holding
-   * its whole body to the reading measure spent the rest of the screen on
-   * nothing: the code on /used-in and the people on /team were as narrow as a
-   * paragraph. Sentences still take 68 characters, because they get no better
-   * for being given more; the blocks that are not sentences take the column.
-   * Both are centred, so the two share an axis.
+   * These pages carry no sidebar and no table of contents, so the reading
+   * measure alone spent the rest of the screen on nothing. Capping only the
+   * text and letting the rest fill the column was worse than either: a
+   * paragraph started 91px inside the table above it, so the body had two left
+   * edges and no line to hang either on. Every child takes the column now, and
+   * the page has one edge.
    *
-   * Scoped to that container on purpose. In the documentation the article is
-   * 756px and every child already fills it, so the same rules would buy a code
-   * block 52px on each side and cost it the left edge it shares with the
-   * prose beside it. */
+   * Scoped to this container. The documentation article is 756px and its
+   * children already fill it, so the same rule would change nothing there
+   * except to break the alignment it already has. */
   .container--prose .prose {
     max-width: var(--measure-code);
-  }
-
-  .container--prose .prose > * {
-    max-width: var(--measure-prose);
-    margin-inline: auto;
-  }
-
-  .container--prose .prose > table,
-  .container--prose .prose > figure,
-  .container--prose .prose > .code-block,
-  .container--prose .prose > .code-group,
-  .container--prose .prose > .stat-row,
-  .container--prose .prose > .card-grid,
-  .container--prose .prose > .team {
-    max-width: none;
   }
 
   .prose > * + * {
