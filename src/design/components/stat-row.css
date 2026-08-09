@@ -1,0 +1,40 @@
+/**
+ * Stat row: a handful of figures that establish the scale of something before
+ * the prose about it starts.
+ *
+ * The figure leads and the label follows in the same order a reader scans, so
+ * the number is set large and the label small underneath it. Three or four
+ * entries is the useful range; past that a table reads better.
+ */
+
+@layer components {
+  .stat-row {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    margin-block: var(--space-5);
+    padding: var(--space-5);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+  }
+
+  .stat-row__stat strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+    color: var(--text-strong);
+  }
+
+  .stat-row__stat span {
+    display: block;
+    margin-block-start: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+}

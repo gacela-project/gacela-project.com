@@ -141,6 +141,17 @@ the documentation column and on a full-width page.
   </a>
 </div>
 
+## Stat row
+
+A few figures that establish scale before the prose about them starts. Three or four
+entries is the useful range; past that a table reads better.
+
+<div class="stat-row">
+  <div class="stat-row__stat"><strong>17+</strong><span>application modules</span></div>
+  <div class="stat-row__stat"><strong>PHP 8.4</strong><span>declared platform</span></div>
+  <div class="stat-row__stat"><strong>MIT</strong><span>open-source license</span></div>
+</div>
+
 ## Code
 
 A framed block with a mono caption bar rather than a filled slab, so a page of
