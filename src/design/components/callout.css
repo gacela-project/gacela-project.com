@@ -9,8 +9,6 @@
 
     margin-block: var(--space-5);
     padding: var(--space-4) var(--space-5);
-    border-inline-start: 2px solid var(--callout-accent);
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     background: color-mix(in oklch, var(--callout-accent) 7%, transparent);
     font-size: var(--text-md);
   }
