@@ -34,14 +34,27 @@ jobs:
 
       - name: Compare with recorded version
         id: current
+        env:
+          LATEST_VERSION: ${{ steps.latest.outputs.version }}
         run: |
           set -euo pipefail
           current=$(jq -r '.version' data/gacela.json)
           echo "Recorded version: $current"
           echo "version=$current" >> "$GITHUB_OUTPUT"
 
+          # Only ever forwards. An inequality test alone would also fire when
+          # the recorded version is the newer of the two, which happens if a
+          # release is retagged or pulled, and would open a pull request that
+          # downgrades the site.
+          newest=$(printf '%s\n%s\n' "$current" "$LATEST_VERSION" | sort -V | tail -1)
+          if [ "$current" != "$LATEST_VERSION" ] && [ "$newest" = "$LATEST_VERSION" ]; then
+            echo "outdated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "outdated=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Open pull request
-        if: steps.latest.outputs.version != steps.current.outputs.version
+        if: steps.current.outputs.outdated == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LATEST_VERSION: ${{ steps.latest.outputs.version }}
