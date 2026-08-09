@@ -385,7 +385,6 @@ function siteFooter(context: ShellContext): Raw {
           <span class="footer__wordmark">${site.title}</span>
         </a>
         <p class="footer__tagline">${site.tagline}</p>
-        <p class="footer__copyright">&copy; 2021&ndash;${year} ${site.title}. All rights reserved.</p>
       </div>
 
       <!-- No heading. It read "Project" over the only list in the footer, so it
@@ -412,6 +411,7 @@ function siteFooter(context: ShellContext): Raw {
             >
           </li>
         </ul>
+        <p class="footer__copyright">&copy; 2021&ndash;${year} ${site.title}. All rights reserved.</p>
       </div>
     </div>
   </footer>`

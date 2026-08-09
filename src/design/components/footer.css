@@ -55,6 +55,7 @@
      the legal line above the tagline it sits under in the reading order. */
   .footer__copyright {
     margin-block-start: var(--space-4);
+    text-align: end;
     font-size: var(--text-sm);
     color: var(--text-muted);
   }
@@ -90,6 +91,12 @@
   @media (max-width: 719px) {
     .footer__list {
       justify-content: flex-start;
+    }
+
+    /* And the copyright with them. Stacked there is no right-hand column for
+       either to sit against, only the one edge everything above them uses. */
+    .footer__copyright {
+      text-align: start;
     }
   }
 }
