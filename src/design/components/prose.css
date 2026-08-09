@@ -41,9 +41,11 @@
   }
 
   /* For a block that holds code rather than sentences, where the reading
-     measure only creates dead space to the right of it. */
+     measure only creates dead space to the right of it. Centred, so it sits
+     under the centred heading that introduces it rather than beside it. */
   .prose--code {
     max-width: var(--measure-code);
+    margin-inline: auto;
   }
 
   .prose h1 {

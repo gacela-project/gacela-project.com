@@ -152,9 +152,15 @@
     border-block-start: 1px solid var(--border-subtle);
   }
 
+  /* Centred, like the call to action that closes the page. These headings are
+     capped near 46rem for the lede's sake, and against a container of 1332 a
+     left-aligned block of that width leaves 650px of nothing beside it: the
+     section reads as though it had lost its right-hand column. */
   .section__head {
     max-width: 46rem;
+    margin-inline: auto;
     margin-block-end: var(--space-7);
+    text-align: center;
   }
 
   .section__title {
@@ -164,6 +170,7 @@
 
   .section__lede {
     margin-block-start: var(--space-4);
+    margin-inline: auto;
     max-width: 42rem;
     font-size: var(--text-lg);
     color: var(--text);
