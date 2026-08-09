@@ -158,6 +158,6 @@ Two things are worth picking up deliberately:
 - **`cache:warm` exits non-zero when a warmup fails.** A deploy step that ignored the exit code was silently green
   before, and will start failing on the problems it was already printing.
 
-Two fixes change behaviour you may have worked around: `ttl: 0` means "no expiry" in `InMemoryCacheStorage` as it always
+Two fixes change behavior you may have worked around: `ttl: 0` means "no expiry" in `InMemoryCacheStorage` as it always
 did in `FileCache`, and resolution hooks registered in `gacela.php` now fire inside module scopes as well as at the app
 level.

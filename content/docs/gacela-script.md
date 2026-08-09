@@ -48,7 +48,7 @@ vendor/bin/gacela list:modules [--detailed|-d] [<filter>]
 Scope which directories this (and `debug:modules`, `cache:warm`, `doctor`) scans with [
 `setAppModulePaths()`](/docs/bootstrap#application-module-paths).
 
-A module is recognised by any class that **descends from** `AbstractFacade`, not only a direct child of it. A project
+A module is recognized by any class that **descends from** `AbstractFacade`, not only a direct child of it. A project
 with its own base Facade in between (`ShopFacade extends AppBaseFacade extends AbstractFacade`) used to disappear from
 `list:modules`, `doctor`, `debug:graph` and `cache:warm`, with nothing reporting the omission.
 
