@@ -189,7 +189,7 @@ function searchTrigger(): Raw {
     aria-label="Search the documentation"
   >
     ${icons.search}
-    <span class="search-trigger__label">Search docs</span>
+    <span class="search-trigger__label">Search</span>
     <kbd class="search-trigger__hint" data-search-hint>&#8984;K</kbd>
   </button>`
 }
@@ -254,7 +254,7 @@ function siteFooter(context: ShellContext): Raw {
         </a>
         <p class="footer__tagline">${site.description}</p>
         <p class="footer__meta">
-          <span class="badge">PHP 8.1+</span>
+          <span class="badge">PHP 8.3+</span>
           <span class="badge">MIT</span>
           <span class="badge badge--accent">v${version}</span>
         </p>
