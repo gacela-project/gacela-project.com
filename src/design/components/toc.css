@@ -1,12 +1,29 @@
 @layer components {
   .toc__title {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    font-weight: var(--weight-normal);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-normal);
+    color: var(--text-strong);
     margin-block-end: var(--space-3);
+  }
+
+  /* The glyph sits on the label's own colour and matches the copy control's
+     icon above it, so the two read as one column of margin furniture. */
+  .toc__title > svg {
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Inside the narrow-screen disclosure the summary already says it, and the
+     nav carries the same words as its label. Saying it a third time, now at
+     the same weight as the summary, is noise. */
+  .toc-inline .toc__title {
+    display: none;
   }
 
   .toc__list {

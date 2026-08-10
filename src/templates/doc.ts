@@ -33,7 +33,10 @@ export function docLayout(context: DocContext): Raw {
         ${articleFooter(context)} ${pager(nav)}
       </article>
 
-      ${toc.length > 1 ? html`<nav class="docs__toc" aria-label="On this page">${tocList(toc)}</nav>` : ''}
+      <div class="docs__toc">
+        ${copyAsMarkdown(page.route)}
+        ${toc.length > 1 ? html`<nav aria-label="On this page">${tocList(toc)}</nav>` : ''}
+      </div>
     </div>
   </div>`
 }
@@ -59,8 +62,29 @@ export function docsSidebar(nav: NavState): Raw {
   )}`
 }
 
+/**
+ * Hands the reader the page's own markdown, for pasting into a model. It sits
+ * above the contents because it is about this page as a whole, the same thing
+ * the contents list describes.
+ *
+ * Copying needs the clipboard API, so the control is hidden until the document
+ * is marked as scripted. Without script the head still advertises the same file
+ * and the docs index explains the convention.
+ */
+function copyAsMarkdown(route: string): Raw {
+  return html`<button
+    type="button"
+    class="copy-md"
+    data-copy-markdown
+    data-markdown-src="${mirrorPathForRoute(route)}"
+  >
+    <span class="copy-md__icon">${icons.copy}</span>
+    <span class="copy-md__label">Copy as markdown</span>
+  </button>`
+}
+
 function tocList(headings: readonly Heading[]): Raw {
-  return html`<p class="toc__title">On this page</p>
+  return html`<p class="toc__title">${icons.contents}On this page</p>
     <ul class="toc__list" role="list">
       ${headings.map(
         (heading) => html`<li class="toc__item toc__item--${heading.depth}">
@@ -90,12 +114,6 @@ function articleFooter(context: DocContext): Raw {
     <a href="${editUrl}" target="_blank" rel="noreferrer"
       >Edit this page on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
     >
-    <!-- The head advertises the same file to machines, and the docs index
-         explains the convention, but neither helps a reader who is on the page
-         and wants its source. This is that, and it is a plain link: fetching
-         and copying it would need script for something the browser already
-         does. -->
-    <a href="${mirrorPathForRoute(context.page.route)}">View as Markdown</a>
     <a href="${context.site.repository}/issues/new" target="_blank" rel="noreferrer"
       >Report a problem<span class="visually-hidden"> (opens in a new tab)</span></a
     >

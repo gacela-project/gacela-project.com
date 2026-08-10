@@ -83,7 +83,7 @@
   }
 
   .search-dialog::backdrop {
-    background: color-mix(in oklch, var(--surface-inverse) 42%, transparent);
+    background: var(--scrim);
     backdrop-filter: blur(2px);
   }
 

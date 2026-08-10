@@ -64,4 +64,77 @@
     color: var(--accent);
   }
 
+  /* The markdown copy above the table of contents. A ghost control: it sits in
+     the margin beside the contents list and reads as quietly as those links do,
+     so it carries no border and no fill in any state. Hovering it moves the
+     colour alone, exactly as a contents link does. */
+  .copy-md {
+    display: none;
+  }
+
+  :root[data-js] .copy-md {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block: var(--space-6);
+    padding: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+    text-align: start;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  :root[data-js] .copy-md:hover {
+    color: var(--text-strong);
+  }
+
+  /* 16px, the size the contents glyph below it is drawn at. */
+  .copy-md__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .copy-md__icon > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      transform var(--duration-base) var(--ease-spring);
+  }
+
+  /* The same two-border tick the other copy controls draw, on the icon alone:
+     here the label reports the copy as well, so only the glyph swaps. */
+  .copy-md__icon::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 0.6em;
+    block-size: 0.32em;
+    border-inline-start: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    border-end-start-radius: 1px;
+    transform: translate(-55%, -70%) rotate(-45deg) scale(0);
+    opacity: 0;
+    transition:
+      transform var(--duration-base) var(--ease-spring),
+      opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .copy-md[data-copied] .copy-md__icon > svg {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  .copy-md[data-copied] .copy-md__icon::after {
+    transform: translate(-55%, -70%) rotate(-45deg) scale(1);
+    opacity: 1;
+  }
 }
