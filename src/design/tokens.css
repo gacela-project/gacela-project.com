@@ -25,9 +25,17 @@
      * displays that clip.
      * ------------------------------------------------------------------ */
 
+    /* Below the darkest ground, so it is never a surface. It exists to dim what
+       is behind a modal in dark, where every real surface is lighter than the
+       page and so cannot. */
+    --navy-1000: oklch(0.1200 0.026 251);
     --navy-950: oklch(0.1700 0.028 251);
     --navy-900: oklch(0.2000 0.030 251);
     --navy-850: oklch(0.2400 0.032 251);
+    /* The ramp's own chroma at a lightness between 850 and 800. What lifts off
+       the page in dark: 800 carries the brand's chroma, which on a panel the
+       size of the Reference menu reads as a blue pane rather than a dark one. */
+    --navy-825: oklch(0.2600 0.030 251);
     --navy-800: oklch(0.2800 0.045 251);
     /* #123456 exactly, at more than double the ink ramp's chroma. A line or a
        surface wants --navy-750: same lightness, the ramp's chroma. */
@@ -77,9 +85,20 @@
     --surface: light-dark(oklch(0.9950 0.002 251), var(--navy-850));
     --surface-sunken: light-dark(var(--navy-50), var(--navy-950));
     /* One step above surface, not three: it must stay the lightest ground in
-       dark and still carry --text-muted at 4.5:1. */
-    --surface-raised: light-dark(var(--white), var(--navy-800));
+       dark and still carry --text-muted at 4.5:1. It lifts by lightness alone,
+       on the ramp's chroma: raising both read as a blue panel floating over a
+       neutral page rather than the same material, nearer. */
+    --surface-raised: light-dark(var(--white), var(--navy-825));
     --surface-inverse: light-dark(var(--navy-800), var(--navy-25));
+
+    /* What a modal dims the page with. Both themes darken: the scrim is the
+       one thing on the site that is not a swap, because "further away" reads
+       as darker whichever theme is on, and inverting it in dark would light
+       the page up at the moment it is meant to recede. */
+    --scrim: light-dark(
+      color-mix(in oklch, var(--navy-800) 42%, transparent),
+      color-mix(in oklch, var(--navy-1000) 62%, transparent)
+    );
 
     --text-strong: light-dark(var(--navy-800), oklch(0.9600 0.010 251));
     --text: light-dark(var(--navy-500), var(--navy-200));
