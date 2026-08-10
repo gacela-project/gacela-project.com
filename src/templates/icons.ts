@@ -48,6 +48,17 @@ export const icons = {
 
   arrowRight: stroke('<path d="M4 12h15m-6-7 7 7-7 7"/>'),
 
+  /**
+   * Three lines of decreasing length, for the table of contents. Drawn on a
+   * 16 grid rather than the 24 the rest use: at this size the hairline weight
+   * is the point of it, and rescaling would coarsen it.
+   */
+  contents: raw(
+    '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.25" ' +
+      'stroke-linecap="square" aria-hidden="true">' +
+      '<path d="M1.83301 7.99992H14.1663M1.83301 3.83325H14.1663M1.83301 12.1666H7.66634"/></svg>',
+  ),
+
   copy: stroke(
     '<rect x="9" y="9" width="12" height="12" rx="2"/>' +
       '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',

@@ -19,6 +19,12 @@ const CONFIRM_MS = 1600
 const pending = new WeakMap()
 
 document.addEventListener('click', async (event) => {
+  const markdown = event.target instanceof Element ? event.target.closest('[data-copy-markdown]') : null
+  if (markdown) {
+    await copyMarkdown(markdown)
+    return
+  }
+
   const button = event.target instanceof Element ? event.target.closest('[data-copy]') : null
   if (!button) return
 
@@ -35,6 +41,39 @@ document.addEventListener('click', async (event) => {
 
   confirmOn(button)
 })
+
+/**
+ * The page's markdown lives in a file next to it, so the copy is a fetch. The
+ * label reports the result: it is the only thing on the control that a reader
+ * scanning the margin will read.
+ */
+async function copyMarkdown(button) {
+  const source = button.getAttribute('data-markdown-src')
+  const label = button.querySelector('.copy-md__label')
+  if (!source || !label) return
+
+  try {
+    const response = await fetch(source)
+    if (!response.ok) throw new Error(String(response.status))
+    await navigator.clipboard.writeText(await response.text())
+  } catch {
+    // Either the file did not arrive or the clipboard was refused. Claiming a
+    // copy that did not happen would be worse than saying nothing.
+    return
+  }
+
+  button.setAttribute('data-copied', '')
+  label.textContent = 'Copied'
+
+  clearTimeout(pending.get(button))
+  pending.set(
+    button,
+    setTimeout(() => {
+      button.removeAttribute('data-copied')
+      label.textContent = 'Copy as markdown'
+    }, CONFIRM_MS),
+  )
+}
 
 function confirmOn(button) {
   button.setAttribute('data-copied', '')
