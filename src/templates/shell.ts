@@ -1,5 +1,5 @@
 import { attrs, html, raw, render, type Raw } from '../forge/render/index.ts'
-import type { SiteConfig } from '../forge/types.ts'
+import type { NavGroup, SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
 
 export type ShellAssets = {
@@ -176,7 +176,7 @@ function navDrawer(context: ShellContext): Raw {
                         <span>Reference</span>
                         ${icons.plus}
                       </summary>
-                      ${site.sidebar.slice(1).map(
+                      ${referenceGroups(site).map(
                         (group) => html`<div class="nav-drawer__subgroup">
                           <p class="nav-drawer__subtitle">${group.title}</p>
                           <ul class="nav-drawer__sublist" role="list">
@@ -239,10 +239,13 @@ function siteHeader(context: ShellContext): Raw {
 
       <nav class="header__nav" aria-label="Main">
         ${site.headerLinks.map(
+          /* Marked only on the page it leads to. "Get started" used to claim
+             the whole of /docs, which put the accent on it from every
+             documentation page at once, next to a Reference menu already
+             showing where the reader is. */
           (link) => html`<a
               class="header__link"
               href="${link.route}"
-              ${raw(isActive(route, link.route) ? 'data-active' : '')}
               ${attrs({ 'aria-current': link.route === route ? 'page' : null })}
               >${link.title}</a
             >
@@ -280,12 +283,25 @@ function siteHeader(context: ShellContext): Raw {
 }
 
 /**
+ * The whole documentation tree, minus the one page the header already links.
+ *
+ * The "Get started" link beside the menu leads to /docs, so listing that route
+ * inside would make the panel argue with its own neighbour. Every other page
+ * stays: a reader deep in the docs has no other way to reach Quickstart or
+ * Upgrading from the header, and going by way of /docs to find them is a
+ * detour the menu exists to save.
+ */
+function referenceGroups(site: SiteConfig): readonly NavGroup[] {
+  return site.sidebar
+    .map((group) => ({ ...group, items: group.items.filter((item) => item.route !== '/docs') }))
+    .filter((group) => group.items.length > 0)
+}
+
+/**
  * The documentation tree, in the header.
  *
  * A details element, so it opens, closes and announces its state with no
- * JavaScript at all. The first sidebar group is left out: the "Get started"
- * link beside it already leads there, and repeating it inside would make the
- * panel argue with its own neighbour.
+ * JavaScript at all.
  */
 function referenceMenu(site: SiteConfig, route: string): Raw {
   return html`<details class="header__menu" data-header-menu>
@@ -295,18 +311,23 @@ function referenceMenu(site: SiteConfig, route: string): Raw {
     </summary>
 
     <div class="header__menu-panel">
-      ${site.sidebar.slice(1).map(
-        (group) => html`<div class="header__menu-group">
-          <p class="header__menu-title">${group.title}</p>
-          <ul class="header__menu-list" role="list">
-            ${group.items.map(
-              (item) => html`<li>
-                <a class="header__menu-link" href="${item.route}"${attrs({ 'aria-current': item.route === route ? 'page' : null })}>${item.title}</a>
-              </li>`,
-            )}
-          </ul>
-        </div>`,
-      )}
+      <!-- The tree scrolls inside this, not inside the panel: the panel carries
+           the strip that bridges the gap up to the summary, and a scroll
+           container would clip it away. -->
+      <div class="header__menu-scroll">
+        ${referenceGroups(site).map(
+          (group) => html`<div class="header__menu-group">
+            <p class="header__menu-title">${group.title}</p>
+            <ul class="header__menu-list" role="list">
+              ${group.items.map(
+                (item) => html`<li>
+                  <a class="header__menu-link" href="${item.route}"${attrs({ 'aria-current': item.route === route ? 'page' : null })}>${item.title}</a>
+                </li>`,
+              )}
+            </ul>
+          </div>`,
+        )}
+      </div>
     </div>
   </details>`
 }
@@ -415,8 +436,3 @@ function siteFooter(context: ShellContext): Raw {
   </footer>`
 }
 
-function isActive(route: string, target: string): boolean {
-  if (target.startsWith('/docs')) return route.startsWith('/docs')
-
-  return route === target
-}

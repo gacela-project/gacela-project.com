@@ -101,8 +101,7 @@
     color: var(--accent);
   }
 
-  .header__link[aria-current='page'],
-  .header__link[data-active] {
+  .header__link[aria-current='page'] {
     color: var(--accent);
   }
 
@@ -155,9 +154,6 @@
     inset-inline-start: 50%;
     translate: -50% 0;
     z-index: var(--z-header);
-    display: grid;
-    grid-template-columns: repeat(3, minmax(9rem, 1fr));
-    gap: var(--space-5) var(--space-6);
     padding: var(--space-5);
     max-inline-size: min(44rem, calc(100vw - var(--space-6)));
     border: 1px solid var(--border);
@@ -175,6 +171,34 @@
     inset-inline: 0;
     inset-block-end: 100%;
     block-size: var(--space-3);
+  }
+
+  /* The tree is taller than a short window on a laptop, and a panel that runs
+     off the bottom of the screen hides whatever it ran off with. It stops at
+     the space the window has and scrolls the rest.
+
+     The chain is left alone, as the documentation sidebar leaves it: in a
+     window tall enough for the whole tree there is nothing here to scroll, and
+     a panel that swallows the gesture anyway reads as the page seizing up.
+     The header is sticky, so the page moving underneath does not take the
+     panel with it. */
+  .header__menu-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(9rem, 1fr));
+    gap: var(--space-5) var(--space-6);
+    max-block-size: calc(100svh - var(--height-header) - var(--space-8));
+    overflow-y: auto;
+    scrollbar-width: thin;
+
+    /* The links hang half a step to the left of their column so that their
+       hover fill sits around the text while the text itself stays aligned with
+       the group title. In the first column that overhang would fall outside
+       this box, and a scroll container clips on both axes however few of them
+       were asked for, cutting the fill off flush with the word. The box lends
+       the overhang its own padding and steps left by the same amount, so every
+       column is drawn the same and nothing moves. */
+    padding-inline-start: var(--space-2);
+    margin-inline-start: calc(var(--space-2) * -1);
   }
 
   .header__menu-title {
