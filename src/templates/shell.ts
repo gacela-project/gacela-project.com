@@ -42,6 +42,12 @@ export type ShellContext = {
    * in the other version when it exists, that version's landing page when not.
    */
   readonly versionTargets?: VersionTargets | undefined
+  /**
+   * The docs tree the Reference menus show. An archived page passes its frozen
+   * sidebar so every piece of chrome speaks for the version being read; left
+   * out, the menus carry the current documentation.
+   */
+  readonly docsTree?: readonly NavGroup[] | undefined
   readonly title: string
   readonly description: string
   /**
@@ -244,7 +250,7 @@ function navDrawer(context: ShellContext): Raw {
                         <span>Reference</span>
                         ${icons.plus}
                       </summary>
-                      ${referenceGroups(site).map(
+                      ${referenceGroups(context).map(
                         (group) => html`<div class="nav-drawer__subgroup">
                           <p class="nav-drawer__subtitle">${group.title}</p>
                           <ul class="nav-drawer__sublist" role="list">
@@ -317,7 +323,7 @@ function siteHeader(context: ShellContext): Raw {
               ${attrs({ 'aria-current': link.route === route ? 'page' : null })}
               >${link.title}</a
             >
-            ${link.route === '/docs' ? referenceMenu(site, route) : ''}`,
+            ${link.route === '/docs' ? referenceMenu(context) : ''}`,
         )}
       </nav>
 
@@ -358,9 +364,12 @@ function siteHeader(context: ShellContext): Raw {
  * stays: a reader deep in the docs has no other way to reach Quickstart or
  * Upgrading from the header, and going by way of /docs to find them is a
  * detour the menu exists to save.
+ *
+ * On an archived page the tree is the frozen one, and its landing entry stays:
+ * "Get started" still points at the current docs, so the two never collide.
  */
-function referenceGroups(site: SiteConfig): readonly NavGroup[] {
-  return site.sidebar
+function referenceGroups(context: ShellContext): readonly NavGroup[] {
+  return (context.docsTree ?? context.site.sidebar)
     .map((group) => ({ ...group, items: group.items.filter((item) => item.route !== '/docs') }))
     .filter((group) => group.items.length > 0)
 }
@@ -371,7 +380,9 @@ function referenceGroups(site: SiteConfig): readonly NavGroup[] {
  * A details element, so it opens, closes and announces its state with no
  * JavaScript at all.
  */
-function referenceMenu(site: SiteConfig, route: string): Raw {
+function referenceMenu(context: ShellContext): Raw {
+  const { route } = context
+
   return html`<details class="header__menu" data-header-menu>
     <summary class="header__link header__menu-summary">
       <span>Reference</span>
@@ -383,7 +394,7 @@ function referenceMenu(site: SiteConfig, route: string): Raw {
            the strip that bridges the gap up to the summary, and a scroll
            container would clip it away. -->
       <div class="header__menu-scroll">
-        ${referenceGroups(site).map(
+        ${referenceGroups(context).map(
           (group) => html`<div class="header__menu-group">
             <p class="header__menu-title">${group.title}</p>
             <ul class="header__menu-list" role="list">

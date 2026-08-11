@@ -101,6 +101,36 @@ describe('version menu', () => {
   })
 })
 
+describe('reference menu version scoping', () => {
+  /* The Reference menu only renders beside a "/docs" header link. */
+  const richer = {
+    ...site,
+    headerLinks: [{ title: 'Get started', route: '/docs' }],
+    sidebar: [
+      { title: 'Core', items: [{ title: 'Facade', route: '/docs/facade' }] },
+    ],
+  } as unknown as SiteConfig
+
+  it('lists the current tree by default', () => {
+    const html = shell({ site: richer })
+
+    expect(html).toContain('href="/docs/facade"')
+  })
+
+  /* On an archived page every piece of chrome speaks for the same version;
+     the switcher is the one cross-version control. */
+  it('lists the tree of the version being read when one is given', () => {
+    const html = shell({
+      site: richer,
+      route: '/docs/1.x/quickstart',
+      docsTree: [{ title: 'Old', items: [{ title: 'Quickstart', route: '/docs/1.x/quickstart' }] }],
+    })
+
+    expect(html).toContain('href="/docs/1.x/quickstart"')
+    expect(html).not.toContain('href="/docs/facade"')
+  })
+})
+
 describe('canonical override', () => {
   it('lets an archived page declare its current equivalent as canonical', () => {
     const html = shell({ route: '/docs/1.x/facade', canonicalRoute: '/docs/facade' })

@@ -37,6 +37,12 @@ export function renderPage(context: PageContext): string {
     versionTargets: targets,
     canonicalRoute: archive?.currentRoute,
     archiveLabel: archive?.label,
+    /* The Reference menus follow the version being read; the switcher is the
+       one control that crosses versions. */
+    docsTree:
+      page.version === undefined
+        ? undefined
+        : site.archives?.find((candidate) => candidate.version === page.version)?.sidebar,
     title: documentTitle(context),
     description: page.frontmatter.description ?? site.description,
     /* The same test the mirror writer uses, so the link and the file cannot
