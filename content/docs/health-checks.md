@@ -70,7 +70,7 @@ vendor/bin/gacela doctor
 Pass an optional namespace filter to restrict module checks. In CI, use `vendor/bin/gacela doctor --strict` so warnings
 also produce a failing exit code.
 
-## Several checks per module
+## Several checks per module [since 2.1]
 
 More than one check may report under the same `getModuleName()`. Gacela combines them into a single module result whose
 level is the **worst** one reported, and keeps every individual status under that result's `health_checks` metadata. A

@@ -27,7 +27,7 @@ includes:
     - vendor/gacela-project/gacela/phpstan-gacela.neon
 ```
 
-### Psalm
+### Psalm [since 2.1]
 
 ```xml
 <?xml version="1.0"?>
@@ -86,7 +86,7 @@ On top of the rules, both analysers gain two **types** they otherwise lack:
 the [pillar accessors](#typed-pillar-accessors), and [`getProvidedDependency()`](#typed-provided-dependencies) by
 class-string.
 
-Every finding carries the correction as well as the complaint. PHPStan renders it on its own 💡 line; Psalm appends it to
+Every finding carries the correction as well as the complaint. [since 2.1] PHPStan renders it on its own 💡 line; Psalm appends it to
 the message, because it has nowhere else to put it:
 
 ```text
@@ -245,7 +245,7 @@ services:
                 - App\Modules\Shared
 ```
 
-### Psalm
+### Psalm [since 2.1]
 
 One `<crossModule>` element enables both halves:
 
