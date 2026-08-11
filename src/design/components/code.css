@@ -240,6 +240,21 @@
     border: 1px solid var(--border-subtle);
     color: var(--text-strong);
     overflow-wrap: break-word;
+    /* A chip that wraps is several fragments. Cloned decoration closes each
+       one into a complete pill; sliced (the default) leaves the box open at
+       the break, with the background running off the edge of the line. */
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* Headings set --leading-tight, and the mono font's content box alone is
+     taller than that line box, so a wrapped chip painted over the line above
+     it. The chip gives up its block padding here (the mono box is tall enough
+     to keep it looking padded) and carries the leading its decoration needs;
+     the line box grows a few pixels, the glyphs above stay legible. */
+  .prose :is(h1, h2, h3, h4) code {
+    padding-block: 0;
+    line-height: var(--leading-normal);
   }
 
   a :not(pre) > code,
