@@ -53,3 +53,59 @@ describe('markdown alternate link', () => {
     expect(html).not.toContain('text/markdown')
   })
 })
+
+describe('version menu', () => {
+  const archived = {
+    ...site,
+    archives: [
+      {
+        version: '1.x',
+        label: '1.21.0',
+        sidebar: [{ title: 'Getting started', items: [{ title: 'Quickstart', route: '/docs/1.x/quickstart' }] }],
+      },
+    ],
+  } as unknown as SiteConfig
+
+  it('stays a plain release link while there is nothing to choose between', () => {
+    const html = shell()
+
+    expect(html).not.toContain('version-menu')
+    expect(html).toContain('releases/tag/2.1.0')
+  })
+
+  it('becomes a dropdown once an archive exists', () => {
+    const html = shell({ site: archived })
+
+    expect(html).toContain('<details class="version-menu')
+    expect(html).toContain('href="/docs"')
+    expect(html).toContain('href="/docs/1.x"')
+    expect(html).toContain('1.21.0')
+  })
+
+  it('keeps the release notes reachable from inside the menu', () => {
+    const html = shell({ site: archived })
+
+    expect(html).toContain('releases/tag/2.1.0')
+  })
+
+  it('shows the version the page belongs to on the summary', () => {
+    const html = shell({ site: archived, route: '/docs/1.x/quickstart', archiveLabel: '1.21.0' })
+
+    expect(html).toMatch(/<summary[^>]*>[\s\S]*?1\.21\.0[\s\S]*?<\/summary>/)
+  })
+
+  it('is present in the mobile drawer as well', () => {
+    const html = shell({ site: archived })
+
+    expect(html.match(/class="version-menu/g)?.length).toBeGreaterThanOrEqual(2)
+  })
+})
+
+describe('canonical override', () => {
+  it('lets an archived page declare its current equivalent as canonical', () => {
+    const html = shell({ route: '/docs/1.x/facade', canonicalRoute: '/docs/facade' })
+
+    expect(html).toContain('<link rel="canonical" href="https://gacela-project.com/docs/facade" />')
+    expect(html).toContain('<meta property="og:url" content="https://gacela-project.com/docs/facade" />')
+  })
+})

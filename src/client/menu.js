@@ -57,13 +57,21 @@ function init() {
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return
 
+    let closed = false
+
     for (const menu of menus) {
       if (!menu.open) continue
 
       menu.open = false
+      closed = true
       /* Focus would otherwise be left on an element that is now hidden. */
       menu.querySelector('summary')?.focus()
     }
+
+    /* One Escape, one layer: closing a menu that lives inside the drawer must
+       not also close the drawer around it. The drawer's own Escape handler is
+       registered after this one, so stopping here leaves it for the next press. */
+    if (closed) event.stopImmediatePropagation()
   })
 }
 

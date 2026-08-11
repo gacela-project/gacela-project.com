@@ -259,6 +259,10 @@
        tab strip is as wide as the filenames in it, and on the home page that is
        wider than 68ch, so the strip was clipping its last tab. */
     --measure-code: 52rem;
+    /* Notes and banners are set in --text-sm, so the prose measure would hold
+       120 characters of them. This is the same 72-84 character target at the
+       smaller size. */
+    --measure-note: 24rem;
     --width-content: 1180px;
     --width-wide: 1380px;
     --width-sidebar: 16rem;

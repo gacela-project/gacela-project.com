@@ -59,7 +59,11 @@ function candidates(path: string): string[] {
   const clean = path.replace(/^\/+/, '')
 
   if (clean === '') return ['index.html']
-  if (extname(clean) !== '') return [clean]
+
+  /* extname alone cannot tell a real file extension from a route segment that
+     happens to contain a dot ("docs/1.x"), so the pretty candidates stay on
+     the list either way; an exact file still wins by coming first. */
+  if (extname(clean) !== '') return [clean, `${clean}.html`, `${clean}/index.html`]
 
   return [`${clean}.html`, `${clean}/index.html`]
 }

@@ -1,0 +1,152 @@
+/**
+ * The documentation version switcher.
+ *
+ * A details dropdown whose summary is the release badge, so it opens, closes
+ * and announces itself without script, like the header's other menus. It only
+ * exists once an archived line exists; until then the header keeps the plain
+ * badge link and none of this applies.
+ */
+
+@layer components {
+  .version-menu {
+    position: relative;
+  }
+
+  .version-menu__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  /* The badge class supplies the pill; the summary marker is the one thing it
+     must not keep. */
+  .version-menu__summary::marker,
+  .version-menu__summary::-webkit-details-marker {
+    display: none;
+    content: '';
+  }
+
+  .version-menu__summary svg {
+    inline-size: 0.75rem;
+    block-size: 0.75rem;
+  }
+
+  .version-menu__summary:hover,
+  .version-menu[open] .version-menu__summary {
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .version-menu__summary svg {
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+
+    .version-menu[open] .version-menu__summary svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  .version-menu__panel {
+    position: absolute;
+    /* Measured from the pill, which sits centred in the 64px bar, so this
+       lands the panel flush with the header's bottom rule, where the
+       Reference panel also hangs. */
+    inset-block-start: calc(100% + var(--space-4));
+    inset-inline-end: 0;
+    z-index: var(--z-header);
+    min-inline-size: 11rem;
+    margin: 0;
+    padding: var(--space-2);
+    border: 1px solid var(--border);
+    /* The Reference panel's radius: two dropdowns in one bar are a family. */
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* The strip that bridges the gap up to the pill. Without it the pointer
+     leaves the details on its way down to the panel, the menu closes under
+     the cursor, and the entries are unclickable in practice. The Reference
+     panel carries the same strip for the same reason. */
+  .version-menu__panel::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 100%;
+    block-size: var(--space-4);
+  }
+
+  /* The design system shows the panel in the page flow rather than floating. */
+  .version-menu__panel--static {
+    position: static;
+    margin-block-start: var(--space-2);
+  }
+
+  .version-menu__panel--static::before {
+    content: none;
+  }
+
+  .version-menu__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  /* Ink, not accent, on purpose: in a three-row panel the accent is already
+     spent on aria-current, and a second accent would outrank it. */
+  .version-menu__link:hover {
+    background: var(--surface-sunken);
+    color: var(--text-strong);
+  }
+
+  .version-menu__link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .version-menu__link[aria-current] {
+    color: var(--accent);
+  }
+
+  .version-menu__note {
+    font-size: var(--text-2xs);
+    color: var(--text-muted);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .version-menu__footer {
+    margin-block-start: var(--space-1);
+    padding-block-start: var(--space-1);
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  /* In the drawer the badge sits at the bottom of the panel, so the menu opens
+     upward and centred on its pill instead of running off the screen. */
+  .nav-drawer__socials .version-menu__panel {
+    inset-block-start: auto;
+    inset-block-end: calc(100% + var(--space-2));
+    inset-inline-end: auto;
+    inset-inline-start: 50%;
+    translate: -50% 0;
+  }
+
+  /* Opening upward, the gap to bridge is below the panel, not above it. */
+  .nav-drawer__socials .version-menu__panel::before {
+    inset-block-end: auto;
+    inset-block-start: 100%;
+    block-size: var(--space-2);
+  }
+}

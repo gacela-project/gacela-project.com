@@ -7,6 +7,7 @@ type PageOverrides = {
   source?: string
   collection?: Collection
   route?: string
+  version?: string
   frontmatter?: Frontmatter
   body?: string
   html?: string
@@ -20,6 +21,7 @@ function makePage(overrides: PageOverrides = {}): RenderedPage {
     source: overrides.source ?? 'docs/facade.md',
     collection: overrides.collection ?? 'docs',
     route: overrides.route ?? '/docs/facade',
+    version: overrides.version,
     frontmatter: overrides.frontmatter ?? { title: 'Facade' },
     body: overrides.body ?? '',
     html: overrides.html ?? '',
@@ -32,6 +34,16 @@ function makePage(overrides: PageOverrides = {}): RenderedPage {
 describe('buildSearchIndex', () => {
   it('returns nothing for no pages', () => {
     expect(buildSearchIndex([])).toEqual([])
+  })
+
+  /* An archived page in the index would answer current questions with old
+     releases: search covers the documentation the site stands behind. */
+  it('leaves archived versions out of the index', () => {
+    const docs = buildSearchIndex([
+      makePage({ route: '/docs/1.x/facade', version: '1.x', html: '<p>Old facade text.</p>' }),
+    ])
+
+    expect(docs).toEqual([])
   })
 
   it('makes one document for a page without headings', () => {

@@ -1,5 +1,5 @@
 import { attrs, html, raw, render, type Raw } from '../forge/render/index.ts'
-import type { NavGroup, SiteConfig } from '../forge/types.ts'
+import type { NavGroup, SiteConfig, VersionTargets } from '../forge/types.ts'
 import { icons } from './icons.ts'
 
 export type ShellAssets = {
@@ -30,6 +30,18 @@ export type ShellContext = {
   readonly assets: ShellAssets
   readonly version: string
   readonly route: string
+  /**
+   * Where the canonical link points when it is not this page: an archived page
+   * names its current equivalent, so search engines rank one address per topic.
+   */
+  readonly canonicalRoute?: string | undefined
+  /** The archive label to show in the version switcher, on archived pages. */
+  readonly archiveLabel?: string | undefined
+  /**
+   * Where each version's switcher entry leads from this page: the same topic
+   * in the other version when it exists, that version's landing page when not.
+   */
+  readonly versionTargets?: VersionTargets | undefined
   readonly title: string
   readonly description: string
   /**
@@ -65,7 +77,8 @@ document.documentElement.dataset.js = '';
 
 export function documentShell(context: ShellContext): string {
   const { site, assets, title, description, route } = context
-  const canonical = `${site.origin}${route === '/' ? '' : route}`
+  const canonicalPath = context.canonicalRoute ?? route
+  const canonical = `${site.origin}${canonicalPath === '/' ? '' : canonicalPath}`
 
   return `<!doctype html>\n${render(html`<html lang="en">
   <head>
@@ -138,6 +151,61 @@ function versionLink(context: ShellContext, className: string): Raw {
 }
 
 /**
+ * The version switcher. While the site documents a single release it stays the
+ * plain release-notes pill above: a menu with one entry is a lie about choice.
+ * Once an archive exists it becomes a details dropdown, which opens, closes
+ * and announces itself without script, like every other menu in this header.
+ *
+ * The summary names the line the open page belongs to, so a reader parked on
+ * an archived page is told so by the chrome as well as by the banner.
+ */
+function versionMenu(context: ShellContext, className: string): Raw {
+  const { site, version } = context
+  const archives = site.archives ?? []
+
+  if (archives.length === 0) return versionLink(context, className)
+
+  const shown = context.archiveLabel ?? version
+  const targets = context.versionTargets
+
+  return html`<details class="version-menu ${className}" data-header-menu>
+    <summary class="badge version-menu__summary">
+      <span class="visually-hidden">Documentation version: </span>${shown}
+      ${icons.chevronDown}
+    </summary>
+    <ul class="version-menu__panel" role="list">
+      <li>
+        <a
+          class="version-menu__link"
+          href="${targets?.current ?? '/docs'}"
+          ${attrs({ 'aria-current': context.archiveLabel === undefined ? 'true' : null })}
+          >${version} <span class="version-menu__note">current</span></a
+        >
+      </li>
+      ${archives.map(
+        (archive) => html`<li>
+          <a
+            class="version-menu__link"
+            href="${targets?.byArchive[archive.version] ?? `/docs/${archive.version}`}"
+            ${attrs({ 'aria-current': context.archiveLabel === archive.label ? 'true' : null })}
+            >${archive.label}</a
+          >
+        </li>`,
+      )}
+      <li class="version-menu__footer">
+        <a
+          class="version-menu__link"
+          href="${site.repository}/releases/tag/${version}"
+          target="_blank"
+          rel="noreferrer"
+          >Release notes<span class="visually-hidden"> (opens in a new tab)</span></a
+        >
+      </li>
+    </ul>
+  </details>`
+}
+
+/**
  * The navigation, for a screen too narrow to hold it in the bar.
  *
  * A details element again, so it opens, closes and announces itself without
@@ -202,7 +270,7 @@ function navDrawer(context: ShellContext): Raw {
       </div>
 
       <div class="nav-drawer__socials">
-        ${versionLink(context, 'nav-drawer__version')}
+        ${versionMenu(context, 'nav-drawer__version')}
         <a
           class="icon-button"
           href="${site.repository}"
@@ -253,7 +321,7 @@ function siteHeader(context: ShellContext): Raw {
         )}
       </nav>
 
-      ${versionLink(context, 'header__version')}
+      ${versionMenu(context, 'header__version')}
 
       <div class="header__actions">
         ${themeToggle()}

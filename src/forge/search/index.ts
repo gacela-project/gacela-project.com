@@ -24,6 +24,9 @@ export function buildSearchIndex(pages: readonly RenderedPage[]): SearchDocument
 
   for (const page of pages) {
     if (page.frontmatter.unlisted === true) continue
+    /* Archived versions stay out: a result pointing at an old release would
+       answer a current question with an old answer, without saying so. */
+    if (page.version !== undefined) continue
 
     const title = pageTitle(page)
     documents.push({

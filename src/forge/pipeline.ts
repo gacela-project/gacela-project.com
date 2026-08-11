@@ -50,7 +50,7 @@ export async function build(input: BuildInput): Promise<BuildResult> {
   })
 
   const documents = rendered.map((page): Output => {
-    const nav = navStateFor(page.route, site.sidebar)
+    const nav = navStateFor(page.route, sidebarFor(page, site))
 
     return {
       path: outputPathFor(page.route),
@@ -83,7 +83,23 @@ export async function build(input: BuildInput): Promise<BuildResult> {
 
 /** `/docs/facade` becomes `docs/facade.html`, which every static host serves cleanly. */
 function outputPathFor(route: string): string {
-  return route === '/' ? 'index.html' : `${route.replace(/^\//, '')}.html`
+  if (route === '/') return 'index.html'
+
+  const path = route.replace(/^\//, '')
+
+  /* An archive root gets a directory index: "docs/1.x.html" would sit beside
+     the "docs/1.x/" directory the rest of the line lives in, and a name that
+     is both a file and a directory is served differently by every host. */
+  return /\/\d+\.x$/.test(route) ? `${path}/index.html` : `${path}.html`
+}
+
+/** An archived page navigates within its own frozen line, and only there. */
+function sidebarFor(page: Page, site: SiteConfig): SiteConfig['sidebar'] {
+  if (page.version === undefined) return site.sidebar
+
+  return (
+    site.archives?.find((archive) => archive.version === page.version)?.sidebar ?? []
+  )
 }
 
 type BuiltAssets = {
@@ -156,8 +172,11 @@ async function publicOutputs(root: string): Promise<Output[]> {
 }
 
 function sitemap(site: SiteConfig, pages: readonly RenderedPage[]): string {
+  /* Archived pages are left out: their canonical points at the current docs,
+     and a sitemap that lists addresses it also declares non-canonical is
+     asking crawlers to referee the contradiction. */
   const urls = pages
-    .filter((page) => page.frontmatter.unlisted !== true)
+    .filter((page) => page.frontmatter.unlisted !== true && page.version === undefined)
     .map((page) => `  <url><loc>${site.origin}${page.route === '/' ? '/' : page.route}</loc></url>`)
     .join('\n')
 

@@ -109,6 +109,28 @@ latest Gacela release; this badge is the whole of the versioning story between m
 
 And mid-sentence: a feature [since 1.9] sits on the baseline without growing the line.
 
+## Version switcher and archive banner
+
+The header's release pill becomes this dropdown once an archived docs line exists. It is a `details` element, so it
+works without JavaScript, and the pill it opens from is the same `.badge` the header always carried.
+
+<div class="sg-row" style="min-height: 14rem; align-items: flex-start">
+  <details class="version-menu" open>
+    <summary class="badge version-menu__summary">2.1.0 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary>
+    <ul class="version-menu__panel version-menu__panel--static" role="list">
+      <li><a class="version-menu__link" href="/design-system" aria-current="true">2.1.0 <span class="version-menu__note">current</span></a></li>
+      <li><a class="version-menu__link" href="/design-system">1.21.0</a></li>
+      <li class="version-menu__footer"><a class="version-menu__link" href="/design-system">Release notes</a></li>
+    </ul>
+  </details>
+</div>
+
+Every page of an archived line opens with this banner, linking to the page's current equivalent:
+
+<aside class="archive-note" aria-label="Archived documentation">
+  <p>This page documents <strong>Gacela 1.21.0</strong>, the last release of the 1.x line. It is kept as an archive and no longer updated. <a href="/design-system">Read the current version</a> for Gacela 2.1.0.</p>
+</aside>
+
 ## Callouts
 
 Four kinds, distinguished by the color of the rail and by their label, never by color alone.

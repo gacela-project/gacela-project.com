@@ -32,9 +32,9 @@ async function readPage(contentDir: string, source: string): Promise<Page> {
 
   try {
     const { frontmatter, body } = parseFrontmatter(raw)
-    const { collection, route } = routeFor(source)
+    const { collection, route, version } = routeFor(source)
 
-    return { source, collection, route, frontmatter, body }
+    return { source, collection, route, version, frontmatter, body }
   } catch (cause) {
     throw new Error(`Could not read content file "${source}": ${(cause as Error).message}`, {
       cause,

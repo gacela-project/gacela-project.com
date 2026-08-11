@@ -232,10 +232,16 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-4);
-    justify-content: space-between;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--text-muted);
+  }
+
+  /* Pinned rather than spread with space-between: an archived page has only
+     this link, and the one persistent control must not change sides between
+     versions of the same page. */
+  .article__footer a:last-child {
+    margin-inline-start: auto;
   }
 
   .article__footer a {

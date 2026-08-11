@@ -296,10 +296,12 @@
       display: none;
     }
 
-    /* Compounded with .badge on purpose: .badge supplies the display and is
-       imported after this file into the same layer, so a bare class loses the
-       tie on source order. Layers settle conflicts between layers, not in one. */
-    .header__version.badge {
+    /* Compounded on purpose: .badge and .version-menu supply the display and
+       are imported after this file into the same layer, so a bare class loses
+       the tie on source order. Layers settle conflicts between layers, not in
+       one. The second selector is the same pill once it becomes a dropdown. */
+    .header__version.badge,
+    .header__version.version-menu {
       display: none;
     }
   }

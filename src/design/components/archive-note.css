@@ -1,0 +1,23 @@
+/**
+ * The banner an archived documentation page opens with. It is chrome, not
+ * content: it tells the reader which frozen line they are standing in and
+ * offers the current equivalent, then stays out of the way.
+ */
+
+@layer components {
+  .archive-note {
+    margin-block-end: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid color-mix(in oklch, var(--warning) 35%, transparent);
+    /* The same radius as the inline TOC below it: the two are the column's
+       bordered chrome and should read as one family. */
+    border-radius: var(--radius-md);
+    background: color-mix(in oklch, var(--warning) 7%, transparent);
+    font-size: var(--text-sm);
+  }
+
+  .archive-note p {
+    margin: 0;
+    max-inline-size: var(--measure-note);
+  }
+}

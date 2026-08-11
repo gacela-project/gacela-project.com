@@ -29,7 +29,9 @@ const problems = auditLinks(pages, { redirects: site.redirects, knownRoutes })
 
 const orphans = findOrphans(
   pages,
-  flattenSidebar(site.sidebar).map((item) => item.route),
+  [site.sidebar, ...(site.archives ?? []).map((archive) => archive.sidebar)]
+    .flatMap((sidebar) => flattenSidebar(sidebar))
+    .map((item) => item.route),
   [...site.headerLinks.map((link) => link.route), ...SHELL_ROUTES],
 )
 

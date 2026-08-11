@@ -87,7 +87,11 @@ export function llmsIndex(site: SiteConfig, pages: readonly RenderedPage[]): str
 
 /** Every documentation page concatenated, each one labelled with its address. */
 export function llmsFullContext(site: SiteConfig, pages: readonly RenderedPage[]): string {
-  const documentation = listed(pages).filter((page) => page.collection === 'docs')
+  /* Current docs only. An archived release in this file would hand a model two
+     contradicting answers to every question, with nothing marking the old one. */
+  const documentation = listed(pages).filter(
+    (page) => page.collection === 'docs' && page.version === undefined,
+  )
   const routes = new Set(listed(pages).map((page) => page.route))
 
   const lines: string[] = [

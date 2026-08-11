@@ -3,24 +3,46 @@ import { attrs, html, raw, type Raw } from '../forge/render/index.ts'
 import type { Heading, NavState, RenderedPage, SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
 
+/** How an archived page introduces itself. Assembled by the render module. */
+export type DocArchiveContext = {
+  readonly version: string
+  readonly label: string
+  readonly currentVersion: string
+  readonly currentRoute: string
+}
+
 export type DocContext = {
   readonly site: SiteConfig
   readonly page: RenderedPage
   readonly nav: NavState
+  readonly archive?: DocArchiveContext | undefined
 }
 
 export function docLayout(context: DocContext): Raw {
-  const { page, nav } = context
+  const { page, nav, archive } = context
   const toc = page.headings.filter((heading) => heading.depth === 2 || heading.depth === 3)
+
+  /* The landing page's own prose already says what the banner says, and the
+     two were appearing 250px apart with the H1 wedged between them. */
+  const note =
+    archive !== undefined && page.route !== `/docs/${archive.version}`
+      ? archiveNote(archive)
+      : ''
 
   return html`<div class="docs">
     <nav class="docs__nav" aria-label="Documentation">${docsSidebar(nav)}</nav>
 
     <div class="docs__body">
       <article class="docs__article">
+        ${note}
+
         <header class="article__header">
           <p class="article__breadcrumb">
-            <a href="/docs/quickstart">Docs</a>
+            ${archive === undefined
+              ? html`<a href="/docs/quickstart">Docs</a>`
+              : /* The label, not the line: the breadcrumb is uppercased by its
+                   style, which turns "1.x" into "1.X"; "1.21.0" survives it. */
+                html`<a href="/docs/${archive.version}">Docs ${archive.label}</a>`}
             ${nav.groupTitle === undefined ? '' : html`<span aria-hidden="true">/</span>
             <span>${nav.groupTitle}</span>`}
           </p>
@@ -107,13 +129,33 @@ function inlineToc(headings: readonly Heading[]): Raw {
   </details>`
 }
 
+/**
+ * Tells the reader where they are standing before the content starts, and
+ * offers the way back. The link goes to this page's current equivalent, not to
+ * the docs landing page, because the reader was already on the right topic.
+ */
+function archiveNote(archive: DocArchiveContext): Raw {
+  return html`<aside class="archive-note" aria-label="Archived documentation">
+    <p>
+      This page documents <strong>Gacela ${archive.label}</strong>, the last release of the
+      ${archive.version} line. It is kept as an archive and no longer updated.
+      <a href="${archive.currentRoute}">Read the current version</a> for Gacela
+      ${archive.currentVersion}.
+    </p>
+  </aside>`
+}
+
 function articleFooter(context: DocContext): Raw {
   const editUrl = `${context.site.siteRepository}/edit/main/content/${context.page.source}`
 
   return html`<footer class="article__footer">
-    <a href="${editUrl}" target="_blank" rel="noreferrer"
-      >Edit this page on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
-    >
+    ${context.archive === undefined
+      ? html`<a href="${editUrl}" target="_blank" rel="noreferrer"
+          >Edit this page on GitHub<span class="visually-hidden"> (opens in a new tab)</span></a
+        >`
+      : /* A frozen page must not invite edits: the archive's one rule is that
+           nothing in it changes. */
+        ''}
     <a href="${context.site.repository}/issues/new" target="_blank" rel="noreferrer"
       >Report a problem<span class="visually-hidden"> (opens in a new tab)</span></a
     >

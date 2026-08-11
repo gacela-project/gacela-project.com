@@ -22,6 +22,13 @@ export type Page = {
   readonly collection: Collection
   /** Final URL path, always absolute and without a trailing slash except "/". */
   readonly route: string
+  /**
+   * The archived docs line this page belongs to ("1.x"), or undefined for the
+   * current documentation and every non-doc page. Archived pages are built and
+   * link-checked but stay out of the search index, the sitemap and the agent
+   * context files: they exist to be read, not to be recommended.
+   */
+  readonly version?: string | undefined
   readonly frontmatter: Frontmatter
   /** Markdown body with the frontmatter block removed. */
   readonly body: string
@@ -63,6 +70,12 @@ export type NavState = {
   readonly groupTitle: string | undefined
 }
 
+/** Where the version switcher's entries lead from one specific page. */
+export type VersionTargets = {
+  readonly current: string
+  readonly byArchive: Readonly<Record<string, string>>
+}
+
 export type SearchDocument = {
   readonly route: string
   readonly title: string
@@ -74,6 +87,19 @@ export type SearchDocument = {
 export type Output = {
   readonly path: string
   readonly contents: string | Uint8Array
+}
+
+/**
+ * A frozen documentation line: the docs as they stood at the last release of
+ * an old major. Its content lives under content/docs/<version>/ and is never
+ * edited after the snapshot; only its presentation stays alive.
+ */
+export type DocsArchive = {
+  /** The route segment and content directory name, e.g. "1.x". */
+  readonly version: string
+  /** What the version switcher prints, e.g. "1.21.0". */
+  readonly label: string
+  readonly sidebar: readonly NavGroup[]
 }
 
 export type SiteConfig = {
@@ -88,6 +114,8 @@ export type SiteConfig = {
   readonly social: readonly { readonly label: string; readonly href: string }[]
   readonly headerLinks: readonly NavLink[]
   readonly sidebar: readonly NavGroup[]
+  /** Frozen documentation lines, newest first. Absent while there are none. */
+  readonly archives?: readonly DocsArchive[]
   /** Old path to new path. Emitted as meta-refresh pages with canonical links. */
   readonly redirects: Readonly<Record<string, string>>
 }

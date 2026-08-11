@@ -87,10 +87,74 @@ export const site: SiteConfig = {
     },
   ],
 
+  /* Frozen documentation lines. The 1.x snapshot is the docs as they stood at
+     Gacela 1.21.0, taken from the last commit that documented it. The files
+     under content/docs/1.x/ are an archive: they are never edited, and this
+     sidebar preserves the reading order that site shipped with. */
+  archives: [
+    {
+      version: '1.x',
+      label: '1.21.0',
+      sidebar: [
+        {
+          title: 'Getting started',
+          items: [
+            { title: 'Documentation', route: '/docs/1.x' },
+            { title: 'Quickstart', route: '/docs/1.x/quickstart' },
+            { title: 'Bootstrap', route: '/docs/1.x/bootstrap' },
+          ],
+        },
+        {
+          title: 'Core concepts',
+          items: [
+            { title: 'Facade', route: '/docs/1.x/facade' },
+            { title: 'Factory', route: '/docs/1.x/factory' },
+            { title: 'Provider', route: '/docs/1.x/provider' },
+            { title: 'Config', route: '/docs/1.x/config' },
+          ],
+        },
+        {
+          title: 'Configuration',
+          items: [
+            { title: 'Bindings', route: '/docs/1.x/bindings' },
+            { title: 'Service Map', route: '/docs/1.x/service-map' },
+            { title: 'Inject attribute', route: '/docs/1.x/inject' },
+            { title: 'Extensions & Plugins', route: '/docs/1.x/extensions' },
+            { title: 'Module Customization', route: '/docs/1.x/customization' },
+          ],
+        },
+        {
+          title: 'Caching & performance',
+          items: [
+            { title: 'Caching', route: '/docs/1.x/caching' },
+            { title: 'Cacheable methods', route: '/docs/1.x/cacheable-methods' },
+            { title: 'Opcache preload', route: '/docs/1.x/opcache-preload' },
+          ],
+        },
+        {
+          title: 'Tooling',
+          items: [
+            { title: 'CLI commands', route: '/docs/1.x/gacela-script' },
+            { title: 'Health checks', route: '/docs/1.x/health-checks' },
+            { title: 'Static analysis', route: '/docs/1.x/static-analysis' },
+            { title: 'Events', route: '/docs/1.x/events' },
+          ],
+        },
+        {
+          title: 'Integrations',
+          items: [
+            { title: 'Other Frameworks', route: '/docs/1.x/other-frameworks' },
+            { title: 'Testing', route: '/docs/1.x/testing' },
+            { title: 'Advanced patterns', route: '/docs/1.x/extra' },
+          ],
+        },
+      ],
+    },
+  ],
+
   /* URLs the previous site published. They stay reachable. */
   redirects: {
     '/docs/index': '/docs',
-    '/styleguide': '/design-system',
     '/about-gacela': '/about',
     '/why-decoupling': '/about#why-decoupling',
   },
