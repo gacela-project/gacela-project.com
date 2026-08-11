@@ -99,6 +99,16 @@ A 4px grid that opens up as it climbs. Space encodes relatedness: less inside a 
   <span class="badge badge--accent">Accent badge</span>
 </div>
 
+## Version badge
+
+Written inline in markdown as `[since 1.9]`. It marks the release a feature first appeared in, and it works inside a
+heading without touching the heading's id, the table of contents or the search index. The docs always describe the
+latest Gacela release; this badge is the whole of the versioning story between majors.
+
+<h3>Cacheable methods <span class="badge badge--since">Since 1.9</span></h3>
+
+And mid-sentence: a feature [since 1.9] sits on the baseline without growing the line.
+
 ## Callouts
 
 Four kinds, distinguished by the color of the rail and by their label, never by color alone.

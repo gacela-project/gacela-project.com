@@ -243,6 +243,50 @@ describe('links', () => {
   })
 })
 
+describe('since badges', () => {
+  it('turns [since 1.9] into a version badge', () => {
+    const { html } = render('Methods can be cached. [since 1.9]')
+
+    expect(html).toContain('<span class="badge badge--since">Since 1.9</span>')
+  })
+
+  it('accepts a patch version', () => {
+    const { html } = render('[since 1.9.2]')
+
+    expect(html).toContain('Since 1.9.2')
+  })
+
+  /* The badge decorates a heading without becoming part of it: the id, the
+     table of contents and anything that reads the heading's text see the
+     words alone. */
+  it('keeps the badge out of a heading id and label', () => {
+    const { headings, html } = render('## Cacheable methods [since 1.9]')
+
+    expect(headings[0]?.id).toBe('cacheable-methods')
+    expect(headings[0]?.text).toBe('Cacheable methods')
+    expect(html).toContain('badge--since')
+  })
+
+  it('keeps the badge out of the indexed text', () => {
+    const { text } = render('Methods [since 1.9] can be cached.')
+
+    expect(text).toBe('Methods can be cached.')
+  })
+
+  it('leaves ordinary bracketed text alone', () => {
+    const { html } = render('[since forever] and [notes 1.9]')
+
+    expect(html).not.toContain('badge--since')
+  })
+
+  it('leaves a link alone even when its label looks like a badge', () => {
+    const { html } = render('[since 1.9](/docs/facade)')
+
+    expect(html).toContain('<a href="/docs/facade">')
+    expect(html).not.toContain('badge--since')
+  })
+})
+
 describe('text extraction', () => {
   it('returns readable text with markup and code blocks removed', () => {
     const { text } = render('# Facade\n\nThe **entry point**.\n\n```php\n<?php echo 1;\n```\n')

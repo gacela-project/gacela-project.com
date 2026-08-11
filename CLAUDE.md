@@ -84,6 +84,19 @@ Rules that follow from that:
   built and reachable, but will be reported by `lint:links` as orphaned.
 - Internal links are written as absolute site paths (`/docs/facade`), without file extensions.
 
+### Doc versioning
+
+The documentation always describes the latest Gacela release. There are no per-version doc trees, and none should be
+created: Gacela ships a minor almost weekly, and versioning docs per release is the failure mode every major docs site
+(Symfony, Laravel, Docusaurus) has walked back from.
+
+- A feature that arrived in a specific release is marked inline with `[since X.Y]`, which renders as a version badge
+  and stays out of heading ids and the search index.
+- Behaviour changes between releases live in `content/docs/upgrading.md`.
+- If a breaking major ever ships, the old docs are frozen once as a static snapshot of the built site (a branch deploy
+  or an archived `dist/`), with a banner and a canonical link to the current docs. A frozen snapshot is never
+  maintained; a typo in it stays there.
+
 ## Design system
 
 Facet is documented at `/design-system` in the running site, which is generated from the same tokens the site uses. When

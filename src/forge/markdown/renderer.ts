@@ -6,6 +6,7 @@ import { containerPlugin } from './containers.ts'
 import { headingsPlugin } from './headings.ts'
 import { createSyntaxHighlighter } from './highlight.ts'
 import { linksPlugin } from './links.ts'
+import { sincePlugin } from './since.ts'
 import type { Heading } from '../types.ts'
 
 export type RenderContext = {
@@ -38,6 +39,7 @@ export async function createMarkdownRenderer(): Promise<MarkdownRenderer> {
   codePlugin(md, highlighter)
   headingsPlugin(md)
   linksPlugin(md)
+  sincePlugin(md)
 
   return {
     render(markdown, context) {

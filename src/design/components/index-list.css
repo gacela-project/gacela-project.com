@@ -120,6 +120,9 @@
     font-family: var(--font-mono);
     font-size: var(--text-2xs);
     letter-spacing: var(--tracking-normal);
+    /* The badge states its own casing: it can now land inside containers
+       that uppercase their content, like a callout title. */
+    text-transform: none;
   }
 
   /* The label is 11px, so it needs the full 4.5:1. --accent on --accent-wash
@@ -128,5 +131,14 @@
     border-color: var(--accent-line);
     background: var(--accent-wash);
     color: var(--accent-hover);
+  }
+
+  /* A version badge in running prose, written as `[since 1.9]` in markdown.
+     The label breaks in half if the pill is allowed to wrap, and without a
+     line-height of its own the pill inherits the leading of whatever it lands
+     in and is a different shape in a paragraph than in a heading. */
+  .badge--since {
+    line-height: var(--leading-tight);
+    white-space: nowrap;
   }
 }
