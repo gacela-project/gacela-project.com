@@ -1,0 +1,216 @@
+---
+title: Bindings
+---
+# Bindings
+
+Gacela's container supports several binding strategies. All are configured via `GacelaConfig`, either in `gacela.php` or the `Gacela::bootstrap()` closure.
+
+## addBinding
+
+```php
+addBinding(string $key, string|object|callable $value);
+```
+
+Define a map between a type (class or interface) and the concrete class that you want to create (or use) when a certain type is found during the process of **auto-wiring** in a Gacela `Plugin` or `Locator's container` from any `Provider`.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addBinding(AbstractString::class, StringClass::class);
+  $config->addBinding(ClassInterface::class, new ConcreteClass(/* args */));
+  $config->addBinding(ComplexInterface::class, new class() implements Foo {/** logic */});
+  $config->addBinding(FromCallable::class, fn() => new StringClass('From callable'));
+};
+```
+
+In the example above, whenever `AbstractString` is found then `StringClass` will be resolved.
+
+### Using externalServices
+
+```php
+addExternalService(string $key, $value);
+```
+
+Add the external service using `addExternalService(string, string|object|callable)`.
+This is useful to share objects between the initial bootstrap callable and the `gacela.php` config files. Eg:
+
+```php
+<?php # index.php
+
+$instance = ...;
+
+Gacela::bootstrap(__DIR__, function (GacelaConfig $config) use ($instance) {
+  $config->addExternalService('concreteClass', ConcreteClass::class);
+  $config->addExternalService('concreteInstance', $instance);
+});
+```
+
+This way we can access the value of that key `'concreteClass'` in the `gacela.php` from `$config->getExternalService(string)`.
+For example:
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $instance = $config->getExternalService('concreteInstance');
+
+  $config->addBinding(AnInterface::class, $instance);
+  $config->addBinding(AnotherInterface::class, $instance);
+}
+```
+
+In the example above, both `AnInterface` and `AnotherInterface` resolve to the same shared `$instance` pulled from `getExternalService('concreteInstance')`.
+
+## Factory Services
+
+```php
+addFactory(string $id, Closure $factory);
+```
+
+Unlike regular bindings (which are singletons), factory services return a new instance every time they are resolved from the container.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addFactory('session', fn () => new SessionHandler());
+};
+```
+
+Every call to `$container->get('session')` returns a fresh `SessionHandler`. The closure may type-hint `Container` to resolve its own dependencies.
+
+## Lazy Services
+
+```php
+addLazy(string $id, Closure $factory);
+```
+
+Runtime behaviour is the same as `addFactory` — the closure is deferred out of bootstrap and runs on **every** resolve, returning a new instance each time — but the name documents the intent: skip building an expensive service until something first asks for it.
+
+```php
+<?php # gacela.php
+
+use Gacela\Framework\Container\Container;
+
+return function (GacelaConfig $config) {
+  $config->addLazy(ReportBuilder::class, fn (Container $c) =>
+    new ReportBuilder($c->get(DatabaseInterface::class))
+  );
+};
+```
+
+Nothing is built at bootstrap; the first `$container->get(ReportBuilder::class)` invokes the closure, and each later resolve builds a fresh instance. Reach for `addLazy` over `addFactory` when the intent is deferring a costly construction; they are otherwise interchangeable.
+
+## Protected Services
+
+```php
+addProtected(string $id, Closure $service);
+```
+
+Store a closure **without invoking it**. Useful for callable configurations or lazy factories you want to trigger by hand.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addProtected('db.factory', fn () => new Database());
+};
+```
+
+```php
+$factory = $container->get('db.factory'); // the closure itself
+$db      = $factory();                    // invoke when needed
+```
+
+Protected services cannot be extended via `extendService()`.
+
+## Service Aliases
+
+```php
+addAlias(string $alias, string $id);
+```
+
+Reference the same service with a different name (useful for short names or backward-compatibility).
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->addBinding(LoggerInterface::class, FileLogger::class);
+  $config->addAlias('logger', LoggerInterface::class);
+};
+```
+
+Both `$container->get(LoggerInterface::class)` and `$container->get('logger')` resolve to the same instance.
+
+## Contextual Bindings
+
+```php
+when(string|array $concrete)->needs(string $abstract)->give(string|object|callable $concrete);
+```
+
+Provide different implementations of an interface depending on **which class is requesting it**.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->when(UserController::class)
+    ->needs(LoggerInterface::class)
+    ->give(FileLogger::class);
+
+  $config->when(AdminController::class)
+    ->needs(LoggerInterface::class)
+    ->give(DatabaseLogger::class);
+
+  // Bind multiple consumers at once
+  $config->when([ApiController::class, WebController::class])
+    ->needs(CacheInterface::class)
+    ->give(RedisCache::class);
+};
+```
+
+Contextual bindings win over the global `addBinding()` for the same interface. For a per-parameter alternative driven by an attribute, see [`#[Inject]`](/docs/1.x/inject).
+
+### Binding scalar parameters by name
+
+```php
+when(string $concrete)->needs(string $parameterName)->give(mixed $value);
+```
+
+Since `1.18.0`, `needs()` also accepts a parameter name string of the form `'$parameterName'` (note the leading `$`), binding a scalar value to that specific constructor parameter **by name** instead of by type.
+
+```php
+<?php # gacela.php
+
+return function (GacelaConfig $config) {
+  $config->when(RetryingHttpClient::class)
+    ->needs('$maxRetries')   // constructor parameter named $maxRetries
+    ->give(30);              // inject the scalar 30
+};
+```
+
+Class and interface names passed to `needs()` bind by type; a `'$name'` string binds that scalar constructor parameter by name instead. `give()` accepts the scalar directly (int, string, bool, array, etc.) and injects it as-is.
+
+As of `1.17.0`, contextual bindings also apply when Gacela resolves its **own** classes (factories, configs, providers), not only plain auto-wired classes — previously the global `addBinding()` always won for those.
+
+## Array access on the container
+
+```php
+Container implements ArrayAccess
+```
+
+Since `1.18.0`, the main [`Container`](/docs/1.x/bootstrap#gacela-container) implements PHP's `ArrayAccess`, giving terse sugar over the usual `get()` / `set()` / `has()` operations.
+
+```php
+<?php
+
+$container = Gacela::container();
+
+$container[LoggerInterface::class] = FileLogger::class; // assignment   → register a binding
+$logger = $container[LoggerInterface::class];           // offsetGet    → resolve the service
+isset($container[LoggerInterface::class]);              // offsetExists → is it registered?
+unset($container[LoggerInterface::class]);              // offsetUnset  → remove the binding
+```
+
+It's purely ergonomic — identical behaviour to the method calls above, handy in tests and quick scripts.
