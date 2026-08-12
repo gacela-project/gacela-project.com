@@ -8,7 +8,8 @@ description: Move from 1.21 to 2.0, then on to 2.1: PHP and container requiremen
 ## From 1.21 to 2.0
 
 Gacela 2.0 raises the PHP floor, moves to `gacela-project/container` 2.x, removes three deprecated aliases, and makes
-undeclared pillar accessors visible to static analysis. Version 1.21.0 is the final 1.x release.
+undeclared pillar accessors visible to static analysis. Version 1.21.0 is the final 1.x release, and its documentation
+is kept as an archive at [/docs/1.x](/docs/1.x).
 
 ### Before upgrading
 
