@@ -56,8 +56,8 @@ export const site: SiteConfig = {
         { title: 'Bindings', route: '/docs/bindings' },
         { title: 'Service Map', route: '/docs/service-map' },
         { title: 'Inject attribute', route: '/docs/inject' },
-        { title: 'Extensions & Plugins', route: '/docs/extensions' },
-        { title: 'Module Customization', route: '/docs/customization' },
+        { title: 'Extensions and plugins', route: '/docs/extensions' },
+        { title: 'Module customization', route: '/docs/customization' },
       ],
     },
     {
@@ -71,7 +71,7 @@ export const site: SiteConfig = {
     {
       title: 'Tooling',
       items: [
-        { title: 'CLI commands', route: '/docs/gacela-script' },
+        { title: 'CLI reference', route: '/docs/cli' },
         { title: 'Health checks', route: '/docs/health-checks' },
         { title: 'Events', route: '/docs/events' },
         { title: 'Static analysis', route: '/docs/static-analysis' },
@@ -80,9 +80,9 @@ export const site: SiteConfig = {
     {
       title: 'Integrations',
       items: [
-        { title: 'Other frameworks', route: '/docs/other-frameworks' },
+        { title: 'Framework integration', route: '/docs/framework-integration' },
         { title: 'Testing', route: '/docs/testing' },
-        { title: 'Advanced patterns', route: '/docs/extra' },
+        { title: 'Single-file modules', route: '/docs/single-file-modules' },
       ],
     },
   ],
@@ -134,7 +134,7 @@ export const site: SiteConfig = {
         {
           title: 'Tooling',
           items: [
-            { title: 'CLI commands', route: '/docs/1.x/gacela-script' },
+            { title: 'CLI commands', route: '/docs/1.x/cli' },
             { title: 'Health checks', route: '/docs/1.x/health-checks' },
             { title: 'Static analysis', route: '/docs/1.x/static-analysis' },
             { title: 'Events', route: '/docs/1.x/events' },
@@ -143,9 +143,9 @@ export const site: SiteConfig = {
         {
           title: 'Integrations',
           items: [
-            { title: 'Other Frameworks', route: '/docs/1.x/other-frameworks' },
+            { title: 'Other Frameworks', route: '/docs/1.x/framework-integration' },
             { title: 'Testing', route: '/docs/1.x/testing' },
-            { title: 'Advanced patterns', route: '/docs/1.x/extra' },
+            { title: 'Advanced patterns', route: '/docs/1.x/single-file-modules' },
           ],
         },
       ],

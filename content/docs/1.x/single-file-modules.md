@@ -134,4 +134,4 @@ Hello, Gacela!
 - [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
 - [Container](https://github.com/gacela-project/container): A minimalistic dependency container
 
-See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/1.x/other-frameworks).
+See how Gacela works with **Symfony**, **Laravel** or [other frameworks](/docs/1.x/framework-integration).

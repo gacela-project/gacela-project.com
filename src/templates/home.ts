@@ -27,7 +27,7 @@ const CAPABILITIES = [
   {
     title: 'Tooling',
     summary: 'cache:warm, doctor, debug:module, debug:graph, profile:report',
-    route: '/docs/gacela-script',
+    route: '/docs/cli',
   },
   {
     title: 'Lifecycle events',

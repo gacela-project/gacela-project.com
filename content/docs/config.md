@@ -170,7 +170,7 @@ The resolved value for `'AKISMET-KEY'` depends on the environment:
 
 ## Declaring a config schema [since 2.2]
 
-[`validate:config`](/docs/gacela-script#validate-config) checks the wiring: bindings, dependency cycles. Nothing checked
+[`validate:config`](/docs/cli#validate-config) checks the wiring: bindings, dependency cycles. Nothing checked
 the configuration itself, so a missing or misspelled key surfaced as a runtime failure in whichever environment lacked
 it: usually production, usually far from the file that should have carried it. Every call site already knows what it
 expects, `getInt('retries')` says so, but that expectation was written nowhere a command could read before anything ran.
@@ -231,5 +231,5 @@ Declared **defaults** are applied either way: a key with a default is not missin
 ## Inspecting the merged config
 
 `Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every
-`config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/gacela-script#debug-config)
+`config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/cli#debug-config)
 command prints the same data as a table, with each key marked against the [declared schema](#declaring-a-config-schema).

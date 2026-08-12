@@ -116,7 +116,7 @@ Gacela is a strong fit when:
 - the project needs enforceable boundaries without replacing its framework.
 
 It may be unnecessary for a small script or a single cohesive component. Even there,
-the [single-file module pattern](/docs/extra) is available when a lightweight boundary still helps.
+the [single-file module pattern](/docs/single-file-modules) is available when a lightweight boundary still helps.
 
 ## Continue
 

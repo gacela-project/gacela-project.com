@@ -88,7 +88,7 @@ return static function (GacelaConfig $config): void {
 };
 ```
 
-See [`stubs:publish`](/docs/gacela-script#stubs-publish) for the placeholders a stub must keep and how `doctor` reports
+See [`stubs:publish`](/docs/cli#stubs-publish) for the placeholders a stub must keep and how `doctor` reports
 one that lost them.
 
 ## Lifecycle listeners

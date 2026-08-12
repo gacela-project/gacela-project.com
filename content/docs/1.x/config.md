@@ -171,4 +171,4 @@ The resolved value for `'AKISMET-KEY'` depends on the environment:
 
 ## Inspecting the merged config
 
-`Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every `config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/1.x/gacela-script#debug-config) command prints the same data as a table.
+`Config::getInstance()->getAllValues()` returns the whole merged configuration as a key-value array — every `config/*.php` file plus environment overrides, already resolved. The [`debug:config`](/docs/1.x/cli#debug-config) command prints the same data as a table.

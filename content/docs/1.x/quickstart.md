@@ -128,4 +128,4 @@ Dive deeper into the [documentation](/docs/1.x/bootstrap) to discover:
     - [Factory](/docs/1.x/factory): manages the *intra-dependencies*
     - [Provider](/docs/1.x/provider): resolves the *extra-dependencies*
     - [Config](/docs/1.x/config): access the project's *config* key values
-- Want to go crazy? Check "[Gacela in a file](/docs/1.x/extra#gacela-in-a-file)" to see the flexibility of Gacela
+- Want to go crazy? Check "[Gacela in a file](/docs/1.x/single-file-modules#gacela-in-a-file)" to see the flexibility of Gacela

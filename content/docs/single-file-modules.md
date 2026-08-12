@@ -143,4 +143,4 @@ Factory, the Factory resolves the Provider and Config, just like a regular direc
 - [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
 - [Container](https://github.com/gacela-project/container): A minimalistic dependency container
 
-See how Gacela works with **Symfony**, **Laravel**, and [other frameworks](/docs/other-frameworks).
+See how Gacela works with **Symfony**, **Laravel**, and [other frameworks](/docs/framework-integration).

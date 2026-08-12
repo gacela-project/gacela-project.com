@@ -18,7 +18,7 @@ export const SHELL_ROUTES: readonly string[] = [
   '/docs/quickstart',
   '/docs/facade',
   '/docs/bindings',
-  '/docs/gacela-script',
+  '/docs/cli',
   '/about',
   '/used-in',
   '/team',

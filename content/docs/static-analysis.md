@@ -292,7 +292,7 @@ is worse than no rule: it reads as a green check, and nothing would ever tell yo
 - One line can produce two findings. `(new ShopService())->run()` both names the other module and calls into it: two
   crossings with two corrections, so both are reported.
 
-To see the actual module dependency graph of your app, run [`debug:graph`](/docs/gacela-script#debug-graph).
+To see the actual module dependency graph of your app, run [`debug:graph`](/docs/cli#debug-graph).
 
 ## Failing on dependency cycles
 

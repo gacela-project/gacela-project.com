@@ -58,4 +58,4 @@ vendor/bin/gacela debug:dependencies App\\Catalog\\CatalogService
 
 ## Symfony integration
 
-In Symfony apps, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container via a compiler pass. See [Symfony bridge](/docs/1.x/other-frameworks#symfony-bridge) for setup.
+In Symfony apps, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container via a compiler pass. See [Symfony bridge](/docs/1.x/framework-integration#symfony-bridge) for setup.

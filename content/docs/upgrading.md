@@ -174,8 +174,8 @@ composer require gacela-project/gacela:^2.2
 Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-schema), a
 [module dependency rules file](/docs/static-analysis#declaring-which-modules-may-depend-on-which),
 [module doubles in tests](/docs/testing#replacing-another-module),
-[published scaffolding stubs](/docs/gacela-script#stubs-publish), and the
-[Symfony bundle and Laravel provider](/docs/other-frameworks). Three things are worth knowing before the upgrade:
+[published scaffolding stubs](/docs/cli#stubs-publish), and the
+[Symfony bundle and Laravel provider](/docs/framework-integration). Three things are worth knowing before the upgrade:
 
 - **The Symfony and Laravel bridges now actually reach your vendor directory.** `.gitattributes` stripped both from the
   dist archive and their namespaces sat in `autoload-dev`, so nothing under `Gacela\SymfonyBridge` or

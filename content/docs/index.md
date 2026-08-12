@@ -82,7 +82,7 @@ The [Quickstart](/docs/quickstart) demonstrates the complete flow.
 - [Bootstrap an application](/docs/bootstrap)
 - [Configure container bindings and lifetimes](/docs/bindings)
 - [Resolve a service in framework-managed code](/docs/inject)
-- [Inspect modules and dependency cycles from the CLI](/docs/gacela-script)
+- [Inspect modules and dependency cycles from the CLI](/docs/cli)
 - [Add health checks](/docs/health-checks)
 - [Test with isolated container state](/docs/testing)
 - [Enforce boundaries with PHPStan or Psalm](/docs/static-analysis)
