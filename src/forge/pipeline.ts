@@ -82,7 +82,7 @@ export async function build(input: BuildInput): Promise<BuildResult> {
 }
 
 /** `/docs/facade` becomes `docs/facade.html`, which every static host serves cleanly. */
-function outputPathFor(route: string): string {
+export function outputPathFor(route: string): string {
   if (route === '/') return 'index.html'
 
   const path = route.replace(/^\//, '')

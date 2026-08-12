@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { auditLinks } from '../../src/forge/audit/index.ts'
+import { auditLinks, findOutputCollisions } from '../../src/forge/audit/index.ts'
 import type { RenderedPage } from '../../src/forge/types.ts'
 
 const page = (over: Partial<RenderedPage> & Pick<RenderedPage, 'route'>): RenderedPage => ({
@@ -134,5 +134,42 @@ describe('auditLinks', () => {
     )
 
     expect(problems).toEqual([])
+  })
+})
+
+describe('findOutputCollisions', () => {
+  it('reports a URL claimed by both a file and a directory index', () => {
+    const collisions = findOutputCollisions([
+      'docs/1.x.html',
+      'docs/1.x/index.html',
+      'docs/facade.html',
+    ])
+
+    expect(collisions).toEqual(['docs/1.x.html'])
+  })
+
+  /* The site's normal shape: /docs answers from docs.html while the pages
+     live in docs/. One file per URL, nothing ambiguous. */
+  it('allows a file beside a directory that has no index of its own', () => {
+    const collisions = findOutputCollisions([
+      'docs.html',
+      'docs/facade.html',
+      'docs/1.x/index.html',
+      'docs/1.x/facade.html',
+    ])
+
+    expect(collisions).toEqual([])
+  })
+
+  /* The old /docs/index URL is kept alive by a redirect stub at
+     docs/index.html. Whichever of the pair a host serves, the reader lands on
+     the same page, so the pair is not an ambiguity. */
+  it('allows a redirect stub at the directory index of its own target', () => {
+    const collisions = findOutputCollisions(
+      ['docs.html', 'docs/index.html'],
+      ['docs/index.html'],
+    )
+
+    expect(collisions).toEqual([])
   })
 })

@@ -97,6 +97,35 @@ export function findOrphans(
     .filter((route) => route !== '/')
 }
 
+/**
+ * URLs claimed by two output files at once: "docs/1.x.html" beside
+ * "docs/1.x/index.html". Every host resolves /docs/1.x to one of the pair,
+ * and different hosts pick differently, so the same build serves different
+ * pages locally and in production. The build must publish one file per URL.
+ *
+ * Two shapes stay allowed. A file beside an index-less directory ("docs.html"
+ * next to "docs/") is the site's normal form: only the file answers the bare
+ * URL. And a pair whose second member is a redirect stub is self-consistent:
+ * whichever file a host picks, the reader lands on the same page.
+ */
+export function findOutputCollisions(
+  paths: readonly string[],
+  redirectPaths: readonly string[] = [],
+): string[] {
+  const published = new Set(paths)
+  const stubs = new Set(redirectPaths)
+
+  return paths
+    .filter((path) => {
+      if (!path.endsWith('.html') || stubs.has(path)) return false
+
+      const twin = `${path.slice(0, -5)}/index.html`
+
+      return published.has(twin) && !stubs.has(twin)
+    })
+    .sort()
+}
+
 function normalize(path: string): string {
   return path.length > 1 ? path.replace(/\/+$/, '') : path
 }

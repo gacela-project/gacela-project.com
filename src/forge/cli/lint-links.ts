@@ -3,7 +3,8 @@ import { join, relative, sep } from 'node:path'
 
 import { SHELL_ROUTES } from '../../templates/shell.ts'
 import { agentDocsRoutes } from '../agents/index.ts'
-import { auditLinks, findOrphans } from '../audit/index.ts'
+import { auditLinks, findOrphans, findOutputCollisions } from '../audit/index.ts'
+import { outputPathFor } from '../pipeline.ts'
 import { flattenSidebar } from '../nav/index.ts'
 import { build } from '../pipeline.ts'
 import { loadSiteConfig, projectRoot, readVersion } from './context.ts'
@@ -12,7 +13,20 @@ const root = projectRoot()
 const site = await loadSiteConfig(root)
 const version = await readVersion(root)
 
-const { pages } = await build({ site, root, version })
+const { pages, outputs } = await build({ site, root, version })
+
+const collisions = findOutputCollisions(
+  outputs.map((output) => output.path),
+  Object.keys(site.redirects).map(outputPathFor),
+)
+if (collisions.length > 0) {
+  for (const path of collisions) {
+    console.error(
+      `  ${path} and ${path.slice(0, -5)}/index.html both claim one URL; hosts pick differently`,
+    )
+  }
+  process.exitCode = 1
+}
 
 const publicDir = join(root, 'public')
 const publicEntries = await readdir(publicDir, { recursive: true, withFileTypes: true })
