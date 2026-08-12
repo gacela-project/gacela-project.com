@@ -55,22 +55,10 @@ constructor parameter and is not injected twice. Property/setter cycles still th
 
 ## Resolution order
 
-For a parameter `$p` on `Consumer`, the container resolves in this order:
-
-1. A runtime override passed to `make()` under `$p`'s name.
-2. A named contextual binding: `when(Consumer::class)->needs('$p')->give(...)`.
-3. The explicit target in `#[Inject(Target::class)]`.
-4. The parameter's default value.
-5. A type-based contextual binding for `Consumer`.
-6. A global `addBinding()` for the type.
-7. Recursive autowiring when the type is an instantiable class.
-8. `DependencyNotFoundException` when nothing can resolve it.
-
-::: warning Defaults win over type bindings
-`__construct(?Engine $engine = null)` resolves to `null` even when `Engine` has a global binding, because defaults are
-checked first. Remove the default or use `#[Inject]` when the container should fill the parameter. Nullability alone
-does not produce `null`: `?Engine $engine` without a default still throws if unresolved.
-:::
+`#[Inject(Target::class)]` sits third in the container's general resolution order, after `make()` overrides and named
+contextual bindings, and before defaults, type-based contextual bindings, and global bindings. The full ordered list,
+including the "defaults win over type bindings" pitfall, is
+[Bindings > Resolution order](/docs/bindings#resolution-order).
 
 ## Inspecting with `debug:dependencies`
 

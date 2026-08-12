@@ -105,7 +105,9 @@ The difference between these two styles:
 Real
 example: [symfony-gacela-example/gacela.php](https://github.com/gacela-project/symfony-gacela-example/blob/main/gacela.php#L16)
 
-For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject).
+For a per-parameter alternative to constructor auto-wiring, see the [`#[Inject]` attribute](/docs/inject). When a
+parameter could be satisfied more than one way, the container follows a fixed
+[resolution order](/docs/bindings#resolution-order).
 
 ## Sharing a single instance
 

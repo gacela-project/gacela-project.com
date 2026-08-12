@@ -168,6 +168,32 @@ The resolved value for `'AKISMET-KEY'` depends on the environment:
 - No `APP_ENV` set → `default-akismet-key`
 - `APP_ENV=prod` → `production-akismet-key` (overrides the default)
 
+## Config values without files
+
+`addAppConfigKeyValue()` and `addAppConfigKeyValues()` set configuration keys directly on `GacelaConfig`, in
+`gacela.php` or the bootstrap closure:
+
+```php
+<?php # gacela.php
+
+return static function (GacelaConfig $config): void {
+    $config->addAppConfigKeyValue('retries', 3);
+
+    $config->addAppConfigKeyValues([
+        'db.dsn' => 'pgsql://localhost/app',
+        'features' => ['beta' => true],
+    ]);
+};
+```
+
+Keys set this way are merged **after** every file source, so they override values from `config/*.php`, environment
+files, and local overrides. Schema-declared defaults sit at the other end: a key nobody provides falls back to its
+declaration, and any source, including these methods, wins over it.
+
+This is also how tests override configuration:
+[`GacelaTestCase::bootstrapGacelaWithConfig()`](/docs/testing#gacelatestcase) passes its key-values through
+`addAppConfigKeyValues()`.
+
 ## Declaring a config schema [since 2.2]
 
 [`validate:config`](/docs/cli#validate-config) checks the wiring: bindings, dependency cycles. Nothing checked

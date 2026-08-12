@@ -77,8 +77,6 @@ In your infrastructure layer (controllers, CLI commands, etc.) you often can't e
 `ServiceResolverAwareTrait` together with the `#[ServiceMap]` attribute to let Gacela resolve the Facade lazily through
 the Locator singleton. No constructor injection needed.
 
-### Recommended: `#[ServiceMap]` attribute
-
 ```php
 <?php
 
@@ -99,57 +97,8 @@ final class TestCommand extends Command
 }
 ```
 
-`#[ServiceMap]` is repeatable. Declare as many resolvable services as the class needs. Full
-reference: [Service Map](/docs/service-map).
-
-### Migration aid: DocBlock `@method`
-
-Keep a `@method` annotation alongside the attribute when your IDE needs it. Using a docblock as the **runtime** source
-still works in 2.0, but raises `E_USER_DEPRECATED` and will be removed in 3.0.
-
-```php
-<?php
-
-use Gacela\Framework\ServiceResolverAwareTrait;
-
-/**
- * @method RunFacade getFacade()
- */
-final class TestCommand extends Command
-{
-    use ServiceResolverAwareTrait;
-
-    protected function execute(InputInterface $in, OutputInterface $out): int
-    {
-        $dependencies = $this->getFacade()->getDependencies($paths);
-        // ...
-    }
-}
-```
-
-Add the attribute even when retaining the docblock:
-
-```php
-/** @method RunFacade getFacade() */
-#[ServiceMap(method: 'getFacade', className: RunFacade::class)]
-final class TestCommand extends Command
-{
-    use ServiceResolverAwareTrait;
-}
-```
-
-::: warning Removed in 2.0
-`DocBlockResolverAwareTrait` no longer exists. Replace it with `ServiceResolverAwareTrait`; the API is otherwise
-unchanged. See [Upgrade to 2.0](/docs/upgrading).
-:::
-
-#### Direct construction or Service Map?
-
 Construct a Facade directly when your code owns the entry point, as in the Quickstart. Use `#[ServiceMap]` when another
-framework creates the controller or command and constructor injection is not practical. Service Map resolves through
-Gacela's Locator and reuses the registered Facade.
+framework creates the controller or command and constructor injection is not practical.
 
-#### Resolution behavior
-
-`ServiceResolverAwareTrait` maps the declared method to the class in `#[ServiceMap]` and resolves it lazily. It works
-for any Gacela-resolvable class, although cross-module calls should target a Facade.
+The full reference, including repeatable declarations, the `@method` DocBlock migration path, and resolution behavior,
+is [Service Map](/docs/service-map).
