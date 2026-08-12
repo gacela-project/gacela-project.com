@@ -114,7 +114,7 @@ And mid-sentence: a feature [since 1.9] sits on the baseline without growing the
 The header's release pill becomes this dropdown once an archived docs line exists. It is a `details` element, so it
 works without JavaScript, and the pill it opens from is the same `.badge` the header always carried.
 
-<div class="sg-row" style="min-height: 14rem; align-items: flex-start">
+<div class="sg-row">
   <details class="version-menu" open>
     <summary class="badge version-menu__summary">2.1.0 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></summary>
     <ul class="version-menu__panel version-menu__panel--static" role="list">
