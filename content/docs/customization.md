@@ -59,16 +59,9 @@ pillar being replaced.
 
 ## Module scan paths
 
-Restrict discovery when modules live under known directories:
-
-```php [gacela.php]
-return static function (GacelaConfig $config): void {
-    $config->setAppModulePaths(['src']);
-};
-```
-
-This speeds up `list:modules`, `debug:modules`, `cache:warm`, and `doctor` by excluding unrelated directories. Paths may
-be absolute or relative to the application root.
+Restrict discovery to known directories with `setAppModulePaths(['src'])`, which speeds up `list:modules`,
+`debug:modules`, `cache:warm`, and `doctor`. The full reference is
+[Bootstrap > Application module paths](/docs/bootstrap#application-module-paths).
 
 ## Custom scaffolding templates [since 2.2]
 

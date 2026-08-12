@@ -172,7 +172,7 @@ composer require gacela-project/gacela:^2.2
 ```
 
 Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-schema), a
-[module dependency rules file](/docs/static-analysis#declaring-which-modules-may-depend-on-which),
+[module dependency rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which),
 [module doubles in tests](/docs/testing#replacing-another-module),
 [published scaffolding stubs](/docs/cli#stubs-publish), and the
 [Symfony bundle and Laravel provider](/docs/framework-integration). Three things are worth knowing before the upgrade:

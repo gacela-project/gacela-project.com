@@ -86,6 +86,7 @@ The [Quickstart](/docs/quickstart) demonstrates the complete flow.
 - [Add health checks](/docs/health-checks)
 - [Test with isolated container state](/docs/testing)
 - [Enforce boundaries with PHPStan or Psalm](/docs/static-analysis)
+- [Declare which modules may depend on which](/docs/module-boundaries)
 
 ## Documentation for coding agents
 

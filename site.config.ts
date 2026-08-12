@@ -65,6 +65,7 @@ export const site: SiteConfig = {
       items: [
         { title: 'Caching', route: '/docs/caching' },
         { title: 'Cacheable methods', route: '/docs/cacheable-methods' },
+        { title: 'FileCache and ScopedCache', route: '/docs/file-cache' },
         { title: 'Opcache preload', route: '/docs/opcache-preload' },
       ],
     },
@@ -73,8 +74,10 @@ export const site: SiteConfig = {
       items: [
         { title: 'CLI reference', route: '/docs/cli' },
         { title: 'Health checks', route: '/docs/health-checks' },
+        { title: 'Profiling', route: '/docs/profiling' },
         { title: 'Events', route: '/docs/events' },
         { title: 'Static analysis', route: '/docs/static-analysis' },
+        { title: 'Module boundaries', route: '/docs/module-boundaries' },
       ],
     },
     {

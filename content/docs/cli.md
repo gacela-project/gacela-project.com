@@ -112,7 +112,7 @@ vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json
 - `--check`: exit non-zero when an unreviewed dependency cycle exists
 - `--allowed-cycles <file>`: JSON allowlist of reviewed cycles and their reasons
 - `--rules <file>`: [since 2.2] exit non-zero on a dependency your
-  [module rules file](/docs/static-analysis#declaring-which-modules-may-depend-on-which) forbids. Cannot be combined
+  [module rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which) forbids. Cannot be combined
   with a filter argument: in a narrowed graph, a rule about a filtered-out module is indistinguishable from a rule
   about a module that no longer exists.
 - `--compare-to <graph.json>`: diff the current graph against saved JSON output
@@ -121,8 +121,8 @@ With `--check`, `--format=json` writes the findings as a report instead of lines
 exit code: undeclared cycles, stale allow-list entries, forbidden dependencies and unknown rule namespaces. [since 2.2]
 
 The `mermaid` / `graphviz` formats are handy for architecture diagrams. Use `--check` in CI.
-See [Failing on dependency cycles](/docs/static-analysis#failing-on-dependency-cycles) for the allowlist format and the
-CI comparison workflow.
+See [Failing on dependency cycles](/docs/module-boundaries#failing-on-dependency-cycles) for the allowlist format and
+the CI comparison workflow.
 
 Imports are read with PHP's tokenizer rather than matched line by line, so grouped (`use App\Shop\{A, B};`), multiline
 and aliased imports all produce edges, as do `use function` and `use const`. A leading `\` on an import and an uppercase
@@ -241,7 +241,8 @@ vendor/bin/gacela debug:config [<filter>]
 ### `profile:report`
 
 Generate a performance report from the in-memory `Profiler`. Enable the profiler (`Profiler::getInstance()->enable()`)
-early in your bootstrap, run your code, then dump the report.
+early in your bootstrap, run your code, then dump the report. The Profiler API and its span semantics are documented
+at [Profiling](/docs/profiling).
 
 ```bash
 vendor/bin/gacela profile:report [--format=table|json|summary] [--sort=duration|memory|operation]
