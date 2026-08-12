@@ -111,7 +111,14 @@ vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json
 - `-f`, `--format`: `text` (default), `mermaid`, `graphviz`, or `json`
 - `--check`: exit non-zero when an unreviewed dependency cycle exists
 - `--allowed-cycles <file>`: JSON allowlist of reviewed cycles and their reasons
+- `--rules <file>`: [since 2.2] exit non-zero on a dependency your
+  [module rules file](/docs/static-analysis#declaring-which-modules-may-depend-on-which) forbids. Cannot be combined
+  with a filter argument: in a narrowed graph, a rule about a filtered-out module is indistinguishable from a rule
+  about a module that no longer exists.
 - `--compare-to <graph.json>`: diff the current graph against saved JSON output
+
+With `--check`, `--format=json` writes the findings as a report instead of lines, for a CI job that wants more than an
+exit code: undeclared cycles, stale allow-list entries, forbidden dependencies and unknown rule namespaces. [since 2.2]
 
 The `mermaid` / `graphviz` formats are handy for architecture diagrams. Use `--check` in CI.
 See [Failing on dependency cycles](/docs/static-analysis#failing-on-dependency-cycles) for the allowlist format and the
@@ -175,7 +182,9 @@ container's in-process reflection memos.
 
 Aggregate environmental and wiring health checks with per-check remediation hints. Bundled checks include cache
 staleness, suffix mismatches, and filename/class mismatches, plus any `ModuleHealthCheckInterface` registered through
-`GacelaConfig::addHealthCheck()`.
+`GacelaConfig::addHealthCheck()`. It also checks the [declared config schema](/docs/config#declaring-a-config-schema)
+and reports a [published stub](#stubs-publish) that lost a placeholder or sits under a name the scaffolder never
+reads. [since 2.2]
 
 ```bash
 vendor/bin/gacela doctor [<filter>] [--strict]
@@ -202,6 +211,8 @@ vendor/bin/gacela validate:config
   chain, and a fix hint.
 - Interface-keyed bindings are checked as well (previously skipped).
 - Non-class binding keys (plain string ids such as `'db.dsn'`) are accepted rather than reported as non-existent.
+- Checks the configuration against the [declared schema](/docs/config#declaring-a-config-schema), exiting non-zero when
+  a declared key is unsatisfied. [since 2.2]
 
 ::: info No side effects
 As of 2.1 the command validates the dependency graph statically instead of calling `$container->get()` on every binding
@@ -221,6 +232,9 @@ vendor/bin/gacela debug:config [<filter>]
 
 - `filter`: only show keys containing this substring.
 - Backed by `Config::getAllValues()`, so it reflects exactly what your modules see at runtime.
+- Each key is marked `declared`, `undeclared` or `missing` against the
+  [declared schema](/docs/config#declaring-a-config-schema), so the table also flags the keys the schema does *not*
+  cover, and lists a declared key nothing provides even though it has no value to show. [since 2.2]
 
 ## Profiling
 
@@ -285,3 +299,23 @@ vendor/bin/gacela make:module -s App/TestModule
 ```bash
 vendor/bin/gacela make:module --template=service --with-tests App/Checkout
 ```
+
+### `stubs:publish` [since 2.2]
+
+`make:module` and `make:file` generate from templates that ship with Gacela. `stubs:publish` copies them into the
+project, `stubs/gacela/` by default, `GacelaConfig::setStubsDir()` to put them elsewhere, so `make:*` generates your
+house style:
+
+```bash
+vendor/bin/gacela stubs:publish                    # every stub
+vendor/bin/gacela stubs:publish --template=basic   # one template set
+vendor/bin/gacela stubs:publish --force            # replace ones already published
+```
+
+From then on a generated file uses the project's stub when there is one and the built-in template when there is not,
+**per file**, so publishing your Facade stub does not freeze the Factory at the version it was copied from. Without
+`--force` nothing already published is overwritten: it is a file somebody changed on purpose.
+
+Every stub substitutes `$NAMESPACE$`, `$MODULE_NAME$` and `$CLASS_NAME$`. [`doctor`](#doctor) reports a published stub
+that lost `$NAMESPACE$` or `$CLASS_NAME$`, and one filed under a name the scaffolder does not read: an edit that never
+takes effect looks exactly like one that did.

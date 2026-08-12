@@ -108,9 +108,42 @@ final class LoggingBindingTest extends GacelaTestCase
 }
 ```
 
+## Replacing another module [since 2.2]
+
+Testing module A in isolation means replacing module B. A container binding only works when B's Facade arrives through
+a Provider, and a consumer that writes `new BlogFacade()` leaves nothing to bind. So the seam is the **Factory** every
+Facade resolves:
+
+```php
+$this->swapModuleFactory(BlogFacade::class, new class() extends BlogFactory {
+    public function createPostReader(): PostReader
+    {
+        return new InMemoryPostReader(['a post']);
+    }
+});
+
+(new CheckoutFacade())->summary();  // reaches the double, not the real Blog
+```
+
+- `swapModuleFactory()`, `swapModuleConfig()` and `swapModuleProvider()` all take the **Facade** class: that is the
+  name a consumer already knows, and the one the resolver derives a module's pillars from.
+- Any object of the right pillar type works: an anonymous subclass, or a PHPUnit stub
+  (`$this->createStub(BlogFactory::class)`).
+- The swap survives repeated resolutions, and applies to a module that was already resolved earlier in the same test.
+- Swapping the same module twice keeps the last double.
+- Every swap is dropped by `resetContainer()`, which `GacelaTestCase` already runs in `tearDown()`, so the next test
+  sees the real module again whatever order the suite runs in.
+
+Naming a class that is not a Facade, the Factory itself or a typo, throws a `ModuleDoubleException` rather than
+registering a double nothing would ever read.
+
+This replaces reaching into `AnonymousGlobal::overrideExistingResolvedClass()`, which needed the resolver's key format
+and left the Facade's memoised Factory in place.
+
 ## ContainerFixture
 
-The trait provides helpers to reset, snapshot and restore the container state so tests don't bleed into each other.
+The trait provides helpers to reset, snapshot and restore the container state so tests don't bleed into each other. The
+[module swap helpers](#replacing-another-module) above live here too, so they are available under either entry point.
 
 ### Setup
 

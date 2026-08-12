@@ -103,4 +103,4 @@ cycles are marked and cut. The command reports broken graphs instead of throwing
 ## Symfony integration
 
 In Symfony apps, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container
-via a compiler pass. See [Symfony bridge](/docs/other-frameworks#symfony-bridge-preview) for setup.
+via a compiler pass. See [the Symfony bundle](/docs/other-frameworks#the-inject-compiler-pass) for setup.

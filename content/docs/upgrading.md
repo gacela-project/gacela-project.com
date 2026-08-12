@@ -1,6 +1,6 @@
 ---
 title: Upgrading Gacela
-description: Move from 1.21 to 2.0, then on to 2.1: PHP and container requirements, removed APIs, declared service accessors, and what to verify.
+description: Move from 1.21 to 2.0, then on to 2.1 and 2.2; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
 ---
 
 # Upgrading Gacela
@@ -162,3 +162,27 @@ Two things are worth picking up deliberately:
 Two fixes change behavior you may have worked around: `ttl: 0` means "no expiry" in `InMemoryCacheStorage` as it always
 did in `FileCache`, and resolution hooks registered in `gacela.php` now fire inside module scopes as well as at the app
 level.
+
+## Moving on to 2.2
+
+2.2 is a drop-in upgrade from 2.1: no removed APIs, no signature changes, no configuration to rewrite.
+
+```bash
+composer require gacela-project/gacela:^2.2
+```
+
+Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-schema), a
+[module dependency rules file](/docs/static-analysis#declaring-which-modules-may-depend-on-which),
+[module doubles in tests](/docs/testing#replacing-another-module),
+[published scaffolding stubs](/docs/gacela-script#stubs-publish), and the
+[Symfony bundle and Laravel provider](/docs/other-frameworks). Three things are worth knowing before the upgrade:
+
+- **The Symfony and Laravel bridges now actually reach your vendor directory.** `.gitattributes` stripped both from the
+  dist archive and their namespaces sat in `autoload-dev`, so nothing under `Gacela\SymfonyBridge` or
+  `Gacela\LaravelBridge` was installable before 2.2. If you copied bridge classes into your project or pinned a path
+  repository to work around that, drop the workaround and register the bundle or provider instead.
+- **PHPStan users on [phpstan/extension-installer](https://github.com/phpstan/extension-installer) get Gacela's rules
+  automatically** from this release on. A project that deliberately ran without `phpstan-gacela.neon` will see new
+  findings on the first run; opt out per package via `extra."phpstan/extension-installer".ignore`.
+- **A `#[ServiceMap]` accessor whose mapped class the analysing process cannot autoload is now typed** instead of
+  silently falling back to `mixed`, so PHPStan may report calls it previously ignored.

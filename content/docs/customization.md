@@ -70,6 +70,27 @@ return static function (GacelaConfig $config): void {
 This speeds up `list:modules`, `debug:modules`, `cache:warm`, and `doctor` by excluding unrelated directories. Paths may
 be absolute or relative to the application root.
 
+## Custom scaffolding templates [since 2.2]
+
+`make:module` and `make:file` generate from templates that ship with Gacela. Publish them into the project and the
+generators use yours instead, per file:
+
+```bash
+vendor/bin/gacela stubs:publish
+```
+
+They land in `stubs/gacela/` by default; point `setStubsDir()` somewhere else when the project keeps templates
+elsewhere:
+
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->setStubsDir('resources/stubs');
+};
+```
+
+See [`stubs:publish`](/docs/gacela-script#stubs-publish) for the placeholders a stub must keep and how `doctor` reports
+one that lost them.
+
 ## Lifecycle listeners
 
 Use `registerGenericListener()` for all events or `registerSpecificListener()` for one event class. Listeners are best
