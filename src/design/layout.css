@@ -101,9 +101,24 @@
 
   /* The breadcrumb, the edit links and the pager take the same measure as the
      body they frame, or the page ends up with two right edges and the wider
-     one belongs to the least important elements. */
-  .docs__article > * {
+     one belongs to the least important elements. The prose is exempt because it
+     allocates its own two widths, and clamping it here overrode them. */
+  .docs__article > *:not(.prose) {
     max-width: var(--measure-prose);
+  }
+
+  /* Below the contents breakpoint the article has that column's width to
+     itself, which made a table wider at 1179px than at 1440px. Widening the
+     window must never narrow the content, so cap the article at the width it
+     has once the contents column is there.
+
+     On the article, not on the prose inside it: .prose carries its own
+     max-width in the components layer, which comes after this one, so a rule
+     here naming .prose loses whatever its specificity. */
+  .docs__article {
+    max-width: calc(
+      var(--width-wide) - var(--space-5) * 2 - var(--width-sidebar) - var(--width-toc) - var(--space-7) * 2
+    );
   }
 
   .docs__toc {

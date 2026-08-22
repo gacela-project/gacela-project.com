@@ -8,31 +8,28 @@
 
 @layer components {
   .prose {
-    max-width: var(--measure-prose);
+    max-width: var(--measure-code);
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--text);
   }
 
-  /* Two widths, one left edge. A standalone page has no sidebar to spend its
-     width on, so blocks that are not sentences take the column while sentences
-     keep the reading measure. Both start at the same edge; only the right side
-     varies, which is the side a reader is not returning to. */
-  .container--prose .prose {
-    max-width: var(--measure-code);
-  }
-
-  .container--prose .prose > * {
+  /* Two widths, one left edge. Blocks that are not sentences take the column
+     while sentences keep the reading measure. Both start at the same edge; only
+     the right side varies, which is the side a reader is not returning to.
+     A table of rule identifiers is the case that forces it: the reading measure
+     cut them mid-name, and a truncated identifier is one nobody can copy. */
+  .prose > * {
     max-width: var(--measure-prose);
   }
 
-  .container--prose .prose > table,
-  .container--prose .prose > figure,
-  .container--prose .prose > .code-block,
-  .container--prose .prose > .code-group,
-  .container--prose .prose > .stat-row,
-  .container--prose .prose > .card-grid,
-  .container--prose .prose > .team {
+  .prose > table,
+  .prose > figure,
+  .prose > .code-block,
+  .prose > .code-group,
+  .prose > .stat-row,
+  .prose > .card-grid,
+  .prose > .team {
     max-width: none;
   }
 
@@ -44,8 +41,11 @@
      measure only creates dead space to the right of it. Centred, so it sits
      under the centred heading that introduces it rather than beside it. */
   .prose--code {
-    max-width: var(--measure-code);
     margin-inline: auto;
+  }
+
+  .prose--code > * {
+    max-width: none;
   }
 
   .prose h1 {
