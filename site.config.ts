@@ -57,6 +57,7 @@ export const site: SiteConfig = {
         { title: 'Service Map', route: '/docs/service-map' },
         { title: 'Inject attribute', route: '/docs/inject' },
         { title: 'Extensions and plugins', route: '/docs/extensions' },
+        { title: 'DTO schema', route: '/docs/dto-schema' },
         { title: 'Module customization', route: '/docs/customization' },
       ],
     },

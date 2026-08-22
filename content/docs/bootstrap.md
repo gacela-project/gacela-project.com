@@ -193,6 +193,24 @@ return static function (GacelaConfig $config): void {
 
 ## Runtime access
 
+Three entry points answer only after `Gacela::bootstrap()` has run, and each throws
+`Gacela\Framework\Exception\GacelaNotBootstrappedException` when it has not: `Gacela::rootDir()`, `Gacela::container()`
+and `Config::getInstance()`. The message is `Did you forget to call Gacela::bootstrap()?`.
+
+```php
+use Gacela\Framework\Exception\GacelaNotBootstrappedException;
+
+try {
+    $container = Gacela::container();
+} catch (GacelaNotBootstrappedException) {
+    // Nothing is wired yet. Degrade rather than fail.
+}
+```
+
+Catch it to degrade gracefully, which is what `debug:dependencies` does when asked about a project that never
+bootstrapped. `Config::getInstance()` joined the other two in 2.3; before that it threw a bare `RuntimeException`
+naming an internal method, so a handler written for exactly this condition missed the commonest case.
+
 ### Gacela::rootDir ()
 
 Returns the application root passed to `bootstrap()`.

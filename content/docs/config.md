@@ -168,6 +168,44 @@ The resolved value for `'AKISMET-KEY'` depends on the environment:
 - No `APP_ENV` set → `default-akismet-key`
 - `APP_ENV=prod` → `production-akismet-key` (overrides the default)
 
+## Config dimensions [since 2.3]
+
+`APP_ENV` is one axis. A project that also varies by region, tenant or brand needs more, and `addConfigDimension()`
+declares each extra environment variable that selects configuration:
+
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->addAppConfig('config/*.php');
+
+    $config->addConfigDimension('APP_REGION');
+    $config->addConfigDimension('APP_TENANT');
+};
+```
+
+Declaration order is the order of the chain, and each layer refines the one before it. With `APP_ENV=prod` and
+`APP_REGION=eu`, Gacela reads:
+
+1. `config/app.php`
+2. `config/app-prod.php`
+3. `config/app-prod-eu.php`
+
+A variable that is unset ends the chain, so `APP_ENV=prod` alone stops after the second layer. A local override file
+is still read last and still wins.
+
+The merged configuration cache is keyed by the **whole tuple**, so two regions never serve each other's values. Warm
+one cache per combination you deploy:
+
+```bash
+APP_REGION=eu vendor/bin/gacela cache:warm
+APP_REGION=us vendor/bin/gacela cache:warm
+```
+
+::: warning A dimension value reaches the filesystem
+A value may contain only letters, digits, `_`, `.` and `-`, and `APP_ENV` is held to the same alphabet as of 2.3.
+Anything else throws. A dimension reaches both a glob pattern and a cache filename: `APP_ENV=../escaped` used to write
+the merged-config cache outside its directory, and `APP_ENV=x/../../pwned` failed silently and booted uncached.
+:::
+
 ## Config values without files
 
 `addAppConfigKeyValue()` and `addAppConfigKeyValues()` set configuration keys directly on `GacelaConfig`, in

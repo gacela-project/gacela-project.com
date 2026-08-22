@@ -94,9 +94,12 @@ be turned off on its own.
 | A Factory does not `new` a Facade                                                             | `gacela.factoryInstantiatesFacade` | `GacelaFacadeInstantiation`      | on     |
 | A Factory does not call `$this->getFacade()`                                                  | `gacela.factoryCallsGetFacade`     | `GacelaFactoryFacadeAccess`      | on     |
 | A Facade's public methods are in its `*FacadeInterface`                                       | `gacela.facadeInterfaceDrift`      | `GacelaFacadeInterfaceDrift`     | on     |
+| A `#[Cacheable]` method reaches `$this->cached()` [since 2.3]                                  | `gacela.cacheableWithoutCachedCall` | `GacelaCacheableWithoutCachedCall` | on   |
+| A `#[Cacheable]` key mentions the arguments [since 2.3]                                        | `gacela.cacheableKeyIgnoresArguments` | `GacelaCacheableKeyIgnoresArguments` | on |
 | A cross-module reference the source **names**                                                 | `gacela.crossModuleWithoutFacade`  | `GacelaCrossModuleAccess`        | opt-in |
 | A cross-module call the source does **not** name                                              | `gacela.crossModuleMethodCall`     | `GacelaCrossModuleMethodCall`    | opt-in |
 | A dependency the project's [rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which) forbids | `gacela.declaredModuleDependency`  | `GacelaDeclaredModuleDependency` | opt-in |
+| A pillar accessor declared with `#[ServiceMap]`, not `@method` [since 2.3]                     | `gacela.serviceMapMissing`         | `GacelaServiceMapMissing`        | opt-in |
 
 On top of the rules, both analysers gain two **types** they otherwise lack:
 the [pillar accessors](#typed-pillar-accessors), and [`getProvidedDependency()`](#typed-provided-dependencies) by
@@ -210,6 +213,72 @@ and by then the fix is a breaking change.
 The rule is on by default and self-limiting: it only fires for a Facade that explicitly implements the interface named
 after it (`FooFacade` implements `FooFacadeInterface`). A Facade that implements unrelated interfaces, or none, is not
 checked.
+
+## Cacheable methods that do not cache [since 2.3]
+
+Two rules cover [`#[Cacheable]`](/docs/cacheable-methods), where the failure is silent by construction: the code runs,
+returns the right value, and caches nothing or caches the wrong thing.
+
+**The attribute is metadata, not a mechanism.** `cached()` reads it. A method carrying `#[Cacheable]` whose body never
+reaches `$this->cached()` is simply not cached:
+
+```text
+App\User\UserFacade::profile() carries #[Cacheable] and never calls
+$this->cached(), so nothing caches it: the attribute is metadata
+that `cached()` reads.
+    💡 Wrap the body in $this->cached(fn () => ...), or call a helper that does.
+```
+
+The rule judges the **class**, not the method on its own, because `cached()` may live in a private helper the method
+delegates to.
+
+**A key with no placeholder is one key.** `#[Cacheable(key: 'user')]` on a method that takes an argument produces the
+same string for every call, so `getUser(2)` is answered with user 1's row:
+
+```text
+The #[Cacheable] key "user" on App\User\UserFacade::getUser() does not
+mention the arguments, so every call shares one entry and the first
+result is served to all of them
+    💡 Put the argument in the key, as "user:{0}", or drop `key` so
+       the trait derives one from the arguments.
+```
+
+Placeholders pointing past the arguments are reported the same way. One in range is enough, and a variadic is not
+judged on its index.
+
+Both rules are on by default.
+
+## Finding what 3.0 removes [since 2.3]
+
+`gacela.serviceMapMissing` reports a pillar accessor still resolved from a `@method` docblock, which is the resolution
+3.0 drops. It names the `#[ServiceMap]` to paste:
+
+```text
+App\Wallet\WalletCommand::getFacade() is resolved from its @method
+docblock, which is deprecated and removed in 3.0
+    💡 Declare it with #[ServiceMap(method: 'getFacade',
+       className: WalletFacade::class)].
+```
+
+It is off by default, because a `@method` accessor is not wrong on 2.x. Turning it on is the decision to start the
+migration, taken when the project is ready rather than as a side effect of upgrading:
+
+```neon
+# phpstan.neon
+services:
+    -
+        class: Gacela\PHPStan\Rules\ServiceMapMissingRule
+        tags: [phpstan.rules.rule]
+```
+
+```xml
+<!-- psalm.xml -->
+<pluginClass class="Gacela\Psalm\Plugin">
+  <serviceMapMissing/>
+</pluginClass>
+```
+
+See [Service Map](/docs/service-map) for the attribute, and [Upgrading](/docs/upgrading) for what 3.0 changes.
 
 ## Module boundaries
 

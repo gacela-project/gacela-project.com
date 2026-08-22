@@ -37,6 +37,60 @@ ExampleModule/
 
 Custom suffixes are additive. Default suffixes continue to resolve.
 
+## Declaring a kind of your own [since 2.3]
+
+The four suffix verbs above are sugar over one method. `addResolvableType()` declares a class kind that resolves by
+suffix exactly as the pillars do:
+
+```php
+addResolvableType(string $kind, ?string $abstractClass = null, array $suffixes = []);
+```
+
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->addResolvableType('Exporter', AbstractExporter::class, ['Exporter', 'Feed']);
+};
+```
+
+`$suffixes` defaults to the kind's own name. Every listed suffix resolves, so `Report/ReportExporter.php` and
+`Invoice/Feed.php` are both found.
+
+Reach the resolved class through `DeclaredTypeResolverAwareTrait`:
+
+```php [Report/ReportFactory.php]
+use Gacela\Framework\AbstractFactory;
+use Gacela\Framework\DeclaredTypeResolverAwareTrait;
+
+final class ReportFactory extends AbstractFactory
+{
+    use DeclaredTypeResolverAwareTrait;
+
+    public function createExportedReport(): string
+    {
+        /** @var ReportExporter $exporter */
+        $exporter = $this->getResolvedType('Exporter');
+
+        return $exporter->export();
+    }
+}
+```
+
+`getResolvedType()` is memoized per instance and returns `null` when the module has no class of that kind. A project
+that would rather write `getExporter()` puts one method over that call.
+
+A declared kind behaves like a pillar everywhere else: the file cache holds it, the test seam
+`overrideExistingResolvedClass()` replaces it, and [`make:file`](/docs/cli#make-file) generates one.
+
+```bash
+vendor/bin/gacela make:file App/Wallet Exporter   # generates App/Wallet/WalletExporter.php
+```
+
+Nothing ships as a template for a kind Gacela does not know, so `make:file` needs a stub of your own at
+`stubs/gacela/exporter-maker.txt`. See [`stubs:publish`](/docs/cli#stubs-publish).
+
+One suffix belongs to one kind. Declaring a suffix another kind already claims is refused, and two configuration
+sources each claiming the same suffix for a different kind are refused when they are merged.
+
 ## Project namespace priority
 
 `setProjectNamespaces()` gives application classes priority over matching vendor module classes.

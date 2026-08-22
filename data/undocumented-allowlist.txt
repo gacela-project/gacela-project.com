@@ -4,12 +4,54 @@
 # name it but the site is right not to document it: internals, things covered
 # under a different name, or API the site deliberately does not teach.
 
+# PHP's own error, not Gacela API. The 2.3 notes name it to say what a required
+# parameter on a `#[Provides]` method costs you, and the doctor check that
+# reports it is documented on /docs/health-checks under its own name.
+ArgumentCountError
+
+# Where the framework keeps its list of shipped commands, so the console
+# provider and both bridges register the same nineteen. A project reads that
+# list by running `vendor/bin/gacela`, never by naming the class.
+CommandCatalog
+
+# The framework's own Provider for the console component. An application does
+# not register it: requiring `symfony/console` is the whole setup, which
+# /docs/cli says.
+ConsoleProvider
+
+# Deleted in 2.3, a pass-through since container 2.0 shipped `give(null)`.
+# There is nothing left to document.
+ContextualBindingRegistrar
+
+# A phpbench subject in Gacela's own suite. The 2.3 notes name it to quantify
+# the `DocBlockResolver` memoization; benchmarks do not ship to projects.
+DocBlockResolverBench
+
 # Documented as `gacela.facadeInterfaceDrift`, which is what you suppress on and
 # what upstream's own static-analysis page calls it. The class is named only in
 # the shipped phpstan-gacela.neon, which registers the rule for you.
 FacadeInterfaceInSyncRule
 
+# Internal plumbing. It is absent from `ConfigInterface`, only the cache and
+# console internals call it, and upstream documents it nowhere. What a project
+# sets is `enableFileCache()` or `GACELA_CACHE_DIR`, both on /docs/bootstrap.
+getCacheDir
+
 # PHP's own exception, not Gacela API. It appears in the 1.21 notes because
 # `profile:report --format=json` and `debug:config` began raising it instead of
 # printing an empty value. Upstream documents that nowhere either.
 JsonException
+
+# The shared-analyser seam that lets PHPStan and Psalm adapt the method-level
+# rules as a list. What a project configures is each rule's identifier, and
+# /docs/static-analysis lists all of them.
+MethodAnalyserInterface
+
+# Covered as `setProjectNamespaces()` on /docs/customization, which is the call
+# a project writes. The bare noun appears in the 2.3 notes only to say the
+# class-name cache is keyed by it.
+projectNamespaces
+
+# An invented module in the release notes, illustrating that resolver advice is
+# read from a file's tokens rather than from name similarity. Not API.
+WalletFacade

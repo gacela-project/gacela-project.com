@@ -216,6 +216,22 @@ interface EventDispatcherInterface
 }
 ```
 
+Install your own with `setEventDispatcher()`, which is how a hosted application routes Gacela's events onto the bus it
+already has: [since 2.3]
+
+```php [gacela.php]
+return static function (GacelaConfig $config): void {
+    $config->setEventDispatcher(new Psr14Bridge($myBus));
+};
+```
+
+Return `false` from `hasListeners()` for the event classes you do not care about and the framework skips allocating
+them, which is what keeps the resolution hot path cheap.
+
+A supplied dispatcher **takes precedence over `disableEventListeners()`**. That switch governs the dispatcher Gacela
+would build, and this one it does not build. Reach for `setEventDispatcher()` when the events should leave Gacela, and
+for [`disableEventListeners()`](#disabling-events) when they should not happen at all.
+
 ## See also
 
 - [Testing](/docs/testing) — `GacelaTestCase` records these events and turns them into assertions

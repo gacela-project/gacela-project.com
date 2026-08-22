@@ -144,6 +144,25 @@ vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
 - `-s`, `--stats` always takes precedence: `debug:container SomeClass --stats` prints statistics, not the dependency
   tree, even though a class was given.
 
+### `debug:provides` [since 2.3]
+
+Find which Provider declares an id with [`#[Provides]`](/docs/provider#more-provides-patterns). Answers the question
+`debug:module` cannot, since that one needs you to already know the module.
+
+```bash
+vendor/bin/gacela debug:provides [<id>] [-j|--json]
+```
+
+- `id`: only ids containing this text; omit it to list every declaration
+- `-j`, `--json`: output machine-readable JSON
+
+The table carries the id, the module, the Provider and the method. Two modules declaring the same id is not a
+collision, because each resolves through its own container, so **both rows are kept**. That is the reason to look
+here at all.
+
+Attribute-declared ids only. Finding the ids a Provider registers imperatively with `$container->set()` would mean
+running the Provider.
+
 ## Caching & production
 
 ### `cache:warm`
@@ -251,6 +270,22 @@ vendor/bin/gacela profile:report [--format=table|json|summary] [--sort=duration|
 - `--format`: `table` (default), `json`, or `summary`.
 - `--sort`: `duration` (default), `memory`, or `operation`.
 
+`--format=json` writes `entries`, `stats` and, since 2.3, `unfinished`: the operations that were started and never
+stopped, keyed `operation:subject` with a count of how many of each are still open.
+
+```json
+{
+  "entries": [],
+  "stats": {},
+  "unfinished": { "db-query:orders": 1 }
+}
+```
+
+A `stop()` whose operation or subject does not match its `start()` is ignored, because there is no start time to
+measure from. Before 2.3 the span simply vanished from the report and read as code nobody had instrumented. Naming the
+unmatched start is what turns "my operation is missing" into the typo that caused it. The text report says the same
+thing.
+
 The profiler keeps a stack of start times per operation, so nested and recursive spans each record their own duration.
 Starting an operation that was already in flight used to overwrite the outer timestamp and collapse both into one entry.
 Calling `disable()` drops whatever is still in flight, since a span left open while profiling is off can never be closed
@@ -320,3 +355,46 @@ From then on a generated file uses the project's stub when there is one and the 
 Every stub substitutes `$NAMESPACE$`, `$MODULE_NAME$` and `$CLASS_NAME$`. [`doctor`](#doctor) reports a published stub
 that lost `$NAMESPACE$` or `$CLASS_NAME$`, and one filed under a name the scaffolder does not read: an edit that never
 takes effect looks exactly like one that did.
+
+### `ide:meta` [since 2.3]
+
+Generate editor metadata for [`getProvidedDependency()`](/docs/static-analysis#typed-provided-dependencies) from the
+`#[Provides]` attributes, so a string id resolves to a real type in the editor.
+
+```bash
+vendor/bin/gacela ide:meta [--dry-run]
+```
+
+- `--dry-run`: report what would change, write nothing
+
+It writes `.phpstorm.meta.php/gacela.meta.php`. The directory form is deliberate: a project that already keeps a
+hand-written `.phpstorm.meta.php` file keeps it.
+
+An id two Providers register with different types is **listed rather than written**. The editor map is application
+wide, while `getProvidedDependency()` reads the calling module's container, so there is no one answer to write. Saying
+nothing would leave the id looking simply unsupported.
+
+Static analysis needs none of this. Both analysers already type a class-string key, and this covers the string ids they
+cannot.
+
+### `dto:generate` [since 2.3]
+
+Write the immutable class for every data shape declared with
+[`declareDtoSchema()`](/docs/dto-schema): typed getters, `with*()` copies, `toArray()` and `fromArray()`.
+
+```bash
+vendor/bin/gacela dto:generate [--dry-run] [--check]
+```
+
+- `--dry-run`: report what would change, write nothing
+- `--check`: like `--dry-run`, and exit non-zero when a class would be written
+
+Unlike `make:*`, this generates a **derived** file rather than a starting point: the declaration is the source of
+truth and the class is regenerated from it, so nobody edits the result. Regenerating an unchanged declaration is
+byte-identical.
+
+Each class is placed through the project's own `psr-4` autoload map, longest matching prefix first. A shape whose
+namespace no prefix covers is reported and the command exits non-zero, rather than being written somewhere else.
+
+Run `--check` in CI to fail on a declaration nobody regenerated. See [DTO schema](/docs/dto-schema) for the
+declaration syntax and the shape of the generated class.

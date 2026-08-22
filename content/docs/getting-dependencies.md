@@ -144,8 +144,19 @@ $config->addHandlerRegistry(HandlerRegistry::class, [
 ]);
 ```
 
+Use [`addPluginStack()`](/docs/extensions#plugin-stacks) when the members all implement one interface and the consumer
+wants them typed: [since 2.3]
+
+```php
+$config->addPluginStack(Discount::class, [
+    StaffDiscount::class,
+    TenPercentOff::class,
+]);
+```
+
 A registry answers “which handler matches this key?” and throws on a miss. A tag answers “give me all implementations”
-and has no key.
+and has no key. A stack answers “give me every implementation of this interface”, in declaration order, checked against
+the contract.
 
 ## Read configuration
 
@@ -175,6 +186,8 @@ These APIs remain supported; use them when their more specific behavior is what 
 | `addAlias()`              | One service needs another identifier                         |
 | `addLazy()` / `#[Lazy]`   | Construction is expensive and the service may remain unused  |
 | `extendService()`         | Resolution must return a decorated or replaced service       |
+| `extendProviderService()` | Only one Provider's registration of that id should be wrapped |
+| `addResolvableType()`     | A class kind of your own should resolve by suffix, like a pillar |
 | `afterResolving()`        | A resolved object needs an idempotent setter or similar hook |
 | `when()->needs()->give()` | One consumer needs a contextual implementation or scalar     |
 | `loadDefinitions()`       | Wiring is generated, shared, or environment-specific         |
