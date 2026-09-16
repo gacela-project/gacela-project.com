@@ -37,31 +37,47 @@ and makes cross-module dependencies explicit:
 
 ## Real code walkthrough
 
-The excerpts are shortened only where unrelated methods would obscure the pattern. Follow **Source** below each tab
-group for the complete production files.
+Every excerpt is Phel's own code, shortened where unrelated lines would obscure the Gacela pattern. The
+**Sources** below the tabs link the complete production files.
+
+The first four tabs follow one call:
+
+1. **Bootstrap** starts Gacela once, then calls the Facade. The entry point never learns what a namespace runner is.
+2. **Facade** is the only public door into the Run module. It delegates, it holds no logic.
+3. **Factory** builds what the Facade asked for, wiring services that stay inside the module.
+4. **Provider** is where another module arrives, as the interface the Factory asks for rather than a concrete class.
+
+**Symfony command** and **Health check** are not later steps. They are two more callers entering that same boundary, one
+created by the framework, one by operational tooling.
 
 ::: code-group
 
 ```php [Bootstrap]
+// phel-lang: src/php/Phel.php
+
 use Gacela\Framework\Gacela;
 use Phel\Run\RunFacade;
-
-public static function bootstrap(string $projectRootDir): void
-{
-    Gacela::bootstrap(
-        $projectRootDir,
-        self::configFn(self::readAppModulePaths($configPath)),
-    );
-}
 
 public static function run(string $projectRootDir, string $namespace): void
 {
     self::bootstrap($projectRootDir);
     (new RunFacade())->runNamespace($namespace);
 }
+
+public static function bootstrap(string $projectRootDir): void
+{
+    $configPath = $projectRootDir . '/' . self::PHEL_CONFIG_FILE_NAME;
+
+    Gacela::bootstrap(
+        $projectRootDir,
+        self::configFn(self::readAppModulePaths($configPath)),
+    );
+}
 ```
 
 ```php [Facade]
+// phel-lang: src/php/Run/RunFacade.php
+
 final class RunFacade extends AbstractFacade implements RunFacadeInterface
 {
     public function runNamespace(string $namespace): void
@@ -80,24 +96,53 @@ final class RunFacade extends AbstractFacade implements RunFacadeInterface
 }
 ```
 
+```php [Factory]
+// phel-lang: src/php/Run/RunFactory.php
+
+class RunFactory extends AbstractFactory
+{
+    public function createNamespaceRunner(): NamespaceRunnerInterface
+    {
+        return new NamespaceRunner(
+            $this->getCommandFacade(),
+            $this->getBuildFacade(),
+        );
+    }
+
+    public function getCommandFacade(): CommandFacadeInterface
+    {
+        return $this->getProvidedDependency(CommandFacadeInterface::class);
+    }
+
+    public function getBuildFacade(): BuildFacadeInterface
+    {
+        return $this->getProvidedDependency(BuildFacadeInterface::class);
+    }
+}
+```
+
 ```php [Provider]
+// phel-lang: src/php/Run/RunProvider.php
+
 final class RunProvider extends AbstractProvider
 {
+    #[Provides(CommandFacadeInterface::class)]
+    public function commandFacade(Container $container): CommandFacadeInterface
+    {
+        return $container->getLocator()->getRequired(CommandFacade::class);
+    }
+
     #[Provides(BuildFacadeInterface::class)]
     public function buildFacade(Container $container): BuildFacadeInterface
     {
         return $container->getLocator()->getRequired(BuildFacade::class);
     }
-
-    #[Provides(FilesystemFacadeInterface::class)]
-    public function filesystemFacade(Container $container): FilesystemFacadeInterface
-    {
-        return $container->getLocator()->getRequired(FilesystemFacade::class);
-    }
 }
 ```
 
 ```php [Symfony command]
+// phel-lang: src/php/Run/Infrastructure/Command/CompileCommand.php
+
 #[ServiceMap(method: 'getFacade', className: RunFacade::class)]
 #[ServiceMap(method: 'getFactory', className: RunFactory::class)]
 final class CompileCommand extends Command
@@ -106,11 +151,19 @@ final class CompileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $stderr = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
+
         $this->getFacade()->loadPhelNamespaces();
+
+        $source = $this->resolveSource(ScalarCoercion::toString($input->getArgument('source') ?? null));
 
         $ok = $this->getFactory()
             ->createCompileExecutor()
-            ->execute($source, $writeOutput, $writeError);
+            ->execute(
+                $source,
+                static fn(string $chunk) => $output->write($chunk),
+                static fn(string $chunk) => $stderr->write($chunk),
+            );
 
         return $ok ? self::SUCCESS : self::FAILURE;
     }
@@ -118,6 +171,8 @@ final class CompileCommand extends Command
 ```
 
 ```php [Health check]
+// phel-lang: src/php/Build/Application/BuildHealthCheck.php
+
 final readonly class BuildHealthCheck implements ModuleHealthCheckInterface
 {
     public function checkHealth(): HealthStatus
@@ -136,8 +191,7 @@ final readonly class BuildHealthCheck implements ModuleHealthCheckInterface
 
 :::
 
-**Sources:** [bootstrap](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Phel.php), [RunFacade](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFacade.php), [RunProvider](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunProvider.php), [CompileCommand](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/Infrastructure/Command/CompileCommand.php),
-and [BuildHealthCheck](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Build/Application/BuildHealthCheck.php).
+**Sources:** [bootstrap](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Phel.php), [RunFacade](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFacade.php), [RunFactory](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunFactory.php), [RunProvider](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/RunProvider.php), [CompileCommand](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Run/Infrastructure/Command/CompileCommand.php), and [BuildHealthCheck](https://github.com/phel-lang/phel-lang/blob/f173cf522d1b492cf12fb5404fa56c6b4bd454a4/src/php/Build/Application/BuildHealthCheck.php).
 
 ## What to copy into your project
 
