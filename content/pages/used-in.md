@@ -37,7 +37,7 @@ and makes cross-module dependencies explicit:
 
 ## Real code walkthrough
 
-Every excerpt is Phel's own code, cut with `// ...` where unrelated lines would obscure the Gacela pattern. The
+Every excerpt is Phel's own code, shortened where unrelated lines would obscure the Gacela pattern. The
 **Sources** below the tabs link the complete production files.
 
 The first four tabs follow one call:
@@ -66,6 +66,8 @@ public static function run(string $projectRootDir, string $namespace): void
 
 public static function bootstrap(string $projectRootDir): void
 {
+    $configPath = $projectRootDir . '/' . self::PHEL_CONFIG_FILE_NAME;
+
     Gacela::bootstrap(
         $projectRootDir,
         self::configFn(self::readAppModulePaths($configPath)),
@@ -97,7 +99,7 @@ final class RunFacade extends AbstractFacade implements RunFacadeInterface
 ```php [Factory]
 // phel-lang: src/php/Run/RunFactory.php
 
-final class RunFactory extends AbstractFactory
+class RunFactory extends AbstractFactory
 {
     public function createNamespaceRunner(): NamespaceRunnerInterface
     {
@@ -125,7 +127,7 @@ final class RunFactory extends AbstractFactory
 final class RunProvider extends AbstractProvider
 {
     #[Provides(CommandFacadeInterface::class)]
-    public function buildCommandFacade(Container $container): CommandFacadeInterface
+    public function commandFacade(Container $container): CommandFacadeInterface
     {
         return $container->getLocator()->getRequired(CommandFacade::class);
     }
@@ -149,11 +151,19 @@ final class CompileCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $stderr = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
+
         $this->getFacade()->loadPhelNamespaces();
+
+        $source = $this->resolveSource(ScalarCoercion::toString($input->getArgument('source') ?? null));
 
         $ok = $this->getFactory()
             ->createCompileExecutor()
-            ->execute($source, $writeOutput, $writeError);
+            ->execute(
+                $source,
+                static fn(string $chunk) => $output->write($chunk),
+                static fn(string $chunk) => $stderr->write($chunk),
+            );
 
         return $ok ? self::SUCCESS : self::FAILURE;
     }
