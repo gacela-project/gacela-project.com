@@ -59,7 +59,7 @@ anything interactive.
 **5. Both themes.** Dark is a token swap, never a second stylesheet. Load the page in both and check: surfaces still
 separate from the background, borders are visible without glowing, and text contrast holds at 4.5:1.
 
-**6. Add it to the styleguide.** `content/pages/styleguide.md` renders every component in every state. A component that
+**6. Add it to the design system page.** `content/pages/design-system.md` renders every component in every state. A component that
 is not on that page will drift, because nobody will see it break. Show the default, each modifier, and the states that
 matter (hover, focus, disabled, empty, overflowing).
 
