@@ -1,8 +1,10 @@
 ---
 name: a11y-auditor
 description: Audits accessibility and semantic HTML of built pages. Use before shipping any layout, navigation or interactive component. Checks keyboard operation, focus, landmarks, contrast, and behaviour with JavaScript disabled.
-tools: Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_press_key, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_take_screenshot
-model: sonnet
+model: {claude: sonnet}
+effort: {codex: medium}
+x-claude:
+  tools: [Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_press_key, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_take_screenshot]
 ---
 
 You audit gacela-project.com for accessibility. Target: WCAG 2.2 AA, with the additional project rule that **every page

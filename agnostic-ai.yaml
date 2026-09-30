@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Chemaclass/agnostic-ai/v0.75.0/docs/schemas/config.schema.json
+version: 1
+
+targets:
+  - claude
+  - codex
+
+# A spec one target cannot represent fails the sync, so Claude Code and Codex
+# never drift apart silently.
+on-unsupported: error
+
+gitignore:
+  enabled: true
+
+# Claude Code allow rules and Codex exec policies grant the same commands.
+# Codex matches token prefixes rather than globs, so each Forge CLI is listed.
+outputs:
+  claude:
+    settings:
+      attribution:
+        commit: ""
+        pr: ""
+      enabledPlugins:
+        playwright@claude-plugins-official: true
+      permissions:
+        allow:
+          - Bash(npm run build)
+          - Bash(npm run typecheck)
+          - Bash(npm run lint:links)
+          - Bash(npm run check)
+          - Bash(npx vitest run:*)
+          - Bash(node src/forge/cli/*)
+          - Bash(agnostic-ai sync:*)
+          - Bash(git status)
+          - Bash(git diff:*)
+          - Bash(git log:*)
+  codex:
+    exec-policies:
+      - { pattern: [npm, run, build], decision: allow }
+      - { pattern: [npm, run, typecheck], decision: allow }
+      - { pattern: [npm, run, "lint:links"], decision: allow }
+      - { pattern: [npm, run, check], decision: allow }
+      - { pattern: [npx, vitest, run], decision: allow }
+      - { pattern: [node, src/forge/cli/build.ts], decision: allow }
+      - { pattern: [node, src/forge/cli/dev.ts], decision: allow }
+      - { pattern: [node, src/forge/cli/lint-links.ts], decision: allow }
+      - { pattern: [node, src/forge/cli/preview.ts], decision: allow }
+      - { pattern: [agnostic-ai, sync], decision: allow }
+      - { pattern: [git, status], decision: allow }
+      - { pattern: [git, diff], decision: allow }
+      - { pattern: [git, log], decision: allow }

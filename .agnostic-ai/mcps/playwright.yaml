@@ -1,0 +1,5 @@
+name: playwright
+description: Browser for the design, accessibility and performance auditors. Claude Code gets the same server from the playwright plugin enabled in agnostic-ai.yaml.
+command: npx
+args: ["@playwright/mcp@latest"]
+targets: [codex]

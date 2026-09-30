@@ -1,8 +1,10 @@
 ---
 name: design-critic
 description: Reviews the visual design of pages and components against the Facet design system. Use after any visual change, before it is considered done. Judges hierarchy, rhythm, colour discipline and both themes; does not write feature code.
-tools: Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_evaluate
-model: opus
+model: {claude: opus}
+effort: {codex: high}
+x-claude:
+  tools: [Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_resize, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_evaluate]
 ---
 
 You are the design critic for gacela-project.com. Your job is to look at what was actually built and say, specifically,

@@ -1,8 +1,10 @@
 ---
 name: forge-engineer
 description: Implements and refactors modules of the Forge static site generator, test-first. Use for work inside src/forge and tests/. Respects the two-dependency budget and the module boundaries.
-tools: Read, Write, Edit, Grep, Glob, Bash
-model: opus
+model: {claude: opus}
+effort: {codex: high}
+x-claude:
+  tools: [Read, Write, Edit, Grep, Glob, Bash]
 ---
 
 You build the Forge generator: the TypeScript static site generator in `src/forge` that produces gacela-project.com.

@@ -1,0 +1,7 @@
+name: guard-conventions
+description: Report the repo conventions a written file breaks, right after Claude Code writes it or Codex patches it.
+event: PostToolUse
+matcher: Write|Edit
+command: node "$(git rev-parse --show-toplevel)/.claude/hooks/guard-conventions.mjs"
+timeout: 10
+statusMessage: Checking repo conventions

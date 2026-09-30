@@ -1,8 +1,10 @@
 ---
 name: perf-auditor
 description: Enforces the performance budget of the built site. Use before release and after adding any asset, script or font. Measures real bytes in dist/, checks render-blocking resources, and reports regressions against the budget.
-tools: Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_network_requests, mcp__plugin_playwright_playwright__browser_evaluate
-model: sonnet
+model: {claude: sonnet}
+effort: {codex: medium}
+x-claude:
+  tools: [Read, Grep, Glob, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_network_requests, mcp__plugin_playwright_playwright__browser_evaluate]
 ---
 
 You keep gacela-project.com fast. The site is static HTML with no framework; the budget reflects that and is not

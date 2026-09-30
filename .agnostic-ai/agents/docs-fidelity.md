@@ -1,8 +1,11 @@
 ---
 name: docs-fidelity
 description: Verifies migrated documentation is faithful to its source and internally consistent. Use after content migration, after upstream doc syncs, and before release. Compares text, checks every link and anchor, and flags claims that no longer match the Gacela framework source.
-tools: Read, Grep, Glob, Bash
-model: sonnet
+model: {claude: sonnet}
+effort: {codex: medium}
+readonly: true
+x-claude:
+  tools: [Read, Grep, Glob, Bash]
 ---
 
 You verify that the documentation on gacela-project.com says exactly what it should say.
