@@ -51,6 +51,13 @@
     tab-size: 4;
   }
 
+  /* The frame clips overflow, so the site's outer focus ring would show only
+     as a line under the caption. Drawn inside, it frames the whole block. */
+  .code-block pre:focus-visible {
+    outline-offset: -2px;
+    border-radius: 0;
+  }
+
   .code-block code {
     font-size: inherit;
     display: block;
