@@ -17,8 +17,9 @@ updates:
       interval: "weekly"
     groups:
       # markdown-it and shiki are the two runtime dependencies (see the
-      # dependency budget rule in CLAUDE.md); keep any bump to them visible
-      # in its own PR rather than folded into a tooling group.
+      # dependency budget in .agnostic-ai/rules/non-negotiables.md); keep any
+      # bump to them visible in its own PR rather than folded into a tooling
+      # group.
       production-dependencies:
         dependency-type: "production"
       dev-dependencies:
