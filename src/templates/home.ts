@@ -57,7 +57,7 @@ const CAPABILITIES = [
 ] as const
 
 export function homeLayout(context: HomeContext): Raw {
-  return html`${hero()} ${walkthrough(context.page)} ${capabilities()} ${closing()}`
+  return html`${hero()} ${overview()} ${walkthrough(context.page)} ${capabilities()} ${closing()}`
 }
 
 function hero(): Raw {
@@ -83,6 +83,41 @@ function hero(): Raw {
 
         ${moduleDiagram()}
       </div>
+    </div>
+  </section>`
+}
+
+/**
+ * A poster and a link, so YouTube hears nothing from the page until the reader
+ * presses play. src/client/video.js turns the click into the player.
+ */
+function overview(): Raw {
+  const title = 'Gacela in 60 seconds'
+
+  return html`<section class="section">
+    <div class="container container--wide">
+      <div class="section__head">
+        <p class="eyebrow">Overview</p>
+        <h2 class="section__title">${title}</h2>
+      </div>
+
+      <a
+        class="video"
+        href="https://www.youtube.com/watch?v=lzhg6-nuTVM"
+        data-video="lzhg6-nuTVM"
+        data-video-title="${title}"
+      >
+        <img
+          class="video__poster"
+          src="/video/gacela-in-60-seconds.webp"
+          width="1258"
+          height="708"
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="video__play">${icons.play} <span class="video__label">Play video<span class="visually-hidden">: ${title}</span></span></span>
+      </a>
     </div>
   </section>`
 }

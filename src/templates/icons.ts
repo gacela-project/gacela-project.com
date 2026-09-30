@@ -64,6 +64,8 @@ export const icons = {
       '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   ),
 
+  play: raw('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'),
+
   github: raw(
     '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">' +
       '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 ' +

@@ -125,6 +125,14 @@
     --diagram-boundary: var(--accent);
     --diagram-outside: light-dark(var(--verdigris-600), var(--verdigris-400));
 
+    /* A video frame is dark whichever theme is on, so what sits on it does not
+       swap either. The play control keeps the dark theme's accent, which is
+       the one that holds 3:1 against the frame. */
+    --video-backdrop: var(--navy-950);
+    --video-play: var(--blue-400);
+    --video-play-hover: var(--blue-300);
+    --video-play-contrast: var(--navy-950);
+
     /* Opaque: the boundary and the arrows are drawn underneath the boxes, and
        a box you can read a line through looks like a mistake. */
     --diagram-fill: light-dark(var(--navy-25), var(--navy-850));

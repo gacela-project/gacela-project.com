@@ -209,6 +209,16 @@ that a table reads better.
   <div class="stat-row__stat"><strong>MIT</strong><span>open-source license</span></div>
 </div>
 
+## Video
+
+A self-hosted poster that links to the video. Nothing loads from YouTube until the reader presses play; then the link
+becomes a no-cookie player in the same frame. Without JavaScript it opens the video on YouTube.
+
+<a class="video" href="https://www.youtube.com/watch?v=lzhg6-nuTVM" data-video="lzhg6-nuTVM" data-video-title="Gacela in 60 seconds">
+  <img class="video__poster" src="/video/gacela-in-60-seconds.webp" width="1258" height="708" alt="" loading="lazy" decoding="async" />
+  <span class="video__play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg> <span class="video__label">Play video<span class="visually-hidden">: Gacela in 60 seconds</span></span></span>
+</a>
+
 ## Code
 
 A framed block with a mono caption bar rather than a filled slab, so a page of documentation does not become a stack of

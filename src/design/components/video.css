@@ -1,0 +1,94 @@
+/**
+ * Video.
+ *
+ * A poster that links to the video, which src/client/video.js swaps for the
+ * player on click. The player takes the same class, so the frame does not move
+ * when it arrives. The play control sits in the corner rather than the centre
+ * because the poster carries its own title there.
+ */
+
+@layer components {
+  .video {
+    position: relative;
+    display: block;
+    inline-size: 100%;
+    max-inline-size: var(--measure-code);
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: var(--video-backdrop);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+  }
+
+  /* The site's focus ring rounds to --radius-xs, which would square the frame. */
+  .video:focus-visible {
+    border-radius: var(--radius-lg);
+  }
+
+  .video__poster {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .video__play {
+    position: absolute;
+    inset-block-end: var(--space-4);
+    inset-inline-start: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--video-play);
+    color: var(--video-play-contrast);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semibold);
+    line-height: 1;
+  }
+
+  .video__play svg {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+
+  .video:hover .video__play {
+    background: var(--video-play-hover);
+  }
+
+  /* On a phone-width poster the label would sit on the poster's own text. The
+     label stays in the accessible name; only the icon shows. */
+  @media (max-width: 40rem) {
+    .video__play {
+      inset-block-end: var(--space-2);
+      inset-inline-start: var(--space-2);
+      padding: var(--space-2);
+    }
+
+    .video__label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .video__play {
+      transition:
+        background-color var(--duration-fast) var(--ease-out),
+        transform var(--duration-base) var(--ease-spring);
+    }
+
+    .video:hover .video__play {
+      transform: scale(1.04);
+    }
+  }
+}
