@@ -269,6 +269,19 @@ final class Factory extends AbstractFactory
 
 :::
 
+A recorded terminal session uses the same frame. The caption links to the exact source the output came from, the prompt
+is not selectable, and the pass and warning marks keep their glyphs, so colour only backs them up. A line holding only an
+ellipsis marks what an excerpt leaves out.
+
+<figure class="code-block code-block--terminal code-block--wrap">
+  <figcaption class="code-block__caption"><span>Terminal</span><a class="code-block__source" href="https://github.com/phel-lang/phel-lang/tree/eea8d09ce1e5f6b9baf6cc452834f052f3202eaf"><span class="visually-hidden">Output recorded at </span>phel-lang@eea8d09</a></figcaption>
+  <pre tabindex="0"><code><span class="code-block__prompt" aria-hidden="true">$</span> vendor/bin/gacela doctor
+<span class="code-block__elided">…</span>
+<span class="code-block__pass">✓ class filenames</span>
+    every pillar class matches its filename
+<span class="code-block__warn">⚠ Doctor finished with warnings</span></code></pre>
+</figure>
+
 ## Prose
 
 ### Lists

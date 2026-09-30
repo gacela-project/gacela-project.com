@@ -269,4 +269,46 @@
     color: inherit;
     border-color: color-mix(in oklch, var(--accent) 40%, transparent);
   }
+
+  /* A recorded terminal session: a command and what it printed. The caption
+     names where the output came from, so the reader can check it. */
+  .code-block--terminal {
+    margin-block: 0;
+  }
+
+  .code-block__source {
+    margin-inline-start: auto;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, currentColor 45%, transparent);
+    text-underline-offset: 0.2em;
+  }
+
+  .code-block__source:hover {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+
+  /* Only for output with no table in it, which wrapping would break apart. */
+  .code-block--wrap pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .code-block__prompt {
+    color: var(--terminal-prompt);
+    user-select: none;
+  }
+
+  .code-block__pass {
+    color: var(--terminal-pass);
+  }
+
+  .code-block__warn {
+    color: var(--terminal-warn);
+  }
+
+  .code-block__elided {
+    color: var(--text-muted);
+  }
 }

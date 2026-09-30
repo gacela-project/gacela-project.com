@@ -188,6 +188,12 @@
     --syn-token-deleted: light-dark(var(--rose-600), var(--rose-400));
     --syn-token-changed: light-dark(var(--amber-600), var(--amber-400));
 
+    /* A recorded CLI run: the prompt, and the pass and warning marks a command
+       prints. The glyphs carry the meaning; colour only backs them up. */
+    --terminal-prompt: var(--accent);
+    --terminal-pass: var(--syn-token-inserted);
+    --terminal-warn: var(--syn-token-changed);
+
     /* ---------------------------------------------------------------------
      * Typography. Raleway sets the voice, Heebo carries the reading, and
      * JetBrains Mono does every label, so the site annotates itself the way a
