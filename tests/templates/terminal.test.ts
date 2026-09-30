@@ -11,7 +11,7 @@ describe('terminal', () => {
   it('prints the command after a prompt that is not part of the copyable text', () => {
     const markup = session('')
 
-    expect(markup).toContain('<span class="code-block__prompt" aria-hidden="true">$</span>')
+    expect(markup).toContain('<span class="code-block__prompt" aria-hidden="true">$ </span>vendor/bin/gacela doctor')
     expect(markup).toContain('vendor/bin/gacela doctor')
   })
 

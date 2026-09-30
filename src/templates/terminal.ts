@@ -18,7 +18,7 @@ export function terminal(session: TerminalSession): Raw {
 
   // Built as one string: whitespace between these tags would print inside <pre>.
   const body =
-    `<span class="code-block__prompt" aria-hidden="true">$</span> ${render(session.command)}` +
+    `<span class="code-block__prompt" aria-hidden="true">$ </span>${render(session.command)}` +
     (session.output === '' ? '' : `\n${lines.join('\n')}`)
 
   return html`<figure class="${classes('code-block', 'code-block--terminal', session.wrap === true && 'code-block--wrap')}">
