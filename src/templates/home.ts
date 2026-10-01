@@ -256,7 +256,7 @@ function closing(): Raw {
 
       <p class="hero__install">
         <span class="hero__install-prompt" aria-hidden="true">$</span>
-        <span data-copy-text>composer require gacela-project/gacela:^2.2</span>
+        <span data-copy-text>composer require gacela-project/gacela</span>
         <button
           type="button"
           class="hero__install-copy"
