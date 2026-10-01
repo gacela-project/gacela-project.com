@@ -1,7 +1,11 @@
 ---
 name: content
 description: Content files, navigation, internal links and doc versioning
-globs: ["content/**", "site.config.ts"]
+globs: ["content/**"]
+# Forge reads every file under content/ as a page, so Codex keeps this rule in
+# the root AGENTS.md instead of a nested content/AGENTS.md.
+x-codex:
+  alwaysApply: true
 ---
 
 - `content/docs/*.md`: documentation. Frontmatter: `title`, optional `description`, optional `order`.
