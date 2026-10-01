@@ -1,8 +1,8 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/Chemaclass/agnostic-ai/v0.75.0/docs/schemas/config.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Chemaclass/agnostic-ai/v0.76.0/docs/schemas/config.schema.json
 version: 1
 
-# Hook script sharing and exec policies derived from permissions need 0.76.
-requires: ">=0.76.0"
+# Pinned: upgrade agnostic-ai on purpose, then bump this and re-sync.
+requires: "0.76.0"
 
 targets:
   - claude
