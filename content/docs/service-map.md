@@ -6,11 +6,11 @@ description: Resolve typed Gacela services from controllers, commands, and other
 # Service Map
 
 Gacela resolves sibling pillars (Facade → Factory → Config → Provider) by convention. The **`#[ServiceMap]` attribute**
-declares that another class can resolve a Gacela service on demand—for example, a controller accessing a Facade without
+lets any other class resolve a Gacela service on demand, such as a controller that reaches a Facade without
 constructor injection.
 
-`#[ServiceMap]` is the required forward-compatible runtime declaration. It is understood by the bundled PHPStan
-extension and the 2.0 Psalm plugin.
+`#[ServiceMap]` is the required, forward-compatible runtime declaration. The bundled PHPStan extension and the 2.0 Psalm
+plugin both understand it.
 
 ## Basic usage
 
@@ -30,7 +30,7 @@ final class UserController
 }
 ```
 
-The attribute is repeatable. Declare every resolvable service the class needs:
+The attribute is repeatable. Declare every service the class resolves:
 
 ```php
 #[ServiceMap(method: 'getFacade',     className: UserFacade::class)]
@@ -50,8 +50,8 @@ final class DashboardController
 }
 ```
 
-Each `__call()` dispatch is cached. The resolver pool is static across the process, so repeated calls are essentially
-free.
+Each `__call()` dispatch is cached, and the resolver pool is static across the process, so repeated calls cost almost
+nothing.
 
 ## DocBlock migration aid
 
@@ -66,25 +66,25 @@ final class UserController
 }
 ```
 
-If the attribute is absent, 2.0 can still resolve from the docblock or scan the caller's imports, but that cold
-resolution raises `E_USER_DEPRECATED`; both fallbacks are removed in 3.0. `DocBlockResolverAwareTrait` itself was
-removed in 2.0—use `ServiceResolverAwareTrait`.
+Without the attribute, 2.0 can still resolve from the docblock or scan the caller's imports. That cold resolution
+raises `E_USER_DEPRECATED`, and 3.0 removes both fallbacks. `DocBlockResolverAwareTrait` itself was removed in 2.0: use
+`ServiceResolverAwareTrait`.
 
 ## Relationship with the container
 
-`#[ServiceMap]` is a thin sugar on top of the Locator. The service is ultimately resolved through the main container,
-respecting every binding, alias, contextual binding and `AnonymousGlobal` declaration registered in `gacela.php`.
+`#[ServiceMap]` is a thin layer over the Locator. The main container resolves the service, honouring every binding,
+alias, contextual binding and `AnonymousGlobal` declaration in `gacela.php`.
 
-If you are authoring a class managed by another container (Symfony, Laravel), prefer constructor injection with [
-`#[Inject]`](/docs/inject). `#[ServiceMap]` is targeted at classes instantiated outside of Gacela where constructor
-injection is not practical.
+For a class that another container manages (Symfony, Laravel), prefer constructor injection with
+[`#[Inject]`](/docs/inject). `#[ServiceMap]` targets classes created outside Gacela, where constructor injection is not
+practical.
 
 ## Limitations
 
-- The `__call()` dispatch means IDEs need the attribute (or `@method`) to autocomplete. Both are read by PhpStorm's
-  Symfony plugin out of the box.
-- Protected services (`addProtected()`) cannot be resolved through `#[ServiceMap]`. They are stored as raw closures and
-  the container will not instantiate them.
-- PHPStan reports an accessor that declares neither `#[ServiceMap]` nor `@method`. Psalm needs
-  the [2.0 plugin](/docs/static-analysis#psalm) to infer the attribute's return type instead of treating the call as
+- Because dispatch goes through `__call()`, an IDE needs a `@method` docblock to autocomplete. PhpStorm reads
+  `@method`, not `#[ServiceMap]`. The attribute types the accessor for PHPStan and Psalm; `@method` adds IDE completion.
+- `#[ServiceMap]` cannot resolve protected services (`addProtected()`). They are stored as raw closures, and the
+  container does not instantiate them.
+- PHPStan reports an accessor that declares neither `#[ServiceMap]` nor `@method`. Psalm needs the
+  [2.0 plugin](/docs/static-analysis#psalm) to infer the attribute's return type instead of treating the call as
   `mixed`.

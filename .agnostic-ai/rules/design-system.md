@@ -1,7 +1,7 @@
 ---
 name: design-system
 description: How to add a component to Facet and check both themes
-globs: ["src/design/**", "src/templates/**", "content/pages/design-system.md"]
+globs: ["src/design/**", "src/templates/**"]
 ---
 
 Facet is documented at `/design-system` in the running site, which is generated from the same tokens the site uses. When

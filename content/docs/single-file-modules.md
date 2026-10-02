@@ -5,17 +5,16 @@ description: Build a small Gacela module in one file for prototypes, scripts, an
 
 # Single-file modules
 
-Use this pattern when a directory-per-module structure would add more ceremony than clarity. For application modules
-expected to grow, use the conventional layout from the [Quickstart](/docs/quickstart).
+Use this pattern when one directory per module adds more ceremony than clarity. For a module you expect to grow, use
+the conventional layout from the [Quickstart](/docs/quickstart).
 
 ## Gacela in a file
 
-`Gacela::addGlobal()` lets you bind Gacela pillar classes (Facade, Factory, Provider, Config) to a shared context. When
-no context is passed, the current file is used. This means you can wire a full module in a single file using anonymous
-classes.
+`Gacela::addGlobal()` binds Gacela pillar classes (Facade, Factory, Provider, Config) to a shared context. Without a
+context, it uses the current file. So you can wire a full module in one file with anonymous classes.
 
 ::: tip When is this useful?
-Prototyping, one-off scripts, or small CLI tools where a full directory-per-module structure would be overkill.
+Prototypes, one-off scripts, and small CLI tools, where a directory per module is overkill.
 :::
 
 ### 1. Bootstrap and domain classes
@@ -39,7 +38,7 @@ Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
 });
 ```
 
-Two simple domain classes (these would normally live in your module's `Domain/` or `Application/` directory):
+Two small domain classes. In a regular module they live in its `Domain/` or `Application/` directory:
 
 ```php
 final class Printer
@@ -69,7 +68,7 @@ final class Greeter
 
 ### 2. Wire the Gacela pillars as anonymous classes
 
-Each anonymous class is bound to the same file context via `addGlobal()`, so they auto-resolve each other:
+`addGlobal()` binds each anonymous class to the same file context, so they resolve each other automatically:
 
 ```php
 // Facade: the entry point
@@ -132,14 +131,14 @@ Hello, Gacela!
 
 ### How `addGlobal()` works
 
-`Gacela::addGlobal()` binds a class to a context (2nd argument). When omitted, the current file path is used as the
-context. Because all four anonymous classes above share the same file context, the Facade automatically resolves its
-Factory, the Factory resolves the Provider and Config, just like a regular directory-based module.
+`Gacela::addGlobal()` binds a class to a context, its second argument. Without one, the context is the current file
+path. The four anonymous classes above share that file context. So the Facade resolves its Factory, and the Factory
+resolves the Provider and Config, as in a regular directory-based module.
 
 ## Related resources
 
 - [Example project](https://github.com/gacela-project/gacela-example): A complete module example
-- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API using Gacela
+- [API skeleton](https://github.com/gacela-project/api-skeleton): A skeleton to build an API with Gacela
 - [Router](https://github.com/gacela-project/router): A minimalistic HTTP router
 - [Container](https://github.com/gacela-project/container): A minimalistic dependency container
 

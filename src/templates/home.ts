@@ -2,6 +2,8 @@ import { html, raw, type Raw } from '../forge/render/index.ts'
 import type { RenderedPage, SiteConfig } from '../forge/types.ts'
 import { icons } from './icons.ts'
 import { moduleDiagram } from './module-diagram.ts'
+import { debugGraph, debugModule, doctor, listModules } from './phel-sessions.ts'
+import { terminal, type TerminalSession } from './terminal.ts'
 
 export type HomeContext = {
   readonly site: SiteConfig
@@ -57,7 +59,7 @@ const CAPABILITIES = [
 ] as const
 
 export function homeLayout(context: HomeContext): Raw {
-  return html`${hero()} ${overview()} ${walkthrough(context.page)} ${capabilities()} ${closing()}`
+  return html`${hero()} ${overview()} ${walkthrough(context.page)} ${inPractice()} ${capabilities()} ${closing()}`
 }
 
 function hero(): Raw {
@@ -145,6 +147,82 @@ function walkthrough(page: RenderedPage): Raw {
   </section>`
 }
 
+const PROOFS: readonly {
+  readonly title: string
+  readonly summary: string
+  readonly route: string
+  readonly link: string
+  readonly session: TerminalSession
+}[] = [
+  {
+    title: 'One shape, seventeen times',
+    summary:
+      'Every module has a Facade and a Factory, and most add a Config and a Provider. Read one module and you know where to look in all of them.',
+    route: '/docs/cli#list-modules',
+    link: 'list:modules',
+    session: listModules,
+  },
+  {
+    title: 'Dependencies you can print',
+    summary:
+      'Modules reach each other through Facades, so Gacela can draw the graph. Here the console module wires fourteen others, and two modules depend on nothing.',
+    route: '/docs/cli#debug-graph',
+    link: 'debug:graph',
+    session: debugGraph,
+  },
+  {
+    title: 'Look inside one module',
+    summary:
+      'See the four classes Gacela resolved for a module and every service its Provider declares with #[Provides].',
+    route: '/docs/cli#debug-module',
+    link: 'debug:module',
+    session: debugModule,
+  },
+  {
+    title: 'Checks that name the fix',
+    summary:
+      'doctor checks module paths, class names, caches and package manifests. On this run it caught a dependency that composer.json never declares, and said where it belongs.',
+    route: '/docs/cli#doctor',
+    link: 'doctor',
+    session: doctor,
+  },
+]
+
+/**
+ * The quickstart shows one module; this shows seventeen. Every block is real
+ * output from one codebase, so the claims beside them can be checked.
+ */
+function inPractice(): Raw {
+  return html`<section class="section">
+    <div class="container container--wide">
+      <div class="section__head">
+        <p class="eyebrow">In practice</p>
+        <h2 class="section__title">A real codebase, from the command line</h2>
+        <p class="section__lede">
+          Phel is a Lisp that compiles to PHP. Its compiler, REPL, formatter and language server
+          are among its seventeen Gacela modules. This is what the Gacela CLI reports on it.
+        </p>
+      </div>
+
+      <div class="proof-list">
+        ${PROOFS.map(
+          (proof) => html`<article class="proof">
+            <div class="proof__copy">
+              <h3 class="proof__title">${proof.title}</h3>
+              <p class="proof__summary">${proof.summary}</p>
+              <a class="proof__link" href="${proof.route}">
+                <code>${proof.link}</code> in the CLI reference
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+            ${terminal(proof.session)}
+          </article>`,
+        )}
+      </div>
+    </div>
+  </section>`
+}
+
 function capabilities(): Raw {
   return html`<section class="section">
     <div class="container container--wide">
@@ -178,7 +256,7 @@ function closing(): Raw {
 
       <p class="hero__install">
         <span class="hero__install-prompt" aria-hidden="true">$</span>
-        <span data-copy-text>composer require gacela-project/gacela:^2.2</span>
+        <span data-copy-text>composer require gacela-project/gacela</span>
         <button
           type="button"
           class="hero__install-copy"

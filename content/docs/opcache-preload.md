@@ -1,12 +1,13 @@
 ---
 title: Opcache preload
-description: Generate and deploy an Opcache preload script for Gacela’s framework and application module classes.
+description: Deploy the Opcache preload script Gacela ships, for its framework classes and your own module classes.
 ---
 
 # Opcache preload
 
-Gacela ships a preload script that loads its core files into shared memory at PHP startup, removing their per-request
-compilation cost and lowering per-request memory. Measure the benefit on your own workload.
+Gacela ships a preload script that loads the framework and the packages it runs on, the container included, into
+shared memory at PHP startup. Requests no longer compile those files, and they use less memory. Measure the gain on
+your own workload.
 
 **Requires** PHP 8.3+ with opcache enabled.
 
@@ -26,40 +27,53 @@ Restart PHP-FPM:
 sudo systemctl restart php8.3-fpm
 ```
 
-Verify in the logs: `Gacela Opcache Preload: 32 files preloaded successfully, 0 failed`.
+Check the logs for `Gacela Opcache Preload: <n> classes linked, 0 skipped`. The count tracks the framework's size; the
+`0` is the part to check.
+
+The line names anything Gacela could not link, and PHP logs its own `Can't preload unlinked class ...` warning next to
+it. Both mean PHP dropped the class from the preload image and loads it per request as usual. That breaks the preload
+only, not your application.
 
 ## Preload your own files
 
-Create `config/app-preload.php`:
+Create `preload/app-preload.php`. Load the classes instead of compiling the files. PHP keeps a compiled class only if
+everything it extends, implements and uses was preloaded too, and loading the class is what pulls those in.
 
 ```php
 <?php
-$root = dirname(__DIR__);
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-opcache_compile_file($root . '/src/User/UserFacade.php');
-opcache_compile_file($root . '/src/Product/ProductFacade.php');
+class_exists(App\User\UserFacade::class);
+class_exists(App\Product\ProductFacade::class);
 ```
 
-Wire it via env var in your FPM pool:
+::: warning Keep it outside your config glob
+This file is a script, not configuration: it returns nothing. Put it in `config/` and the default
+`addAppConfig('config/*.php')` matches it. Next to a `config/app.php`, Gacela takes it for an [environment layer](/docs/config#config-dimensions) of that
+file (`doctor` reports it as one), and a run with `APP_ENV=preload` dies with `The PHP config file
+"…/config/app-preload.php" must return an array or a JsonSerializable object!` before anything preloads. Without an
+`app.php` next to it, every bootstrap dies that way.
+:::
+
+Point an environment variable in your FPM pool at it:
 
 ```ini
-env[GACELA_PRELOAD_USER_FILES] = /path/to/project/config/app-preload.php
+env[GACELA_PRELOAD_USER_FILES] = /path/to/project/preload/app-preload.php
 ```
 
 ## Deployment
 
-Preloaded files are snapshotted at startup. Restart PHP-FPM after every deploy:
+PHP reads the preloaded files once, at startup. Restart PHP-FPM after every deploy:
 
 ```bash
 composer install --no-dev --optimize-autoloader
-vendor/bin/gacela cache:warm
 sudo systemctl restart php8.3-fpm
 ```
 
 ## When to use it
 
 - **Use it** for high-traffic production apps on PHP 8.3+.
-- **Skip it** in local development (you'd need to restart after every change) or for very low-traffic sites.
+- **Skip it** in local development (you would restart after every change) and on very low-traffic sites.
 
 ## Troubleshooting
 
@@ -67,6 +81,9 @@ sudo systemctl restart php8.3-fpm
 |----------------------|-------------------------------------------------------------------------------|
 | Files not preloading | `php -v` ≥ 8.3, `php -i \| grep opcache.enable`, preload file readable        |
 | Permission denied    | `opcache.preload_user` must match the PHP-FPM user (`ps aux \| grep php-fpm`) |
+| `Can't preload unlinked class` | A parent, interface or trait was not preloaded. For your own files, load the class instead of compiling the file (above). |
+| Preload aborts on `fopen(php://stdout)` or similar | A package runs I/O in a Composer `files` autoload entry, which the preload context forbids. Install with `--no-dev`, or preload your classes without requiring the full autoloader. |
+| Nothing happens on Windows | `opcache.preload` is not supported there. |
 
 ## Docker
 

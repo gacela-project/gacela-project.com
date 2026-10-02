@@ -5,7 +5,7 @@ description: Run post-bootstrap logic, decorate services, extend configuration, 
 
 # Extensions and plugins
 
-Use the narrowest extension point that matches the job:
+Pick the narrowest extension point for the job:
 
 | Need                                          | Extension point           |
 |-----------------------------------------------|---------------------------|
@@ -23,7 +23,7 @@ addPlugin(callable|class-string $plugin);
 addPlugins(array $list);
 ```
 
-Run custom logic right after bootstrapping gacela by adding plugins using the `addPlugin` method.
+A plugin runs custom logic right after Gacela boots. Add one with `addPlugin()`.
 
 ```php
 <?php # index.php
@@ -41,10 +41,10 @@ Gacela::bootstrap(__DIR__, function (GacelaConfig $config) {
 });
 ```
 
-The class must be invokable, and it has autoload capabilities: all dependencies will be resolved automatically as soon
-as you have defined them using [bindings](/docs/bindings). The same applies to the callable arguments above.
+A plugin class must be invokable. Gacela resolves its dependencies automatically, as long as you define them as
+[bindings](/docs/bindings). The same applies to a callable's arguments.
 
-For example, having this other class `ApiRoutesPlugin` somewhere else:
+For example, `ApiRoutesPlugin` in its own file:
 
 ```php
 <?php # ApiRoutesPlugin.php
@@ -66,8 +66,8 @@ final class ApiRoutesPlugin
 addPluginStack(string $contract, array $plugins);
 ```
 
-A plugin runs once at bootstrap. A **plugin stack** is the other shape: every implementation of one interface, in
-declaration order, resolved lazily and read back typed. Declare the extension point with the interface it accepts:
+A plugin runs once at bootstrap. A **plugin stack** is different: it holds every implementation of one interface, in
+declaration order, resolved lazily and read back typed. Declare it with the interface it accepts:
 
 ```php [gacela.php]
 return static function (GacelaConfig $config): void {
@@ -78,8 +78,8 @@ return static function (GacelaConfig $config): void {
 };
 ```
 
-Read it in the Factory with `getPluginStack()`, which returns a `PluginStack`: countable, iterable, and typed through
-the contract.
+Read it in the Factory with `getPluginStack()`. It returns a `PluginStack`: countable, iterable, and typed through the
+contract.
 
 ```php [Checkout/CheckoutFactory.php]
 final class CheckoutFactory extends AbstractFactory
@@ -102,14 +102,30 @@ public function priceOf(int $cents): int
 }
 ```
 
-Order is observable, so declaration order is the order the members run in. Repeated `addPluginStack()` calls for one
-contract **append**, which is how a project adds a member to a stack a package declared; a class declared by both keeps
-the position the first declarer gave it.
+Order matters: members run in declaration order. Repeated `addPluginStack()` calls for one contract **append**. That
+is how a project adds a member to a stack a package declared. A class declared by both keeps the position its first
+declarer gave it.
 
-Members resolve on first use, not at registration. A class that does not exist, or that does not implement the
-contract, throws then. Run [`doctor`](/docs/cli#doctor) to find both at diagnostic time instead.
+Members resolve on first use, not at registration. A class that does not exist, or does not implement the contract,
+throws at that point. Run [`doctor`](/docs/cli#doctor) to find both at diagnostic time instead.
 
-Pick a stack over the alternatives when the contract is an interface and you want all of it:
+A member can also join from its own class with `#[Plugin]`, with no line in `gacela.php`: [since 2.5]
+
+```php
+use Gacela\Framework\Attribute\Plugin;
+
+#[Plugin(Discount::class, priority: 10)]
+final class LoyaltyDiscount implements Discount {}
+```
+
+You still declare the stack, empty if the attributes fill it: `addPluginStack(Discount::class, [])`. Reading a stack
+nobody declared throws, and the message names the `#[Plugin]` classes waiting for it. [since 2.6] Declared members
+come first, then attribute members by `priority`, highest first. `cache:warm --attributes` stores them, and
+[`debug:plugins`](/docs/cli#debug-plugins) lists every member and where it was declared. The
+[upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/getting-a-dependency.md#typed--every-implementation-of-one-interface)
+covers scanning rules and caching.
+
+Pick a stack when the contract is an interface and you want every implementation of it:
 
 | Question the consumer asks             | Use                                                            |
 |----------------------------------------|----------------------------------------------------------------|
@@ -123,19 +139,16 @@ Pick a stack over the alternatives when the contract is an interface and you wan
 extendService(string $id, Closure $service);
 ```
 
-Extend any service functionality. The `extendService()` receives the service name that will be defined in any
-`Provider`, and a `callable` which receives the service itself as 1st arg, and the `Container` as 2nd arg.
+`extendService()` alters any service. It takes the service id defined in any `Provider`, and a `callable` that
+receives the service as its first argument and the `Container` as its second.
 
 ### An example
 
-Consider we have a module with these `Provider`, `Factory` and `Facade`.
+Take a module with this `Provider`, `Factory` and `Facade`:
 
-The `Provider` has a service defined `'ARRAY_OBJ'` which is an `ArrayObject` with values `[1, 2]` (see
-`Module/Provider.php`)
-
-We "extend" that service `'ARRAY_OBJ'` and appending `3` (see `gacela.php`)
-
-Its state when using the Facade and resolving that will be `[1, 2, 3]` (see `index.php`)
+- The `Provider` defines the service `'ARRAY_OBJ'`, an `ArrayObject` holding `[1, 2]` (see `Module/Provider.php`).
+- `gacela.php` extends `'ARRAY_OBJ'` and appends `3`.
+- Resolving it through the Facade returns `[1, 2, 3]` (see `index.php`).
 
 ```php
 <?php 
@@ -195,8 +208,8 @@ $facade->getArrayAsObject(); // === new ArrayObject([1, 2, 3])
 extendProviderService(string $providerClass, string $id, Closure $service);
 ```
 
-`extendService()` wraps an id **wherever it is registered**. Two modules reusing an un-namespaced key such as
-`'LABEL'` both get wrapped, which is rarely what you meant. `extendProviderService()` names the Provider and wraps the
+`extendService()` wraps an id **wherever it is registered**. If two modules reuse an un-namespaced key such as
+`'LABEL'`, both get wrapped, which is rarely what you want. `extendProviderService()` names the Provider and wraps the
 id only there:
 
 ```php [gacela.php]
@@ -211,11 +224,11 @@ return static function (GacelaConfig $config): void {
 
 The Catalog module now sees the wrapped value. A Checkout module registering its own `'LABEL'` is untouched.
 
-The closure takes the same two arguments as `extendService()`: the service, and the module's `Container`. Extensions
-stack in declaration order. Naming a Provider the application does not have changes nothing rather than failing.
+The closure takes the same two arguments as `extendService()`: the service and the module's `Container`. Extensions
+stack in declaration order. Naming a Provider the application does not have changes nothing; it does not fail.
 
-This is also the narrower diagnostic. [`doctor`](/docs/cli#doctor) reports an id the **named** Provider never `set()`s,
-where an app-wide extension on a mistyped id can only be reported as matching nothing anywhere.
+It also gives a narrower diagnostic. [`doctor`](/docs/cli#doctor) reports an id the **named** Provider never `set()`s.
+An app-wide extension on a mistyped id can only be reported as matching nothing anywhere.
 
 ## Extend Gacela Config
 
@@ -224,9 +237,8 @@ extendGacelaConfig(string $configClass);
 extendGacelaConfigs(array $list);
 ```
 
-Extend `GacelaConfig` from different places using the `extendGacelaConfig` method.
-
-The class must be invokable, and it will receive the GacelaConfig object. For example:
+`extendGacelaConfig()` extends `GacelaConfig` from other places. The class must be invokable, and it receives the
+`GacelaConfig` object:
 
 ```php
 <?php # index.php
@@ -259,9 +271,9 @@ final class RouterConfig
 addHandlerRegistry(string $registryKey, array<string|int,class-string> $handlers);
 ```
 
-Declare a build-time dispatch table. The registry is resolvable from the container under `$registryKey` and returns a
-`HandlerRegistry` that lazy-instantiates each handler through the container on first access. Registries are frozen after
-boot. There is no runtime `register()` method.
+Declare a build-time dispatch table. The container resolves it under `$registryKey` as a `HandlerRegistry`, which
+instantiates each handler through the container on first access. Registries are frozen after boot: there is no runtime
+`register()` method.
 
 ```php
 <?php # gacela.php
@@ -280,8 +292,8 @@ return function (GacelaConfig $config) {
 addHealthCheck(class-string|ModuleHealthCheckInterface $check);
 ```
 
-Register a per-module health check. All registered checks are aggregated by the `doctor` command and the
-`HealthChecker`. See the full [Module health checks](/docs/health-checks) page.
+Register a per-module health check. The `doctor` command and the `HealthChecker` aggregate every registered check.
+The [Module health checks](/docs/health-checks) page has the details.
 
 ```php
 <?php # gacela.php
