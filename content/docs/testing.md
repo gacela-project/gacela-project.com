@@ -169,7 +169,7 @@ a Provider, and a consumer that writes `new BlogFacade()` leaves nothing to bind
 Facade resolves:
 
 ```php
-$this->swapModuleFactory(BlogFacade::class, new class() extends BlogFactory {
+$this->swapModuleFactory(BlogFacade::class, new class() extends AbstractFactory {
     public function createPostReader(): PostReader
     {
         return new InMemoryPostReader(['a post']);
@@ -179,10 +179,30 @@ $this->swapModuleFactory(BlogFacade::class, new class() extends BlogFactory {
 (new CheckoutFacade())->summary();  // reaches the double, not the real Blog
 ```
 
+The double extends `AbstractFactory`, not `BlogFactory`. It only has to carry the methods the Facade under test
+actually calls: `swapModuleFactory()` takes an `AbstractFactory`, so the double does not have to be Blog's own class.
+
+**If `BlogFactory` is `final`, that is the only form available.** A `final` class cannot be subclassed (PHP raises a
+fatal error) and cannot be doubled by PHPUnit either (`ClassIsFinalException`), so neither
+`new class() extends BlogFactory` nor `$this->createStub(BlogFactory::class)` runs. `make:module` generates `final`
+pillars, so assume that is the case unless you know otherwise.
+
+Extending the real Factory is worth it when it is **not** final and you want to keep its other `create*()` methods and
+override one:
+
+```php
+$this->swapModuleFactory(BlogFacade::class, new class() extends BlogFactory {   // BlogFactory must not be final
+    public function createPostReader(): PostReader
+    {
+        return new InMemoryPostReader(['a post']);
+    }
+});
+```
+
 - `swapModuleFactory()`, `swapModuleConfig()` and `swapModuleProvider()` all take the **Facade** class: that is the
   name a consumer already knows, and the one the resolver derives a module's pillars from.
-- Any object of the right pillar type works: an anonymous subclass, or a PHPUnit stub
-  (`$this->createStub(BlogFactory::class)`).
+- Any object of the right pillar type works: a standalone `AbstractFactory`, an anonymous subclass of the real one, or
+  a PHPUnit stub. The last two only where the class is not `final`.
 - The swap survives repeated resolutions, and applies to a module that was already resolved earlier in the same test.
 - Swapping the same module twice keeps the last double.
 - Every swap is dropped by `resetContainer()`, which `GacelaTestCase` already runs in `tearDown()`, so the next test
@@ -193,6 +213,61 @@ registering a double nothing would ever read.
 
 This replaces reaching into `AnonymousGlobal::overrideExistingResolvedClass()`, which needed the resolver's key format
 and left the Facade's memoised Factory in place.
+
+## Module boundaries in a test method [since 2.4]
+
+A boundary decision that lives only in CI configuration is one a module's own tests cannot state.
+`Gacela\Console\Testing\ModuleAssertions` is a standalone trait, so it goes into whatever base test class a project
+already has:
+
+```php
+use Gacela\Console\Testing\ModuleAssertions;
+
+final class InvoiceBoundaryTest extends TestCase
+{
+    use ModuleAssertions;
+
+    public function test_invoice_reaches_billing_and_customer_and_nothing_else(): void
+    {
+        Gacela::bootstrap(__DIR__);
+
+        self::assertModuleDependsOnlyOn(InvoiceFacade::class, [BillingFacade::class, CustomerFacade::class]);
+        self::assertNoModuleCycles(__DIR__ . '/allowed-cycles.json');
+        self::assertModuleRulesHold(__DIR__ . '/module-rules.json');
+    }
+}
+```
+
+- `assertModuleDependsOnlyOn()` takes the module (any class inside it, its Facade by convention, or its namespace) and
+  the modules it may reach. An allowance may name a namespace covering several modules. Naming a module the running
+  configuration does not scan **fails**, listing the modules it did find, rather than passing on an empty dependency
+  list.
+- `assertNoModuleCycles()` reads the same allowed-cycles file `debug:graph --check --allowed-cycles` reads. An allowance
+  whose cycle has since been broken fails too.
+- `assertModuleRulesHold()` reads the same [`module-rules.json`](/docs/module-boundaries#declaring-which-modules-may-depend-on-which)
+  the CLI and the PHPStan and Psalm rules read.
+
+Every failure names the offending edge **and the `use` statement behind it**, as `file:line`:
+
+```text
+"App\Invoice" may depend only on:
+  - App\Customer
+
+✗ App\Invoice -> App\Billing
+    /app/src/Invoice/Domain/InvoiceIssuer.php:12  use App\Billing\BillingFacade;
+```
+
+The line is where the `use` statement opens, so every name of a grouped import reports the same one. A dependency that
+arrives without an import, such as a fully qualified name written inline or a class-string in configuration, has no
+evidence to show, because the graph does not see it either.
+
+The application must be bootstrapped, since these read the modules the running configuration declares. That is also
+what makes [`bootstrapModule()`](#testing-one-module)'s narrowing useful here: inside a slice, these assertions answer
+about one module.
+
+The trait lives in `Gacela\Console`, not on `GacelaTestCase`, because the module graph is built by scanning source
+files, which is console work, and `Gacela\Framework` does not depend on `Gacela\Console`. A test class writes
+`use ModuleAssertions;` and has both.
 
 ## ContainerFixture
 
