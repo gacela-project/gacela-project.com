@@ -58,8 +58,46 @@ return function (GacelaConfig $config) {
 };
 ```
 
+A specific listener matches by inheritance: it runs for the class it names and for every event that extends or
+implements it. One listener on `AbstractGacelaClassResolverEvent` covers all four resolver events. [since 2.4]
+
 Every event implements `GacelaEventInterface`, which exposes `toString(): string` for logging. Concrete events add typed
 accessors — see the catalog below.
+
+## Your own events [since 2.4]
+
+A module can dispatch its own events through the same dispatcher, which is how one module reacts to another without
+depending on it. The event is a class implementing `GacelaEventInterface`. The dispatcher is an ordinary dependency: a
+Factory asks for it with `getProvidedDependency(EventDispatcherInterface::class)`, and the code that announces the
+event guards the dispatch the way the framework does:
+
+```php
+if ($this->events->hasListeners(InvoiceIssued::class)) {
+    $this->events->dispatch(new InvoiceIssued($number, $customerName));
+}
+```
+
+The listener is registered with `registerSpecificListener()` like any other, or with `#[AsListener]` on a public
+method of the class that reacts: [since 2.5]
+
+```php
+use Gacela\Framework\Attribute\AsListener;
+
+final class NotificationFacade extends AbstractFacade
+{
+    #[AsListener]
+    public function onInvoiceIssued(InvoiceIssued $event): void
+    {
+        $this->getFactory()->createInvoiceMailer()->send($event);
+    }
+}
+```
+
+The first parameter's type is the event, or `#[AsListener(InvoiceIssued::class)]` names it. Attribute listeners run
+after the ones in `gacela.php`, and only for events a module dispatches through its provided dispatcher; the
+framework's own events never reach them. `vendor/bin/gacela debug:events` lists your events beside the framework's,
+and [`debug:plugins`](/docs/cli#debug-plugins) lists the `#[AsListener]` methods. The
+[upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/events.md#your-own-events) covers the tradeoffs and the test helpers.
 
 ## Lifecycle event catalog
 
@@ -221,9 +259,16 @@ already has: [since 2.3]
 
 ```php [gacela.php]
 return static function (GacelaConfig $config): void {
-    $config->setEventDispatcher(new Psr14Bridge($myBus));
+    $config->setEventDispatcher(new MyDispatcher($myBus));
 };
 ```
+
+It also accepts a PSR-14 `Psr\EventDispatcher\EventDispatcherInterface`, such as Symfony's or Laravel's, and wraps it,
+so no adapter is needed. PSR-14 cannot say what it listens to, so that wrapper answers `true` from `hasListeners()` and
+every dispatch site allocates its event. Implement Gacela's interface yourself for a narrower answer. [since 2.4]
+
+A supplied dispatcher composes with the listeners registered beside it: the configured listeners run first, in
+registration order, and then the event is offered to your dispatcher if its `hasListeners()` says yes. [since 2.4]
 
 Return `false` from `hasListeners()` for the event classes you do not care about and the framework skips allocating
 them, which is what keeps the resolution hot path cheap.

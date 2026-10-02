@@ -109,6 +109,20 @@ the position the first declarer gave it.
 Members resolve on first use, not at registration. A class that does not exist, or that does not implement the
 contract, throws then. Run [`doctor`](/docs/cli#doctor) to find both at diagnostic time instead.
 
+A member can also join from its own class with `#[Plugin]`, so adding one needs no line in `gacela.php`: [since 2.5]
+
+```php
+use Gacela\Framework\Attribute\Plugin;
+
+#[Plugin(Discount::class, priority: 10)]
+final class LoyaltyDiscount implements Discount {}
+```
+
+The stack is still declared, empty if the attributes fill it: `addPluginStack(Discount::class, [])`. Declared members
+come first, then attribute members by `priority`, highest first. `cache:warm --attributes` stores them, and
+[`debug:plugins`](/docs/cli#debug-plugins) lists every member with where it was declared. Scanning rules and caching
+are in the [upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/getting-a-dependency.md#typed--every-implementation-of-one-interface).
+
 Pick a stack over the alternatives when the contract is an interface and you want all of it:
 
 | Question the consumer asks             | Use                                                            |

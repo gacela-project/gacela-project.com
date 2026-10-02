@@ -79,6 +79,7 @@ export const site: SiteConfig = {
         { title: 'Events', route: '/docs/events' },
         { title: 'Static analysis', route: '/docs/static-analysis' },
         { title: 'Module boundaries', route: '/docs/module-boundaries' },
+        { title: 'Coding agents', route: '/docs/coding-agents' },
       ],
     },
     {
