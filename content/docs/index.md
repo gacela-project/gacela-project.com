@@ -5,7 +5,7 @@ description: The shortest path from installation to a production-ready Gacela 2.
 
 # Gacela documentation
 
-Gacela builds modular PHP applications from four classes: a **Facade** exposes a module, a **Factory** creates its
+Gacela splits a PHP application into modules, each with up to four classes: a **Facade** exposes a module, a **Factory** creates its
 internal services, a **Provider** supplies external dependencies, and a **Config** reads application settings.
 
 ::: tip New to Gacela?

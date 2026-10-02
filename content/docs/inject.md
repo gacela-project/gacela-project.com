@@ -25,7 +25,7 @@ final class CatalogService
 - A bare `#[Inject]` resolves the parameter by its type, like autowiring but explicit.
 - `#[Inject(RedisCache::class)]` forces a specific implementation, whatever the global binding says.
 
-Import `Gacela\Framework\Attribute\Inject` in 2.0. It extends the container attribute, so both imports work side by
+In 2.0, prefer importing `Gacela\Framework\Attribute\Inject`. It extends the container attribute, so both imports work side by
 side while an application migrates.
 
 ## Property and setter injection
