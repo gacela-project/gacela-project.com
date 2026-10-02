@@ -193,7 +193,7 @@ Every constructor parameter is nullable, required ones included, because `fromAr
 `MissingDtoPropertyException`. It names the property, instead of failing later on a null somewhere else.
 
 `toArray()` leaves out a property that was never set instead of writing `null`, so `fromArray($order->toArray())`
-returns the same instance. A value present because of a declared default is included, since `fromArray()` already
+returns an equal object. A value present because of a declared default is included, since `fromArray()` already
 filled it in.
 
 ## One shape, several declarers
