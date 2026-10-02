@@ -1,11 +1,11 @@
 ---
 title: Caching
-description: Choose between Gacela’s framework cache, cacheable Facade methods, and value-cache primitives.
+description: Pick between Gacela’s framework cache, cacheable Facade methods, and value-cache primitives.
 ---
 
 # Caching
 
-Gacela caches at three different levels. Each solves a different problem. They compose, they don't replace one another.
+Gacela caches at three levels. Each solves a different problem. They work together; none replaces another.
 
 | Layer                                                       | What it caches                                                 | Where              | Typical use                                                            |
 |-------------------------------------------------------------|----------------------------------------------------------------|--------------------|------------------------------------------------------------------------|
@@ -16,78 +16,79 @@ Gacela caches at three different levels. Each solves a different problem. They c
 ## Layer 1: Framework resolution cache
 
 Gacela resolves classes by convention: `Facade` → `Factory` → `Provider` → `Config`. Those lookups walk namespaces and
-files, and the merged configuration is reassembled from every `config/*.php` file. All of it is memoised once per
-process, and can additionally be persisted to disk between runs.
+files, and the merged configuration is rebuilt from every `config/*.php` file. Gacela memoises all of it once per
+process, and can also persist it to disk between runs.
 
 - **In-memory** (default): `InMemoryCache` holds resolved class names for the life of the process.
 - **On-disk**: `ClassNamePhpCache`, `CustomServicesPhpCache`, and `MergedConfigCache` persist the same data in
-  project-scoped PHP files. Filenames include an application-root hash, preventing applications that share a cache
-  directory from serving each other's data; merged config files are also scoped by `APP_ENV`.
+  project-scoped PHP files. Filenames include a hash of the application root, so applications that share a cache
+  directory never serve each other's data. Merged config files are also scoped by `APP_ENV`.
 
-Enable and tune the file cache at bootstrap with `enableFileCache()`.
-[Bootstrap > File cache](/docs/bootstrap#file-cache) covers the API, how the cache directory is resolved, and the
+Turn on and tune the file cache at bootstrap with `enableFileCache()`.
+[Bootstrap > File cache](/docs/bootstrap#file-cache) covers the API, how Gacela picks the cache directory, and the
 `GACELA_CACHE_DIR` environment variable.
 
-With the file cache enabled, the merged configuration **auto-warms on the first miss**: the first bootstrap persists the
-app- and environment-scoped merged-config file, so later bootstraps skip globbing and parsing config files—no manual
-`cache:warm` is required for that layer.
+With the file cache on, the merged configuration **auto-warms on the first miss**. The first bootstrap persists the
+app- and environment-scoped merged-config file, and later bootstraps skip globbing and parsing config files. That layer
+needs no manual `cache:warm`.
 
-The two ways in are trusted differently. A merged-config file written by `cache:warm` is a deploy artifact, served
-without looking at the config files until the next `cache:warm` or `cache:clear`. A file written on a miss also records
-the config files it read, and an edited, added or removed file, or a changed `addAppConfig()` declaration, rebuilds it on
-the next bootstrap. [since 2.5]
+Gacela trusts the two kinds of file differently. A merged-config file written by `cache:warm` is a deploy artifact:
+Gacela serves it without looking at the config files until the next `cache:warm` or `cache:clear`. A file written on a
+miss also records the config files it read. An edited, added or removed file, or a changed `addAppConfig()` declaration,
+rebuilds it on the next bootstrap. [since 2.5]
 
-Two settings adjust that. [since 2.6]
+Two settings change that. [since 2.6]
 
 ```php
 $config->addConfigCacheWatch('src/Config/*.php');
 $config->enableVerifiedConfigCacheWarm();
 ```
 
-`addConfigCacheWatch(...$paths)` adds files whose change rebuilds the cache though no config file did: for values your
-own code computes, such as a config class whose output is stored. Each path is a file or a glob, relative to the app
-root or absolute anywhere (a global Composer install, or `phar://` inside a PHAR). A glob also counts files added or
-removed. A directory counts only files added or removed directly in it, not edits to them, so name the files.
+`addConfigCacheWatch(...$paths)` adds files whose change rebuilds the cache even when no config file changed. Use it
+for values your own code computes, such as a config class whose output is stored. Each path is a file or a glob,
+relative to the app root or absolute anywhere (a global Composer install, or `phar://` inside a PHAR). A glob also
+counts files added or removed. A directory counts only files added or removed directly in it, not edits to them, so
+name the files.
 
-`enableVerifiedConfigCacheWarm()` makes `cache:warm` write the checked kind instead of the trusted one, for a tool whose
-users warm while they still edit config. It costs a `stat` per source on each bootstrap.
+`enableVerifiedConfigCacheWarm()` makes `cache:warm` write the checked kind instead of the trusted one. Use it for a
+tool whose users warm the cache while they still edit config. It costs a `stat` per source on each bootstrap.
 
-In a **read-only environment** (e.g. a read-only project root inside a build sandbox) the file caches degrade gracefully
-to in-memory instead of failing the bootstrap: writes become no-ops, no raw PHP warnings are emitted, and any pre-warmed
-cache files already on disk stay readable. Warm-at-build / run-read-only deployments keep their cache hits.
+In a **read-only environment**, such as a read-only project root inside a build sandbox, the file caches fall back to
+in-memory instead of failing the bootstrap. Writes become no-ops, PHP emits no raw warnings, and pre-warmed cache files
+already on disk stay readable. A deployment that warms at build time and runs read-only keeps its cache hits.
 
 Typical wiring:
 
 - **Development**: file cache **off**. Edits take effect immediately.
 - **Production**: file cache **on**, pre-populated with `vendor/bin/gacela cache:warm`, directory baked into the image.
   Re-deploy (or `cache:clear`) to refresh.
-- **Tests**: call `resetInMemoryCache()` between suites so resolution state doesn't bleed.
+- **Tests**: call `resetInMemoryCache()` between suites so resolution state does not leak.
 
-See also: [Opcache preload](/docs/opcache-preload) for getting PHP itself to cache Gacela's own source files.
+To make PHP itself cache Gacela's source files, see [Opcache preload](/docs/opcache-preload).
 
 ## Layer 2: Cacheable facade methods
 
-Cache the *result* of a facade method with the `#[Cacheable]` attribute and `$this->cached()`. `CacheableTrait` is built
-into `AbstractFacade`, no extra `use` needed. Storage is `InMemoryCacheStorage` by default, which means entries die with
-the request on PHP-FPM; for cross-request caching swap in a shared backend (APCu, Redis, PSR-16) via
+Cache the *result* of a facade method with the `#[Cacheable]` attribute and `$this->cached()`. `AbstractFacade` already
+includes `CacheableTrait`, so you need no extra `use`. The default storage is `InMemoryCacheStorage`, so on PHP-FPM
+entries die with the request. To cache across requests, swap in a shared backend (APCu, Redis, PSR-16) with
 `CacheableConfig::setStorage()`.
 
-Full reference, including keys, invalidation, TTL overrides, and the storage contract:
-[Cacheable methods](/docs/cacheable-methods).
+[Cacheable methods](/docs/cacheable-methods) is the full reference: keys, invalidation, TTL overrides, and the storage
+contract.
 
 ## Layer 3: Value primitives
 
-When *your code* needs a cache (compiled artifacts, parsed data, or a build pipeline), use
-`Gacela\Framework\Cache\FileCache`: one atomically written file per key, per-entry TTLs, batched writes, and stats. When
-invalidating one entry should cascade to every entry derived from it, wrap it in `ScopedCache`, its dependency-aware
-decorator.
+When *your code* needs a cache (compiled artifacts, parsed data, a build pipeline), use
+`Gacela\Framework\Cache\FileCache`. It writes one file per key atomically, with per-entry TTLs, batched writes, and
+stats. When invalidating one entry must cascade to every entry derived from it, wrap it in `ScopedCache`, its
+dependency-aware decorator.
 
 Full reference: [FileCache and ScopedCache](/docs/file-cache).
 
 ## Picking a layer
 
-- Make Gacela's own resolution faster → Layer 1, `enableFileCache()` + `cache:warm`.
-- Memoise a specific facade method → Layer 2, [`#[Cacheable]`](/docs/cacheable-methods).
-- Cache arbitrary application data → Layer 3, [`FileCache`](/docs/file-cache).
-- Same, but invalidation must cascade → Layer 3,
+- Speed up Gacela's own resolution: Layer 1, `enableFileCache()` + `cache:warm`.
+- Memoise one facade method: Layer 2, [`#[Cacheable]`](/docs/cacheable-methods).
+- Cache any application data: Layer 3, [`FileCache`](/docs/file-cache).
+- The same, with cascading invalidation: Layer 3,
   [`ScopedCache`](/docs/file-cache#scopedcache-dependency-aware-decorator).
