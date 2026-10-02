@@ -81,8 +81,8 @@ practical.
 
 ## Limitations
 
-- Because dispatch goes through `__call()`, IDEs need the attribute (or `@method`) to autocomplete. PhpStorm's Symfony
-  plugin reads both out of the box.
+- Because dispatch goes through `__call()`, an IDE needs a `@method` docblock to autocomplete. PhpStorm reads
+  `@method`, not `#[ServiceMap]`. The attribute types the accessor for PHPStan and Psalm; `@method` adds IDE completion.
 - `#[ServiceMap]` cannot resolve protected services (`addProtected()`). They are stored as raw closures, and the
   container does not instantiate them.
 - PHPStan reports an accessor that declares neither `#[ServiceMap]` nor `@method`. Psalm needs the
