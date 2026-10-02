@@ -203,6 +203,10 @@ implementing `GacelaEventInterface` or being named `*Event`, and are marked `pro
 `disableEventListeners()` is in effect or a custom dispatcher is installed, since a supplied dispatcher carries events
 on to a bus it cannot see into.
 
+[`#[AsListener]`](/docs/events#your-own-events) methods are listed beside the `gacela.php` listeners, marked as such,
+and as `attributeListeners` in `--json`. `--listened` counts an event that only they handle. Framework events are
+never matched, since their dispatch sites do not read them. [since 2.6]
+
 ## Caching & production
 
 ### `cache:warm`

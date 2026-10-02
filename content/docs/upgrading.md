@@ -1,6 +1,6 @@
 ---
 title: Upgrading Gacela
-description: Move from 1.21 to 2.0, then on through 2.1 to 2.5; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
+description: Move from 1.21 to 2.0, then on through 2.1 to 2.6; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
 ---
 
 # Upgrading Gacela
@@ -249,3 +249,17 @@ long-running workers. Two things change on the first run after the upgrade:
   by `cache:warm` is still served unchecked. Older cache files are not read.
 - **The discovered-package list is read from `installed.json` again once**, because the cache now records each
   package's psr-4 directories.
+
+## Moving on to 2.6
+
+```bash
+composer require gacela-project/gacela:^2.6
+```
+
+Nothing to rewrite. New in 2.6:
+[`addConfigCacheWatch()` and `enableVerifiedConfigCacheWarm()`](/docs/caching#layer-1-framework-resolution-cache) for
+the merged config cache, `#[AsListener]` methods in [`debug:events`](/docs/cli#debug-events), and a request state reset
+done for you by the [Symfony bundle and the Laravel bridge](/docs/long-running-runtimes). Reading a plugin stack that
+`gacela.php` never declared now names the [`#[Plugin]`](/docs/extensions#plugin-stacks) classes waiting for it. The
+`gacela.suffixExtends` [rule](/docs/static-analysis#what-is-checked) reports less: a `*Factory`, `*Config` or
+`*Provider` is only checked in a namespace that has a Facade.

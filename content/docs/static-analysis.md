@@ -101,6 +101,9 @@ be turned off on its own.
 | A dependency the project's [rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which) forbids | `gacela.declaredModuleDependency`  | `GacelaDeclaredModuleDependency` | opt-in |
 | A pillar accessor declared with `#[ServiceMap]`, not `@method` [since 2.3]                     | `gacela.serviceMapMissing`         | `GacelaServiceMapMissing`        | opt-in |
 
+`gacela.suffixExtends` reports a Factory, Config, Provider or declared kind only in a namespace with a Facade the
+resolver would start from. [since 2.6]
+
 On top of the rules, both analysers gain two **types** they otherwise lack:
 the [pillar accessors](#typed-pillar-accessors), and [`getProvidedDependency()`](#typed-provided-dependencies) by
 class-string.
