@@ -5,19 +5,18 @@ description: Expose a small, stable public API while keeping a module’s implem
 
 # Facade
 
-The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point** of your module. It exposes what the
-module can do through a clean, public API while hiding the internal classes, services, and wiring behind simple method
-calls.
+The [Facade](https://en.wikipedia.org/wiki/Facade_pattern) is the **entry point** of your module. Its public methods
+expose what the module can do and hide the internal classes, services and wiring.
 
 ::: tip Why use a Facade?
-Other modules, controllers, and commands never reach into your module's internals. They call the Facade, which delegates
-to the [Factory](/docs/factory) to build the right objects and run the logic. This keeps your module's domain
-encapsulated and easy to refactor.
+Other modules, controllers and commands never reach into your module's internals. They call the Facade, which asks the
+[Factory](/docs/factory) to build the objects that run the logic. Your module's domain stays encapsulated and easy to
+refactor.
 :::
 
 ## Start from the caller
 
-Write the call you want consumers to make before designing the implementation. The caller should know the Facade and
+Write the call you want consumers to make before you design the implementation. The caller knows the Facade and
 nothing behind it.
 
 ```php [app.php]
@@ -41,8 +40,8 @@ echo "Spam score: {$score}" . PHP_EOL;
 
 ## Define the boundary
 
-Turn the caller's desired operation into a Facade method. Extend `AbstractFacade` and delegate the implementation
-through `getFactory()`.
+Turn the caller's operation into a Facade method. Extend `AbstractFacade` and delegate the work through
+`getFactory()`.
 
 ```php [src/Comment/CommentFacade.php]
 <?php
@@ -68,14 +67,13 @@ final class CommentFacade extends AbstractFacade
 ```
 
 [View the complete Facade](https://github.com/gacela-project/gacela-example/blob/main/comment-spam-score/src/Comment/CommentFacade.php).
-Keep this API small: add a method because a real caller needs the capability, not because an internal service happens to
-expose it.
+Keep this API small. Add a method because a real caller needs it, not because an internal service exposes it.
 
 ## Accessing the Facade from controllers and commands
 
-In your infrastructure layer (controllers, CLI commands, etc.) you often can't extend `AbstractFacade`. Use
-`ServiceResolverAwareTrait` together with the `#[ServiceMap]` attribute to let Gacela resolve the Facade lazily through
-the Locator singleton. No constructor injection needed.
+In your infrastructure layer (controllers, CLI commands, etc.) you often can't extend `AbstractFacade`. Combine
+`ServiceResolverAwareTrait` with the `#[ServiceMap]` attribute, and Gacela resolves the Facade lazily through the
+Locator singleton. You need no constructor injection.
 
 ```php
 <?php
@@ -100,5 +98,5 @@ final class TestCommand extends Command
 Construct a Facade directly when your code owns the entry point, as in the Quickstart. Use `#[ServiceMap]` when another
 framework creates the controller or command and constructor injection is not practical.
 
-The full reference, including repeatable declarations, the `@method` DocBlock migration path, and resolution behavior,
-is [Service Map](/docs/service-map).
+[Service Map](/docs/service-map) is the full reference: repeatable declarations, the `@method` DocBlock migration path,
+and resolution behavior.
