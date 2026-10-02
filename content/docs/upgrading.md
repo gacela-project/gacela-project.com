@@ -1,6 +1,6 @@
 ---
 title: Upgrading Gacela
-description: Move from 1.21 to 2.0, then on through 2.1 to 2.6; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
+description: Move from 1.21 to 2.0, then through 2.1 to 2.6: PHP and container requirements, removed APIs, declared service accessors, and what to verify.
 ---
 
 # Upgrading Gacela
@@ -8,8 +8,8 @@ description: Move from 1.21 to 2.0, then on through 2.1 to 2.6; PHP and containe
 ## From 1.21 to 2.0
 
 Gacela 2.0 raises the PHP floor, moves to `gacela-project/container` 2.x, removes three deprecated aliases, and makes
-undeclared pillar accessors visible to static analysis. Version 1.21.0 is the final 1.x release, and its documentation
-is kept as an archive at [/docs/1.x](/docs/1.x).
+static analysis report undeclared pillar accessors. 1.21.0 is the final 1.x release. Its documentation lives on as an
+archive at [/docs/1.x](/docs/1.x).
 
 ### Before upgrading
 
@@ -21,8 +21,8 @@ vendor/bin/gacela doctor
 vendor/bin/gacela cache:clear
 ```
 
-Run the test suite with `error_reporting(E_ALL)` so Gacela deprecations are visible. Search explicitly for the trait
-removal, which cannot emit a use-time deprecation:
+Run the test suite with `error_reporting(E_ALL)` so you see Gacela's deprecations. The trait removal emits no
+deprecation when used, so search for it:
 
 ```bash
 rg "DocBlockResolverAwareTrait" src/
@@ -38,7 +38,7 @@ composer require gacela-project/gacela:^2.0
 
 - PHP is now **8.3 or newer**, up from 8.1.
 - `gacela-project/container` is now `^2.0.2`.
-- Symfony development integrations support `^7.0 || ^8.0`; projects pinned to Symfony 6 must upgrade.
+- Symfony development integrations support `^7.0 || ^8.0`. A project pinned to Symfony 6 must upgrade.
 
 ### Removed APIs
 
@@ -59,11 +59,10 @@ Change the class, parent, and filename:
 +final class MyModuleProvider extends AbstractProvider
 ```
 
-The filename matters because Gacela discovers pillars by convention. A class renamed without its file silently stops
-resolving. Running `doctor` on 1.21 detects the mismatch before the old resolver is removed.
+The filename matters: Gacela discovers pillars by convention, so a class renamed without its file silently stops
+resolving. `doctor` on 1.21 detects the mismatch before the old resolver is gone.
 
-`provideModuleDependencies()` remains the imperative registration method. `#[Provides]` remains the attribute-first
-alternative.
+`provideModuleDependencies()` is still the imperative way to register, and `#[Provides]` the attribute-first one.
 
 #### Rename bindings and the resolver trait
 
@@ -75,7 +74,7 @@ alternative.
 +use Gacela\Framework\ServiceResolverAwareTrait;
 ```
 
-Both are mechanical renames with the same behavior.
+Both are mechanical renames. Behavior does not change.
 
 ### Declare pillar accessors
 
@@ -92,10 +91,10 @@ final class BillingController
 }
 ```
 
-A `@method BillingFacade getFacade()` annotation still helps IDEs, but runtime resolution through docblocks or scanned
-`use` statements is deprecated in 2.0 and will be removed in 3.0. Add the attribute even when retaining the docblock.
+A `@method BillingFacade getFacade()` annotation still helps IDEs. But resolving at runtime through docblocks or
+scanned `use` statements is deprecated in 2.0 and goes away in 3.0. Add the attribute even if you keep the docblock.
 
-Psalm users must register the 2.0 plugin separately from the existing XInclude:
+On Psalm, register the 2.0 plugin in addition to the existing XInclude:
 
 ```xml
 
@@ -106,24 +105,24 @@ Psalm users must register the 2.0 plugin separately from the existing XInclude:
 
 ### Container compatibility
 
-Gacela's container now decorates the final 2.x container and continues to implement `ContainerInterface`. Code
-type-hinting the concrete inner container should accept its interface instead:
+Gacela's container now decorates the final 2.x container and still implements `ContainerInterface`. Code that
+type-hints the concrete inner container should accept the interface instead:
 
 ```diff
 -function configure(\Gacela\Container\Container $container): void
 +function configure(\Gacela\Container\ContainerInterface $container): void
 ```
 
-Module containers are now scopes of one application container. App-wide configuration is walked once per bootstrap,
-while Provider registrations and instances remain isolated per module scope.
+Module containers are now scopes of one application container. Gacela walks app-wide configuration once per
+bootstrap. Provider registrations and instances stay isolated per module scope.
 
 ### Other targeted changes
 
 - `ConsoleFacade::getContainerStats()` and `ConsoleFactory::getContainerStats()` now return a final readonly
-  `ContainerStats` object, not an array. Use properties such as `registeredServices` and `processMemoryBytes`, plus
-  `processMemoryFormatted()`; this replaces the misleading `memoryUsageFormatted()` name.
-- `CacheWarmedEvent::failedCount()` now counts actual resolution failures. Use the new `skippedCount()` for pillar
-  classes a module simply does not contain.
+  `ContainerStats` object, not an array. Use properties such as `registeredServices` and `processMemoryBytes`, and
+  `processMemoryFormatted()`, which replaces the misleading `memoryUsageFormatted()`.
+- `CacheWarmedEvent::failedCount()` now counts only real resolution failures. The new `skippedCount()` counts pillar
+  classes a module does not contain.
 - Typed class constants on `AbstractSetupGacela` and `ConfigInterface` can expose incompatible overrides at compile
   time.
 - `Gacela::resetCache()` no longer clears a cache backend registered through `CacheableConfig::setStorage()`.
@@ -131,16 +130,16 @@ while Provider registrations and instances remain isolated per module scope.
 ### New in 2.0
 
 - `GacelaConfig::loadDefinitions()` loads wiring from arrays, PHP files, or JSON files.
-- `GacelaConfig::afterResolving()` runs idempotent callbacks after top-level container resolution.
+- `GacelaConfig::afterResolving()` runs idempotent callbacks after a top-level container resolution.
 - `GacelaConfig::tag()` groups services into lazy iterables.
 - `Gacela\Framework\Attribute\Inject` is the preferred import and supports constructor parameters, properties, and
   setters.
-- `#[Lazy]` is honored by `AbstractFactory::make()`; native lazy behavior requires PHP 8.4 and falls back safely to
-  eager construction on 8.3.
-- Dependency-tree output now follows applied bindings and marks nodes as `binding`, `instance`, `autowired`, or
-  `unresolvable`.
+- `AbstractFactory::make()` honors `#[Lazy]`. Native lazy objects need PHP 8.4; on 8.3 it falls back safely to eager
+  construction.
+- The dependency tree output now follows applied bindings and marks each node as `binding`, `instance`, `autowired`,
+  or `unresolvable`.
 
-After migration, run the test suite, PHPStan or Psalm, and `vendor/bin/gacela doctor --strict`.
+After migrating, run the test suite, PHPStan or Psalm, and `vendor/bin/gacela doctor --strict`.
 
 ## Moving on to 2.1
 
@@ -150,18 +149,18 @@ After migration, run the test suite, PHPStan or Psalm, and `vendor/bin/gacela do
 composer require gacela-project/gacela:^2.1
 ```
 
-Two things are worth picking up deliberately:
+Two changes deserve attention:
 
 - **[Static analysis](/docs/static-analysis) now runs the architecture rules under Psalm as well as PHPStan**, each as
-  its own suppressible issue class. Psalm users get the full rule set from the plugin they already register, and both
+  its own suppressible issue class. Psalm users get the full rule set from the plugin they already register. Both
   analysers gain a second cross-module check that resolves a call's receiver by type. Expect new findings on the first
   run.
-- **`cache:warm` exits non-zero when a warmup fails.** A deploy step that ignored the exit code was silently green
-  before, and will start failing on the problems it was already printing.
+- **`cache:warm` exits non-zero when a warmup fails.** A deploy step that ignored the exit code stayed green before. Now
+  it fails on the problems it was already printing.
 
-Two fixes change behavior you may have worked around: `ttl: 0` means "no expiry" in `InMemoryCacheStorage` as it always
-did in `FileCache`, and resolution hooks registered in `gacela.php` now fire inside module scopes as well as at the app
-level.
+Two fixes change behavior you may have worked around. In `InMemoryCacheStorage`, `ttl: 0` now means "no expiry", as it
+always did in `FileCache`. Resolution hooks registered in `gacela.php` now fire inside module scopes as well as at the
+app level.
 
 ## Moving on to 2.2
 
@@ -175,17 +174,17 @@ Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-sche
 [module dependency rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which),
 [module doubles in tests](/docs/testing#replacing-another-module),
 [published scaffolding stubs](/docs/cli#stubs-publish), and the
-[Symfony bundle and Laravel provider](/docs/framework-integration). Three things are worth knowing before the upgrade:
+[Symfony bundle and Laravel provider](/docs/framework-integration). Know three things before you upgrade:
 
-- **The Symfony and Laravel bridges now actually reach your vendor directory.** `.gitattributes` stripped both from the
-  dist archive and their namespaces sat in `autoload-dev`, so nothing under `Gacela\SymfonyBridge` or
-  `Gacela\LaravelBridge` was installable before 2.2. If you copied bridge classes into your project or pinned a path
-  repository to work around that, drop the workaround and register the bundle or provider instead.
+- **The Symfony and Laravel bridges now reach your vendor directory.** Before 2.2, `.gitattributes` stripped both from
+  the dist archive and their namespaces sat in `autoload-dev`, so nothing under `Gacela\SymfonyBridge` or
+  `Gacela\LaravelBridge` was installable. If you copied bridge classes into your project or pinned a path repository to
+  work around that, drop the workaround and register the bundle or provider.
 - **PHPStan users on [phpstan/extension-installer](https://github.com/phpstan/extension-installer) get Gacela's rules
   automatically** from this release on. A project that deliberately ran without `phpstan-gacela.neon` will see new
   findings on the first run; opt out per package via `extra."phpstan/extension-installer".ignore`.
-- **A `#[ServiceMap]` accessor whose mapped class the analysing process cannot autoload is now typed** instead of
-  silently falling back to `mixed`, so PHPStan may report calls it previously ignored.
+- **A `#[ServiceMap]` accessor is now typed even when the analysing process cannot autoload its mapped class.** It no
+  longer falls back silently to `mixed`, so PHPStan may report calls it ignored before.
 
 ## Moving on to 2.3
 
@@ -193,13 +192,13 @@ Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-sche
 composer require gacela-project/gacela:^2.3
 ```
 
-2.3 removes no API. Two scaffolder changes affect scripts rather than application code:
+2.3 removes no API. Two scaffolder changes affect scripts, not application code:
 
 - **[`make:module` and `make:file`](/docs/cli#code-generation) refuse to write over existing files.** They check every
   target before writing the first, so a run that would replace something writes nothing and exits `1`. A script that
-  regenerates a module in place now fails there; add `--force` if replacing is the intent.
-- **`make:file` refuses a kind Gacela does not have.** `Repository` used to produce a `Factory` and `Controller` a
-  `Provider`. Abbreviations of the four pillars still work; anything else exits `1`. Declare a real kind with
+  regenerates a module in place now fails there. Add `--force` if you mean to replace.
+- **`make:file` refuses a kind Gacela does not have.** `Repository` used to produce a `Factory`, and `Controller` a
+  `Provider`. Abbreviations of the four pillars still work. Anything else exits `1`. Declare a real kind with
   `addResolvableType()` instead.
 
 ## Moving on to 2.4
@@ -217,21 +216,21 @@ Most of 2.4 is new and opt-in: [your own events](/docs/events#your-own-events),
 - **A specific listener matches by inheritance.** A listener registered against an interface or an abstract parent
   matched nothing before. It now runs for every event below that type.
 - **A supplied dispatcher composes with your listeners.** With `setEventDispatcher()`, the configured listeners run
-  first and then the event is offered to your dispatcher. Before, one side was silently dropped.
-- **A custom `#[Cacheable]` key is scoped to its class and method.** The stored key is now `Class::method::` followed
-  by the template, so a persistent backend takes one cold pass after the upgrade.
+  first, then your dispatcher gets the event. Before, one side was silently dropped.
+- **A custom `#[Cacheable]` key is scoped to its class and method.** The stored key is now `Class::method::` plus the
+  template, so a persistent backend runs one cold pass after the upgrade.
 - **The opt-in cross-module rules report less.** Classes marked `#[PublicApi]`, and classes under a `Shared`,
   `Transfer`, `Dto` or `Event` sub-namespace, are a module's public API and are no longer reported.
 - **A wildcard config path no longer reads environment files into the base layer.** With `addAppConfig('config/*.php')`,
   `config/app-prod.php` is now only the `APP_ENV=prod` layer of `config/app.php`. A key set only in an environment file
-  is no longer readable outside that environment. Run `cache:clear` after deploying if the file cache is on.
+  is no longer readable outside that environment. If the file cache is on, run `cache:clear` after deploying.
 - **`doctor` warns about a listener target no event can match**, usually a class missing
   `implements GacelaEventInterface`. Under `--strict` that fails the run.
 - **A pillar's constructor sees the whole of `gacela.php`.** Definitions, `afterResolving()` hooks, tags and the
   id-keyed verbs now reach the container that builds Facades, Factories, Configs and Providers.
-  `debug:modules --check` reads that container too, so it can report a fault it used to miss.
-- **An installed package can configure your application.** A package declaring `extra.gacela.config` is merged before
-  your own `gacela.php`. `$config->dontDiscover(['*'])` turns that off.
+  `debug:modules --check` reads that container too, so it can report faults it used to miss.
+- **An installed package can configure your application.** Gacela merges a package that declares `extra.gacela.config`
+  before your own `gacela.php`. `$config->dontDiscover(['*'])` turns that off.
 
 ## Moving on to 2.5
 
@@ -245,9 +244,9 @@ Nothing to rewrite. New in 2.5: [`#[Plugin]` and `#[Tag]`](/docs/extensions#plug
 long-running workers. Two things change on the first run after the upgrade:
 
 - **The merged config cache rebuilds once.** With the file cache on, a cache written on a miss now records the config
-  files it read, and an edited file or `addAppConfig()` declaration rebuilds it on the next bootstrap. A cache written
-  by `cache:warm` is still served unchecked. Older cache files are not read.
-- **The discovered-package list is read from `installed.json` again once**, because the cache now records each
+  files it read. Editing one of those files or an `addAppConfig()` declaration rebuilds it on the next bootstrap. A
+  cache written by `cache:warm` is still served unchecked. Older cache files are not read.
+- **The discovered-package list is read from `installed.json` once more**, because the cache now records each
   package's psr-4 directories.
 
 ## Moving on to 2.6
@@ -259,7 +258,7 @@ composer require gacela-project/gacela:^2.6
 Nothing to rewrite. New in 2.6:
 [`addConfigCacheWatch()` and `enableVerifiedConfigCacheWarm()`](/docs/caching#layer-1-framework-resolution-cache) for
 the merged config cache, `#[AsListener]` methods in [`debug:events`](/docs/cli#debug-events), and a request state reset
-done for you by the [Symfony bundle and the Laravel bridge](/docs/long-running-runtimes). Reading a plugin stack that
+that the [Symfony bundle and the Laravel bridge](/docs/long-running-runtimes) do for you. Reading a plugin stack that
 `gacela.php` never declared now names the [`#[Plugin]`](/docs/extensions#plugin-stacks) classes waiting for it. The
-`gacela.suffixExtends` [rule](/docs/static-analysis#what-is-checked) reports less: a `*Factory`, `*Config` or
-`*Provider` is only checked in a namespace that has a Facade.
+`gacela.suffixExtends` [rule](/docs/static-analysis#what-is-checked) reports less: it checks a `*Factory`, `*Config` or
+`*Provider` only in a namespace that has a Facade.
