@@ -1,0 +1,53 @@
+/**
+ * Proof rows.
+ *
+ * A short claim beside the evidence for it. The claim column stays narrow so
+ * the output, which is the point, gets the width it needs to print unwrapped.
+ */
+
+@layer components {
+  .proof-list {
+    display: grid;
+    gap: clamp(var(--space-7), 6vw, var(--space-9));
+  }
+
+  .proof {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    align-items: start;
+    gap: clamp(var(--space-5), 4vw, var(--space-8));
+  }
+
+  @media (max-width: 979px) {
+    .proof {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .proof__title {
+    font-size: var(--text-xl);
+    text-wrap: balance;
+  }
+
+  .proof__summary {
+    max-inline-size: var(--measure-prose);
+    margin-block-start: var(--space-3);
+    color: var(--text);
+    line-height: var(--leading-normal);
+    text-wrap: pretty;
+  }
+
+  .proof__link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-block-start: var(--space-4);
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+
+  .proof__link:hover {
+    text-decoration: underline;
+  }
+}

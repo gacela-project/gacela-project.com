@@ -15,6 +15,7 @@
  *   - prose: no em dashes
  */
 
+import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { dirname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -27,26 +28,17 @@ const projectDir = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 const stdin = readFileSync(0, 'utf8').trim()
 if (!stdin) process.exit(0)
 
-let payload
-try {
-  payload = JSON.parse(stdin)
-} catch {
-  process.exit(0)
-}
-
-const baseDir = typeof payload?.cwd === 'string' ? payload.cwd : projectDir
-
 /**
- * Claude Code names the one file it wrote. Codex reports every edit as an
- * apply_patch whose file headers name the files it touched.
+ * Claude Code names the file it wrote, and Codex names every file in its
+ * patch. `agnostic-ai hook paths` reads either payload and prints the files
+ * the edit left on disk, relative to the directory the hook runs in.
  */
-function editedFiles(toolInput) {
-  if (typeof toolInput?.file_path === 'string') return [toolInput.file_path]
-  if (typeof toolInput?.command !== 'string') return []
-
-  return [...toolInput.command.matchAll(/^\*\*\* (?:Add File|Update File|Move to): (.+)$/gm)].map(
-    (match) => resolve(baseDir, match[1].trim()),
-  )
+let edited
+try {
+  edited = execFileSync('agnostic-ai', ['hook', 'paths'], { input: stdin, encoding: 'utf8' })
+} catch (error) {
+  console.error(`Convention guard could not read the edited files: ${error.message}`)
+  process.exit(1)
 }
 
 function check(filePath) {
@@ -131,8 +123,10 @@ function check(filePath) {
   return { rel, findings, notices }
 }
 
-const results = editedFiles(payload?.tool_input)
-  .map(check)
+const results = edited
+  .split('\n')
+  .filter((line) => line !== '')
+  .map((path) => check(resolve(path)))
   .filter((result) => result !== null)
 
 const findings = results.flatMap(({ rel, findings }) => findings.map((f) => ({ rel, ...f })))

@@ -39,6 +39,7 @@ export const site: SiteConfig = {
         { title: 'Getting dependencies', route: '/docs/getting-dependencies' },
         { title: 'Bootstrap', route: '/docs/bootstrap' },
         { title: 'Upgrading', route: '/docs/upgrading' },
+        { title: 'Reference application', route: '/docs/reference-app' },
       ],
     },
     {
@@ -79,12 +80,15 @@ export const site: SiteConfig = {
         { title: 'Events', route: '/docs/events' },
         { title: 'Static analysis', route: '/docs/static-analysis' },
         { title: 'Module boundaries', route: '/docs/module-boundaries' },
+        { title: 'Coding agents', route: '/docs/coding-agents' },
       ],
     },
     {
       title: 'Integrations',
       items: [
         { title: 'Framework integration', route: '/docs/framework-integration' },
+        { title: 'Long-running runtimes', route: '/docs/long-running-runtimes' },
+        { title: 'Shipping a package', route: '/docs/packages' },
         { title: 'Testing', route: '/docs/testing' },
         { title: 'Single-file modules', route: '/docs/single-file-modules' },
       ],
