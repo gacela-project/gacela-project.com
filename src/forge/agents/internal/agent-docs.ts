@@ -57,6 +57,10 @@ export function llmsIndex(site: SiteConfig, pages: readonly RenderedPage[]): str
     '',
     'Every document below is the source of truth for the feature it describes.',
     '',
+    '## Agent guide',
+    '',
+    `- [${site.title} agent guide](${site.repository}/blob/main/resources/agents/gacela.md): the conventions a coding agent should follow in a ${site.title} project. Run \`vendor/bin/gacela agents:install\` to point the project's AGENTS.md at the copy in vendor/, which matches the installed version.`,
+    '',
   ]
 
   for (const group of site.sidebar) {
