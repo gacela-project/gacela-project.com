@@ -39,6 +39,7 @@ export const site: SiteConfig = {
         { title: 'Getting dependencies', route: '/docs/getting-dependencies' },
         { title: 'Bootstrap', route: '/docs/bootstrap' },
         { title: 'Upgrading', route: '/docs/upgrading' },
+        { title: 'Reference application', route: '/docs/reference-app' },
       ],
     },
     {

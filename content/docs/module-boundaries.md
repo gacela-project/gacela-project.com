@@ -263,6 +263,21 @@ code:
 }
 ```
 
+## Enforcing the same file from a test method [since 2.4]
+
+The rules file has a third reader. `Gacela\Console\Testing\ModuleAssertions` puts the same graph, cycle detector,
+allow list and rule checker behind three PHPUnit assertions, so a boundary decision can live next to the module's own
+tests rather than only in CI configuration:
+
+```php
+self::assertModuleDependsOnlyOn(InvoiceFacade::class, [BillingFacade::class, CustomerFacade::class]);
+self::assertNoModuleCycles(__DIR__ . '/allowed-cycles.json');
+self::assertModuleRulesHold(__DIR__ . '/module-rules.json');
+```
+
+Failures name the offending edge and the `use` statement that writes it, as `file:line`. See
+[Testing](/docs/testing#module-boundaries-in-a-test-method).
+
 ## Reviewing graph changes in CI
 
 A new cross-module edge enters a pull request as one more `use` statement, which is exactly as visible as every other
