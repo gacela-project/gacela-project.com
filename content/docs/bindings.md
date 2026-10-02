@@ -11,7 +11,7 @@ the `Gacela::bootstrap()` closure.
 
 | Need                                            | API                       | Lifetime                      |
 |-------------------------------------------------|---------------------------|-------------------------------|
-| Map an interface or ID to a service             | `addBinding()`            | Shared in its container scope |
+| Map an interface or ID to a service             | `addBinding()`            | New instance each resolution  |
 | Create a new value for every resolution         | `addFactory()`            | New instance                  |
 | Defer an expensive factory                      | `addLazy()`               | New instance; deferred        |
 | Store a closure as a value                      | `addProtected()`          | The closure itself            |
@@ -39,6 +39,11 @@ return function (GacelaConfig $config) {
 ```
 
 Here, whenever auto-wiring meets `AbstractString`, it resolves `StringClass`.
+
+A binding says how to build something, not what was built. A class-string or callable binding builds a new instance on
+each resolution. An object bound as an instance (`new ConcreteClass()`) is the same object every time. For one shared
+instance of a class, put `#[Singleton]` (`Gacela\Container\Attribute\Singleton`) on it, or declare
+`['singleton' => X::class]` in [definitions](#definitions-as-data).
 
 ### Runtime values from bootstrap
 
@@ -81,8 +86,7 @@ Both `AnInterface` and `AnotherInterface` now resolve to the same shared `$insta
 addFactory(string $id, Closure $factory);
 ```
 
-Unlike regular bindings (which are singletons), a factory service returns a new instance every time the container
-resolves it.
+A factory service returns a new instance every time the container resolves it.
 
 ```php
 <?php # gacela.php
@@ -206,7 +210,8 @@ return function (GacelaConfig $config) {
 };
 ```
 
-Both `$container->get(LoggerInterface::class)` and `$container->get('logger')` resolve to the same instance.
+`$container->get('logger')` resolves through `LoggerInterface::class`, so an alias has its target's lifetime. Here the
+target builds a new `FileLogger` on each resolution, so the two calls return different instances.
 
 ## Contextual Bindings
 
