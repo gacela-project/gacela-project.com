@@ -86,6 +86,8 @@ export const site: SiteConfig = {
       title: 'Integrations',
       items: [
         { title: 'Framework integration', route: '/docs/framework-integration' },
+        { title: 'Long-running runtimes', route: '/docs/long-running-runtimes' },
+        { title: 'Shipping a package', route: '/docs/packages' },
         { title: 'Testing', route: '/docs/testing' },
         { title: 'Single-file modules', route: '/docs/single-file-modules' },
       ],

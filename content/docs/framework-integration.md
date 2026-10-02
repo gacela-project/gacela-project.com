@@ -29,7 +29,9 @@ That alone gives you four things:
 3. **Gacela's console commands in `bin/console`**, under a `gacela:` prefix.
 4. **`cache:warmup` warms Gacela's caches too**, so a deploy has one warmup step instead of two.
 
-Plus the `#[Inject]` compiler pass, described below.
+Plus the `#[Inject]` compiler pass, described below. From 2.6 the bundle also resets Gacela's request state on
+Symfony's `kernel.reset`, so a worker such as FrankenPHP or RoadRunner starts each request clean. See
+[long-running runtimes](/docs/long-running-runtimes).
 
 ```yaml [config/packages/gacela.yaml]
 gacela:
@@ -124,6 +126,9 @@ The same four things, against Laravel's lifecycle:
 3. **Gacela's console commands in `artisan`**, under a `gacela:` prefix.
 4. **`artisan optimize` warms Gacela's caches too**, so a deploy has one optimize step instead of two.
    `optimize:clear` clears them again.
+
+From 2.6 the provider also resets Gacela's request state after each Octane `RequestTerminated`. See
+[long-running runtimes](/docs/long-running-runtimes).
 
 ```bash
 php artisan vendor:publish --tag=gacela-config

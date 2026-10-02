@@ -95,6 +95,60 @@ is worse than no rule: it reads as a green check, and nothing would ever tell yo
 
 To see the actual module dependency graph of your app, run [`debug:graph`](/docs/cli#debug-graph).
 
+## What a module exports [since 2.4]
+
+A module's public surface is wider than its Facade. DTOs, enums, value objects, events and plugin contracts: a Facade
+that returns an invoice has published the invoice too, and reading it in another module is what it was returned for.
+Both cross-module rules leave that surface alone. There are two ways to declare it, read the same way by both analysers.
+
+### `#[PublicApi]`
+
+```php
+use Gacela\Framework\Attribute\PublicApi;
+
+#[PublicApi]
+final class InvoiceRecord
+{
+    // ...
+}
+```
+
+It works on classes, interfaces and enums, declared where the class already lives. It is **not inherited**: publishing
+a base class would publish everything anyone ever extends from it, so mark each exported type. Classes written by
+[`dto:generate`](/docs/cli#dto-generate) carry it already.
+
+### The namespace convention
+
+A list of sub-namespace **segment names**, by default `Shared`, `Transfer`, `Dto` and `Event`, that a module publishes
+by construction. `App\Billing\Shared\Invoice` and `App\Billing\Domain\Dto\Money` are both exported with no
+annotation. Segments are matched whole, at any depth, never as prefixes: `Event` publishes `App\Billing\Event\` and
+leaves `App\Billing\EventHandler\` alone. A class sitting directly in its module is never published by the convention.
+
+Configure it on both cross-module rules:
+
+|                 | PHPStan                             | Psalm                                    |
+|-----------------|-------------------------------------|------------------------------------------|
+| Configured with | `publicApiSegments:` (a list)       | `<publicApiSegment>` (one element each)  |
+| Left out        | the default list applies            | the default list applies                 |
+| Turned off      | an explicit `publicApiSegments: []` | a single empty `<publicApiSegment/>`     |
+
+This is not the same idea as `sharedNamespaces`. A shared namespace is a fully qualified prefix that belongs to no
+module, exempt in both directions. A public API segment is a sub-namespace under each module, and a class in one still
+belongs to the module that owns it.
+
+### Reading the surface back
+
+[`debug:module Billing`](/docs/cli#debug-module) prints a `Public API` section listing what the module exports,
+attribute-declared and convention-matched together, or `(none)`. The `--json` document carries it under `publicApi`.
+
+### What it does not do
+
+Publishing a class says it may be touched **without going through the Facade**. It does not say two modules may be
+coupled at all: that is what [the declared rules file](#declaring-which-modules-may-depend-on-which) answers, and
+`DeclaredModuleDependencyRule` is deliberately not exempted by `#[PublicApi]`. `debug:graph --check` enforces the same
+rules file from `use` imports and cannot see an attribute, so exempting in the analyser alone would leave the editor
+green and CI red on the same line.
+
 ## Failing on dependency cycles
 
 `debug:graph --check` exits non-zero when two modules depend on each other:

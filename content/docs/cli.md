@@ -184,6 +184,25 @@ vendor/bin/gacela debug:plugins [-j|--json]
 Ids a module's Provider tags at runtime stay in that module's container and are not listed. A `#[Plugin]` naming a
 stack nobody declared is listed as never read.
 
+### `debug:events` [since 2.4]
+
+List every [event](/docs/events) the framework can dispatch and your project's own, which of them anything listens to,
+and which are dispatched on the class-resolution hot path.
+
+```bash
+vendor/bin/gacela debug:events [<filter>] [-l|--listened] [-j|--json]
+```
+
+- `filter`: only events whose class name contains this text
+- `-l`, `--listened`: only events something listens to
+- `-j`, `--json`: output machine-readable JSON
+
+A specific listener matches by inheritance, so an event can be covered by a registration that never names it; the
+listener column names the target that does. Project events are found under the paths discovery already walks, by
+implementing `GacelaEventInterface` or being named `*Event`, and are marked `project`. The command also says when
+`disableEventListeners()` is in effect or a custom dispatcher is installed, since a supplied dispatcher carries events
+on to a bus it cannot see into.
+
 ## Caching & production
 
 ### `cache:warm`
@@ -430,3 +449,20 @@ namespace no prefix covers is reported and the command exits non-zero, rather th
 
 Run `--check` in CI to fail on a declaration nobody regenerated. See [DTO schema](/docs/dto-schema) for the
 declaration syntax and the shape of the generated class.
+
+### `migrate:service-map` [since 2.4]
+
+Write the [`#[ServiceMap]`](/docs/service-map) attribute for every pillar accessor still resolved from a `@method`
+docblock, across the whole project in one run. That resolution is deprecated in 2.x and removed in 3.0, and the
+runtime notice only fires for accessors a run actually reaches, so a migration driven by notices covers only the code
+paths your tests execute.
+
+```bash
+vendor/bin/gacela migrate:service-map [<filter>] [--dry-run]
+```
+
+- `filter`: only files whose path contains this text
+- `--dry-run`: report what would change and write nothing
+
+Only the attribute and, when missing, its import are added. Nothing else in the file moves, and a second run changes
+nothing. An accessor whose `@method` type is not a single class name (`A|B`, `?A`, `array<A>`, `self`) is left alone.

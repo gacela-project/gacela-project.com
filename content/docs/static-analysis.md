@@ -286,6 +286,10 @@ The two opt-in cross-module rules, the dependency-cycle gate on `debug:graph`, t
 CI graph review have their own page: [Module boundaries](/docs/module-boundaries). Enable the rules there once the
 analyser setup above is in place.
 
+Both cross-module rules leave a module's own public API alone: a class carrying `#[PublicApi]`, or one under a
+sub-namespace the module publishes by convention (`publicApiSegments` in PHPStan, `<publicApiSegment>` in Psalm). See
+[what a module exports](/docs/module-boundaries#what-a-module-exports). [since 2.4]
+
 ## Why the rules ship with the framework
 
 Rather than as separate `phpstan-extension` / `psalm-plugin` packages, which is the more usual arrangement. Three
