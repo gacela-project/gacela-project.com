@@ -139,6 +139,15 @@ describe('llmsIndex', () => {
     expect(index).not.toContain('/docs/facade.md')
     expect(index).toContain('/docs/quickstart.md')
   })
+
+  it('points at the agent guide the package ships and the command that installs it', () => {
+    const index = llmsIndex(site, pages)
+
+    expect(index).toContain(
+      '- [Gacela agent guide](https://github.com/gacela-project/gacela/blob/main/resources/agents/gacela.md):',
+    )
+    expect(index).toContain('`vendor/bin/gacela agents:install`')
+  })
 })
 
 describe('llmsFullContext', () => {
