@@ -88,7 +88,7 @@ vendor/bin/gacela debug:modules [--detail|-d] [--check] [-j|--json] [<filter>]
 Inspect one class's constructor and report whether the container can resolve each parameter.
 
 ```bash
-vendor/bin/gacela debug:dependencies <class|file> [--tree]
+vendor/bin/gacela debug:dependencies <class|file> [--tree] [-j|--json]
 ```
 
 - Takes a fully qualified class name, or the path to a PHP file that declares the class.
@@ -97,11 +97,12 @@ vendor/bin/gacela debug:dependencies <class|file> [--tree]
   one.
 - `--tree` appends the transitive dependency graph, after applying bindings and contextual bindings. Nodes are marked
   `binding`, `instance`, `autowired` or `unresolvable`; cycles are shown and cut.
+- `-j`/`--json`: report as a JSON document instead of text.
 
 ### `debug:module`
 
 Inspect one module: its resolved Facade, Factory, Config and Provider, the container bindings it registers, and its
-dependency tree. Compare `debug:modules` (all modules, structure only) and `debug:dependencies` (one class).
+dependency tree. Compare `debug:modules` (all modules, whether each pillar's dependencies resolve) and `debug:dependencies` (one class).
 
 ```bash
 vendor/bin/gacela debug:module <module> [-j|--json] [-t|--tree]
@@ -279,7 +280,7 @@ report "all cache entries are fresh" on a stale configuration.
 Check the current Gacela configuration for errors and best practices.
 
 ```bash
-vendor/bin/gacela validate:config
+vendor/bin/gacela validate:config [--strict] [--format=text|json] [-j|--json]
 ```
 
 - Warns when `gacela.php` is missing.
@@ -288,7 +289,9 @@ vendor/bin/gacela validate:config
 - Checks interface-keyed bindings too (they used to be skipped).
 - Accepts non-class binding keys (plain string ids such as `'db.dsn'`) instead of reporting them as non-existent.
 - Checks the configuration against the [declared schema](/docs/config#declaring-a-config-schema), and exits non-zero
-  when a declared key has no value. [since 2.2]
+  when a declared key is missing or has the wrong type. [since 2.2]
+- `--strict`: exit with a failure code on warnings too, for CI.
+- `--format`: `text` (default) or `json`; `-j`/`--json` is short for `--format=json`.
 
 ::: info No side effects
 As of 2.1 the command checks the dependency graph statically, instead of calling `$container->get()` on every binding
@@ -303,10 +306,11 @@ Print the merged configuration your modules get as a table, after resolving ever
 override.
 
 ```bash
-vendor/bin/gacela debug:config [<filter>]
+vendor/bin/gacela debug:config [<filter>] [--format=text|json] [-j|--json]
 ```
 
 - `filter`: only show keys that contain this substring.
+- `--format`: `text` (default) or `json`; `-j`/`--json` is short for `--format=json`.
 - It reads `Config::getAllValues()`, so it shows exactly what your modules see at runtime.
 - Each key is marked `declared`, `undeclared` or `missing` against the
   [declared schema](/docs/config#declaring-a-config-schema). The table flags the keys the schema does *not* cover, and
@@ -321,11 +325,11 @@ early in your bootstrap, run your code, then dump the report. [Profiling](/docs/
 and how spans work.
 
 ```bash
-vendor/bin/gacela profile:report [--format=table|json|summary] [--sort=duration|memory|operation]
+vendor/bin/gacela profile:report [-f|--format=table|json|summary] [-j|--json] [-s|--sort=duration|memory|operation]
 ```
 
-- `--format`: `table` (default), `json`, or `summary`.
-- `--sort`: `duration` (default), `memory`, or `operation`.
+- `-f`, `--format`: `table` (default), `json`, or `summary`. `-j`/`--json` is short for `--format=json`.
+- `-s`, `--sort`: `duration` (default), `memory`, or `operation`.
 
 `--format=json` writes `entries`, `stats` and, since 2.3, `unfinished`: the operations started and never stopped,
 keyed `operation:subject`, with a count of how many of each are still open.
@@ -412,6 +416,7 @@ your house style:
 vendor/bin/gacela stubs:publish                    # every stub
 vendor/bin/gacela stubs:publish --template=basic   # one template set
 vendor/bin/gacela stubs:publish --force            # replace ones already published
+vendor/bin/gacela stubs:publish --dry-run          # report what would be published, write nothing
 ```
 
 From then on, each generated file uses the project's stub when there is one, and the built-in template when there is

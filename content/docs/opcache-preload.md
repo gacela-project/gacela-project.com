@@ -5,8 +5,9 @@ description: Deploy the Opcache preload script Gacela ships, for its framework c
 
 # Opcache preload
 
-Gacela ships a preload script that loads its core files into shared memory at PHP startup. Requests no longer compile
-those files, and they use less memory. Measure the gain on your own workload.
+Gacela ships a preload script that loads the framework and the packages it runs on, the container included, into
+shared memory at PHP startup. Requests no longer compile those files, and they use less memory. Measure the gain on
+your own workload.
 
 **Requires** PHP 8.3+ with opcache enabled.
 
