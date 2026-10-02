@@ -17,9 +17,9 @@ use Gacela\Framework\Gacela;
 Gacela::resetRequestState();
 ```
 
-From 2.6, the [Symfony bundle and the Laravel bridge](/docs/framework-integration) call it for you: the bundle from
-Symfony's `kernel.reset` (FrankenPHP worker mode, RoadRunner, Messenger workers), the bridge after each Octane
-`RequestTerminated`.
+The [Symfony bundle and the Laravel bridge](/docs/framework-integration) call it for you: the bundle from Symfony's
+`kernel.reset` (FrankenPHP worker mode, RoadRunner, Messenger workers), the bridge on each Octane `RequestReceived` and
+`RequestTerminated`, so a request that throws out of Octane's gateway does not leave its state to the next. [since 2.6]
 
 Without a bridge, call it after each request from the runtime's hook. With FrankenPHP's worker loop:
 

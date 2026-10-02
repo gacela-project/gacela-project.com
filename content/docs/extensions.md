@@ -118,7 +118,8 @@ use Gacela\Framework\Attribute\Plugin;
 final class LoyaltyDiscount implements Discount {}
 ```
 
-The stack is still declared, empty if the attributes fill it: `addPluginStack(Discount::class, [])`. Declared members
+The stack is still declared, empty if the attributes fill it: `addPluginStack(Discount::class, [])`. Reading a stack
+nobody declared throws, and the message names the `#[Plugin]` classes waiting for it. [since 2.6] Declared members
 come first, then attribute members by `priority`, highest first. `cache:warm --attributes` stores them, and
 [`debug:plugins`](/docs/cli#debug-plugins) lists every member with where it was declared. Scanning rules and caching
 are in the [upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/getting-a-dependency.md#typed--every-implementation-of-one-interface).

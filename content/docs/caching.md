@@ -37,6 +37,21 @@ without looking at the config files until the next `cache:warm` or `cache:clear`
 the config files it read, and an edited, added or removed file, or a changed `addAppConfig()` declaration, rebuilds it on
 the next bootstrap. [since 2.5]
 
+Two settings adjust that. [since 2.6]
+
+```php
+$config->addConfigCacheWatch('src/Config/*.php');
+$config->enableVerifiedConfigCacheWarm();
+```
+
+`addConfigCacheWatch(...$paths)` adds files whose change rebuilds the cache though no config file did: for values your
+own code computes, such as a config class whose output is stored. Each path is a file or a glob, relative to the app
+root or absolute anywhere (a global Composer install, or `phar://` inside a PHAR). A glob also counts files added or
+removed. A directory counts only files added or removed directly in it, not edits to them, so name the files.
+
+`enableVerifiedConfigCacheWarm()` makes `cache:warm` write the checked kind instead of the trusted one, for a tool whose
+users warm while they still edit config. It costs a `stat` per source on each bootstrap.
+
 In a **read-only environment** (e.g. a read-only project root inside a build sandbox) the file caches degrade gracefully
 to in-memory instead of failing the bootstrap: writes become no-ops, no raw PHP warnings are emitted, and any pre-warmed
 cache files already on disk stay readable. Warm-at-build / run-read-only deployments keep their cache hits.
