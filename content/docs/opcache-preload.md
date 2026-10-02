@@ -1,12 +1,12 @@
 ---
 title: Opcache preload
-description: Generate and deploy an Opcache preload script for Gacela’s framework and application module classes.
+description: Deploy the Opcache preload script Gacela ships, for its framework classes and your own module classes.
 ---
 
 # Opcache preload
 
-Gacela ships a preload script that loads its core files into shared memory at PHP startup, removing their per-request
-compilation cost and lowering per-request memory. Measure the benefit on your own workload.
+Gacela ships a preload script that loads its core files into shared memory at PHP startup. Requests no longer compile
+those files, and they use less memory. Measure the gain on your own workload.
 
 **Requires** PHP 8.3+ with opcache enabled.
 
@@ -26,7 +26,8 @@ Restart PHP-FPM:
 sudo systemctl restart php8.3-fpm
 ```
 
-Verify in the logs: `Gacela Opcache Preload: 32 files preloaded successfully, 0 failed`.
+Check the logs for `Gacela Opcache Preload: <n> classes linked, 0 skipped`. The count tracks the framework's size; the
+`0` is the part to check.
 
 ## Preload your own files
 
@@ -40,7 +41,7 @@ opcache_compile_file($root . '/src/User/UserFacade.php');
 opcache_compile_file($root . '/src/Product/ProductFacade.php');
 ```
 
-Wire it via env var in your FPM pool:
+Point an environment variable in your FPM pool at it:
 
 ```ini
 env[GACELA_PRELOAD_USER_FILES] = /path/to/project/config/app-preload.php
@@ -48,7 +49,7 @@ env[GACELA_PRELOAD_USER_FILES] = /path/to/project/config/app-preload.php
 
 ## Deployment
 
-Preloaded files are snapshotted at startup. Restart PHP-FPM after every deploy:
+PHP reads the preloaded files once, at startup. Restart PHP-FPM after every deploy:
 
 ```bash
 composer install --no-dev --optimize-autoloader
@@ -59,7 +60,7 @@ sudo systemctl restart php8.3-fpm
 ## When to use it
 
 - **Use it** for high-traffic production apps on PHP 8.3+.
-- **Skip it** in local development (you'd need to restart after every change) or for very low-traffic sites.
+- **Skip it** in local development (you would restart after every change) and on very low-traffic sites.
 
 ## Troubleshooting
 

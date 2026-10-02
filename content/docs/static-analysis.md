@@ -5,17 +5,17 @@ description: The Gacela architecture rules, shipped with the framework and run i
 
 # Static analysis
 
-Gacela's architecture is a set of claims: a Facade only delegates, a Factory wires its own module, module A reaches
-module B only through B's Facade. Those claims are worth no more than what checks them, so the checks ship **with the
-framework**, for PHPStan and Psalm alike.
+Gacela's architecture is a set of claims: a Facade only delegates, a Factory wires its own module, and module A reaches
+module B only through B's Facade. A claim is worth only what checks it, so the checks ship **with the framework**, for
+PHPStan and Psalm alike.
 
-Both analysers run the same rules. There is one implementation of each check in `Gacela\StaticAnalysis`;`Gacela\PHPStan`
-and `Gacela\Psalm` are thin adapters over it. The two cannot drift apart on what counts as a violation, and neither can
-fall behind the framework it checks. See [why the rules ship here](#why-the-rules-ship-with-the-framework).
+Both analysers run the same rules. Each check has one implementation in `Gacela\StaticAnalysis`; `Gacela\PHPStan` and
+`Gacela\Psalm` are thin adapters over it. The two cannot disagree on what counts as a violation, and neither can fall
+behind the framework it checks. See [why the rules ship here](#why-the-rules-ship-with-the-framework).
 
 ::: info New in 2.1
-Before 2.1 the rules were PHPStan-only and Psalm did nothing but type the pillar accessors. Every rule now reports under
-Psalm too, as its own suppressible issue class.
+Before 2.1 the rules ran only under PHPStan, and Psalm only typed the pillar accessors. Every rule now reports under
+Psalm too, as its own issue class that you can suppress.
 :::
 
 ## Setup
@@ -23,7 +23,7 @@ Psalm too, as its own suppressible issue class.
 ### PHPStan
 
 With [phpstan/extension-installer](https://github.com/phpstan/extension-installer) there is nothing to do: requiring
-Gacela registers the rules and the accessor typing. [since 2.2] Turn that off for this package alone with:
+Gacela registers the rules and the accessor typing. [since 2.2] To turn that off for this package alone:
 
 ```json
 {
@@ -35,7 +35,7 @@ Gacela registers the rules and the accessor typing. [since 2.2] Turn that off fo
 }
 ```
 
-Without the installer, include it yourself:
+Without the installer, include the file yourself:
 
 ```neon
 includes:
@@ -70,22 +70,22 @@ includes:
 </psalm>
 ```
 
-The `InvalidArgument` suppression is required: Gacela resolves concrete types at runtime that Psalm can't infer
-statically. Suppress inline if you prefer narrower scope:
+You need the `InvalidArgument` suppression: Gacela resolves concrete types at runtime, and Psalm cannot infer them
+statically. For a narrower scope, suppress inline:
 
 ```php
 /** @psalm-suppress InvalidArgument */
 return new YourService($this->getConfig());
 ```
 
-The `<plugins>` block cannot be delivered through the XInclude, because XInclude replaces a single element and
-`<plugins>` lives elsewhere in your config. It is also the part that matters: `psalm-gacela.xml` only *suppresses*
-`UndefinedMagicMethod`, and a suppressed call is not a checked one. The plugin replaces the suppression with real types.
+The XInclude cannot deliver the `<plugins>` block: XInclude replaces a single element, and `<plugins>` lives elsewhere
+in your config. The plugin is also the part that matters. `psalm-gacela.xml` only *suppresses* `UndefinedMagicMethod`,
+and a suppressed call is not a checked one. The plugin replaces the suppression with real types.
 
 ## What is checked
 
-Each rule reports under a PHPStan error identifier and a Psalm issue class. Both are what you suppress on, so a rule can
-be turned off on its own.
+Each rule reports under a PHPStan error identifier and a Psalm issue class. You suppress by these, so you can turn off
+one rule on its own.
 
 | Check                                                                                         | PHPStan identifier                 | Psalm issue                      |        |
 |-----------------------------------------------------------------------------------------------|------------------------------------|----------------------------------|--------|
@@ -104,22 +104,22 @@ be turned off on its own.
 `gacela.suffixExtends` reports a Factory, Config, Provider or declared kind only in a namespace with a Facade the
 resolver would start from. [since 2.6]
 
-On top of the rules, both analysers gain two **types** they otherwise lack:
-the [pillar accessors](#typed-pillar-accessors), and [`getProvidedDependency()`](#typed-provided-dependencies) by
+Beyond the rules, both analysers gain two **types** they otherwise lack: the
+[pillar accessors](#typed-pillar-accessors), and [`getProvidedDependency()`](#typed-provided-dependencies) by
 class-string.
 
-Every finding carries the correction as well as the complaint. [since 2.1] PHPStan renders it on its own 💡 line; Psalm appends it to
-the message, because it has nowhere else to put it:
+Every finding carries the fix as well as the complaint. [since 2.1] PHPStan prints the fix on its own 💡 line. Psalm
+has nowhere else to put it, so it appends the fix to the message:
 
 ```text
 Class App\Checkout\CheckoutFacade should extend Gacela\Framework\AbstractFacade
     💡 Extend Gacela\Framework\AbstractFacade, or rename it so it does not end in Facade.
 ```
 
-The pillar rules apply to **classes**. An interface, trait or enum named after a pillar is left alone: none of them can
-extend a class, so there would be no way to act on the report.
+The pillar rules apply to **classes**. They leave alone an interface, trait or enum named after a pillar: none of them
+can extend a class, so you could not act on the report.
 
-Suppressing one rule:
+To suppress one rule:
 
 ```neon
 # phpstan.neon
@@ -159,12 +159,12 @@ final class CheckoutController
 }
 ```
 
-This matters more than it looks. The accessor was previously *suppressed* rather than typed, and a suppressed call is
-not a checked one: it evaluates to `mixed`, which silently switches off analysis of everything reached through it, not
-just the accessor itself. A typo in `placeOrder()` produced no error at all.
+This matters more than it looks. The accessor used to be *suppressed* rather than typed, and a suppressed call is not
+a checked one. It evaluates to `mixed`, which silently turns off analysis of everything reached through it, not only of
+the accessor. A typo in `placeOrder()` produced no error at all.
 
-A `@method CheckoutFacade getFacade()` docblock works too, since both analysers read those natively, but then the same
-fact is written twice and the copies drift.
+A `@method CheckoutFacade getFacade()` docblock works too, since both analysers read it natively. But then you write
+the same fact twice, and the copies drift.
 
 ::: warning Declare every dynamic accessor
 **The PHPStan suppression is gone as of 2.0.** `phpstan-gacela.neon` no longer carries an `ignoreErrors` entry for
@@ -175,22 +175,22 @@ fallback, scheduled for removal in 3.0.
 
 ## Typed provided dependencies
 
-Ask for a provided dependency by class-string and it comes back typed, under PHPStan and, as of 2.1, under Psalm:
+Ask for a provided dependency by class-string and it comes back typed: under PHPStan, and under Psalm as of 2.1.
 
 ```php
 // Both analysers know this is a Clock, and check the call on it.
 $clock = $this->getProvidedDependency(Clock::class);
 ```
 
-`getProvidedDependency()` is declared as returning `mixed`, which is why call sites end up with a hand-written `@var`
-above them: an assertion the analyser takes on faith, and which keeps claiming the old type after the Provider changes.
-When the key *is* a class-string, the type was never unknown; it was discarded at the boundary.
+`getProvidedDependency()` is declared as returning `mixed`. That is why call sites end up with a hand-written `@var`
+above them: an assertion the analyser takes on faith, which keeps claiming the old type after the Provider changes.
+When the key *is* a class-string, the type was never unknown. It was lost at the boundary.
 
 A string key (`$this->getProvidedDependency('some.service')`) still returns `mixed`. Nothing in the type system says
-what it resolves to, and a guess would be worse than `mixed`: `mixed` is honestly unknown, a guess is confidently wrong
-and then trusted.
+what it resolves to, and a guess would be worse. `mixed` is honestly unknown; a guess is confidently wrong, and then
+trusted.
 
-A Factory may also declare its dependencies in its **constructor**; pillars are resolved through the container, so
+A Factory can also declare its dependencies in its **constructor**. Pillars resolve through the container, so
 autowiring applies to the Factory itself:
 
 ```php
@@ -206,24 +206,24 @@ final class CheckoutFactory extends AbstractFactory
 ## Facade interfaces
 
 If you type-hint against a `*FacadeInterface` rather than the concrete Facade, the interface-drift rule keeps the pair
-honest: a public Facade method missing from the interface is reported.
+in step: it reports a public Facade method missing from the interface.
 
-Only that direction can drift. PHP already rejects a class that fails to implement an interface method, so the interface
-cannot gain a method the Facade lacks. But the Facade grows public methods the interface never hears about, and
-consumers holding the interface silently cannot reach them. That stays invisible until someone compares the two files,
-and by then the fix is a breaking change.
+Only that direction can drift. PHP already rejects a class that does not implement an interface method, so the
+interface cannot gain a method the Facade lacks. But the Facade can grow public methods the interface never hears
+about, and consumers holding the interface cannot reach them. Nobody notices until someone compares the two files, and
+by then the fix is a breaking change.
 
-The rule is on by default and self-limiting: it only fires for a Facade that explicitly implements the interface named
-after it (`FooFacade` implements `FooFacadeInterface`). A Facade that implements unrelated interfaces, or none, is not
-checked.
+The rule is on by default and limits itself: it only fires for a Facade that explicitly implements the interface named
+after it (`FooFacade` implements `FooFacadeInterface`). It does not check a Facade that implements unrelated
+interfaces, or none.
 
 ## Cacheable methods that do not cache [since 2.3]
 
-Two rules cover [`#[Cacheable]`](/docs/cacheable-methods), where the failure is silent by construction: the code runs,
-returns the right value, and caches nothing or caches the wrong thing.
+Two rules cover [`#[Cacheable]`](/docs/cacheable-methods), where the failure is always silent: the code runs, returns
+the right value, and caches nothing or caches the wrong thing.
 
-**The attribute is metadata, not a mechanism.** `cached()` reads it. A method carrying `#[Cacheable]` whose body never
-reaches `$this->cached()` is simply not cached:
+**The attribute is metadata, not a mechanism.** `cached()` reads it. A method with `#[Cacheable]` whose body never
+reaches `$this->cached()` is not cached:
 
 ```text
 App\User\UserFacade::profile() carries #[Cacheable] and never calls
@@ -232,7 +232,7 @@ that `cached()` reads.
     💡 Wrap the body in $this->cached(fn () => ...), or call a helper that does.
 ```
 
-The rule judges the **class**, not the method on its own, because `cached()` may live in a private helper the method
+The rule judges the **class**, not the method alone, because `cached()` may live in a private helper the method
 delegates to.
 
 **A key with no placeholder is one key.** `#[Cacheable(key: 'user')]` on a method that takes an argument produces the
@@ -246,15 +246,15 @@ result is served to all of them
        the trait derives one from the arguments.
 ```
 
-Placeholders pointing past the arguments are reported the same way. One in range is enough, and a variadic is not
-judged on its index.
+A placeholder that points past the arguments is reported the same way. One placeholder in range is enough, and the
+rule does not judge a variadic by its index.
 
 Both rules are on by default.
 
 ## Finding what 3.0 removes [since 2.3]
 
-`gacela.serviceMapMissing` reports a pillar accessor still resolved from a `@method` docblock, which is the resolution
-3.0 drops. It names the `#[ServiceMap]` to paste:
+`gacela.serviceMapMissing` reports a pillar accessor still resolved from a `@method` docblock, the resolution 3.0
+drops. It names the `#[ServiceMap]` to paste:
 
 ```text
 App\Wallet\WalletCommand::getFacade() is resolved from its @method
@@ -263,8 +263,8 @@ docblock, which is deprecated and removed in 3.0
        className: WalletFacade::class)].
 ```
 
-It is off by default, because a `@method` accessor is not wrong on 2.x. Turning it on is the decision to start the
-migration, taken when the project is ready rather than as a side effect of upgrading:
+It is off by default, because a `@method` accessor is not wrong on 2.x. Turning it on is your decision to start the
+migration, when the project is ready, not a side effect of upgrading:
 
 ```neon
 # phpstan.neon
@@ -285,33 +285,33 @@ See [Service Map](/docs/service-map) for the attribute, and [Upgrading](/docs/up
 
 ## Module boundaries
 
-The two opt-in cross-module rules, the dependency-cycle gate on `debug:graph`, the declared module rules file, and the
+The two opt-in cross-module rules, the dependency-cycle gate on `debug:graph`, the declared module rules file and the
 CI graph review have their own page: [Module boundaries](/docs/module-boundaries). Enable the rules there once the
 analyser setup above is in place.
 
-Both cross-module rules leave a module's own public API alone: a class carrying `#[PublicApi]`, or one under a
+Both cross-module rules leave a module's own public API alone: a class with `#[PublicApi]`, or one under a
 sub-namespace the module publishes by convention (`publicApiSegments` in PHPStan, `<publicApiSegment>` in Psalm). See
 [what a module exports](/docs/module-boundaries#what-a-module-exports). [since 2.4]
 
 ## Why the rules ship with the framework
 
-Rather than as separate `phpstan-extension` / `psalm-plugin` packages, which is the more usual arrangement. Three
-reasons, and one piece of evidence.
+The usual arrangement is separate `phpstan-extension` / `psalm-plugin` packages. Gacela keeps the rules in the
+framework for three reasons, and one piece of evidence.
 
 **One implementation per rule.** `Gacela\StaticAnalysis` holds the checks; `Gacela\PHPStan` and `Gacela\Psalm` adapt
-them to a host. Split the adapters into separate packages and that shared core has to live somewhere: back here anyway,
-in a third package, or duplicated. Two copies of "what counts as the same module" would drift, which is the failure the
+them to a host. Split the adapters into separate packages and the shared core still has to live somewhere: back here,
+in a third package, or duplicated. Two copies of "what counts as the same module" would drift, the same failure the
 interface-drift rule exists to catch.
 
 **Gacela analyses itself with them.** `phpstan.neon` includes `phpstan-gacela.neon` and `psalm.xml` registers the
-plugin, so every rule runs against the framework's own source on every build. Separate packages make that a circular
-dependency, and a rule nobody runs is a rule nobody notices breaking.
+plugin, so every rule runs against the framework's own source on every build. Separate packages would make that a
+circular dependency, and nobody notices when a rule nobody runs breaks.
 
-**Lockstep is the point.** These rules name `AbstractFacade`, `AbstractFactory` and the rest. They are a description of
-this framework's architecture at this version, not a general-purpose tool with its own release cycle.
+**They must move with the framework.** These rules name `AbstractFacade`, `AbstractFactory` and the rest. They describe
+this framework's architecture at this version. They are not a general-purpose tool with its own release cycle.
 
-**The evidence:** `gacela-project/phpstan-extension` was that separate package. It stopped at PHPStan 1, builds errors
-without the identifiers PHPStan 2 requires, and so cannot load against the PHPStan version Gacela itself needs. Its one
+**The evidence:** `gacela-project/phpstan-extension` was that separate package. It stopped at PHPStan 1 and builds
+errors without the identifiers PHPStan 2 requires, so it cannot load against the PHPStan version Gacela needs. Its one
 rule now lives here as `CrossModuleMethodCallRule`.
 
 ## Migrating from `gacela-project/phpstan-extension`
@@ -328,21 +328,21 @@ composer remove --dev gacela-project/phpstan-extension
 | `parameters.gacela.modulesNamespace`           | `rootNamespace`, on the two cross-module rules |
 | `parameters.gacela.excludedNamespaces`         | `sharedNamespaces`, on the same two rules      |
 
-Its `EnforceModuleBoundariesForMethodCallRule` is `CrossModuleMethodCallRule` here, and the boundary check now has a
-second half, the references a source names, that the package never covered.
+Its `EnforceModuleBoundariesForMethodCallRule` is `CrossModuleMethodCallRule` here. The boundary check also has a
+second half the package never covered: the references a source names.
 See [Module boundaries](/docs/module-boundaries) for the configuration.
 
 ## Troubleshooting
 
-- **PHPStan can't find the file**: verify the include path resolves relative to your `phpstan.neon`.
-- **Psalm ignores the include**: ensure `xmlns:xi="http://www.w3.org/2001/XInclude"` is declared, then
+- **PHPStan can't find the file**: check that the include path resolves relative to your `phpstan.neon`.
+- **Psalm ignores the include**: make sure `xmlns:xi="http://www.w3.org/2001/XInclude"` is declared, then run
   `vendor/bin/psalm --clear-cache`.
 - **A rule fires on the framework's own words**: `GacelaConfig` is a bootstrap builder, not a pillar. `psalm.xml` and
   `phpstan.neon` in the Gacela repository show the scoped suppression.
 
-Accurate module return types across `getFactory()`, `getConfig()` and `getProvidedDependency()` also come from the
-`@template` annotations on Gacela's abstract classes plus the `@extends` on your concrete module classes, independent of
-this configuration.
+Accurate module return types for `getFactory()`, `getConfig()` and `getProvidedDependency()` also come from the
+`@template` annotations on Gacela's abstract classes and the `@extends` on your concrete module classes. They work
+without this configuration.
 
 ## See also
 
