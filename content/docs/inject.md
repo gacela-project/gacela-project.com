@@ -1,12 +1,12 @@
 ---
 title: Inject attribute
-description: Inject services into constructors, properties, or setters when ordinary type-based autowiring is not enough.
+description: Inject services into constructors, properties, or setters when type-based autowiring is not enough.
 ---
 
 # Inject attribute
 
-Use `#[Inject]` when ordinary type-based autowiring cannot express the dependency: to force a concrete implementation,
-mark container-owned wiring for tooling, or inject a property/setter on a class whose constructor you cannot change.
+Use `#[Inject]` when type-based autowiring cannot express the dependency. It forces a concrete implementation, marks
+container-owned wiring for tooling, or injects a property or setter on a class whose constructor you cannot change.
 
 ## Quick start
 
@@ -22,16 +22,16 @@ final class CatalogService
 }
 ```
 
-- A bare `#[Inject]` resolves the parameter by its type (same as autowiring, but explicit).
-- `#[Inject(RedisCache::class)]` forces a specific implementation regardless of the global binding.
+- A bare `#[Inject]` resolves the parameter by its type, like autowiring but explicit.
+- `#[Inject(RedisCache::class)]` forces a specific implementation, whatever the global binding says.
 
-`Gacela\Framework\Attribute\Inject` is the preferred 2.0 import. It extends the container attribute, so both imports can
-coexist while an application migrates.
+Import `Gacela\Framework\Attribute\Inject` in 2.0. It extends the container attribute, so both imports work side by
+side while an application migrates.
 
 ## Property and setter injection
 
-Gacela 2.0 also supports properties and one-argument setter methods. This is useful for vendor or framework classes
-whose constructor is fixed:
+Gacela 2.0 also injects properties and one-argument setter methods. Use this for a vendor or framework class whose
+constructor is fixed:
 
 ```php
 final class CatalogController extends VendorController
@@ -47,22 +47,22 @@ final class CatalogController extends VendorController
 }
 ```
 
-Private, protected, and inherited properties work. Constructor injection remains preferable for application-owned
-classes because dependencies stay visible in the signature.
+Private, protected, and inherited properties work. For classes your application owns, prefer constructor injection:
+the dependencies stay visible in the signature.
 
-Readonly, untyped, scalar-typed, and static properties cannot be injected. A promoted property is handled through its
-constructor parameter and is not injected twice. Property/setter cycles still throw `CircularDependencyException`.
+Readonly, untyped, scalar-typed, and static properties cannot be injected. A promoted property goes through its
+constructor parameter and is not injected twice. Property and setter cycles still throw `CircularDependencyException`.
 
 ## Resolution order
 
-`#[Inject(Target::class)]` sits third in the container's general resolution order, after `make()` overrides and named
-contextual bindings, and before defaults, type-based contextual bindings, and global bindings. The full ordered list,
-including the "defaults win over type bindings" pitfall, is
-[Bindings > Resolution order](/docs/bindings#resolution-order).
+`#[Inject(Target::class)]` is third in the container's resolution order: after `make()` overrides and named contextual
+bindings, before defaults, type-based contextual bindings, and global bindings.
+[Bindings > Resolution order](/docs/bindings#resolution-order) has the full list, including the "defaults win over type
+bindings" pitfall.
 
 ## Inspecting with `debug:dependencies`
 
-The `debug:dependencies` command tags `#[Inject]` parameters so you can verify wiring at a glance:
+The `debug:dependencies` command tags `#[Inject]` parameters, so you can check the wiring at a glance:
 
 ```bash
 vendor/bin/gacela debug:dependencies App\\Catalog\\CatalogService --tree
@@ -73,9 +73,9 @@ vendor/bin/gacela debug:dependencies App\\Catalog\\CatalogService --tree
 ✓ $cache   CacheInterface    (inject -> App\Cache\RedisCache)
 ```
 
-The one-level view describes constructor parameters. `--tree` follows transitive dependencies using the container's
-applied bindings and contextual bindings. Each node is marked `binding`, `instance`, `autowired`, or `unresolvable`;
-cycles are marked and cut. The command reports broken graphs instead of throwing so it remains useful as a diagnostic.
+The one-level view lists constructor parameters. `--tree` follows transitive dependencies through the container's
+applied bindings and contextual bindings. Each node is marked `binding`, `instance`, `autowired`, or `unresolvable`.
+Cycles are marked and cut. The command reports a broken graph instead of throwing, so it stays useful for diagnosis.
 
 ## When to use `#[Inject]` vs bindings
 
@@ -86,9 +86,9 @@ cycles are marked and cut. The command reports broken graphs instead of throwing
 | Multiple classes need the same override         | `when()->needs()->give()` contextual binding  |
 | Constructor is controlled by a vendor/framework | `#[Inject]` on a property or setter           |
 
-`#[Inject]` is opt-in. Classes without it continue to resolve through ordinary autowiring and bindings.
+`#[Inject]` is opt-in. Classes without it still resolve through autowiring and bindings.
 
 ## Symfony integration
 
-In Symfony apps, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container
-via a compiler pass. See [the Symfony bundle](/docs/framework-integration#the-inject-compiler-pass) for setup.
+In a Symfony app, the `gacela-project/symfony-bridge` package routes `#[Inject]` parameters through Gacela's container
+with a compiler pass. See [the Symfony bundle](/docs/framework-integration#the-inject-compiler-pass) for setup.

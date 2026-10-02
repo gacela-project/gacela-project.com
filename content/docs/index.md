@@ -1,16 +1,15 @@
 ---
 title: Documentation
-description: Choose the shortest path from installation to a production-ready Gacela 2.6 module.
+description: The shortest path from installation to a production-ready Gacela 2.6 module.
 ---
 
 # Gacela documentation
 
-Build modular PHP applications with a small, predictable vocabulary: a **Facade** exposes a module, a **Factory**
-creates its internal services, a **Provider** supplies external dependencies, and a **Config** reads application
-settings.
+Gacela builds modular PHP applications from four classes: a **Facade** exposes a module, a **Factory** creates its
+internal services, a **Provider** supplies external dependencies, and a **Config** reads application settings.
 
 ::: tip New to Gacela?
-Start with the [Quickstart](/docs/quickstart). It takes you from installation to a working module, then points to the
+Start with the [Quickstart](/docs/quickstart). It takes you from installation to a working module, and points to the
 next concept only when you need it.
 :::
 
@@ -37,20 +36,19 @@ next concept only when you need it.
 
 ## Recommended journey
 
-Follow this sequence once; use search and the task index after that:
+Follow this order once. After that, use search and the task list:
 
 1. **Get a working result:** complete the [Quickstart](/docs/quickstart) and run `example.php`.
-2. **Understand the boundary:** read [Facade](/docs/facade) and [Factory](/docs/factory) while following the call
-   inward.
-3. **Add real dependencies:** use the [dependency decision guide](/docs/getting-dependencies), then add Provider or
-   Config only when required.
+2. **Understand the boundary:** read [Facade](/docs/facade) and [Factory](/docs/factory), following the call inward.
+3. **Add real dependencies:** use the [dependency decision guide](/docs/getting-dependencies). Add a Provider or a
+   Config only when you need one.
 4. **Make it production-ready:** add [tests](/docs/testing), [static analysis](/docs/static-analysis),
    and [health checks](/docs/health-checks).
-5. **Inspect a real system:** compare the result with the [Phel production case study](/used-in).
+5. **Inspect a real system:** compare your module with the [Phel production case study](/used-in).
 
 ::: tip Find an answer quickly
 Press <kbd>⌘ K</kbd> on macOS or <kbd>Ctrl K</kbd> on Windows/Linux to search every page.
-For wiring questions, start with [Getting dependencies](/docs/getting-dependencies) instead of browsing individual APIs.
+For wiring questions, start with [Getting dependencies](/docs/getting-dependencies), not the individual API pages.
 :::
 
 ## The module boundary
@@ -62,20 +60,20 @@ For wiring questions, start with [Getting dependencies](/docs/getting-dependenci
 | [Provider](/docs/provider) | Cross-module and infrastructure dependencies | The module's Factory             |
 | [Config](/docs/config)     | Typed application settings                   | The module's Factory             |
 
-You do not need all four classes in every module. Start with a Facade and Factory; add a Provider when the module
-crosses a boundary, and a Config when it needs application settings.
+A module does not need all four. Start with a Facade and a Factory. Add a Provider when the module crosses a
+boundary, and a Config when it needs application settings.
 
 ## Design outside-in
 
-Gacela works best when you follow the request from the caller into the module:
+Follow the request from the caller into the module:
 
 1. Write the controller, command, or script call you want to make.
 2. Turn that call into a small Facade method.
 3. Let the Factory construct the service that fulfills it.
 4. Add a Provider or Config only when that service needs something outside the module.
 
-This keeps the public API driven by real use cases instead of exposing internal classes speculatively.
-The [Quickstart](/docs/quickstart) demonstrates the complete flow.
+Real use cases then shape the public API, and no internal class is exposed in advance.
+The [Quickstart](/docs/quickstart) walks through the whole flow.
 
 ## Common tasks
 
@@ -90,13 +88,13 @@ The [Quickstart](/docs/quickstart) demonstrates the complete flow.
 
 ## Documentation for coding agents
 
-Machine-readable entry points are available:
+Three machine-readable entry points:
 
-- [`/llms.txt`](/llms.txt) — compact index with page descriptions
-- [`/llms-full.txt`](/llms-full.txt) — the complete documentation in one context file
-- Append `.md` to a page URL — for example, [`/docs/bootstrap.md`](/docs/bootstrap.md)
+- [`/llms.txt`](/llms.txt): a compact index with page descriptions
+- [`/llms-full.txt`](/llms-full.txt): the complete documentation in one file
+- Any page URL with `.md` appended, for example [`/docs/bootstrap.md`](/docs/bootstrap.md)
 
-When prompting an agent, give it `https://gacela-project.com/llms.txt` for discovery or
-`https://gacela-project.com/llms-full.txt` when the entire documentation fits the task's context budget.
+Give an agent `https://gacela-project.com/llms.txt` for discovery, or `https://gacela-project.com/llms-full.txt` when
+the whole documentation fits its context budget.
 
-To make an agent follow Gacela's module rules inside your own project, see [coding agents](/docs/coding-agents).
+To make an agent follow Gacela's module rules in your own project, see [coding agents](/docs/coding-agents).

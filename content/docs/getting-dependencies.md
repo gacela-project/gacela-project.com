@@ -1,21 +1,21 @@
 ---
 title: Getting dependencies
-description: Choose the right mechanism for internal collaborators, cross-module Facades, infrastructure, and framework entry points.
+description: Pick the wiring for internal collaborators, cross-module Facades, infrastructure, and framework entry points.
 ---
 
 # Getting dependencies
 
-Choose wiring only after the caller and service reveal a dependency. Start with the relationship: **who needs what, and
-who owns it?** Gacela has several resolution tools because those relationships need different boundaries.
+Pick the wiring only once the caller and the service show you a dependency. Start from the relationship: **who needs
+what, and who owns it?** Each relationship needs a different boundary, so Gacela has several resolution tools.
 
-Ask these questions in order:
+Ask in order:
 
 1. Is the dependency created inside this module? Use the Factory.
 2. Is it owned by another module? Request that module's Facade through the Provider.
 3. Is it an application-wide implementation policy? Add a binding.
 4. Is the caller created by another framework? Use constructor injection or Service Map at that entry point.
 
-Then use this table as the concise decision guide.
+The table sums up the choice.
 
 | Intent                                      | Recommended path                                                                                                                          |
 |---------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
@@ -27,8 +27,8 @@ Then use this table as the concise decision guide.
 
 ## Reach another module
 
-An entry-point class such as a controller or command declares the target Facade with `#[ServiceMap]` and supplies the
-magic accessor with `ServiceResolverAwareTrait`:
+An entry point, such as a controller or a command, declares the target Facade with `#[ServiceMap]`.
+`ServiceResolverAwareTrait` supplies the magic accessor:
 
 ```php
 use Gacela\Framework\ServiceResolver\ServiceMap;
@@ -46,7 +46,7 @@ final class SendInvoiceController
 }
 ```
 
-Inside a Factory, go through the module's Provider instead. Factories must not call another module's Facade directly:
+Inside a Factory, go through the module's Provider. A Factory must not call another module's Facade directly:
 
 ```php
 final class InvoiceProvider extends AbstractProvider
@@ -69,11 +69,11 @@ final class InvoiceFactory extends AbstractFactory
 }
 ```
 
-Cross-module access always targets the other module's Facade, never its Factory or internal services.
+Cross-module access always targets the other module's Facade, never its Factory or its internal services.
 
 ## Build inside the same module
 
-Use an explicit Factory method when construction includes decisions:
+When construction involves decisions, write an explicit Factory method:
 
 ```php
 public function createInvoiceSender(): InvoiceSender
@@ -82,7 +82,7 @@ public function createInvoiceSender(): InvoiceSender
 }
 ```
 
-When wiring is entirely type-driven, let the module container autowire it:
+When the types alone decide the wiring, let the module container autowire it:
 
 ```php
 public function createInvoiceSender(): InvoiceSender
@@ -91,12 +91,12 @@ public function createInvoiceSender(): InvoiceSender
 }
 ```
 
-`make()` honors bindings, contextual bindings, `#[Inject]`, `#[Singleton]`, `#[Factory]`, and `#[Lazy]`. Runtime
-overrides can be passed by constructor parameter name: `$this->make(Service::class, ['currency' => 'EUR'])`.
+`make()` honors bindings, contextual bindings, `#[Inject]`, `#[Singleton]`, `#[Factory]`, and `#[Lazy]`. Pass runtime
+overrides by constructor parameter name: `$this->make(Service::class, ['currency' => 'EUR'])`.
 
 ## Obtain infrastructure
 
-Declare a module-local dependency in its Provider:
+Declare a module-local dependency in the module's Provider:
 
 ```php
 final class PaymentProvider extends AbstractProvider
@@ -109,13 +109,13 @@ final class PaymentProvider extends AbstractProvider
 }
 ```
 
-Read it in the Factory with the class-string form, which static analysis can type:
+Read it in the Factory with the class-string form, so static analysis knows its type:
 
 ```php
 $gateway = $this->getProvidedDependency(PaymentGateway::class);
 ```
 
-For an interface-to-implementation rule that applies across the application, configure a binding in `gacela.php`:
+For an interface-to-implementation rule across the whole application, add a binding in `gacela.php`:
 
 ```php
 $config->addBinding(PaymentGateway::class, StripeGateway::class);
@@ -123,7 +123,7 @@ $config->addBinding(PaymentGateway::class, StripeGateway::class);
 
 ## Collect implementations
 
-Use tags when a consumer iterates every member:
+Use a tag when the consumer iterates every member:
 
 ```php
 $config->tag(
@@ -132,7 +132,7 @@ $config->tag(
 );
 ```
 
-Resolve the group in a Provider with `$container->tagged('validators')`. An app-wide tag reaches every module scope; a
+Resolve the group in a Provider with `$container->tagged('validators')`. An app-wide tag reaches every module scope. A
 tag added from one module's Provider stays local to that module.
 
 Use `addHandlerRegistry()` when the consumer selects one handler by key:
@@ -144,7 +144,7 @@ $config->addHandlerRegistry(HandlerRegistry::class, [
 ]);
 ```
 
-Use [`addPluginStack()`](/docs/extensions#plugin-stacks) when the members all implement one interface and the consumer
+Use [`addPluginStack()`](/docs/extensions#plugin-stacks) when every member implements one interface and the consumer
 wants them typed: [since 2.3]
 
 ```php
@@ -160,7 +160,7 @@ the contract.
 
 ## Read configuration
 
-Expose intention-revealing methods from the module Config:
+Give the module Config methods named after what they return:
 
 ```php
 final class BillingConfig extends AbstractConfig
@@ -172,11 +172,11 @@ final class BillingConfig extends AbstractConfig
 }
 ```
 
-Available protected getters are `getString()`, `getInt()`, `getFloat()`, `getBool()`, `getArray()`, and untyped `get()`.
+The protected getters are `getString()`, `getInt()`, `getFloat()`, `getBool()`, `getArray()`, and the untyped `get()`.
 
 ## Specialized tools
 
-These APIs remain supported; use them when their more specific behavior is what you need:
+These APIs are still supported. Use one when you need its specific behavior:
 
 | Tool                      | Use it when                                                  |
 |---------------------------|--------------------------------------------------------------|

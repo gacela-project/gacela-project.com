@@ -6,8 +6,8 @@ description: Serve many requests from one PHP process with FrankenPHP, Octane or
 # Long-running runtimes
 
 FrankenPHP worker mode, Laravel Octane, RoadRunner and Swoole serve many requests from one PHP process. Gacela keeps
-state in the process, and most of it should stay there: what the class names resolved to, reflection, the merged
-configuration. Some of it must not: the services a request built. One call drops the second kind and keeps the first.
+state in the process. Most of it should stay: what the class names resolved to, reflection, the merged configuration.
+Some must not: the services a request built. One call drops the second kind and keeps the first.
 
 ## Reset between requests [since 2.5]
 
@@ -17,11 +17,12 @@ use Gacela\Framework\Gacela;
 Gacela::resetRequestState();
 ```
 
-The [Symfony bundle and the Laravel bridge](/docs/framework-integration) call it for you: the bundle from Symfony's
-`kernel.reset` (FrankenPHP worker mode, RoadRunner, Messenger workers), the bridge on each Octane `RequestReceived` and
-`RequestTerminated`, so a request that throws out of Octane's gateway does not leave its state to the next. [since 2.6]
+The [Symfony bundle and the Laravel bridge](/docs/framework-integration) call it for you. The bundle calls it from
+Symfony's `kernel.reset` (FrankenPHP worker mode, RoadRunner, Messenger workers). The bridge calls it on each Octane
+`RequestReceived` and `RequestTerminated`, so a request that throws out of Octane's gateway does not pass its state to
+the next one. [since 2.6]
 
-Without a bridge, call it after each request from the runtime's hook. With FrankenPHP's worker loop:
+Without a bridge, call it from the runtime's hook after each request. With FrankenPHP's worker loop:
 
 ```php
 Gacela::bootstrap(__DIR__);
@@ -44,16 +45,16 @@ while (frankenphp_handle_request($handler)) {
 | the resolved Facades, Factories, Configs and Providers  | the containers `gacela.php` configured                        |
 | what `Gacela::get()` handed out                         | event listeners, plugin membership, `#[Cacheable]` storage    |
 
-The next request does not walk namespaces, read `gacela.php` or merge config again. It only builds again the services
-it uses, from plans already in memory.
+The next request does not walk namespaces, read `gacela.php` or merge config again. It rebuilds only the services it
+uses, from plans already in memory.
 
-Every static property in Gacela is classified one way or the other. A test resolves real modules, calls the reset, and
-fails if it leaves one request static set or clears one process static, so a new static has to be placed on one side
-when it is written.
+Every static property in Gacela belongs to one side or the other. A test resolves real modules, calls the reset, and
+fails if it leaves a request static set or clears a process static. So each new static must be placed on one side when
+it is written.
 
 ## What this asks of your code
 
-- **A singleton declared in `gacela.php` lives for the process**, as a shared service does in any container. Do not
+- **A singleton declared in `gacela.php` lives for the process**, like a shared service in any container. Do not
   bind anything that holds request data there. Set it in the module's Provider, which runs again for every request
   that uses the module.
 - **`#[Cacheable]` results outlive the request**, which is the point of the in-memory store in a worker. The cache key
@@ -61,5 +62,5 @@ when it is written.
 - **Configuration is per process.** A request cannot change it. A deploy that changes config restarts the workers.
 - **An enabled [profiler](/docs/profiling) grows with every request.** Keep it off in workers, or reset it yourself.
 
-`Gacela::resetCache()` drops everything, the kept column included, and makes the next request pay a cold bootstrap. It
-is for tests, not for workers.
+`Gacela::resetCache()` drops everything, the kept column included, so the next request pays for a cold bootstrap. Use
+it in tests, not in workers.

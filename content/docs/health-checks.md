@@ -1,12 +1,12 @@
 ---
 title: Module health checks
-description: Report module health through the doctor command, orchestration probes, or application endpoints.
+description: Report module health through the doctor command, orchestrator probes, or application endpoints.
 ---
 
 # Module health checks
 
-Report each module's operational status and aggregate them into a single system health view. Great for `/health` HTTP
-endpoints, container orchestrators and the `doctor` CLI.
+Report each module's status and combine them into one view of system health. Use it for `/health` HTTP endpoints,
+container orchestrators and the `doctor` CLI.
 
 ## Quick start
 
@@ -36,8 +36,8 @@ final class DatabaseHealthCheck implements ModuleHealthCheckInterface
 
 ### 2. Register the check
 
-Register from `gacela.php` to have the Doctor command pick it up automatically, alongside cache-staleness,
-suffix-mismatch, and filename-mismatch checks:
+Register it in `gacela.php`. The `doctor` command then runs it, next to its cache-staleness, suffix-mismatch, and
+filename-mismatch checks:
 
 ```php
 <?php # gacela.php
@@ -61,21 +61,21 @@ $checker = new HealthChecker([
 $report = $checker->checkAll();
 ```
 
-…or shell out to the CLI:
+Or run the CLI:
 
 ```bash
 vendor/bin/gacela doctor
 ```
 
-Pass an optional namespace filter to restrict module checks. In CI, use `vendor/bin/gacela doctor --strict` so warnings
-also produce a failing exit code.
+Pass an optional namespace filter to limit the module checks. In CI, use `vendor/bin/gacela doctor --strict` so
+warnings also produce a failing exit code.
 
 ## Several checks per module [since 2.1]
 
-More than one check may report under the same `getModuleName()`. Gacela combines them into a single module result whose
-level is the **worst** one reported, and keeps every individual status under that result's `health_checks` metadata. A
-later healthy check therefore cannot hide an earlier degraded or unhealthy one, which is what happened before 2.1: the
-results were keyed by module name, so the last check to run overwrote the ones before it.
+Several checks may report under the same `getModuleName()`. Gacela combines them into one module result with the
+**worst** level reported, and keeps each individual status under that result's `health_checks` metadata. A later healthy
+check cannot hide an earlier degraded or unhealthy one. Before 2.1 it could: results were keyed by module name, so the
+last check to run overwrote the ones before it.
 
 ## Status levels
 
@@ -132,11 +132,11 @@ $report->toArray();
 
 ## Best practices
 
-- **Be fast**: checks should complete in under a second. Prefer a quick ping (`SELECT 1`) over full queries.
-- **Include metadata**: latency, error codes, retry counts help diagnose issues.
+- **Be fast**: finish each check in under a second. Prefer a quick ping (`SELECT 1`) over a full query.
+- **Include metadata**: latency, error codes and retry counts help diagnose problems.
 - **Let exceptions propagate**: `HealthChecker` converts any `Throwable` into an `unhealthy` result with exception,
   file, and line metadata.
-- **Pick the right level**: reserve `unhealthy` for real outages; use `degraded` for slow-but-working.
+- **Pick the right level**: keep `unhealthy` for real outages. Use `degraded` for slow but working.
 
 ## API reference
 
