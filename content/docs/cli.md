@@ -229,6 +229,9 @@ with atomic `rename()`, so a single write replaces the previous _N modules × 4 
 deploy step is not reported green. It previously always exited `0` and printed the failures as warnings. The merged
 configuration cache is only written when the file cache is enabled.
 
+When it writes no merged configuration cache, it says so instead of staying silent: a config source changed in the same
+second, or the cache directory is not writable. The next bootstrap writes it. [since 2.6]
+
 ### `cache:clear`
 
 Remove every Gacela cache file.
