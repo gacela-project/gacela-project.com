@@ -1,6 +1,6 @@
 ---
 title: Documentation
-description: Choose the shortest path from installation to a production-ready Gacela 2.2 module.
+description: Choose the shortest path from installation to a production-ready Gacela 2.5 module.
 ---
 
 # Gacela documentation
@@ -98,3 +98,5 @@ Machine-readable entry points are available:
 
 When prompting an agent, give it `https://gacela-project.com/llms.txt` for discovery or
 `https://gacela-project.com/llms-full.txt` when the entire documentation fits the task's context budget.
+
+To make an agent follow Gacela's module rules inside your own project, see [coding agents](/docs/coding-agents).

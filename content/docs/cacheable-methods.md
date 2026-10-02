@@ -68,8 +68,12 @@ multiple args) fall back to `md5(serialize(...))`.
 
 ## Custom key templates
 
-Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key. Useful for shared keys across
-modules or for readable keys in an external cache.
+Use `key` with `{N}` placeholders to interpolate the Nth argument into the cache key. Useful for readable keys in an
+external cache.
+
+A template names an entry within the declaring class and method, never across them: the stored key is
+`Class::method::` followed by the interpolated template, so two classes writing the same template keep their own
+entries. [since 2.4]
 
 ```php
 #[Cacheable(ttl: 3600, key: 'user:{0}')]
@@ -99,8 +103,8 @@ whose name starts with `get`.
 `clearMethodCache()` calls `clear()` on the shared backend and is not scoped to the facade class. Prefer the
 method-specific operation unless clearing all application entries is intentional.
 
-Custom key templates do not contain the normal `Class::method::` prefix, so `clearMethodCacheFor()` cannot find them.
-Invalidate those keys through the configured storage backend.
+It reaches an entry written under a custom `key:` template like any other, because those keys carry the same prefix.
+[since 2.4]
 
 `Gacela::resetCache()` clears only the default in-process method storage. It does not clear an external backend
 registered through `CacheableConfig::setStorage()`; call `clearMethodCache()` when that is the intended scope.

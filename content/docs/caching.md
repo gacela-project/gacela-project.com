@@ -32,6 +32,11 @@ With the file cache enabled, the merged configuration **auto-warms on the first 
 app- and environment-scoped merged-config file, so later bootstraps skip globbing and parsing config files—no manual
 `cache:warm` is required for that layer.
 
+The two ways in are trusted differently. A merged-config file written by `cache:warm` is a deploy artifact, served
+without looking at the config files until the next `cache:warm` or `cache:clear`. A file written on a miss also records
+the config files it read, and an edited, added or removed file, or a changed `addAppConfig()` declaration, rebuilds it on
+the next bootstrap. [since 2.5]
+
 In a **read-only environment** (e.g. a read-only project root inside a build sandbox) the file caches degrade gracefully
 to in-memory instead of failing the bootstrap: writes become no-ops, no raw PHP warnings are emitted, and any pre-warmed
 cache files already on disk stay readable. Warm-at-build / run-read-only deployments keep their cache hits.

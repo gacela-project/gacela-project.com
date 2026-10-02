@@ -331,6 +331,10 @@ Resolve the iterable with `$container->tagged('validators')`. `taggedByKey()` an
 Gacela 2.0. App-wide tags reach every module scope; a tag added with `$container->tag()` from a Provider stays local to
 that module. Repeated registrations accumulate and duplicate ids are yielded once.
 
+`#[Tag('validators')]` on a class adds it to a tag without naming it in `gacela.php`. `tagged()` yields the ids
+`gacela.php` tagged first, then the attribute members by class name, then what the module's own Provider tagged. See
+the [upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/getting-a-dependency.md) for how the classes are found. [since 2.5]
+
 Use tags for an unkeyed set you iterate. Use [`addHandlerRegistry()`](/docs/extensions#handler-registry) when callers
 select one handler by business key.
 

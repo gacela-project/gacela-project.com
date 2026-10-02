@@ -1,6 +1,6 @@
 ---
 title: Upgrading Gacela
-description: Move from 1.21 to 2.0, then on to 2.1 and 2.2; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
+description: Move from 1.21 to 2.0, then on through 2.1 to 2.5; PHP and container requirements, removed APIs, declared service accessors, and what to verify.
 ---
 
 # Upgrading Gacela
@@ -186,3 +186,65 @@ Everything new is opt-in: a [config schema](/docs/config#declaring-a-config-sche
   findings on the first run; opt out per package via `extra."phpstan/extension-installer".ignore`.
 - **A `#[ServiceMap]` accessor whose mapped class the analysing process cannot autoload is now typed** instead of
   silently falling back to `mixed`, so PHPStan may report calls it previously ignored.
+
+## Moving on to 2.3
+
+```bash
+composer require gacela-project/gacela:^2.3
+```
+
+2.3 removes no API. Two scaffolder changes affect scripts rather than application code:
+
+- **[`make:module` and `make:file`](/docs/cli#code-generation) refuse to write over existing files.** They check every
+  target before writing the first, so a run that would replace something writes nothing and exits `1`. A script that
+  regenerates a module in place now fails there; add `--force` if replacing is the intent.
+- **`make:file` refuses a kind Gacela does not have.** `Repository` used to produce a `Factory` and `Controller` a
+  `Provider`. Abbreviations of the four pillars still work; anything else exits `1`. Declare a real kind with
+  `addResolvableType()` instead.
+
+## Moving on to 2.4
+
+```bash
+composer require gacela-project/gacela:^2.4
+```
+
+Most of 2.4 is new and opt-in: [your own events](/docs/events#your-own-events), `#[PublicApi]`, module test slices,
+`debug:events`, `migrate:service-map`, and package discovery. Eight changes can alter what an existing project
+observes; the upstream
+[upgrade guide](https://github.com/gacela-project/gacela/blob/main/UPGRADE.md#23--24) has each one in full.
+
+- **A specific listener matches by inheritance.** A listener registered against an interface or an abstract parent
+  matched nothing before. It now runs for every event below that type.
+- **A supplied dispatcher composes with your listeners.** With `setEventDispatcher()`, the configured listeners run
+  first and then the event is offered to your dispatcher. Before, one side was silently dropped.
+- **A custom `#[Cacheable]` key is scoped to its class and method.** The stored key is now `Class::method::` followed
+  by the template, so a persistent backend takes one cold pass after the upgrade.
+- **The opt-in cross-module rules report less.** Classes marked `#[PublicApi]`, and classes under a `Shared`,
+  `Transfer`, `Dto` or `Event` sub-namespace, are a module's public API and are no longer reported.
+- **A wildcard config path no longer reads environment files into the base layer.** With `addAppConfig('config/*.php')`,
+  `config/app-prod.php` is now only the `APP_ENV=prod` layer of `config/app.php`. A key set only in an environment file
+  is no longer readable outside that environment. Run `cache:clear` after deploying if the file cache is on.
+- **`doctor` warns about a listener target no event can match**, usually a class missing
+  `implements GacelaEventInterface`. Under `--strict` that fails the run.
+- **A pillar's constructor sees the whole of `gacela.php`.** Definitions, `afterResolving()` hooks, tags and the
+  id-keyed verbs now reach the container that builds Facades, Factories, Configs and Providers.
+  `debug:modules --check` reads that container too, so it can report a fault it used to miss.
+- **An installed package can configure your application.** A package declaring `extra.gacela.config` is merged before
+  your own `gacela.php`. `$config->dontDiscover(['*'])` turns that off.
+
+## Moving on to 2.5
+
+```bash
+composer require gacela-project/gacela:^2.5
+```
+
+Nothing to rewrite. New in 2.5: [`#[Plugin]` and `#[Tag]`](/docs/extensions#plugin-stacks),
+[`#[AsListener]`](/docs/events#your-own-events), [`debug:plugins`](/docs/cli#debug-plugins),
+[`agents:install`](/docs/coding-agents), and `Gacela::resetRequestState()` for long-running workers. Two things change
+on the first run after the upgrade:
+
+- **The merged config cache rebuilds once.** With the file cache on, a cache written on a miss now records the config
+  files it read, and an edited file or `addAppConfig()` declaration rebuilds it on the next bootstrap. A cache written
+  by `cache:warm` is still served unchecked. Older cache files are not read.
+- **The discovered-package list is read from `installed.json` again once**, because the cache now records each
+  package's psr-4 directories.

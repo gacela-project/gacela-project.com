@@ -32,6 +32,15 @@ vendor/bin/gacela init [--force|-f]
 
 `--force` overwrites an existing file.
 
+### `agents:install` [since 2.5]
+
+Point the project's `AGENTS.md` at the guide Gacela ships for coding agents, between markers only this command
+rewrites. See [coding agents](/docs/coding-agents).
+
+```bash
+vendor/bin/gacela agents:install
+```
+
 ## Module discovery
 
 ### `list:modules`
@@ -163,6 +172,18 @@ here at all.
 Attribute-declared ids only. Finding the ids a Provider registers imperatively with `$container->set()` would mean
 running the Provider.
 
+### `debug:plugins` [since 2.5]
+
+List each [plugin stack](/docs/extensions#plugin-stacks)'s members and each tag's ids in the order they are read, and
+the `#[AsListener]` methods, with where each was declared: `gacela.php` (packages included) or the attribute.
+
+```bash
+vendor/bin/gacela debug:plugins [-j|--json]
+```
+
+Ids a module's Provider tags at runtime stay in that module's container and are not listed. A `#[Plugin]` naming a
+stack nobody declared is listed as never read.
+
 ## Caching & production
 
 ### `cache:warm`
@@ -175,7 +196,8 @@ vendor/bin/gacela cache:warm [-c|--clear] [-a|--attributes]
 ```
 
 - `-c`, `--clear`: clear existing cache before warming (same as running `cache:clear` first)
-- `-a`, `--attributes`: pre-scan and cache `#[ServiceMap]` attributes
+- `-a`, `--attributes`: pre-scan and cache `#[ServiceMap]` attributes, and store the `#[Plugin]`, `#[Tag]` and
+  `#[AsListener]` members [since 2.5]
 
 Under the hood `cache:warm` batches file writes via `AbstractPhpFileCache::beginBatch()` / `commitBatch()` and flushes
 with atomic `rename()`, so a single write replaces the previous _N modules × 4 resolvers_ full-file rewrites.
@@ -213,9 +235,9 @@ vendor/bin/gacela doctor [<filter>] [--strict]
 - By default warnings still exit `0`; `--strict` makes warnings fail too and is the recommended CI mode.
 
 The staleness check covers the **merged configuration cache** too, compared against every file `ConfigLoader` would
-read: base patterns, environment patterns and local overrides. That cache keeps serving values after a `config/*.php`
-file changes while every class-name entry stays fresh, which is how `doctor` used to report "all cache entries are
-fresh" on a stale configuration.
+read: base patterns, environment patterns and local overrides. A cache written by `cache:warm` keeps serving values
+after a `config/*.php` file changes while every class-name entry stays fresh, which is how `doctor` used to report
+"all cache entries are fresh" on a stale configuration.
 
 ### `validate:config`
 
@@ -298,12 +320,17 @@ and would otherwise pair a later `stop()` with a stale start.
 Generate a `Facade`, `Factory`, `Config`, `Provider`, or any combination of them.
 
 ```bash
-vendor/bin/gacela make:file [-s|--short-name] <path> <filenames>...
+vendor/bin/gacela make:file [-s|--short-name] [-f|--force] [--dry-run] <path> <filenames>...
 ```
 
 - `path`: file path, e.g. `App/TestModule/TestSubModule`
 - `filenames`: any combination of `facade`, `factory`, `config`, `provider`
 - `-s`, `--short-name`: drop the module prefix from the generated class name
+- `-f`, `--force`: replace files that already exist [since 2.3]
+- `--dry-run`: report the files that would be written, and write nothing [since 2.3]
+
+A kind Gacela does not have is refused rather than approximated: `Repository` exits `1` instead of producing a
+`Factory`. Abbreviations of the four pillars still work.
 
 ```bash
 vendor/bin/gacela make:file App/TestModule facade factory provider
@@ -319,7 +346,7 @@ is where Composer itself looks first.
 Generate a full module: `Facade`, `Factory`, `Config`, and `Provider`.
 
 ```bash
-vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service|minimal] [--minimal] [--with-tests] <path>
+vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service|minimal] [--minimal] [--with-tests] [-f|--force] [--dry-run] <path>
 ```
 
 - `-s`, `--short-name`: drop the module prefix from the generated class name
@@ -327,6 +354,11 @@ vendor/bin/gacela make:module [-s|--short-name] [-t|--template=basic|service|min
   and Factory only).
 - `--minimal`: shorthand for `--template=minimal`.
 - `--with-tests`: also scaffold a `GacelaTestCase`-based facade test (only valid with `--template=service`).
+- `-f`, `--force`: replace files that already exist [since 2.3]
+- `--dry-run`: report the files that would be written, and write nothing [since 2.3]
+
+Both generators check every target before writing the first. A run that would replace an existing file writes
+nothing, names the files in the way, and exits `1` unless `--force` is given. [since 2.3]
 
 ```bash
 vendor/bin/gacela make:module -s App/TestModule

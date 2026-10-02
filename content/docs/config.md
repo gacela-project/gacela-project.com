@@ -192,6 +192,12 @@ Declaration order is the order of the chain, and each layer refines the one befo
 A variable that is unset ends the chain, so `APP_ENV=prod` alone stops after the second layer. A local override file
 is still read last and still wins.
 
+The wildcard does not pull the layers into the base. A match named after another match plus one or more `-<segment>`
+parts, such as `config/app-prod-eu.php` beside `config/app.php`, is that file's environment layer and is read only when
+the chain selects it. A key set only in `config/app-prod.php` is therefore not readable outside `APP_ENV=prod`. The rule
+reads names, not intent, so a `config/app-extra.php` is excluded too; [`doctor`](/docs/cli#doctor) names every file
+excluded this way. [since 2.4]
+
 The merged configuration cache is keyed by the **whole tuple**, so two regions never serve each other's values. Warm
 one cache per combination you deploy:
 
