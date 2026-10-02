@@ -48,11 +48,12 @@ vendor/bin/gacela agents:install
 List every module found under your project namespaces.
 
 ```bash
-vendor/bin/gacela list:modules [--detailed|-d] [<filter>]
+vendor/bin/gacela list:modules [--detailed|-d] [-j|--json] [<filter>]
 ```
 
 - `filter`: substring to narrow the output
 - `-d`, `--detailed`: show each module's contents in detail
+- `-j`, `--json`: output machine-readable JSON
 
 To limit which directories this command (and `debug:modules`, `cache:warm`, `doctor`) scans, use
 [`setAppModulePaths()`](/docs/bootstrap#application-module-paths).
@@ -73,11 +74,13 @@ Walk every discovered module and inspect the constructor of each pillar (Facade,
 between `list:modules` (the structure) and `debug:dependencies` (one class in depth).
 
 ```bash
-vendor/bin/gacela debug:modules [--detail|-d] [<filter>]
+vendor/bin/gacela debug:modules [--detail|-d] [--check] [-j|--json] [<filter>]
 ```
 
 - By default, the output groups by module, with resolvable and unresolvable counts per pillar.
 - `--detail` includes every parameter, not only the unresolvable ones.
+- `--check` exits non-zero when a pillar has a parameter the container cannot satisfy, for CI.
+- `-j`, `--json` reports as a JSON document instead of text.
 - `filter` accepts a namespace substring (e.g. `App\\Shop`) or a directory (e.g. `src/`).
 
 ### `debug:dependencies`
@@ -114,18 +117,19 @@ Draw the module dependency graph of the whole app: which module imports which, w
 Facade use.
 
 ```bash
-vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json] [--check]
+vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json] [-j|--json] [--check]
 ```
 
 - `filter`: only include modules matching this substring
 - `-f`, `--format`: `text` (default), `mermaid`, `graphviz`, or `json`
+- `-j`, `--json`: shorthand for `--format=json`
 - `--check`: exit non-zero when an unreviewed dependency cycle exists
 - `--allowed-cycles <file>`: JSON allowlist of reviewed cycles and their reasons
 - `--rules <file>`: [since 2.2] exit non-zero on a dependency your
   [module rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which) forbids. You cannot combine
   it with a filter argument: in a narrowed graph, a rule about a filtered-out module looks the same as a rule about a
   module that no longer exists.
-- `--compare-to <graph.json>`: diff the current graph against saved JSON output
+- `-c`, `--compare-to <graph.json>`: diff the current graph against saved JSON output
 
 With `--check`, `--format=json` writes the findings as a report instead of lines, for a CI job that needs more than an
 exit code: undeclared cycles, stale allow-list entries, forbidden dependencies and unknown rule namespaces. [since 2.2]
@@ -144,7 +148,7 @@ module, which keeps the scan cheap on large graphs.
 Inspect the container's **user bindings and plugins only**. Framework-internal services are left out.
 
 ```bash
-vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
+vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree] [-j|--json]
 ```
 
 - No arguments (or `-s`, `--stats`): print container statistics: registered services, frozen services, factory
@@ -153,6 +157,7 @@ vendor/bin/gacela debug:container [<class>] [-s|--stats] [-t|--tree]
   implies `--tree`; `--tree` without a class is an error.
 - `-s`, `--stats` always wins: `debug:container SomeClass --stats` prints statistics, not the dependency tree, even with
   a class given.
+- `-j`, `--json`: report as a JSON document instead of text.
 
 ### `debug:provides` [since 2.3]
 
@@ -255,11 +260,14 @@ registered through `GacelaConfig::addHealthCheck()`. It also checks the
 lost a placeholder or sits under a name the scaffolder never reads. [since 2.2]
 
 ```bash
-vendor/bin/gacela doctor [<filter>] [--strict]
+vendor/bin/gacela doctor [<filter>] [--strict] [--only-problems] [--format=text|json] [-j|--json]
 ```
 
 - `filter`: limit module-scoped checks to a namespace substring.
 - By default, warnings still exit `0`. `--strict` makes warnings fail too; use it in CI.
+- `--only-problems`: report only the checks that found something.
+- `--format`: `text` (default) or `json`.
+- `-j`, `--json`: shorthand for `--format=json`.
 
 The staleness check also covers the **merged configuration cache**. It compares it against every file `ConfigLoader`
 would read: base patterns, environment patterns and local overrides. A cache written by `cache:warm` keeps serving old

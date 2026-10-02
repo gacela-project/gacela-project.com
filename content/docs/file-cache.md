@@ -58,6 +58,7 @@ $cache->invalidateLeaf('file:a.php');   // only this key; dependents stay valid
 - The dependency graph is stored next to the values (`.gacela-scoped-cache-graph.php`) and survives process restarts.
 - `dependsOn()` rejects a cycle at once: self, two-node or transitive.
 - One writer at a time: when several processes race on `dependsOn()`, edges added between load and persist may be lost.
+  The value store underneath stays safe to read under concurrency either way.
 
 ## See also
 
