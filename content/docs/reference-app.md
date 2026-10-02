@@ -5,14 +5,14 @@ description: An invoicing application inside the Gacela repository that wires ev
 
 # Reference application [since 2.4]
 
-Every feature in Gacela has a fixture built for it. None of them answered whether the features still compose: several
-fixes (a stale cache, listeners lost between `gacela.php` and the bootstrap closure, unusable remediations) were each
-found by probing a scratch project by hand, because no fixture had the whole thing wired at once.
+Every Gacela feature has a fixture built for it. None of them showed whether the features still work together.
+Several fixes (a stale cache, listeners lost between `gacela.php` and the bootstrap closure, unusable remediations)
+were each found by probing a scratch project by hand, because no fixture had everything wired at once.
 
 The reference application is that project, inside the repository, run on every pull request. It lives in
 [`tests/Feature/ReferenceApp/`](https://github.com/gacela-project/gacela/tree/main/tests/Feature/ReferenceApp) and is
-an invoicing SaaS: small enough to read in one sitting, large enough that every capability has a place it belongs.
-Read it when you want to see a feature used next to all the others.
+an invoicing SaaS: small enough to read in one sitting, large enough that every capability has a natural place. Read
+it to see a feature used next to all the others.
 
 ## The application
 
@@ -28,20 +28,20 @@ the directory holding `gacela.php`, `config/` and the five modules.
 | `Notification` | Delivers, and reacts. It handles Billing's `InvoiceIssuedEvent` (the subscriber names the event, the publisher names nobody) behind a plugin stack of channels, a header list the application extends with `extendService()`, and a resolver-event listener registered in `gacela.php`. |
 | `Reporting`    | Reads. Billing's declared shapes through `#[Provides]` and Customer's names through a `#[ServiceMap]` accessor, and nothing else: the module the boundary rules are written about.                                                                                                   |
 
-Beside them, `Shared/` is a shared kernel rather than a module: a clock the host supplies, a retry policy, the
+Beside them, `Shared/` is a shared kernel, not a module: a clock the host supplies, a retry policy, the
 invokables that extend the configuration, and the plugins that run at bootstrap. Both analyser configurations name it
 as such.
 
-Repositories are in-memory arrays. There is no HTTP and no database: those belong to the host, and the point here is
-the wiring.
+Repositories are in-memory arrays. There is no HTTP and no database: those belong to the host. The point here is the
+wiring.
 
 ### The two installed packages
 
-`Packages/` holds two Composer packages, declared in a hand-written `Invoicing/vendor/composer/installed.json`, because
-nothing here is actually installed. They show [package discovery](/docs/packages) both ways:
+`Packages/` holds two Composer packages, declared in a hand-written `Invoicing/vendor/composer/installed.json`
+because nothing here is really installed. They show [package discovery](/docs/packages) both ways:
 
 - `gacela-fixture/invoice-audit` is **kept**. It adds a delivery channel to the stack `Notification` publishes and a
-  reaction to `InvoiceIssuedEvent`, and `gacela.php` names it nowhere. The flow test sees its `audit:` receipts beside
+  reaction to `InvoiceIssuedEvent`, and `gacela.php` never names it. The flow test sees its `audit:` receipts beside
   the `email:` ones, and `debug:events` reports two listeners on the event.
 - `gacela-fixture/legacy-numbering` is **refused** with `dontDiscover(['gacela-fixture/legacy-numbering'])`. It would
   replace the invoice number format, so the expected `ACME-INV-01001` in the flow test proves its file was never opened.
@@ -50,14 +50,13 @@ nothing here is actually installed. They show [package discovery](/docs/packages
 
 - `gacela.php`: the composition root, and the most useful single file to read.
 - `gacela-prod.php`: only the differences, read when `APP_ENV=prod`.
-- `config/app.php`, `config/app-prod.php`, `config/app-prod-eu.php`: the base layer and the two that refine it, the
-  second selected by the declared `APP_REGION` [dimension](/docs/config#config-dimensions).
+- `config/app.php`, `config/app-prod.php`, `config/app-prod-eu.php`: the base layer and the two that refine it. The
+  second is selected by the declared `APP_REGION` [dimension](/docs/config#config-dimensions).
 - `services.php`: the wiring that is data, read by `loadDefinitions()`.
 - `module-rules.json`: the boundaries, read by `debug:graph --check --rules` and by both analysers.
 
-`payment.default_method` is set in `config/app-prod.php` and nowhere else, so outside production the schema's declared
-default answers for it. That demonstrates that the base layer excludes the environment files `config/*.php` also
-matches.
+`payment.default_method` is set only in `config/app-prod.php`, so outside production the schema's declared default
+answers for it. This shows that the base layer excludes the environment files that `config/*.php` also matches.
 
 ## The harness
 
@@ -86,13 +85,13 @@ are worth copying into a project.
 
 ## What it does not prove
 
-The module graph is built from `use` imports at module granularity, so `module-rules.json` can say that nothing may
-depend on `Reporting` but cannot say that Reporting may reach only Billing's Facade. That second rule is the
+The module graph is built from `use` imports at module granularity. So `module-rules.json` can say that nothing may
+depend on `Reporting`, but not that Reporting may reach only Billing's Facade. That second rule is the
 analysers' job, which is why both [cross-module rules](/docs/module-boundaries#the-cross-module-rules) are enabled.
 
-Nor can a graph say anything about `Notification` reacting to `Billing`. An event leaves no import behind in the module
-that dispatched it, so no graph and no rule can tell you who is listening. [`debug:events`](/docs/cli#debug-events)
+Nor can a graph say anything about `Notification` reacting to `Billing`. An event leaves no import in the module that
+dispatched it, so no graph and no rule can tell you who is listening. [`debug:events`](/docs/cli#debug-events)
 can, and the registration in `gacela.php` is the one place it is written down.
 
 The [upstream page](https://github.com/gacela-project/gacela/blob/main/docs/reference-app.md) also covers how the
-application is used to try a new feature before its API is fixed, and how its generated shapes are regenerated.
+application is used to try a new feature before its API is fixed, and how to regenerate its generated shapes.
