@@ -6,16 +6,16 @@ description: Observe bootstrap, configuration, container, cache, and module life
 # Events
 
 Gacela dispatches **read-only lifecycle events** as it boots, resolves services, reads config and manages caches. Listen
-to them for tracing, profiling, debugging or metrics — without touching your module code.
+to them for tracing, profiling, debugging or metrics, without touching your module code.
 
 ::: tip Zero-cost when nobody listens
-Event dispatch is free when nothing listens. Every dispatch site first checks `hasListeners()` and skips building the
-event entirely when there are no listeners.
+Dispatch costs nothing when nobody listens. Every dispatch site first checks `hasListeners()` and, with no listeners,
+does not build the event at all.
 :::
 
 ## Registering listeners
 
-Listeners are registered on `GacelaConfig`, in `gacela.php` or the `Gacela::bootstrap()` closure.
+Register listeners on `GacelaConfig`, in `gacela.php` or in the `Gacela::bootstrap()` closure.
 
 ### A generic listener — every event
 
@@ -62,14 +62,14 @@ A specific listener matches by inheritance: it runs for the class it names and f
 implements it. One listener on `AbstractGacelaClassResolverEvent` covers all four resolver events. [since 2.4]
 
 Every event implements `GacelaEventInterface`, which exposes `toString(): string` for logging. Concrete events add typed
-accessors — see the catalog below.
+accessors, listed in the catalog below.
 
 ## Your own events [since 2.4]
 
-A module can dispatch its own events through the same dispatcher, which is how one module reacts to another without
-depending on it. The event is a class implementing `GacelaEventInterface`. The dispatcher is an ordinary dependency: a
-Factory asks for it with `getProvidedDependency(EventDispatcherInterface::class)`, and the code that announces the
-event guards the dispatch the way the framework does:
+A module can dispatch its own events through the same dispatcher. That is how one module reacts to another without
+depending on it. The event is a class that implements `GacelaEventInterface`. The dispatcher is an ordinary dependency:
+a Factory asks for it with `getProvidedDependency(EventDispatcherInterface::class)`. The code that announces the event
+guards the dispatch the way the framework does:
 
 ```php
 if ($this->events->hasListeners(InvoiceIssued::class)) {
@@ -77,8 +77,8 @@ if ($this->events->hasListeners(InvoiceIssued::class)) {
 }
 ```
 
-The listener is registered with `registerSpecificListener()` like any other, or with `#[AsListener]` on a public
-method of the class that reacts: [since 2.5]
+Register the listener with `registerSpecificListener()` like any other, or put `#[AsListener]` on a public method of
+the class that reacts: [since 2.5]
 
 ```php
 use Gacela\Framework\Attribute\AsListener;
@@ -93,15 +93,15 @@ final class NotificationFacade extends AbstractFacade
 }
 ```
 
-The first parameter's type is the event, or `#[AsListener(InvoiceIssued::class)]` names it. Attribute listeners run
-after the ones in `gacela.php`, and only for events a module dispatches through its provided dispatcher; the
-framework's own events never reach them. `vendor/bin/gacela debug:events` lists your events beside the framework's,
+The first parameter's type names the event, or `#[AsListener(InvoiceIssued::class)]` names it explicitly. Attribute
+listeners run after the ones in `gacela.php`, and only for events a module dispatches through its provided dispatcher.
+The framework's own events never reach them. `vendor/bin/gacela debug:events` lists your events beside the framework's,
 and [`debug:plugins`](/docs/cli#debug-plugins) lists the `#[AsListener]` methods. The
 [upstream guide](https://github.com/gacela-project/gacela/blob/main/docs/events.md#your-own-events) covers the tradeoffs and the test helpers.
 
 ## Lifecycle event catalog
 
-The high-level events dispatched over a bootstrap, in the order you meet them.
+The high-level events of a bootstrap, in the order you meet them.
 
 ### `Gacela\Framework\Event\Bootstrap`
 
@@ -139,7 +139,7 @@ The high-level events dispatched over a bootstrap, in the order you meet them.
 | `CacheWarmedEvent`  | `cache:warm` finishes                   | `moduleCount(): int`, `failedCount(): int`, `skippedCount(): int` |
 
 `failedCount()` counts pillar classes found but not resolved. `skippedCount()` counts pillars a module does not contain,
-which is a valid module shape. Alert on failures, not skips.
+which is a valid module shape. Alert on failures, not on skips.
 
 ## Recipes
 
@@ -192,9 +192,9 @@ return function (GacelaConfig $config) {
 
 ## Lower-level resolver & cache events
 
-Beyond the lifecycle events above, Gacela dispatches fine-grained events during class resolution and cache bookkeeping.
-Reach for these when tracing *why* a class resolved the way it did. The class-resolution events share the
-`AbstractGacelaClassResolverEvent` base, so a single `instanceof` catches them all.
+Gacela also dispatches fine-grained events during class resolution and cache bookkeeping. Use them to trace *why* a
+class resolved the way it did. The class-resolution events share the `AbstractGacelaClassResolverEvent` base, so one
+`instanceof` catches them all.
 
 #### `Gacela\Framework\Event\ClassResolver`
 
@@ -226,7 +226,7 @@ Reach for these when tracing *why* a class resolved the way it did. The class-re
 
 ## Disabling events
 
-Turn the whole system off — no listeners fire, and Gacela swaps in a no-op dispatcher:
+Turn the whole system off. No listener fires, and Gacela swaps in a no-op dispatcher:
 
 ```php
 <?php # gacela.php
@@ -236,8 +236,8 @@ return function (GacelaConfig $config) {
 };
 ```
 
-This setting wins over registrations: listeners remain configured but silently do not run. Check
-`disableEventListeners()` first when a production listener appears inactive.
+This setting wins over registrations: listeners stay configured but silently do not run. When a production listener
+seems inactive, check `disableEventListeners()` first.
 
 ## Custom dispatcher
 
@@ -254,7 +254,7 @@ interface EventDispatcherInterface
 }
 ```
 
-Install your own with `setEventDispatcher()`, which is how a hosted application routes Gacela's events onto the bus it
+Install your own with `setEventDispatcher()`. That is how a hosted application routes Gacela's events onto the bus it
 already has: [since 2.3]
 
 ```php [gacela.php]
@@ -264,23 +264,23 @@ return static function (GacelaConfig $config): void {
 ```
 
 It also accepts a PSR-14 `Psr\EventDispatcher\EventDispatcherInterface`, such as Symfony's or Laravel's, and wraps it,
-so no adapter is needed. PSR-14 cannot say what it listens to, so that wrapper answers `true` from `hasListeners()` and
-every dispatch site allocates its event. Implement Gacela's interface yourself for a narrower answer. [since 2.4]
+so you need no adapter. PSR-14 cannot say what it listens to, so the wrapper answers `true` from `hasListeners()` and
+every dispatch site allocates its event. For a narrower answer, implement Gacela's interface yourself. [since 2.4]
 
-A supplied dispatcher composes with the listeners registered beside it: the configured listeners run first, in
-registration order, and then the event is offered to your dispatcher if its `hasListeners()` says yes. [since 2.4]
+A supplied dispatcher composes with the listeners registered beside it. The configured listeners run first, in
+registration order. Then your dispatcher gets the event if its `hasListeners()` says yes. [since 2.4]
 
-Return `false` from `hasListeners()` for the event classes you do not care about and the framework skips allocating
-them, which is what keeps the resolution hot path cheap.
+Return `false` from `hasListeners()` for the event classes you do not care about, and the framework skips allocating
+them. That keeps the resolution hot path cheap.
 
 A supplied dispatcher **takes precedence over `disableEventListeners()`**. That switch governs the dispatcher Gacela
-would build, and this one it does not build. Reach for `setEventDispatcher()` when the events should leave Gacela, and
-for [`disableEventListeners()`](#disabling-events) when they should not happen at all.
+would build, and Gacela does not build this one. Use `setEventDispatcher()` when the events should leave Gacela, and
+[`disableEventListeners()`](#disabling-events) when they should not happen at all.
 
 ## See also
 
-- [Testing](/docs/testing) — `GacelaTestCase` records these events and turns them into assertions
+- [Testing](/docs/testing): `GacelaTestCase` records these events and turns them into assertions
   (`assertServiceResolved()`, `assertBindingRegistered()`).
-- [Module Customization](/docs/customization#lifecycle-listeners) — where listeners fit among the other `gacela.php`
+- [Module Customization](/docs/customization#lifecycle-listeners): where listeners fit among the other `gacela.php`
   hooks.
-- [Bootstrap](/docs/bootstrap) — the full `GacelaConfig` surface.
+- [Bootstrap](/docs/bootstrap): the full `GacelaConfig` surface.
