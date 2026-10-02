@@ -108,6 +108,60 @@ final class LoggingBindingTest extends GacelaTestCase
 }
 ```
 
+## Testing one module [since 2.4]
+
+The everyday test of a modular application is one module with its neighbours replaced. `bootstrapModule()` does it in
+one call:
+
+```php
+$this->bootstrapModule(__DIR__, InvoiceFacade::class, doubles: [
+    BillingFacade::class => $this->createStub(BillingFacade::class),
+    PaymentGatewayInterface::class => new FakeGateway(),
+]);
+
+$invoice = (new InvoiceFacade())->issue('acme-nl', 10_000);
+```
+
+Two things happen.
+
+**Discovery is narrowed** to the directory the Facade lives in. `doctor`, `list:modules` and `debug:graph` then answer
+about that module instead of the whole application. The narrowing is applied after `gacela.php` has been read, so an
+application that declares its own `setAppModulePaths()` does not silently undo it.
+
+**Each double is applied through the seam that fits it**, so the test does not have to know which one a dependency
+arrives on:
+
+| The double is                                                            | It becomes                                                                                                    |
+|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| an `AbstractFactory`, `AbstractConfig` or `AbstractProvider` instance    | that pillar of the module its key's **Facade** names, as with the `swapModule*()` calls below                  |
+| any other object, keyed by a class or interface                          | a container binding, a lazy service, a binding scoped to the module's pillars, and a resolved-class override   |
+| a `Closure` or a class-string, keyed by a class or interface             | a container binding, a lazy service, and a binding scoped to the module's pillars                              |
+| anything, keyed by a **container id**                                    | a replacement for that id wherever it is registered, including in the module's own Provider                     |
+
+The binding scoped to the module's pillars wins over a class the application's `gacela.php` binds for the same type,
+while every class outside the module keeps what `gacela.php` declares.
+
+The fourth argument, `configFn`, is a `GacelaConfig` closure composed with the narrowing rather than replacing it:
+
+```php
+$this->bootstrapModule(__DIR__, InvoiceFacade::class,
+    doubles: [BillingFacade::class => $billing],
+    configFn: static fn (GacelaConfig $config) => $config->addExternalService('clock', $frozenClock),
+);
+```
+
+Like `bootstrapGacela()`, it bootstraps once per test, and `tearDown()` drops everything it registered.
+
+- **A neighbour has to leave its Facade open.** A consumer that type-hints a `final` Facade cannot be handed a
+  stand-in for it. Where the Facade must stay `final`, replace the neighbour's Factory instead.
+- **A double must be an instance of what it is registered under.** Otherwise it is refused with a
+  `ModuleDoubleException`, rather than failing at the consumer that type-hints the real one.
+- **Whether the module actually depends on the doubled class is not checked.** Reflection cannot see every way a
+  module reaches a dependency, so such a check would refuse legitimate tests.
+
+The [upstream testing guide](https://github.com/gacela-project/gacela/blob/main/docs/testing.md#testing-one-module-bootstrapmodule)
+covers the routing in more depth.
+
 ## Replacing another module [since 2.2]
 
 Testing module A in isolation means replacing module B. A container binding only works when B's Facade arrives through

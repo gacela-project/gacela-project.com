@@ -208,9 +208,10 @@ composer require gacela-project/gacela:^2.3
 composer require gacela-project/gacela:^2.4
 ```
 
-Most of 2.4 is new and opt-in: [your own events](/docs/events#your-own-events), `#[PublicApi]`, module test slices,
-`debug:events`, `migrate:service-map`, and package discovery. Eight changes can alter what an existing project
-observes; the upstream
+Most of 2.4 is new and opt-in: [your own events](/docs/events#your-own-events),
+[`#[PublicApi]`](/docs/module-boundaries#what-a-module-exports), [module test slices](/docs/testing#testing-one-module),
+[`debug:events`](/docs/cli#debug-events), [`migrate:service-map`](/docs/cli#migrate-service-map), and
+[package discovery](/docs/packages). Eight changes can alter what an existing project observes; the upstream
 [upgrade guide](https://github.com/gacela-project/gacela/blob/main/UPGRADE.md#23--24) has each one in full.
 
 - **A specific listener matches by inheritance.** A listener registered against an interface or an abstract parent
@@ -240,8 +241,8 @@ composer require gacela-project/gacela:^2.5
 
 Nothing to rewrite. New in 2.5: [`#[Plugin]` and `#[Tag]`](/docs/extensions#plugin-stacks),
 [`#[AsListener]`](/docs/events#your-own-events), [`debug:plugins`](/docs/cli#debug-plugins),
-[`agents:install`](/docs/coding-agents), and `Gacela::resetRequestState()` for long-running workers. Two things change
-on the first run after the upgrade:
+[`agents:install`](/docs/coding-agents), and [`Gacela::resetRequestState()`](/docs/long-running-runtimes) for
+long-running workers. Two things change on the first run after the upgrade:
 
 - **The merged config cache rebuilds once.** With the file cache on, a cache written on a miss now records the config
   files it read, and an edited file or `addAppConfig()` declaration rebuilds it on the next bootstrap. A cache written
