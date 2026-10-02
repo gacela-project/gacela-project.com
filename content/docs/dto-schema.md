@@ -5,14 +5,13 @@ description: Declare a data shape in gacela.php and generate the immutable class
 
 # DTO schema [since 2.3]
 
-A DTO that crosses a module boundary is written once and edited by hand forever. Every property added later means a
-constructor, a getter, a copy method and a pair of array converters, all of them mechanical, all of them a place to
-make a typo.
+A DTO that crosses a module boundary is written once and then edited by hand forever. Each new property needs a
+constructor change, a getter, a copy method and a pair of array converters. All mechanical, all a place for a typo.
 
 `declareDtoSchema()` declares the shape instead. `dto:generate` writes the class.
 
-The declaration is the source of truth, so **a package and the project consuming it can declare the same shape** and
-the generated class carries both sets of properties. Nobody forks a DTO to add a field to it.
+The declaration is the source of truth, so **a package and the project that uses it can declare the same shape**,
+and the generated class carries both sets of properties. Nobody forks a DTO to add a field.
 
 ## Declare the shape
 
@@ -37,12 +36,12 @@ return static function (GacelaConfig $config): void {
 | `default(mixed)`    | `fromArray()` falls back to this value when the key is absent                |
 | `describe(string)`  | Becomes a docblock on that property's getter                                 |
 
-`required()` and `default()` are mutually exclusive. A property that has an answer of its own is not one the caller
-must supply, and declaring both throws `MalformedDtoSchemaException`. A default whose type does not match the declared
-type is refused the same way, except that an `int` is accepted where a `float` is declared.
+`required()` and `default()` are mutually exclusive: a property with its own default is not one the caller must
+supply. Declaring both throws `MalformedDtoSchemaException`. A default whose type does not match the declared type is
+refused the same way, except that an `int` is accepted where a `float` is declared.
 
-Nothing in a schema runs during a request. It is read by `dto:generate` and by nothing else, so a malformed
-declaration fails the command rather than the application.
+Nothing in a schema runs during a request. Only `dto:generate` reads it, so a malformed declaration fails the command,
+not the application.
 
 ## Generate the class
 
@@ -53,9 +52,9 @@ vendor/bin/gacela dto:generate
 - `--dry-run`: report what would change, write nothing
 - `--check`: like `--dry-run`, and exit non-zero when a class would be written
 
-The file lands wherever the project's own `composer.json` `psr-4` map puts that namespace, longest matching prefix
-first. A shape under a namespace no prefix covers is reported as `No composer autoload prefix covers …` and the
-command exits non-zero: nothing is quietly written somewhere else.
+The file lands where the project's own `composer.json` `psr-4` map puts that namespace, longest matching prefix first.
+A shape under a namespace that no prefix covers is reported as `No composer autoload prefix covers …`, and the command
+exits non-zero. Nothing is quietly written somewhere else.
 
 For the declaration above:
 
@@ -173,7 +172,7 @@ final class Order
 }
 ```
 
-Properties are emitted in alphabetical order, not declaration order, so the same schema always produces the same
+Properties come out in alphabetical order, not declaration order, so the same schema always produces the same
 bytes. Regenerating an unchanged declaration leaves version control quiet.
 
 ## Using it
@@ -189,17 +188,17 @@ $order->getCurrency();           // 'EUR', from the declared default
 $order->withTotal(5299)->toArray();
 ```
 
-Every constructor parameter is nullable, including the required ones, because `fromArray()` accepts a partial payload
-and the **getter** is what refuses to answer. Reading a required property nothing set throws
-`MissingDtoPropertyException`, naming the property rather than failing later on a null somewhere else.
+Every constructor parameter is nullable, required ones included, because `fromArray()` accepts a partial payload. The
+**getter** is what refuses to answer: reading a required property that nothing set throws
+`MissingDtoPropertyException`. It names the property, instead of failing later on a null somewhere else.
 
-`toArray()` omits a property that was never set instead of writing `null`, so `fromArray($order->toArray())` returns
-the same instance. A value present because of a declared default is included, since `fromArray()` already materialized
-it.
+`toArray()` leaves out a property that was never set instead of writing `null`, so `fromArray($order->toArray())`
+returns the same instance. A value present because of a declared default is included, since `fromArray()` already
+filled it in.
 
 ## One shape, several declarers
 
-Two `declareDtoSchema()` calls for the same class union their properties. That is how a project adds a field to a
+Two `declareDtoSchema()` calls for the same class merge their properties. That is how a project adds a field to a
 packaged shape, whether the second declaration comes from its own `gacela.php` or from
 [`extendGacelaConfig()`](/docs/extensions#extend-gacela-config):
 
@@ -209,10 +208,10 @@ $config->declareDtoSchema(Vendor\Billing\Invoice::class, [
 ]);
 ```
 
-Redeclaring a property that already exists is refused unless it says exactly the same thing.
-`MalformedDtoSchemaException` names the class and the property: a shape may be extended by another declarer, never
-redefined. Rewording a `describe()` is not a redefinition, because a description is prose about the property rather
-than part of its shape.
+Redeclaring an existing property is refused unless the new declaration says exactly the same thing.
+`MalformedDtoSchemaException` names the class and the property: another declarer may extend a shape, never redefine
+it. Rewording a `describe()` is not a redefinition, because a description is prose about the property, not part of
+its shape.
 
 ::: warning The generated file is derived
 Do not edit it. The next `dto:generate` overwrites it, and `--check` reports the edit as a class that would be
@@ -225,13 +224,13 @@ written.
 vendor/bin/gacela dto:generate --check
 ```
 
-Exits non-zero when a declaration and its generated class have drifted apart, and writes nothing while doing it. Run
-it beside the tests so a declaration change that nobody regenerated fails the build rather than the next deploy.
+Exits non-zero when a declaration and its generated class have drifted apart, and writes nothing. Run it next to the
+tests, so a declaration change nobody regenerated fails the build, not the next deploy.
 
 ## Limitations
 
 - No nested shapes and no typed collections. A nested structure is an `array` property.
-- The declared type is the whole of the checking. There is no value validation beyond the primitive type.
+- The declared type is the only check. There is no value validation beyond the primitive type.
 
 ## See also
 
