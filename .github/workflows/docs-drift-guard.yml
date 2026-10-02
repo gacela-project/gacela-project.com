@@ -38,6 +38,9 @@ jobs:
           tag=$(gh api repos/gacela-project/gacela/releases/latest --jq .tag_name)
           gh api repos/gacela-project/gacela/releases/latest --jq .body > release.md
 
+          # A release can name no symbol at all (2.6.2 named only a path and
+          # `@var`), so an empty match is not an error.
+          #
           # A backticked token becomes one searchable key: Class::method() is
           # looked up as method(), #[Attr] as Attr. Phrases with spaces are
           # prose rather than symbols, so they are dropped.
@@ -49,7 +52,7 @@ jobs:
             key="${key%%']'*}"
             printf '%s\n' "$key"
           done \
-            | grep -E '^([a-z][a-zA-Z0-9]{3,}|[A-Z][A-Za-z0-9]{3,}|[a-z][a-z0-9-]*:[a-z][a-z0-9:-]*)$' \
+            | { grep -E '^([a-z][a-zA-Z0-9]{3,}|[A-Z][A-Za-z0-9]{3,}|[a-z][a-z0-9-]*:[a-z][a-z0-9:-]*)$' || true; } \
             | sort -u > candidates.txt
 
           touch "$ALLOWLIST"
