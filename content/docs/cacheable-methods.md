@@ -5,7 +5,7 @@ description: Cache Facade method results with explicit TTLs, keys, storage, and 
 
 # Cacheable facade methods
 
-The `#[Cacheable]` attribute caches a facade method's result for a given TTL.
+Cache a facade method's result for a given TTL with `#[Cacheable]` and `$this->cached()`.
 
 `AbstractFacade` includes `CacheableTrait`, so every Facade can use `#[Cacheable]` and `$this->cached()` directly.
 

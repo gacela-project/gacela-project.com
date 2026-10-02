@@ -5,7 +5,7 @@ description: Let a Composer package configure the Gacela application that instal
 
 # Shipping a Gacela package [since 2.4]
 
-Installing a Composer package is enough for it to contribute to a Gacela application. The package declares its
+A Composer package can contribute to a Gacela application just by being installed. The package declares its
 configuration in its own `composer.json`:
 
 ```json [composer.json]
@@ -110,7 +110,7 @@ $config->addBinding(AuditSinkInterface::class, OurOwnSink::class);
 When two packages declare the same thing, the later-installed one wins. Do not rely on that: Composer's dependency
 graph decides installed order, and it can change under a `composer update` that touches neither package.
 
-For anything appended rather than replaced (a plugin stack, a tag, a listener list), merging first means being **first
+For anything appended rather than replaced (such as a plugin stack, a tag or a listener list), merging first means being **first
 in the list**. A package's channel runs before the application's own.
 
 ## A broken declaration does not stop the boot
