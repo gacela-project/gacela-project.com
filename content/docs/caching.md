@@ -37,6 +37,11 @@ Gacela serves it without looking at the config files until the next `cache:warm`
 miss also records the config files it read. An edited, added or removed file, or a changed `addAppConfig()` declaration,
 rebuilds it on the next bootstrap. [since 2.5]
 
+The cache holds values, not how they were computed. A config file that reads `getenv('DB_HOST')` is cached with the
+value it read, so a different `DB_HOST` on the next run is not seen until `cache:clear`. Read a value that changes per
+process in the bootstrap closure instead: `$config->addAppConfigKeyValue('db.host', getenv('DB_HOST'))` applies on top
+of the cached values on every bootstrap and is never cached itself.
+
 Two settings change that. [since 2.6]
 
 ```php
