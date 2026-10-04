@@ -130,7 +130,8 @@ vendor/bin/gacela debug:graph [<filter>] [-f|--format=text|mermaid|graphviz|json
   [module rules file](/docs/module-boundaries#declaring-which-modules-may-depend-on-which) forbids. You cannot combine
   it with a filter argument: in a narrowed graph, a rule about a filtered-out module looks the same as a rule about a
   module that no longer exists.
-- `-c`, `--compare-to <graph.json>`: diff the current graph against saved JSON output
+- `-c`, `--compare-to <graph.json>`: diff the current graph against saved JSON output. It writes only the diff, so it
+  refuses `--check`, `--rules` and `--allowed-cycles`: run the check as its own step. [since 2.7]
 
 With `--check`, `--format=json` writes the findings as a report instead of lines, for a CI job that needs more than an
 exit code: undeclared cycles, stale allow-list entries, forbidden dependencies and unknown rule namespaces. [since 2.2]

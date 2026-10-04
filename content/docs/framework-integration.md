@@ -96,6 +96,9 @@ the parameter first.
 `#[Inject]`. It rewrites that argument so Symfony resolves it through Gacela's container. If both containers claim the
 same parameter, the build fails and names the service and parameter.
 
+A service built by a factory is left to its factory, and a `parent:` service is read through its parent, so the
+attribute holds there too. [since 2.7]
+
 The bundle registers the pass for you. To use it without the bundle:
 
 ```php
@@ -192,6 +195,9 @@ final class SyncStock implements ShouldQueue
 
 It refuses a `readonly` property by name, because it cannot be written after construction. It refuses a static or
 non-public setter the same way.
+
+A property that holds null, such as `?ProductFacade $facade = null`, is injected, as Gacela's own container does. A
+value the constructor set is kept. [since 2.7]
 
 ## Bootstrapping by hand
 
