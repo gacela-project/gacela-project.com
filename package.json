@@ -18,8 +18,8 @@
     "check": "npm run typecheck && vitest run && npm run build && npm run lint:links"
   },
   "dependencies": {
-    "markdown-it": "^15.0.2",
-    "shiki": "^4.4.3"
+    "markdown-it": "^15.0.3",
+    "shiki": "^4.5.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
